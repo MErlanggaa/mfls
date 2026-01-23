@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary-gold: #F2B451;
+    --color-primary-gold-hover: #e0a340;
+    --color-dark-navy: #111827;
+    --font-jakarta: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@layer base {
+    body {
+        @apply font-jakarta text-gray-800 bg-white antialiased;
+    }
+}
