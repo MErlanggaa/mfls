@@ -1,0 +1,181 @@
+@extends('layouts.admin')
+
+@section('content')
+<div class="mb-8">
+    <h2 class="text-2xl font-black text-gray-800">Bank Soal Ujian</h2>
+    <p class="text-gray-500">Kelola pertanyaan untuk Ujian Online Seleksi MFLS.</p>
+</div>
+
+<!-- Filter Tabs -->
+<div class="flex gap-2 mb-8 overflow-x-auto pb-2">
+    <a href="{{ route('admin.soal.index') }}" class="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all {{ !request('ujian_id') ? 'bg-dark-navy text-white shadow-lg' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50' }}">
+        Semua Soal
+    </a>
+    @foreach($ujians as $ujian)
+        <a href="{{ route('admin.soal.index', ['ujian_id' => $ujian->id]) }}" class="px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all {{ request('ujian_id') == $ujian->id ? 'bg-dark-navy text-white shadow-lg' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50' }}">
+            {{ $ujian->nama }}
+        </a>
+    @endforeach
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Kolom Kiri: Form Input (Sticky) -->
+    <div class="lg:col-span-1">
+        <div class="sticky top-4 space-y-6">
+            
+            <!-- Import Card -->
+            <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl">
+                <h3 class="font-bold text-indigo-900 mb-2">Import Soal Massal</h3>
+                <p class="text-xs text-indigo-600 mb-4">Support file .docx (Word) dan .csv. <br>Format Word: No. Soal, A-D, Kunci: X</p>
+                <form action="{{ route('admin.soal.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <select name="ujian_id" required class="w-full px-3 py-2 bg-white border border-indigo-200 rounded-lg text-xs font-bold text-indigo-900 focus:outline-none">
+                            <option value="">-- Pilih Kategori Ujian --</option>
+                            @foreach($ujians as $ujian)
+                                <option value="{{ $ujian->id }}" {{ request('ujian_id') == $ujian->id ? 'selected' : '' }}>{{ $ujian->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <input type="file" name="file_soal" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 mb-3"/>
+                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-lg text-sm transition-all shadow-md shadow-indigo-600/20">Upload File</button>
+                </form>
+            </div>
+
+            <!-- Manual Input Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h3 class="font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Input Manual</h3>
+                
+                <form action="{{ route('admin.soal.store') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Kategori Ujian</label>
+                        <select name="ujian_id" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-dark-navy">
+                            <option value="">-- Pilih --</option>
+                            @foreach($ujians as $ujian)
+                                <option value="{{ $ujian->id }}" {{ request('ujian_id') == $ujian->id ? 'selected' : '' }}>{{ $ujian->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Pertanyaan</label>
+                        <textarea name="pertanyaan" rows="3" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-dark-navy" placeholder="Tulis soal di sini..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Gambar (Opsional)</label>
+                        <input type="file" name="gambar" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"/>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <input type="text" name="opsi_a" placeholder="Opsi A" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <input type="text" name="opsi_b" placeholder="Opsi B" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <input type="text" name="opsi_c" placeholder="Opsi C" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <input type="text" name="opsi_d" placeholder="Opsi D" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 mb-1">KUNCI JAWABAN</label>
+                            <select name="kunci_jawaban" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold">
+                                <option value="a">A</option>
+                                <option value="b">B</option>
+                                <option value="c">C</option>
+                                <option value="d">D</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 mb-1">BOBOT</label>
+                            <input type="number" name="bobot" value="5" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-dark-navy text-white font-bold py-3 rounded-xl hover:bg-black transition-all shadow-lg">
+                        Simpan Soal
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kolom Kanan: List Soal -->
+    <div class="lg:col-span-2 space-y-4">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="font-bold text-gray-800">Daftar Soal ({{ $soals->count() }})</h3>
+        </div>
+
+        @forelse($soals as $soal)
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative group">
+            
+            <!-- Badge & Actions Header -->
+            <div class="flex justify-between items-start mb-3 border-b border-gray-50 pb-3">
+                <span class="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded uppercase tracking-wide">
+                    {{ $soal->ujian->nama ?? 'Tanpa Kategori' }}
+                </span>
+                <div class="flex gap-2">
+                    <span class="text-xs font-bold text-gray-400">Bobot: {{ $soal->bobot }}</span>
+                    <div class="h-4 w-[1px] bg-gray-200"></div>
+                    <!-- Action Buttons -->
+                    <a href="{{ route('admin.soal.edit', $soal->id) }}" class="text-gray-400 hover:text-blue-600 transition-colors" title="Edit">
+                        ✏️
+                    </a>
+                    <form action="{{ route('admin.soal.destroy', $soal->id) }}" method="POST" onsubmit="return confirm('Hapus soal ini?');" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors" title="Hapus">
+                            🗑️
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Question Body -->
+            <div class="flex gap-4">
+                <div class="shrink-0 w-8 h-8 bg-dark-navy text-white text-sm font-bold rounded-lg flex items-center justify-center shadow-lg shadow-dark-navy/20">
+                    {{ $loop->iteration }}
+                </div>
+                <div class="flex-grow">
+                    <p class="font-bold text-gray-800 text-sm leading-relaxed mb-3">{{ $soal->pertanyaan }}</p>
+                    
+                    @if($soal->gambar)
+                        <div class="mb-4">
+                            <img src="{{ asset('storage/' . $soal->gambar) }}" class="max-h-48 rounded-lg border border-gray-100 shadow-sm cursor-pointer hover:opacity-90 transition-opacity" onclick="window.open(this.src)">
+                        </div>
+                    @endif
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                        <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'a' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
+                            <span class="mr-2 opacity-50">A.</span> {{ $soal->opsi_a }}
+                        </div>
+                        <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'b' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
+                            <span class="mr-2 opacity-50">B.</span> {{ $soal->opsi_b }}
+                        </div>
+                        <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'c' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
+                            <span class="mr-2 opacity-50">C.</span> {{ $soal->opsi_c }}
+                        </div>
+                        <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'd' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
+                            <span class="mr-2 opacity-50">D.</span> {{ $soal->opsi_d }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="bg-white p-12 text-center rounded-2xl border border-dashed border-gray-300">
+            <svg class="w-16 h-16 text-gray-200 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <h3 class="text-lg font-bold text-gray-800">Belum ada soal ujian</h3>
+            <p class="text-gray-500 text-sm mt-1">Silakan input manual atau import file untuk kategori ini.</p>
+        </div>
+        @endforelse
+    </div>
+</div>
+@endsection

@@ -15,26 +15,242 @@ class AdminController extends Controller
         return view('admin.dashboard');
     }
 
-    public function indexPendaftar()
+    public function indexPendaftar(Request $request)
     {
-        // Ambil data pendaftar beserta detail daftar dan nilainya
-        $pendaftars = Akun::where('role', 'pendaftar')
-            ->with(['peserta.daftar'])
-            ->get();
-            
-        // Hitung ulang rata-rata (opsional, bisa dipindah ke event listener saat nilai diinput)
-        foreach($pendaftars as $user) {
-            if ($user->peserta && $user->peserta->daftar) {
-                // Dummy logic hitung nilai (karena tabel nilai kompleks, kita simulasikan atau ambil dari relation jika ada)
-                // Real implementation harus ambil dari table 'nilais'
-                // $avg = $user->peserta->nilais()->avg('nilai');
-                
-                // For demo purpose, kita pakai kolom rata_rata_nilai yang sudah ada
-                // Nanti saat integrasi NilaiController, kolom ini diupdate.
+        // Query Dasar (Load nilais untuk hitung rata-rata real-time)
+        $query = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais']);
+
+        // --- SELF HEALING: Sinkronisasi Rata-rata Nilai ---
+        // Kita eksekusi get() dulu untuk perhitungan, baru nanti di-filter di collection atau query ulang
+        // Tapi agar performan untuk pagination nanti, kita update yg sedang diload saja.
+        
+        // Logika Search & Filter query tetap jalan di level database
+        // Namun untuk Display Consistensi, kita hitung real dari nilais
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                // Cari di tabel akun (nama)
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhereHas('peserta.daftar', function($q2) use ($search) {
+                      // Cari di tabel daftar (sekolah, referral, tahun lulus)
+                      $q2->where('asal_sekolah', 'like', "%{$search}%")
+                         ->orWhere('kode_referral', 'like', "%{$search}%")
+                         ->orWhere('tahun_lulus', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Logic Filter Nilai (>80, >90)
+        if ($request->filled('filter_nilai')) {
+            $threshold = $request->filter_nilai;
+            $query->whereHas('peserta.daftar', function($q) use ($threshold) {
+                $q->where('rata_rata_nilai', '>=', $threshold);
+            });
+        }
+
+        $pendaftars = $query->latest()->get();
+
+        // FIX LOGIC: Update Rata-rata di tabel Daftar agar sinkron dengan Nilai Asli
+        foreach($pendaftars as $akun) {
+            if($akun->peserta && $akun->peserta->daftar) {
+                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
+                // Jika beda dengan database (seperti kasus 88.5 vs 91), update DB!
+                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
+                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
+                    $akun->peserta->daftar->rata_rata_nilai = $realAvg; // Update object di memory juga
+                }
             }
         }
 
         return view('admin.pendaftar.index', compact('pendaftars'));
+    }
+
+    // ... detailPendaftar methods ...
+
+    // --- MANAJEMEN SOAL ---
+    public function indexSoal(Request $request)
+    {
+        $query = \App\Models\Soal::with('ujian')->latest();
+
+        // Fitur Filter by Kategori Ujian
+        if ($request->filled('ujian_id')) {
+            $query->where('ujian_id', $request->ujian_id);
+        }
+
+        $soals = $query->get();
+        $ujians = \App\Models\Ujian::all();
+        
+        return view('admin.soal.index', compact('soals', 'ujians'));
+    }
+
+    public function storeSoal(Request $request)
+    {
+        $request->validate([
+            'ujian_id' => 'required|exists:ujian,id',
+            'pertanyaan' => 'required',
+            'gambar' => 'nullable|image|max:2048',
+            'opsi_a' => 'required',
+            'opsi_b' => 'required',
+            'opsi_c' => 'required',
+            'opsi_d' => 'required',
+            'kunci_jawaban' => 'required|in:a,b,c,d',
+            'bobot' => 'required|integer'
+        ]);
+
+        $data = $request->all();
+
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('soal_images', 'public');
+            $data['gambar'] = $path;
+        }
+
+        \App\Models\Soal::create($data);
+
+        return back()->with('success', 'Soal berhasil ditambahkan!');
+    }
+
+    public function editSoal($id)
+    {
+        $soal = \App\Models\Soal::findOrFail($id);
+        $ujians = \App\Models\Ujian::all();
+        return view('admin.soal.edit', compact('soal', 'ujians'));
+    }
+
+    public function updateSoal(Request $request, $id)
+    {
+        $request->validate([
+            'ujian_id' => 'required|exists:ujian,id',
+            'pertanyaan' => 'required',
+            'gambar' => 'nullable|image|max:2048',
+            'opsi_a' => 'required',
+            'opsi_b' => 'required',
+            'opsi_c' => 'required',
+            'opsi_d' => 'required',
+            'kunci_jawaban' => 'required|in:a,b,c,d',
+            'bobot' => 'required|integer'
+        ]);
+
+        $soal = \App\Models\Soal::findOrFail($id);
+        $data = $request->all();
+
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($soal->gambar) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
+            }
+            $data['gambar'] = $request->file('gambar')->store('soal_images', 'public');
+        }
+
+        $soal->update($data);
+
+        return redirect()->route('admin.soal.index', ['ujian_id' => $soal->ujian_id])->with('success', 'Soal berhasil diperbarui!');
+    }
+
+    public function destroySoal($id)
+    {
+        $soal = \App\Models\Soal::findOrFail($id);
+        if ($soal->gambar) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
+        }
+        $soal->delete();
+
+        return back()->with('success', 'Soal berhasil dihapus!');
+    }
+
+    public function importSoal(Request $request)
+    {
+        $request->validate([
+            'ujian_id' => 'required|exists:ujian,id',
+            'file_soal' => 'required|mimes:csv,txt,docx'
+        ]);
+
+        $ujianId = $request->ujian_id;
+        $file = $request->file('file_soal');
+        $ext = $file->getClientOriginalExtension();
+
+        if ($ext === 'docx') {
+            return $this->importWord($file, $ujianId);
+        }
+
+        // ... Logic CSV lama ...
+        $handle = fopen($file->getRealPath(), "r");
+        fgetcsv($handle); // Skip header
+        
+        while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            if(count($row) >= 7) {
+                \App\Models\Soal::create([
+                    'ujian_id' => $ujianId,
+                    'pertanyaan' => $row[0],
+                    'gambar' => null,
+                    'opsi_a' => $row[1],
+                    'opsi_b' => $row[2],
+                    'opsi_c' => $row[3],
+                    'opsi_d' => $row[4],
+                    'kunci_jawaban' => strtolower($row[5]),
+                    'bobot' => (int)$row[6]
+                ]);
+            }
+        }
+        fclose($handle);
+
+        return back()->with('success', 'Import soal berhasil!');
+    }
+
+    private function importWord($file, $ujianId)
+    {
+        $zip = new \ZipArchive;
+        $xmlContent = '';
+
+        if ($zip->open($file->getRealPath()) === TRUE) {
+            $xmlContent = $zip->getFromName('word/document.xml');
+            $zip->close();
+        } else {
+            return back()->with('loginError', 'Gagal membaca file Word.');
+        }
+
+        // Parsing XML sederhana
+        $dom = new \DOMDocument();
+        $dom->loadXML($xmlContent);
+        $paragraphs = $dom->getElementsByTagName('p'); // Paragraph tag in Word XML
+
+        $currentSoal = [];
+
+        foreach ($paragraphs as $p) {
+            $text = $p->textContent;
+            $text = trim($text);
+            if (empty($text)) continue;
+            
+            // Deteksi Opsi (A., B., C., D.)
+            if (preg_match('/^([A-D])\.\s*(.*)/i', $text, $matches)) {
+                $optKey = strtolower($matches[1]); // a, b, c, d
+                $currentSoal['opsi_' . $optKey] = $matches[2];
+            }
+            // Deteksi Kunci Jawaban (Kunci: A)
+            elseif (preg_match('/^Kunci\s*:\s*([A-D])/i', $text, $matches)) {
+                $currentSoal['kunci_jawaban'] = strtolower($matches[1]);
+                
+                // Kunci biasanya baris terakhir per soal, jadi simpan
+                if (isset($currentSoal['pertanyaan'])) {
+                    $currentSoal['ujian_id'] = $ujianId; // Set Ujian ID
+                    $currentSoal['bobot'] = 5;
+                    \App\Models\Soal::create($currentSoal);
+                    $currentSoal = []; // Reset
+                }
+            }
+            // Deteksi Soal Baru (1. Pertanyaan...)
+            elseif (preg_match('/^\d+\.\s*(.*)/', $text, $matches)) {
+                $currentSoal = [];
+                $currentSoal['pertanyaan'] = $matches[1];
+            }
+            else {
+                if (isset($currentSoal['pertanyaan']) && !isset($currentSoal['opsi_a'])) {
+                    $currentSoal['pertanyaan'] .= " " . $text;
+                }
+            }
+        }
+
+        return back()->with('success', 'Import Word berhasil!');
     }
 
     public function detailPendaftar($id)

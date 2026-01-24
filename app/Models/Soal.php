@@ -12,7 +12,9 @@ class Soal extends Model
     protected $table = 'soal';
 
     protected $fillable = [
+        'ujian_id',
         'pertanyaan',
+        'gambar',
         'opsi_a',
         'opsi_b',
         'opsi_c',

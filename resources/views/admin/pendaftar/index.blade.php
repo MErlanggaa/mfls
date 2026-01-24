@@ -7,6 +7,17 @@
         <p class="text-gray-500">Kelola data, verifikasi berkas, dan kelulusan peserta.</p>
     </div>
     <div class="flex gap-3">
+        <!-- Form Search & Filter -->
+        <form method="GET" class="flex gap-2">
+            <select name="filter_nilai" class="px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 focus:outline-none focus:border-dark-navy" onchange="this.form.submit()">
+                <option value="">Semua Nilai</option>
+                <option value="80" {{ request('filter_nilai') == '80' ? 'selected' : '' }}>Nilai > 80</option>
+                <option value="90" {{ request('filter_nilai') == '90' ? 'selected' : '' }}>Nilai > 90</option>
+            </select>
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama, Sekolah, Referral..." class="px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm w-64 focus:outline-none focus:border-dark-navy">
+            <button type="submit" class="bg-dark-navy text-white px-4 py-3 rounded-xl hover:bg-black transition-colors">🔍</button>
+        </form>
+
         <a href="{{ route('admin.export') }}" class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-bold transition-all shadow-lg shadow-green-600/20">
             <span>📊</span> Export Excel
         </a>
@@ -19,6 +30,8 @@
             <thead class="bg-gray-50 text-gray-500 font-bold uppercase text-xs">
                 <tr>
                     <th class="px-6 py-4">Peserta</th>
+                    <th class="px-6 py-4">Kode Ref</th>
+                    <th class="px-6 py-4">Lulusan</th>
                     <th class="px-6 py-4">Asal Sekolah</th>
                     <th class="px-6 py-4">Rata-rata Nilai</th>
                     <th class="px-6 py-4">Rekomendasi Sistem</th>
@@ -37,6 +50,12 @@
                     <td class="px-6 py-4">
                         <div class="font-bold text-gray-900">{{ $akun->nama }}</div>
                         <div class="text-xs text-gray-500">{{ $akun->email }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-600 font-mono text-xs">
+                        {{ $daftar->kode_referral ?? '-' }}
+                    </td>
+                    <td class="px-6 py-4 text-gray-600">
+                        {{ $daftar->tahun_lulus ?? '-' }}
                     </td>
                     <td class="px-6 py-4 text-gray-600">
                         {{ $daftar->asal_sekolah ?? '-' }}

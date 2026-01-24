@@ -99,6 +99,57 @@
     </div>
 </div>
 
+<!-- Tabel Nilai Raport Selesai -->
+</div>
+
+<!-- Verifikasi Berkas -->
+<div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8">
+    <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <span>📂</span> Verifikasi Berkas Administrasi
+    </h3>
+    
+    @if($user->peserta->berkas)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @php
+                $berkasList = [
+                    'Foto Diri' => $user->peserta->berkas->foto,
+                    'Ijazah / SKL' => $user->peserta->berkas->ijazah,
+                    'Surat Rekomendasi' => $user->peserta->berkas->surat_rekomom,
+                    'Personal Statement' => $user->peserta->berkas->personal_statement,
+                    'Rapor Sem 1' => $user->peserta->berkas->rapor1,
+                    'Rapor Sem 2' => $user->peserta->berkas->rapor2,
+                    'Rapor Sem 3' => $user->peserta->berkas->rapor3,
+                    'Rapor Sem 4' => $user->peserta->berkas->rapor4,
+                    'Rapor Sem 5' => $user->peserta->berkas->rapor5,
+                ];
+            @endphp
+
+            @foreach($berkasList as $label => $path)
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-lg shadow-sm">📄</div>
+                        <div>
+                            <div class="font-bold text-gray-800 text-sm">{{ $label }}</div>
+                            <div class="text-xs text-gray-400">{{ $path ? 'Uploaded' : 'Belum Upload' }}</div>
+                        </div>
+                    </div>
+                    @if($path)
+                        <a href="{{ asset('storage/' . $path) }}" target="_blank" class="text-xs font-bold text-primary-gold hover:underline">
+                            Lihat File ↗
+                        </a>
+                    @else
+                        <span class="text-xs font-bold text-gray-300">Tidak Ada</span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="text-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-gray-400">
+            Peserta belum mengupload berkas apapun.
+        </div>
+    @endif
+</div>
+
 <!-- Bagian Verifikasi & Aksi (Copy dari Index tapi lebih besar) -->
 <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
     <h3 class="text-xl font-bold text-gray-900 mb-4">Keputusan Akhir</h3>

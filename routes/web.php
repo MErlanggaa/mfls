@@ -29,8 +29,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [App\Http\Controllers\AdminController::class, 'indexPendaftar'])->name('index');
         Route::get('/{id}', [App\Http\Controllers\AdminController::class, 'detailPendaftar'])->name('show');
         Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifikasi'])->name('verify');
-        Route::post('/{id}/update-nilai', [App\Http\Controllers\AdminController::class, 'updateNilaiDummy'])->name('update_nilai'); // Routing sementara buat testing nilai
+        Route::post('/{id}/update-nilai', [App\Http\Controllers\AdminController::class, 'updateNilaiDummy'])->name('update_nilai'); 
     });
+
+    // Manajemen Soal
+    Route::get('/admin/soal', [App\Http\Controllers\AdminController::class, 'indexSoal'])->name('admin.soal.index');
+    Route::post('/admin/soal', [App\Http\Controllers\AdminController::class, 'storeSoal'])->name('admin.soal.store');
+    Route::get('/admin/soal/{id}/edit', [App\Http\Controllers\AdminController::class, 'editSoal'])->name('admin.soal.edit');
+    Route::put('/admin/soal/{id}', [App\Http\Controllers\AdminController::class, 'updateSoal'])->name('admin.soal.update');
+    Route::delete('/admin/soal/{id}', [App\Http\Controllers\AdminController::class, 'destroySoal'])->name('admin.soal.destroy');
+    Route::post('/admin/soal/import', [App\Http\Controllers\AdminController::class, 'importSoal'])->name('admin.soal.import');
 
     Route::get('/admin/export', [App\Http\Controllers\AdminController::class, 'exportExcel'])->name('admin.export');
     

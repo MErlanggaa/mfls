@@ -39,8 +39,8 @@
                 <a href="{{ route('admin.pendaftar.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.pendaftar.index') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' }} rounded-xl font-semibold transition-all">
                     <span>👥</span> Data Pendaftar
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl font-semibold transition-all">
-                    <span>📝</span> Verifikasi Berkas
+                <a href="{{ route('admin.soal.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.soal.index') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' }} rounded-xl font-semibold transition-all">
+                    <span>📝</span> Bank Soal
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl font-semibold transition-all">
                     <span>🎓</span> Manajemen Mentor

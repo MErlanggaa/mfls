@@ -61,6 +61,11 @@ class DatabaseSeeder extends Seeder
             'rata_rata_nilai' => 88.5, // Dummy awal
         ]);
 
+        // Seed Kategori Ujian
+        $ujianTPA = \App\Models\Ujian::create(['nama' => 'Tes Potensi Akademik']);
+        $ujianBing = \App\Models\Ujian::create(['nama' => 'Bahasa Inggris']);
+        $ujianWawancara = \App\Models\Ujian::create(['nama' => 'Wawancara Kebangsaan']);
+
         // Seed Matpel & Nilai Random
         $matpels = ['Matematika Wajib', 'Bahasa Indonesia', 'Bahasa Inggris', 'Fisika', 'Kimia', 'Biologi'];
         
