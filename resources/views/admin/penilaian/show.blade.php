@@ -19,16 +19,41 @@
         
         <form action="{{ route('admin.pendaftar.mentor_nilai', $user->id) }}" method="POST" class="space-y-6">
             @csrf
-            <div>
-                <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Nilai Evaluasi (0-100)</label>
-                <input type="number" name="nilai" min="0" max="100" required 
-                    value="{{ $user->peserta->penilaianMentors->where('mentor_id', auth()->id())->first()->nilai ?? '' }}"
-                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none font-black text-2xl text-blue-600">
+            @php
+                $myEvaluation = $user->peserta->penilaianMentors->where('mentor_id', auth()->id())->first();
+            @endphp
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kepemimpinan (35%)</label>
+                    <input type="number" name="nilai_kepemimpinan" min="0" max="100" required 
+                        value="{{ $myEvaluation->nilai_kepemimpinan ?? '' }}"
+                        class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none font-black text-xl text-blue-600" placeholder="0-100">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kepribadian (35%)</label>
+                    <input type="number" name="nilai_kepribadian" min="0" max="100" required 
+                        value="{{ $myEvaluation->nilai_kepribadian ?? '' }}"
+                        class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none font-black text-xl text-blue-600" placeholder="0-100">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Keaktifan (30%)</label>
+                    <input type="number" name="nilai_keaktifan" min="0" max="100" required 
+                        value="{{ $myEvaluation->nilai_keaktifan ?? '' }}"
+                        class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none font-black text-xl text-blue-600" placeholder="0-100">
+                </div>
             </div>
+            
+            @if($myEvaluation)
+            <div class="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex justify-between items-center">
+                <span class="text-xs font-bold text-blue-700 uppercase">Total Nilai Berbobot:</span>
+                <span class="text-2xl font-black text-blue-700">{{ number_format($myEvaluation->nilai, 2) }}</span>
+            </div>
+            @endif
+
             <div>
                 <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Catatan Kualitatif</label>
-                <textarea name="catatan" rows="6" placeholder="Berikan alasan penilaian atau catatan perkembangan..."
-                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none font-semibold text-slate-700">{{ $user->peserta->penilaianMentors->where('mentor_id', auth()->id())->first()->catatan ?? '' }}</textarea>
+                <textarea name="catatan" rows="4" placeholder="Berikan alasan penilaian atau catatan perkembangan..."
+                    class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none font-semibold text-slate-700">{{ $myEvaluation->catatan ?? '' }}</textarea>
             </div>
             <button type="submit" class="w-full py-4 bg-blue-600 text-white font-black rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all">
                 SIMPAN PENILAIAN
@@ -39,7 +64,7 @@
     <!-- History / Summary -->
     <div class="space-y-6">
         <div class="bg-slate-50 p-8 rounded-[2rem] border border-slate-100">
-            <h4 class="font-black text-slate-800 mb-6 uppercase tracking-widest text-[10px]">Ringkasan Evaluasi Mentor Lain</h4>
+            <h4 class="font-black text-slate-800 mb-6 uppercase tracking-widest text-[10px]">Ringkasan Evaluasi Mentor</h4>
             @php
                 $allPenilaian = $user->peserta->penilaianMentors;
             @endphp
@@ -49,7 +74,21 @@
                         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-all hover:border-blue-300">
                             <div class="flex justify-between items-center mb-3">
                                 <span class="text-xs font-black text-blue-600 uppercase">{{ $penilaian->mentor->nama }}</span>
-                                <span class="text-lg font-black text-slate-900">{{ $penilaian->nilai }} <span class="text-[10px] text-slate-400">PTS</span></span>
+                                <span class="text-lg font-black text-slate-900">{{ number_format($penilaian->nilai, 2) }} <span class="text-[10px] text-slate-400">TOTAL</span></span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-1 mb-4">
+                                <div class="text-[8px] bg-slate-50 p-1.5 rounded-lg text-center">
+                                    <div class="text-slate-400 font-bold uppercase">KMP</div>
+                                    <div class="font-black text-slate-700">{{ round($penilaian->nilai_kepemimpinan) }}</div>
+                                </div>
+                                <div class="text-[8px] bg-slate-50 p-1.5 rounded-lg text-center">
+                                    <div class="text-slate-400 font-bold uppercase">KPB</div>
+                                    <div class="font-black text-slate-700">{{ round($penilaian->nilai_kepribadian) }}</div>
+                                </div>
+                                <div class="text-[8px] bg-slate-50 p-1.5 rounded-lg text-center">
+                                    <div class="text-slate-400 font-bold uppercase">AKT</div>
+                                    <div class="font-black text-slate-700">{{ round($penilaian->nilai_keaktifan) }}</div>
+                                </div>
                             </div>
                             <p class="text-xs text-slate-500 font-semibold italic leading-relaxed">"{{ $penilaian->catatan ?? 'Tidak ada catatan.' }}"</p>
                         </div>

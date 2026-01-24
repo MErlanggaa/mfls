@@ -22,7 +22,7 @@ class Survei extends Model
         'mengikuti_forum_osis',
         'anggota_forum_anak',
         'sudah_diterima_kampus_lain',
-        'sudah_daftar_diterima_telkom',
+        'sudah_daftar_diterima_mncuniversity',
     ];
 
     protected $casts = [
@@ -33,7 +33,7 @@ class Survei extends Model
         'mengikuti_forum_osis' => 'boolean',
         'anggota_forum_anak' => 'boolean',
         'sudah_diterima_kampus_lain' => 'boolean',
-        'sudah_daftar_diterima_telkom' => 'boolean',
+        'sudah_daftar_diterima_mncuniversity' => 'boolean',
     ];
 
     public function akun()

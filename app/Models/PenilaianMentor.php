@@ -15,6 +15,9 @@ class PenilaianMentor extends Model
         'peserta_id',
         'mentor_id',
         'nilai',
+        'nilai_kepemimpinan',
+        'nilai_kepribadian',
+        'nilai_keaktifan',
         'catatan',
     ];
 

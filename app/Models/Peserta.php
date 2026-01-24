@@ -23,6 +23,9 @@ class Peserta extends Model
         'kabupaten',
         'nama_sekolah',
         'telp_sekolah',
+        'link_ig',
+        'link_tiktok',
+        'link_twibbon',
     ];
 
     public function akun()
@@ -53,6 +56,11 @@ class Peserta extends Model
     public function jawabanUjians()
     {
         return $this->hasMany(JawabanUjian::class, 'peserta_id');
+    }
+
+    public function nilaiUjians()
+    {
+        return $this->hasMany(NilaiUjian::class, 'peserta_id');
     }
 
     public function penilaianMentors()

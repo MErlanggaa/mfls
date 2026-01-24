@@ -31,7 +31,7 @@ class SurveyController extends Controller
             'mengikuti_forum_osis' => $request->has('mengikuti_forum_osis') ? $request->mengikuti_forum_osis : false,
             'anggota_forum_anak' => $request->has('anggota_forum_anak') ? $request->anggota_forum_anak : false,
             'sudah_diterima_kampus_lain' => $request->has('sudah_diterima_kampus_lain') ? $request->sudah_diterima_kampus_lain : false,
-            'sudah_daftar_diterima_telkom' => $request->has('sudah_daftar_diterima_telkom') ? $request->sudah_daftar_diterima_telkom : false,
+            'sudah_daftar_diterima_mncuniversity' => $request->has('sudah_daftar_diterima_mncuniversity') ? $request->sudah_daftar_diterima_mncuniversity : false,
         ]);
 
         return redirect('/pendaftar/dashboard');

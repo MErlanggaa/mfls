@@ -72,10 +72,10 @@ class AuthController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'nisn' => 'required|string|max:20|unique:peserta',
-            'email' => 'required|string|email|max:255|unique:akun',
+            'nisn' => 'required|string|max:20|unique:peserta,nisn',
+            'email' => 'required|string|email|max:255|unique:akun,email',
             'password' => 'required|string|min:8|confirmed',
-            'no_whatsapp' => 'required|string',
+            'no_whatsapp' => 'required|string|unique:peserta,no_whatsapp',
             'tgl_lahir' => 'required|date',
             'jenis_kelamin' => 'required|string',
             'tahun_lulus' => 'required|integer',
@@ -85,6 +85,11 @@ class AuthController extends Controller
             'telp_sekolah' => 'nullable|string',
             'kode_referral' => 'nullable|string|max:50',
             'g-recaptcha-response' => 'required',
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar. Gunakan email lain atau silakan login.',
+            'nisn.unique' => 'NISN ini sudah terdaftar dalam sistem. Hubungi admin jika ini kesalahan.',
+            'no_whatsapp.unique' => 'Nomor WhatsApp ini sudah digunakan oleh pendaftar lain.',
+            'g-recaptcha-response.required' => 'Wajib mencentang reCAPTCHA.',
         ]);
 
         // Verify Google reCAPTCHA

@@ -3,10 +3,21 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SoalController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PengumumanController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Public Routes
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/cek-pengumuman', [PengumumanController::class, 'cekHasil']);
 
-// Endpoint Soal Ujian (Tanpa Auth dulu agar React bisa akses mudah saat dev)
-Route::get('/soal', [SoalController::class, 'index']);
+// Protected Routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', [AuthController::class, 'me']);
+
+    // Endpoint Soal Ujian
+    Route::get('/ujians', [SoalController::class, 'getUjians']);
+    Route::get('/soal', [SoalController::class, 'index']);
+    Route::post('/soal/submit', [SoalController::class, 'submit']);
+});
+

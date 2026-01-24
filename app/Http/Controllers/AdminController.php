@@ -24,7 +24,29 @@ class AdminController extends Controller
     public function dashboard()
     {
         $riwayats = \App\Models\RiwayatAktivitas::with('pelaku')->latest()->take(10)->get();
-        return view('admin.dashboard', compact('riwayats'));
+        
+        // Stats untuk Dashboard Real-time
+        $totalPendaftar = Akun::where('role', 'pendaftar')->count();
+        $todayPendaftar = Akun::where('role', 'pendaftar')->whereDate('created_at', \Carbon\Carbon::today())->count();
+        $yesterdayPendaftar = Akun::where('role', 'pendaftar')->whereDate('created_at', \Carbon\Carbon::yesterday())->count();
+        
+        // Hitung kenaikan (growth)
+        $growth = 0;
+        if ($yesterdayPendaftar > 0) {
+            $growth = (($todayPendaftar - $yesterdayPendaftar) / $yesterdayPendaftar) * 100;
+        } elseif ($todayPendaftar > 0) {
+            $growth = 100;
+        }
+
+        // Daily trend (last 7 days)
+        $dailyTrend = Akun::where('role', 'pendaftar')
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subDays(6))
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as total'))
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        return view('admin.dashboard', compact('riwayats', 'totalPendaftar', 'todayPendaftar', 'growth', 'dailyTrend'));
     }
 
     public function storePenilaianMentor(Request $request, $id)
@@ -34,26 +56,92 @@ class AdminController extends Controller
         }
 
         $request->validate([
-            'nilai' => 'required|numeric|min:0|max:100',
+            'nilai_kepemimpinan' => 'required|numeric|min:0|max:100',
+            'nilai_kepribadian' => 'required|numeric|min:0|max:100',
+            'nilai_keaktifan' => 'required|numeric|min:0|max:100',
             'catatan' => 'nullable|string'
         ]);
 
         $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
 
+        // Cek apakah sudah lulus administrasi
+        if ($peserta->daftar->status !== 'lulus') {
+            return back()->with('loginError', 'Peserta ini belum lulus tahap administrasi.');
+        }
+
+        // Kalkulasi nilai berbobot
+        // 1. Kepemimpinan - 35%
+        // 2. Kepribadian - 35%
+        // 3. Keaktifan - 30%
+        $totalNilai = ($request->nilai_kepemimpinan * 0.35) + 
+                      ($request->nilai_kepribadian * 0.35) + 
+                      ($request->nilai_keaktifan * 0.30);
+
         \App\Models\PenilaianMentor::updateOrCreate(
             ['peserta_id' => $peserta->id, 'mentor_id' => auth()->id()],
-            ['nilai' => $request->nilai, 'catatan' => $request->catatan]
+            [
+                'nilai' => $totalNilai,
+                'nilai_kepemimpinan' => $request->nilai_kepemimpinan,
+                'nilai_kepribadian' => $request->nilai_kepribadian,
+                'nilai_keaktifan' => $request->nilai_keaktifan,
+                'catatan' => $request->catatan
+            ]
         );
 
-        $this->logAktivitas('Menilai Peserta', 'Peserta', $peserta->id, "Memberikan nilai mentor kepada " . ($peserta->akun->nama ?? 'Peserta'));
+        $this->logAktivitas('Menilai Peserta', 'Peserta', $peserta->id, "Memberikan nilai mentor (" . number_format($totalNilai, 2) . ") kepada " . ($peserta->akun->nama ?? 'Peserta'));
 
         return back()->with('success', 'Penilaian mentor berhasil disimpan!');
     }
 
-    // --- DATA PENDAFTAR: PROFIL ---
+    // --- DATA PENDAFTAR: UNIFIED SELEKSI ADMINISTRASI (PROFIL, RAPORT, BERKAS) ---
     public function indexPendaftar(Request $request)
     {
-        $query = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais']);
+        if (auth()->user()->role === 'mentor') return abort(403);
+
+        $query = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhereHas('peserta.daftar', function($q2) use ($search) {
+                      $q2->where('asal_sekolah', 'like', "%{$search}%")
+                         ->orWhere('kode_referral', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('filter_nilai')) {
+            $query->whereHas('peserta.daftar', function($q) use ($request) {
+                $q->where('rata_rata_nilai', '>=', $request->filter_nilai);
+            });
+        }
+
+        $pendaftars = $query->latest()->get();
+
+        // Auto-sync rata-rata nilai if needed
+        foreach($pendaftars as $akun) {
+            if($akun->peserta && $akun->peserta->daftar) {
+                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
+                if(abs(($akun->peserta->daftar->rata_rata_nilai ?? 0) - $realAvg) > 0.01) {
+                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
+                }
+            }
+        }
+
+        return view('admin.pendaftar.index', compact('pendaftars'));
+    }
+
+    // --- SISTEM DATABASE TERPUSAT: BEASISWA ---
+    public function indexBeasiswa(Request $request)
+    {
+        if (auth()->user()->role === 'mentor') return abort(403);
+
+        $query = Akun::where('role', 'pendaftar')
+            ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas', 'peserta.penilaianMentors.mentor', 'peserta.jawabanUjians.ujian']);
+
+        // filters ...
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -64,109 +152,96 @@ class AdminController extends Controller
                   });
             });
         }
-        $pendaftars = $query->latest()->get();
 
-        foreach($pendaftars as $akun) {
-            if($akun->peserta && $akun->peserta->daftar) {
-                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
-                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
-                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
-                    $akun->peserta->daftar->rata_rata_nilai = $realAvg;
-                }
-            }
+        if ($request->filled('sekolah')) {
+            $query->whereHas('peserta.daftar', function($q) use ($request) {
+                $q->where('asal_sekolah', 'like', "%{$request->sekolah}%");
+            });
         }
 
-        return view('admin.pendaftar.index', compact('pendaftars'));
-    }
-
-    // --- DATA PENDAFTAR: AKADEMIK (RAPORT) ---
-    public function indexRaport(Request $request)
-    {
-        if (auth()->user()->role === 'mentor') return abort(403);
-
-        $query = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais']);
-        $pendaftars = $query->latest()->get();
-
-        foreach($pendaftars as $akun) {
-            if($akun->peserta && $akun->peserta->daftar) {
-                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
-                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
-                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
-                    $akun->peserta->daftar->rata_rata_nilai = $realAvg;
-                }
-            }
+        if ($request->filled('min_nilai')) {
+            $query->whereHas('peserta.daftar', function($q) use ($request) {
+                $q->where('rata_rata_nilai', '>=', $request->min_nilai);
+            });
         }
 
-        return view('admin.raport.index', compact('pendaftars'));
+        $pendaftars = $query->latest()->get();
+
+        return view('admin.beasiswa.index', compact('pendaftars'));
     }
 
-    public function showRaport($id)
-    {
-        $user = Akun::with(['peserta.daftar', 'peserta.nilais.matpel'])->findOrFail($id);
-        $rataRata = $user->peserta->nilais->avg('nilai') ?? 0;
-        return view('admin.raport.show', compact('user', 'rataRata'));
-    }
-
-    // --- DATA PENDAFTAR: BERKAS ---
-    public function indexBerkas()
+    public function showBeasiswa($id)
     {
         if (auth()->user()->role === 'mentor') return abort(403);
-        $pendaftars = Akun::where('role', 'pendaftar')->with(['peserta.berkas', 'peserta.daftar', 'peserta.nilais'])->get();
         
-        foreach($pendaftars as $akun) {
-            if($akun->peserta && $akun->peserta->daftar) {
-                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
-                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
-                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
-                }
-            }
-        }
+        $user = Akun::with([
+            'peserta.daftar', 
+            'peserta.berkas', 
+            'peserta.nilais.matpel', 
+            'peserta.penilaianMentors.mentor',
+            'peserta.nilaiUjians.ujian'
+        ])->findOrFail($id);
 
-        return view('admin.berkas.index', compact('pendaftars'));
+        $rataRataAkademik = $user->peserta->nilais->avg('nilai') ?? 0;
+        $rataRataMentor = $user->peserta->penilaianMentors->avg('nilai') ?? 0;
+
+        return view('admin.beasiswa.show', compact('user', 'rataRataAkademik', 'rataRataMentor'));
     }
 
-    public function showBerkas($id)
+    public function updateBeasiswa(Request $request, $id)
     {
-        $user = Akun::with(['peserta.daftar', 'peserta.berkas'])->findOrFail($id);
-        return view('admin.berkas.show', compact('user'));
+        $request->validate([
+            'nominal_beasiswa' => 'nullable|string|max:255',
+            'status' => 'required|in:lulus,tidak_lulus,menunggu'
+        ]);
+
+        $daftar = Daftar::where('peserta_id', function($query) use ($id) {
+            $query->select('id')->from('peserta')->where('akun_id', $id);
+        })->firstOrFail();
+
+        $daftar->update([
+            'status' => $request->status,
+            'nominal_beasiswa' => $request->nominal_beasiswa
+        ]);
+
+        $akun = Akun::with('peserta')->findOrFail($id);
+        $this->logAktivitas('Update Beasiswa', 'Peserta', $akun->peserta->id, "Menetapkan beasiswa {$request->nominal_beasiswa} untuk {$akun->nama}");
+
+        return back()->with('success', 'Keputusan beasiswa berhasil disimpan!');
     }
 
-    // --- DATA PENDAFTAR: SOSMED ---
-    public function indexSosmed()
+    public function indexHasilUjian()
     {
-        if (auth()->user()->role === 'mentor') return abort(403);
-        $pendaftars = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais'])->get();
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik') return abort(403);
 
-        foreach($pendaftars as $akun) {
-            if($akun->peserta && $akun->peserta->daftar) {
-                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
-                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
-                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
-                }
-            }
-        }
+        $hasilUjians = \App\Models\JawabanUjian::with(['peserta.akun', 'ujian'])
+            ->latest()
+            ->get();
 
-        return view('admin.sosmed.index', compact('pendaftars'));
-    }
-
-    public function showSosmed($id)
-    {
-        $user = Akun::with(['peserta.daftar'])->findOrFail($id);
-        return view('admin.sosmed.show', compact('user'));
+        return view('admin.hasil_ujian.index', compact('hasilUjians'));
     }
 
     // --- DATA PENDAFTAR: PENILAIAN MENTOR ---
     public function indexPenilaian()
     {
         if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') return abort(403);
-        $pendaftars = Akun::where('role', 'pendaftar')->with(['peserta.penilaianMentors'])->get();
+        
+        // Hanya tampilkan peserta yang sudah LULUS tahap administrasi
+        $pendaftars = Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar', function($q) {
+                $q->where('status', 'lulus');
+            })
+            ->with(['peserta.daftar', 'peserta.penilaianMentors'])
+            ->latest()
+            ->get();
+            
         return view('admin.penilaian.index', compact('pendaftars'));
     }
 
     public function showPenilaian($id)
     {
         if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') return abort(403);
-        $user = Akun::with(['peserta.penilaianMentors.mentor', 'peserta.daftar'])->findOrFail($id);
+        $user = Akun::with(['peserta.daftar', 'peserta.penilaianMentors.mentor'])->findOrFail($id);
         return view('admin.penilaian.show', compact('user'));
     }
 
@@ -180,7 +255,7 @@ class AdminController extends Controller
 
     public function detailPendaftar($id)
     {
-        $user = Akun::with(['peserta.daftar'])->findOrFail($id);
+        $user = Akun::with(['peserta.daftar', 'peserta.berkas', 'peserta.nilais.matpel'])->findOrFail($id);
         return view('admin.pendaftar.show', compact('user'));
     }
 
@@ -394,12 +469,12 @@ class AdminController extends Controller
             'status' => $request->status
         ]);
 
-        $akun = Akun::find($id);
+        $akun = Akun::with('peserta')->findOrFail($id);
         $this->logAktivitas('Verifikasi Status', 'Peserta', $akun->peserta->id, "Mengubah status {$akun->nama} menjadi " . strtoupper($request->status));
 
         // Logic Email Notifikasi
         if ($request->status == 'lulus') {
-            $akun = Akun::find($id);
+
             // Ganti link ini dengan link React App Anda yang sebenarnya
             $linkUjian = "https://ujian-react.mfls.com/start?token=" . base64_encode($akun->email); 
             
@@ -428,105 +503,80 @@ class AdminController extends Controller
 
     public function exportExcel()
     {
-        $fileName = 'detail_raport_mfls_' . date('Y-m-d_H-i') . '.csv';
-        // Ambil data nilai juga
+        $fileName = 'Master_Database_MFLS_' . date('Y-m-d_H-i') . '.csv';
         $pendaftars = Akun::where('role', 'pendaftar')
-                         ->with(['peserta.daftar', 'peserta.nilais.matpel'])
+                         ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas', 'peserta.penilaianMentors.mentor'])
                          ->get();
 
-        // Siapkan Header Dinamis
-        // 1. Header Identitas
-        $columns = ['Nama Lengkap', 'Email', 'NISN', 'Asal Sekolah', 'No. WA', 'Status Kelulusan', 'Waktu Daftar'];
-        
-        // 2. Ambil List Matpel dari database (asumsi semua siswa mapelnya sama/variatif, kita ambil unique)
-        $allMatpels = \App\Models\Matpel::pluck('nama', 'id'); // [id => nama]
+        $columns = [
+            'Nama Lengkap', 'Email', 'NISN', 'Asal Sekolah', 'Kode Referral', 'Status Akhir', 'Nominal Beasiswa',
+            'S1 (AVG)', 'S2 (AVG)', 'S3 (AVG)', 'S4 (AVG)', 'S5 (AVG)', 'S6 (AVG)', 'TOTAL AKADEMIK',
+            'SKOR MENTOR', 'CATATAN MENTOR',
+            'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 'IJAZAH', 'VIDEO MOTIVASI'
+        ];
 
-        // 3. Header Matpel (Matematika Sem 1, Matematika Sem 2... Matematika Avg)
-        foreach ($allMatpels as $mpName) {
-            for ($i = 1; $i <= 6; $i++) {
-                $columns[] = "$mpName (S$i)";
-            }
-            $columns[] = "Rata2 $mpName";
-        }
-
-        // 4. Header Rata-rata Semester
-        for ($i = 1; $i <= 6; $i++) {
-            $columns[] = "Rata2 Sem $i";
-        }
-        $columns[] = 'TOTAL SCORE';
-
-        $headers = array(
+        $headers = [
             "Content-type"        => "text/csv",
             "Content-Disposition" => "attachment; filename=$fileName",
             "Pragma"              => "no-cache",
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
-        );
+        ];
 
-        $callback = function() use($pendaftars, $columns, $allMatpels) {
+        $callback = function() use($pendaftars, $columns) {
             $file = fopen('php://output', 'w');
-            fputcsv($file, $columns); // Tulis Header
+            fputcsv($file, $columns);
 
             foreach ($pendaftars as $user) {
                 if (!$user->peserta) continue;
 
-                // Data Dasar
+                $peserta = $user->peserta;
+                $daftar = $peserta->daftar;
+                $berkas = $peserta->berkas;
+                $penilaians = $peserta->penilaianMentors;
+
+                // 1. Identitas
                 $row = [
                     $user->nama,
                     $user->email,
-                    $user->peserta->nisn ?? '-',
-                    $user->peserta->daftar->asal_sekolah ?? '-',
-                    $user->peserta->daftar->no_wa ?? '-',
-                    ucfirst($user->peserta->daftar->status ?? 'menunggu'),
-                    $user->created_at->format('Y-m-d H:i'),
+                    $peserta->nisn ?? '-',
+                    $daftar->asal_sekolah ?? '-',
+                    $daftar->kode_referral ?? '-',
+                    strtoupper($daftar->status ?? 'menunggu'),
+                    $daftar->nominal_beasiswa ?? '-',
                 ];
 
-                // Data Nilai Logic
-                $nilais = $user->peserta->nilais;
-                $semesterTotals = array_fill(1, 6, 0);
-                $semesterCounts = array_fill(1, 6, 0);
-
-                // Loop per Matpel
-                foreach ($allMatpels as $mpId => $mpName) {
-                    $mpTotal = 0;
-                    $mpCount = 0;
-
-                    // Loop Semester 1-6 untuk Matpel ini
-                    for ($sem = 1; $sem <= 6; $sem++) {
-                        $val = $nilais->where('matpel_id', $mpId)->where('semester', $sem)->first()->nilai ?? 0;
-                        
-                        $row[] = $val > 0 ? $val : '0'; // Masukkan ke CSV
-
-                        if ($val > 0) {
-                            $mpTotal += $val;
-                            $mpCount++;
-                            $semesterTotals[$sem] += $val;
-                            $semesterCounts[$sem]++;
-                        }
-                    }
-                    // Rata2 Per Matpel
-                    $row[] = $mpCount > 0 ? number_format($mpTotal / $mpCount, 2) : '0';
-                }
-
-                // Loop Rata-rata Per Semester
+                // 2. Akademik
+                $nilais = $peserta->nilais;
                 $totalAll = 0;
                 $countAll = 0;
                 for ($sem = 1; $sem <= 6; $sem++) {
-                    $avgSem = $semesterCounts[$sem] > 0 ? ($semesterTotals[$sem] / $semesterCounts[$sem]) : 0;
+                    $avgSem = $nilais->where('semester', $sem)->avg('nilai') ?? 0;
                     $row[] = number_format($avgSem, 2);
-                    
-                    if ($avgSem > 0) {
-                        $totalAll += $avgSem;
-                        $countAll++;
-                    }
+                    if($avgSem > 0) { $totalAll += $avgSem; $countAll++; }
                 }
-
-                // Total Score (Rata-rata dari Rata-rata Semester)
                 $row[] = $countAll > 0 ? number_format($totalAll / $countAll, 2) : '0';
+
+                // 3. Mentor
+                $row[] = number_format($penilaians->avg('nilai') ?? 0, 2);
+                $catatanMentor = [];
+                foreach($penilaians as $p) {
+                    $catatanMentor[] = "[{$p->mentor->nama}]: {$p->catatan}";
+                }
+                $row[] = implode(' | ', $catatanMentor);
+
+                // 4. Berkas (8 separate columns with Links for clicking)
+                $row[] = ($berkas && $berkas->foto) ? url('storage/'.$berkas->foto) : '-';
+                $row[] = ($berkas && $berkas->rapor1) ? url('storage/'.$berkas->rapor1) : '-';
+                $row[] = ($berkas && $berkas->rapor2) ? url('storage/'.$berkas->rapor2) : '-';
+                $row[] = ($berkas && $berkas->rapor3) ? url('storage/'.$berkas->rapor3) : '-';
+                $row[] = ($berkas && $berkas->rapor4) ? url('storage/'.$berkas->rapor4) : '-';
+                $row[] = ($berkas && $berkas->rapor5) ? url('storage/'.$berkas->rapor5) : '-';
+                $row[] = ($berkas && $berkas->ijazah) ? url('storage/'.$berkas->ijazah) : '-';
+                $row[] = ($berkas && $berkas->motivasi_video) ? url('storage/'.$berkas->motivasi_video) : '-';
 
                 fputcsv($file, $row);
             }
-
             fclose($file);
         };
 

@@ -55,8 +55,8 @@
                             'Guru atau Sekolah', 'Forum OSIS Jawa Barat (FOJB)', 'Forum Komunikasi Pengurus OSIS Prov. DIY',
                             'Forum OSIS Jawa Tengah (FOSIS)', 'Forum Anak Jawa Tengah (FAN Jateng)', 'Himpunan Musyawarah OSIS SMA Jawa Timur',
                             'Forum Anak Jawa Timur (FA Jatim)', 'Forum OSIS DKI Jakarta (FOS DKI)', 'Himpunan Osis Banten',
-                            'Instagram @iggscholarship', 'Instagram @smbtelkom', 'Tiktok iggscholarship',
-                            'Website Indonesian Gold Generation Scholarship', 'Website SMB Telkom University', 'Teman',
+                            'Instagram @iggscholarship', 'Instagram @mncuniversity', 'Tiktok mncuniversity',
+                            'Website Indonesian Gold Generation Scholarship', 'Website MNC University', 'Teman',
                             'Poster/Brosur IGGS', 'Sosialisasi Tim', 'Expo Campus', 'Lainnya'
                         ];
                     @endphp
@@ -95,14 +95,14 @@
             <div class="space-y-10">
                 @php
                     $binaryQuestions = [
-                        ['id' => 'bersedia_informasi_lain', 'label' => 'Apakah kamu bersedia menerima informasi tentang jalur seleksi lainnya dari Telkom University?'],
+                        ['id' => 'bersedia_informasi_lain', 'label' => 'Apakah kamu bersedia menerima informasi tentang jalur seleksi lainnya dari MNC University?'],
                         ['id' => 'daftar_beasiswa_lain', 'label' => 'Apakah kamu sedang mendaftar beasiswa lain?'],
-                        ['id' => 'daftar_univ_lain', 'label' => 'Apakah kamu sedang mendaftar di Universitas selain Telkom University?'],
+                        ['id' => 'daftar_univ_lain', 'label' => 'Apakah kamu sedang mendaftar di Universitas selain MNC University?'],
                         ['id' => 'mengikuti_osis', 'label' => 'Apakah kamu mengikuti OSIS?'],
                         ['id' => 'mengikuti_forum_osis', 'label' => 'Apakah kamu mengikuti Forum OSIS Daerah/Provinsi?'],
                         ['id' => 'anggota_forum_anak', 'label' => 'Apakah Anggota Forum Anak?'],
                         ['id' => 'sudah_diterima_kampus_lain', 'label' => 'Apakah kamu sudah diterima di kampus lain?'],
-                        ['id' => 'sudah_daftar_diterima_telkom', 'label' => 'Apakah sudah mendaftar atau diterima di Telkom University?'],
+                        ['id' => 'sudah_daftar_diterima_mncuniversity', 'label' => 'Apakah sudah mendaftar atau diterima di MNC University?'],
                     ];
                 @endphp
 

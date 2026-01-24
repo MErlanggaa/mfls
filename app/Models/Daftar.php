@@ -22,6 +22,9 @@ class Daftar extends Model
         'asal_sekolah',
         'no_sekolah',
         'kode_referral',
+        'status',
+        'rata_rata_nilai',
+        'nominal_beasiswa',
     ];
 
     public function peserta()

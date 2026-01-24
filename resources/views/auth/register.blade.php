@@ -34,15 +34,18 @@
         <div class="grid grid-cols-1 gap-4">
             <div>
                 <label for="nama" class="block text-xs font-bold text-gray-700 mb-2">Nama Lengkap</label>
-                <input type="text" id="nama" name="nama" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Sesuai Ijazah/KTP">
+                <input type="text" id="nama" name="nama" value="{{ old('nama') }}" required class="w-full px-5 py-4 bg-gray-50 border {{ $errors->has('nama') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Sesuai Ijazah/KTP">
+                @error('nama') <p class="text-red-500 text-[10px] mt-1 font-bold italic">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label for="nisn" class="block text-xs font-bold text-gray-700 mb-2">NISN</label>
-                <input type="text" id="nisn" name="nisn" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Nomor Induk Siswa Nasional">
+                <input type="text" id="nisn" name="nisn" value="{{ old('nisn') }}" required class="w-full px-5 py-4 bg-gray-50 border {{ $errors->has('nisn') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Nomor Induk Siswa Nasional">
+                @error('nisn') <p class="text-red-500 text-[10px] mt-1 font-bold italic">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label for="email" class="block text-xs font-bold text-gray-700 mb-2">Alamat Email</label>
-                <input type="email" id="email" name="email" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="nama@email.com">
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required class="w-full px-5 py-4 bg-gray-50 border {{ $errors->has('email') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="nama@email.com">
+                @error('email') <p class="text-red-500 text-[10px] mt-1 font-bold italic">{{ $message }}</p> @enderror
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -66,7 +69,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="no_whatsapp" class="block text-xs font-bold text-gray-700 mb-2">No. WhatsApp</label>
-                <input type="text" id="no_whatsapp" name="no_whatsapp" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="08xxxxxx">
+                <input type="text" id="no_whatsapp" name="no_whatsapp" value="{{ old('no_whatsapp') }}" required class="w-full px-5 py-4 bg-gray-50 border {{ $errors->has('no_whatsapp') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="08xxxxxx">
+                @error('no_whatsapp') <p class="text-red-500 text-[10px] mt-1 font-bold italic">{{ $message }}</p> @enderror
             </div>
             <div>
                 <label for="tgl_lahir" class="block text-xs font-bold text-gray-700 mb-2">Tanggal Lahir</label>

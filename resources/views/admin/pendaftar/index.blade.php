@@ -1,116 +1,94 @@
 @extends('layouts.admin')
 
 @section('content')
+<!-- Notifikasi Flash -->
+@if(session('success'))
+<div class="mb-6 p-4 bg-green-500 text-white rounded-2xl shadow-lg shadow-green-200 flex items-center justify-between animate-bounce">
+    <div class="flex items-center gap-3">
+        <span>✅</span>
+        <span class="font-bold">{{ session('success') }}</span>
+    </div>
+    <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">✕</button>
+</div>
+@endif
+
 <div class="mb-8 flex justify-between items-center">
     <div>
-        <h2 class="text-2xl font-black text-gray-800">Manajemen Pendaftar</h2>
-        <p class="text-gray-500">Kelola data, verifikasi berkas, dan kelulusan peserta.</p>
+        <h2 class="text-2xl font-black text-gray-800">Seleksi Administrasi</h2>
+        <p class="text-gray-500">Verifikasi Profil, Nilai Raport, dan Kelengkapan Berkas pendaftar.</p>
     </div>
     <div class="flex gap-3">
-        <!-- Form Search & Filter -->
         <form method="GET" class="flex gap-2">
-            <select name="filter_nilai" class="px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 focus:outline-none focus:border-dark-navy" onchange="this.form.submit()">
-                <option value="">Semua Nilai</option>
-                <option value="80" {{ request('filter_nilai') == '80' ? 'selected' : '' }}>Nilai > 80</option>
-                <option value="90" {{ request('filter_nilai') == '90' ? 'selected' : '' }}>Nilai > 90</option>
-            </select>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama, Sekolah, Referral..." class="px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm w-64 focus:outline-none focus:border-dark-navy">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama/Sekolah..." class="px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm w-64 focus:outline-none focus:border-blue-600">
             <button type="submit" class="bg-dark-navy text-white px-4 py-3 rounded-xl hover:bg-black transition-colors">🔍</button>
         </form>
-
-        <a href="{{ route('admin.export') }}" class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl font-bold transition-all shadow-lg shadow-green-600/20">
-            <span>📊</span> Export Excel
-        </a>
     </div>
 </div>
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm text-left">
-            <thead class="bg-gray-50 text-gray-500 font-bold uppercase text-xs">
+            <thead class="bg-slate-50 text-slate-500 font-black uppercase text-[10px] tracking-widest px-6 py-4">
                 <tr>
-                    <th class="px-6 py-4">Peserta</th>
-                    <th class="px-6 py-4">Kode Ref</th>
-                    <th class="px-6 py-4">Lulusan</th>
-                    <th class="px-6 py-4">Asal Sekolah</th>
-                    <th class="px-6 py-4">Rata-rata Nilai</th>
-                    <th class="px-6 py-4">Rekomendasi Sistem</th>
-                    <th class="px-6 py-4">Status Akhir</th>
-                    <th class="px-6 py-4">Aksi</th>
+                    <th class="px-6 py-5">Mahasiswa / NISN</th>
+                    <th class="px-6 py-5 text-center">Rata-Rata Raport</th>
+                    <th class="px-6 py-5 text-center">Kelengkapan Berkas</th>
+                    <th class="px-6 py-5 text-center">Status Berkas</th>
+                    <th class="px-6 py-5 text-right">Tindakan</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50">
                 @foreach($pendaftars as $akun)
                 @php
                     $peserta = $akun->peserta;
-                    $daftar = $peserta ? $peserta->daftar : null;
-                    $nilai = $daftar ? $daftar->rata_rata_nilai : 0;
+                    $daftar = $peserta->daftar;
+                    $berkas = $peserta->berkas;
+                    
+                    // Hitung kelengkapan
+                    $totalRequired = 8;
+                    $uploaded = 0;
+                    if($berkas) {
+                        if($berkas->foto) $uploaded++;
+                        if($berkas->rapor1) $uploaded++;
+                        if($berkas->rapor2) $uploaded++;
+                        if($berkas->rapor3) $uploaded++;
+                        if($berkas->rapor4) $uploaded++;
+                        if($berkas->rapor5) $uploaded++;
+                        if($berkas->ijazah) $uploaded++;
+                        if($berkas->motivasi_video) $uploaded++;
+                    }
                 @endphp
-                <tr class="hover:bg-gray-50/50 transition-colors">
+                <tr class="hover:bg-slate-50/50 transition-all">
                     <td class="px-6 py-4">
-                        <div class="font-bold text-gray-900">{{ $akun->nama }}</div>
-                        <div class="text-xs text-gray-500">{{ $akun->email }}</div>
+                        <div class="font-black text-slate-800 uppercase">{{ $akun->nama }}</div>
+                        <div class="text-[10px] font-bold text-blue-500 uppercase tracking-tighter">{{ $peserta->nama_sekolah }} • {{ $peserta->nisn }}</div>
                     </td>
-                    <td class="px-6 py-4 text-gray-600 font-mono text-xs">
-                        {{ $daftar->kode_referral ?? '-' }}
-                    </td>
-                    <td class="px-6 py-4 text-gray-600">
-                        {{ $daftar->tahun_lulus ?? '-' }}
-                    </td>
-                    <td class="px-6 py-4 text-gray-600">
-                        {{ $daftar->asal_sekolah ?? '-' }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="font-bold text-lg {{ $nilai >= 90 ? 'text-green-600' : ($nilai >= 80 ? 'text-blue-600' : 'text-gray-600') }}">
-                            {{ number_format($nilai, 2) }}
+                    <td class="px-6 py-4 text-center">
+                        <span class="text-lg font-black {{ ($daftar->rata_rata_nilai ?? 0) >= 80 ? 'text-emerald-500' : 'text-slate-700' }}">
+                            {{ number_format($daftar->rata_rata_nilai ?? 0, 2) }}
                         </span>
                     </td>
-                    <td class="px-6 py-4">
-                        @if($nilai >= 90)
-                            <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200">
-                                <span>⭐</span> Sangat Direkomendasikan
-                            </span>
-                        @elseif($nilai >= 80)
-                            <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold border border-blue-200">
-                                <span>✅</span> Direkomendasikan
-                            </span>
-                        @else
-                            <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-xs font-bold border border-gray-200">
-                                <span>🔍</span> Perlu Review
-                            </span>
-                        @endif
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex items-center justify-center gap-1">
+                            @for($i=0; $i<$totalRequired; $i++)
+                                <div class="w-2 h-2 rounded-full {{ $i < $uploaded ? 'bg-emerald-400' : 'bg-slate-200' }}"></div>
+                            @endfor
+                        </div>
+                        <div class="text-[9px] font-black mt-1 text-slate-400">{{ $uploaded }}/{{ $totalRequired }} FILE</div>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 text-center">
                         @if(($daftar->status ?? 'menunggu') == 'lulus')
-                            <span class="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-md shadow-green-500/20">LULUS</span>
+                            <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black border border-emerald-100 uppercase tracking-widest">LULUS BERKAS</span>
                         @elseif(($daftar->status ?? 'menunggu') == 'tidak_lulus')
-                            <span class="bg-red-500 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-md shadow-red-500/20">TIDAK LULUS</span>
+                            <span class="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-[9px] font-black border border-red-100 uppercase tracking-widest">TIDAK LOLOS</span>
                         @else
-                            <span class="bg-yellow-400 text-dark-navy px-3 py-1 rounded-lg text-xs font-bold">MENUNGGU</span>
+                            <span class="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-lg text-[9px] font-black border border-yellow-100 uppercase tracking-widest animate-pulse">MENUNGGU</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4">
-                        <div class="flex gap-2">
-                            <!-- Tombol Lulus -->
-                            <form action="{{ route('admin.pendaftar.verify', $akun->id) }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="lulus">
-                                <button type="submit" class="w-8 h-8 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition-colors" title="Luluskan">
-                                    ✓
-                                </button>
-                            </form>
-
-                            <!-- Tombol Tidak Lulus -->
-                            <form action="{{ route('admin.pendaftar.verify', $akun->id) }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="tidak_lulus">
-                                <button type="submit" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 flex items-center justify-center transition-colors" title="Diskualifikasi">
-                                    ✕
-                                </button>
-                            </form>
-                            
-                            <a href="{{ route('admin.pendaftar.show', $akun->id) }}" class="w-8 h-8 rounded-lg bg-gray-50 text-gray-600 hover:bg-gray-100 flex items-center justify-center transition-colors" title="Detail">
-                                👁️
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex gap-2 justify-end">
+                            <a href="{{ route('admin.pendaftar.show', $akun->id) }}" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-[9px] font-black hover:bg-blue-600 hover:text-white transition-all shadow-sm uppercase tracking-widest">
+                                VERIFIKASI SEKARANG 🔍
                             </a>
                         </div>
                     </td>
@@ -119,14 +97,5 @@
             </tbody>
         </table>
     </div>
-    @if($pendaftars->isEmpty())
-    <div class="p-12 text-center">
-        <div class="inline-block p-4 rounded-full bg-gray-50 text-gray-400 mb-4">
-            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
-        </div>
-        <h3 class="text-lg font-bold text-gray-800">Belum ada pendaftar</h3>
-        <p class="text-gray-500">Data pendaftar akan muncul di sini.</p>
-    </div>
-    @endif
 </div>
 @endsection

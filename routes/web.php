@@ -25,23 +25,19 @@ Route::middleware(['auth'])->group(function () {
     // Admin / Staff Dashboard
     Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
     
+    // Unified Seleksi Administrasi (Profil, Raport, Berkas)
     Route::prefix('admin/pendaftar')->name('admin.pendaftar.')->group(function() {
         Route::get('/', [App\Http\Controllers\AdminController::class, 'indexPendaftar'])->name('index');
         Route::get('/{id}', [App\Http\Controllers\AdminController::class, 'detailPendaftar'])->name('show');
         Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifikasi'])->name('verify');
-        Route::post('/{id}/update-nilai', [App\Http\Controllers\AdminController::class, 'updateNilaiDummy'])->name('update_nilai'); 
         Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class, 'storePenilaianMentor'])->name('mentor_nilai');
     });
-
-    // Jalur Khusus Akademik / Verifikator / Admin
-    Route::get('/admin/raport', [App\Http\Controllers\AdminController::class, 'indexRaport'])->name('admin.raport.index');
-    Route::get('/admin/raport/{id}', [App\Http\Controllers\AdminController::class, 'showRaport'])->name('admin.raport.show');
     
-    Route::get('/admin/berkas', [App\Http\Controllers\AdminController::class, 'indexBerkas'])->name('admin.berkas.index');
-    Route::get('/admin/berkas/{id}', [App\Http\Controllers\AdminController::class, 'showBerkas'])->name('admin.berkas.show');
+    Route::get('/admin/beasiswa', [App\Http\Controllers\AdminController::class, 'indexBeasiswa'])->name('admin.beasiswa.index');
+    Route::get('/admin/beasiswa/{id}', [App\Http\Controllers\AdminController::class, 'showBeasiswa'])->name('admin.beasiswa.show');
+    Route::post('/admin/beasiswa/{id}/update', [App\Http\Controllers\AdminController::class, 'updateBeasiswa'])->name('admin.beasiswa.update');
     
-    Route::get('/admin/sosmed', [App\Http\Controllers\AdminController::class, 'indexSosmed'])->name('admin.sosmed.index');
-    Route::get('/admin/sosmed/{id}', [App\Http\Controllers\AdminController::class, 'showSosmed'])->name('admin.sosmed.show');
+    Route::get('/admin/hasil-ujian', [App\Http\Controllers\AdminController::class, 'indexHasilUjian'])->name('admin.hasil_ujian.index');
     
     Route::get('/admin/penilaian-mentor', [App\Http\Controllers\AdminController::class, 'indexPenilaian'])->name('admin.penilaian.index');
     Route::get('/admin/penilaian-mentor/{id}', [App\Http\Controllers\AdminController::class, 'showPenilaian'])->name('admin.penilaian.show');
