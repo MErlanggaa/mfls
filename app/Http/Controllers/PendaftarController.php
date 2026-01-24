@@ -9,16 +9,21 @@ class PendaftarController extends Controller
 {
     public function index()
     {
-        return view('pendaftar.dashboard');
+        // Get the authenticated user's peserta profile
+        $peserta = Auth::user()->peserta;
+        
+        return view('pendaftar.dashboard', compact('peserta'));
     }
 
     public function biodata()
     {
-        return view('pendaftar.biodata');
+        $peserta = Auth::user()->peserta;
+        return view('pendaftar.biodata', compact('peserta'));
     }
 
     public function berkas()
     {
-        return view('pendaftar.berkas');
+        $peserta = Auth::user()->peserta;
+        return view('pendaftar.berkas', compact('peserta'));
     }
 }

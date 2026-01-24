@@ -23,12 +23,12 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            
+            // Redirect based on role (optional logic here, but for now specific to pendaftar)
+            return redirect()->intended('/pendaftar/dashboard');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        return back()->with('loginError', 'Email atau password salah!');
     }
 
     public function showRegister()
@@ -40,6 +40,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
+            'nisn' => 'required|string|max:20|unique:peserta',
             'email' => 'required|string|email|max:255|unique:akun',
             'password' => 'required|string|min:8|confirmed',
             'no_whatsapp' => 'required|string',
@@ -49,32 +50,61 @@ class AuthController extends Controller
             'provinsi' => 'required|string',
             'kabupaten' => 'required|string',
             'nama_sekolah' => 'required|string',
+            'telp_sekolah' => 'nullable|string',
+            'kode_referral' => 'nullable|string|max:50',
+            'g-recaptcha-response' => 'required',
         ]);
 
-        $user = Akun::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'pendaftar',
-        ]);
+        // Verify Google reCAPTCHA
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = $request->input('g-recaptcha-response');
+        $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$response}");
+        $responseData = json_decode($verifyResponse);
 
-        // Create Peserta profile
-        \App\Models\Peserta::create([
-            'akun_id' => $user->id,
-            'nama' => $request->nama,
-            'no_whatsapp' => $request->no_whatsapp,
-            'tgl_lahir' => $request->tgl_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tahun_lulus' => $request->tahun_lulus,
-            'provinsi' => $request->provinsi,
-            'kabupaten' => $request->kabupaten,
-            'nama_sekolah' => $request->nama_sekolah,
-            'nisn' => rand(1000000000, 9999999999), // Placeholder NISN for now
-        ]);
+        if (!$responseData->success) {
+            return back()->withErrors(['g-recaptcha-response' => 'Verifikasi robot gagal, silakan coba lagi.'])->withInput();
+        }
 
-        Auth::login($user);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+            // 1. Create Akun
+            $user = Akun::create([
+                'nama' => $request->nama,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'pendaftar', // Use 'pendaftar' matching DB enum
+            ]);
 
-        return redirect('/survey');
+            // 2. Create Peserta
+            $peserta = \App\Models\Peserta::create([
+                'akun_id' => $user->id,
+                'nama' => $request->nama,
+                'no_whatsapp' => $request->no_whatsapp,
+                'tgl_lahir' => $request->tgl_lahir,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tahun_lulus' => $request->tahun_lulus,
+                'provinsi' => $request->provinsi,
+                'kabupaten' => $request->kabupaten,
+                'nama_sekolah' => $request->nama_sekolah,
+                'telp_sekolah' => $request->telp_sekolah,
+                'nisn' => $request->nisn,
+            ]);
+
+            // 3. Create Daftar (Initial Registration Data)
+            \App\Models\Daftar::create([
+                'peserta_id' => $peserta->id,
+                'no_wa' => $request->no_whatsapp,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tahun_lulus' => $request->tahun_lulus,
+                'ttl' => $request->tgl_lahir, // Using date for now
+                'provinsi' => $request->provinsi,
+                'kabupaten' => $request->kabupaten,
+                'asal_sekolah' => $request->nama_sekolah,
+                'no_sekolah' => $request->telp_sekolah ?? '-', // Default if null
+                'kode_referral' => $request->kode_referral,
+            ]);
+        });
+
+        return redirect('/login')->with('success', 'Registrasi berhasil! Silakan login untuk melanjutkan.');
     }
 
     public function logout(Request $request)

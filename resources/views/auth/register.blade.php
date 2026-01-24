@@ -10,6 +10,20 @@
 
 <form action="/register" method="POST" class="space-y-8">
     @csrf
+    <input type="hidden" name="role" value="pendaftar">
+
+    <!-- Error Debugging Block -->
+    @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong class="font-bold">Ada kesalahan!</strong>
+            <span class="block sm:inline">Silakan periksa inputan Anda:</span>
+            <ul class="mt-2 list-disc list-inside text-sm">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     
     <!-- Section 1: Akun -->
     <div class="space-y-4">
@@ -21,6 +35,10 @@
             <div>
                 <label for="nama" class="block text-xs font-bold text-gray-700 mb-2">Nama Lengkap</label>
                 <input type="text" id="nama" name="nama" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Sesuai Ijazah/KTP">
+            </div>
+            <div>
+                <label for="nisn" class="block text-xs font-bold text-gray-700 mb-2">NISN</label>
+                <input type="text" id="nisn" name="nisn" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Nomor Induk Siswa Nasional">
             </div>
             <div>
                 <label for="email" class="block text-xs font-bold text-gray-700 mb-2">Alamat Email</label>
@@ -93,24 +111,97 @@
                 <label for="nama_sekolah" class="block text-xs font-bold text-gray-700 mb-2">Nama Sekolah</label>
                 <input type="text" id="nama_sekolah" name="nama_sekolah" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium" placeholder="Nama SMA/SMK/MA">
             </div>
+            <div class="col-span-full">
+                <label for="telp_sekolah" class="block text-xs font-bold text-gray-700 mb-2">No. Telp Sekolah (Opsional)</label>
+                <input type="text" id="telp_sekolah" name="telp_sekolah" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium" placeholder="Nomor Telepon Sekolah">
+            </div>
+            <div class="col-span-full">
+                <input type="text" id="kode_referral" name="kode_referral" value="{{ old('kode_referral') }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium" placeholder="Masukkan kode referral jika ada">
+                @error('kode_referral') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+            
+            <!-- Google reCAPTCHA -->
+            <div class="col-span-full">
+                <label for="captcha" class="block text-xs font-bold text-gray-700 mb-2">Keamanan</label>
+                <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+                @error('g-recaptcha-response') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
         </div>
     </div>
 
     <div class="flex items-start">
-        <input type="checkbox" id="agreement" required class="mt-1 w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
-        <label for="agreement" class="ml-3 text-xs font-semibold text-gray-600 leading-relaxed">
+        <input type="checkbox" id="agreement" required class="mt-1 w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20 cursor-pointer">
+        <label for="agreement" class="ml-3 text-xs font-semibold text-gray-600 leading-relaxed cursor-pointer select-none">
             Data yang saya masukkan sudah benar dan saya menyetujui <a href="#" class="text-primary-gold hover:underline">Syarat & Ketentuan</a> yang berlaku.
         </label>
     </div>
 
-    <button type="submit" 
-        class="w-full bg-primary-gold hover:bg-primary-gold-hover text-dark-navy font-black py-4 rounded-2xl shadow-xl shadow-primary-gold/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+    <button type="submit" id="submitBtn" disabled
+        class="w-full bg-gray-300 text-gray-500 cursor-not-allowed font-black py-4 rounded-2xl shadow-none transition-all">
         Daftar Sekarang
     </button>
 </form>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <p class="mt-10 text-center text-sm font-bold text-gray-500">
     Sudah punya akun? 
     <a href="/login" class="text-primary-gold hover:underline">Masuk di sini</a>
 </p>
+
+<script>
+    const checkbox = document.getElementById('agreement');
+    const submitBtn = document.getElementById('submitBtn');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('password_confirmation');
+
+    // 1. Password Match Validation
+    function checkPasswordMatch() {
+        // Hapus pesan error lama jika ada
+        const existingError = document.getElementById('password-match-error');
+        if (existingError) existingError.remove();
+
+        if (confirmPassword.value && password.value !== confirmPassword.value) {
+            const errorMsg = document.createElement('p');
+            errorMsg.id = 'password-match-error';
+            errorMsg.className = 'text-red-500 text-xs mt-1 font-bold';
+            errorMsg.textContent = 'Password tidak sama!';
+            confirmPassword.parentNode.appendChild(errorMsg);
+            confirmPassword.classList.add('border-red-500');
+            confirmPassword.classList.remove('border-gray-100');
+        } else {
+            confirmPassword.classList.remove('border-red-500');
+            confirmPassword.classList.add('border-gray-100');
+        }
+    }
+
+    password.addEventListener('input', checkPasswordMatch);
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+
+    // 2. Number Only Validation
+    const numberFields = ['no_whatsapp', 'nisn', 'telp_sekolah'];
+
+    numberFields.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', function(e) {
+                // Hapus karakter non-angka
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        }
+    });
+
+    // 3. Agreement Checkbox Logic
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+            submitBtn.classList.add('bg-primary-gold', 'hover:bg-primary-gold-hover', 'text-dark-navy', 'cursor-pointer', 'shadow-xl', 'hover:scale-[1.02]');
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-none');
+            submitBtn.classList.remove('bg-primary-gold', 'hover:bg-primary-gold-hover', 'text-dark-navy', 'cursor-pointer', 'shadow-xl', 'hover:scale-[1.02]');
+        }
+    });
+</script>
 @endsection

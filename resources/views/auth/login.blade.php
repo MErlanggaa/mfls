@@ -58,3 +58,31 @@
     <a href="/register" class="text-primary-gold hover:underline">Daftar Sekarang</a>
 </p>
 @endsection
+
+@if(session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#F2B451'
+        });
+    });
+</script>
+@endif
+
+@if(session('loginError'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Gagal Masuk!',
+            text: "{{ session('loginError') }}",
+            icon: 'error',
+            confirmButtonText: 'Coba Lagi',
+            confirmButtonColor: '#d33',
+        });
+    });
+</script>
+@endif

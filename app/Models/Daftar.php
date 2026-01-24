@@ -21,6 +21,7 @@ class Daftar extends Model
         'kabupaten',
         'asal_sekolah',
         'no_sekolah',
+        'kode_referral',
     ];
 
     public function peserta()

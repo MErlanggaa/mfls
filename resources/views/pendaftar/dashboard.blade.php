@@ -7,9 +7,9 @@
         <div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
         <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
             <div class="text-dark-navy">
-                <h1 class="text-3xl md:text-4xl font-black mb-4">Ayo Selesaikan Pendaftaranmu!</h1>
+                <h1 class="text-3xl md:text-4xl font-black mb-4">Halo, {{ explode(' ', $peserta->nama)[0] }}! 👋</h1>
                 <p class="text-dark-navy/70 font-semibold max-w-lg mb-8">
-                    Langkah kecil hari ini menentukan masa depanmu. Segera lengkapi berkas untuk mendapatkan kesempatan beasiswa 100%.
+                    Ayo lengkapi berkas pendaftaranmu untuk mendapatkan kesempatan beasiswa 100% di Telkom University.
                 </p>
                 <div class="flex items-center gap-4">
                     <div class="flex -space-x-3">

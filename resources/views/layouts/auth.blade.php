@@ -14,6 +14,7 @@
 
     <!-- Tailwind CDN -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style type="text/tailwindcss">
         @theme {
             --color-primary-gold: #F2B451;
