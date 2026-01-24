@@ -30,7 +30,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}', [App\Http\Controllers\AdminController::class, 'detailPendaftar'])->name('show');
         Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifikasi'])->name('verify');
         Route::post('/{id}/update-nilai', [App\Http\Controllers\AdminController::class, 'updateNilaiDummy'])->name('update_nilai'); 
+        Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class, 'storePenilaianMentor'])->name('mentor_nilai');
     });
+
+    // Jalur Khusus Akademik / Verifikator / Admin
+    Route::get('/admin/raport', [App\Http\Controllers\AdminController::class, 'indexRaport'])->name('admin.raport.index');
+    Route::get('/admin/raport/{id}', [App\Http\Controllers\AdminController::class, 'showRaport'])->name('admin.raport.show');
+    
+    Route::get('/admin/berkas', [App\Http\Controllers\AdminController::class, 'indexBerkas'])->name('admin.berkas.index');
+    Route::get('/admin/berkas/{id}', [App\Http\Controllers\AdminController::class, 'showBerkas'])->name('admin.berkas.show');
+    
+    Route::get('/admin/sosmed', [App\Http\Controllers\AdminController::class, 'indexSosmed'])->name('admin.sosmed.index');
+    Route::get('/admin/sosmed/{id}', [App\Http\Controllers\AdminController::class, 'showSosmed'])->name('admin.sosmed.show');
+    
+    Route::get('/admin/penilaian-mentor', [App\Http\Controllers\AdminController::class, 'indexPenilaian'])->name('admin.penilaian.index');
+    Route::get('/admin/penilaian-mentor/{id}', [App\Http\Controllers\AdminController::class, 'showPenilaian'])->name('admin.penilaian.show');
+
+    Route::get('/admin/mentor', [App\Http\Controllers\AdminController::class, 'indexMentor'])->name('admin.mentor.index');
 
     // Manajemen Soal
     Route::get('/admin/soal', [App\Http\Controllers\AdminController::class, 'indexSoal'])->name('admin.soal.index');

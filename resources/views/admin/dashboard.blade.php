@@ -62,25 +62,34 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
+    <!-- Activity Logs -->
     <div class="space-y-6">
-        <div class="bg-dark-navy p-6 rounded-2xl text-white shadow-xl">
-            <h3 class="font-bold text-xl mb-2">Shortcuts</h3>
-            <p class="text-gray-400 text-sm mb-6">Akses cepat menu pengelolaan utama.</p>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+                Riwayat Aktivitas
+            </h3>
             
-            <div class="space-y-3">
-                <button class="w-full flex items-center justify-between p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
-                    <span class="font-semibold">Buka Pendaftaran</span>
-                    <span>→</span>
-                </button>
-                <button class="w-full flex items-center justify-between p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
-                    <span class="font-semibold">Export Data Excel</span>
-                    <span>↓</span>
-                </button>
-                <button class="w-full flex items-center justify-between p-4 bg-white/10 hover:bg-white/20 rounded-xl transition-all">
-                    <span class="font-semibold">Broadcast Email</span>
-                    <span>✉</span>
-                </button>
+            <div class="space-y-4">
+                @forelse($riwayats as $riwayat)
+                <div class="flex gap-3 items-start pb-4 border-b border-gray-50 last:border-0 last:pb-0">
+                    <div class="shrink-0 w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-xs">
+                        @if($riwayat->aksi == 'Verifikasi Status') ✅ 
+                        @elseif($riwayat->aksi == 'Menilai Peserta') ⭐
+                        @elseif($riwayat->aksi == 'Tambah Soal') 📝
+                        @else ⚙️ @endif
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-800 leading-tight">{{ $riwayat->deskripsi }}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] text-blue-600 font-black uppercase">{{ $riwayat->pelaku->nama }}</span>
+                            <span class="text-[10px] text-slate-400">• {{ $riwayat->created_at->diffForHumans() }}</span>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <p class="text-center text-gray-400 text-xs py-4 italic">Belum ada aktivitas tercatat.</p>
+                @endforelse
             </div>
         </div>
     </div>

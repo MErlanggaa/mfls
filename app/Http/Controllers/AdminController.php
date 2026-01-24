@@ -10,55 +10,68 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    private function logAktivitas($aksi, $targetTipe = null, $targetId = null, $deskripsi = null)
     {
-        return view('admin.dashboard');
+        \App\Models\RiwayatAktivitas::create([
+            'pelaku_id' => auth()->id(),
+            'aksi' => $aksi,
+            'target_tipe' => $targetTipe,
+            'target_id' => $targetId,
+            'deskripsi' => $deskripsi
+        ]);
     }
 
+    public function dashboard()
+    {
+        $riwayats = \App\Models\RiwayatAktivitas::with('pelaku')->latest()->take(10)->get();
+        return view('admin.dashboard', compact('riwayats'));
+    }
+
+    public function storePenilaianMentor(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') {
+            return back()->with('loginError', 'Hanya Mentor yang dapat memberikan penilaian.');
+        }
+
+        $request->validate([
+            'nilai' => 'required|numeric|min:0|max:100',
+            'catatan' => 'nullable|string'
+        ]);
+
+        $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
+
+        \App\Models\PenilaianMentor::updateOrCreate(
+            ['peserta_id' => $peserta->id, 'mentor_id' => auth()->id()],
+            ['nilai' => $request->nilai, 'catatan' => $request->catatan]
+        );
+
+        $this->logAktivitas('Menilai Peserta', 'Peserta', $peserta->id, "Memberikan nilai mentor kepada " . ($peserta->akun->nama ?? 'Peserta'));
+
+        return back()->with('success', 'Penilaian mentor berhasil disimpan!');
+    }
+
+    // --- DATA PENDAFTAR: PROFIL ---
     public function indexPendaftar(Request $request)
     {
-        // Query Dasar (Load nilais untuk hitung rata-rata real-time)
         $query = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais']);
-
-        // --- SELF HEALING: Sinkronisasi Rata-rata Nilai ---
-        // Kita eksekusi get() dulu untuk perhitungan, baru nanti di-filter di collection atau query ulang
-        // Tapi agar performan untuk pagination nanti, kita update yg sedang diload saja.
-        
-        // Logika Search & Filter query tetap jalan di level database
-        // Namun untuk Display Consistensi, kita hitung real dari nilais
-        
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                // Cari di tabel akun (nama)
                 $q->where('nama', 'like', "%{$search}%")
                   ->orWhereHas('peserta.daftar', function($q2) use ($search) {
-                      // Cari di tabel daftar (sekolah, referral, tahun lulus)
                       $q2->where('asal_sekolah', 'like', "%{$search}%")
-                         ->orWhere('kode_referral', 'like', "%{$search}%")
-                         ->orWhere('tahun_lulus', 'like', "%{$search}%");
+                         ->orWhere('kode_referral', 'like', "%{$search}%");
                   });
             });
         }
-
-        // Logic Filter Nilai (>80, >90)
-        if ($request->filled('filter_nilai')) {
-            $threshold = $request->filter_nilai;
-            $query->whereHas('peserta.daftar', function($q) use ($threshold) {
-                $q->where('rata_rata_nilai', '>=', $threshold);
-            });
-        }
-
         $pendaftars = $query->latest()->get();
 
-        // FIX LOGIC: Update Rata-rata di tabel Daftar agar sinkron dengan Nilai Asli
         foreach($pendaftars as $akun) {
             if($akun->peserta && $akun->peserta->daftar) {
                 $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
-                // Jika beda dengan database (seperti kasus 88.5 vs 91), update DB!
                 if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
                     $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
-                    $akun->peserta->daftar->rata_rata_nilai = $realAvg; // Update object di memory juga
+                    $akun->peserta->daftar->rata_rata_nilai = $realAvg;
                 }
             }
         }
@@ -66,11 +79,118 @@ class AdminController extends Controller
         return view('admin.pendaftar.index', compact('pendaftars'));
     }
 
-    // ... detailPendaftar methods ...
+    // --- DATA PENDAFTAR: AKADEMIK (RAPORT) ---
+    public function indexRaport(Request $request)
+    {
+        if (auth()->user()->role === 'mentor') return abort(403);
 
-    // --- MANAJEMEN SOAL ---
+        $query = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais']);
+        $pendaftars = $query->latest()->get();
+
+        foreach($pendaftars as $akun) {
+            if($akun->peserta && $akun->peserta->daftar) {
+                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
+                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
+                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
+                    $akun->peserta->daftar->rata_rata_nilai = $realAvg;
+                }
+            }
+        }
+
+        return view('admin.raport.index', compact('pendaftars'));
+    }
+
+    public function showRaport($id)
+    {
+        $user = Akun::with(['peserta.daftar', 'peserta.nilais.matpel'])->findOrFail($id);
+        $rataRata = $user->peserta->nilais->avg('nilai') ?? 0;
+        return view('admin.raport.show', compact('user', 'rataRata'));
+    }
+
+    // --- DATA PENDAFTAR: BERKAS ---
+    public function indexBerkas()
+    {
+        if (auth()->user()->role === 'mentor') return abort(403);
+        $pendaftars = Akun::where('role', 'pendaftar')->with(['peserta.berkas', 'peserta.daftar', 'peserta.nilais'])->get();
+        
+        foreach($pendaftars as $akun) {
+            if($akun->peserta && $akun->peserta->daftar) {
+                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
+                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
+                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
+                }
+            }
+        }
+
+        return view('admin.berkas.index', compact('pendaftars'));
+    }
+
+    public function showBerkas($id)
+    {
+        $user = Akun::with(['peserta.daftar', 'peserta.berkas'])->findOrFail($id);
+        return view('admin.berkas.show', compact('user'));
+    }
+
+    // --- DATA PENDAFTAR: SOSMED ---
+    public function indexSosmed()
+    {
+        if (auth()->user()->role === 'mentor') return abort(403);
+        $pendaftars = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais'])->get();
+
+        foreach($pendaftars as $akun) {
+            if($akun->peserta && $akun->peserta->daftar) {
+                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
+                if(abs($akun->peserta->daftar->rata_rata_nilai - $realAvg) > 0.01) {
+                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
+                }
+            }
+        }
+
+        return view('admin.sosmed.index', compact('pendaftars'));
+    }
+
+    public function showSosmed($id)
+    {
+        $user = Akun::with(['peserta.daftar'])->findOrFail($id);
+        return view('admin.sosmed.show', compact('user'));
+    }
+
+    // --- DATA PENDAFTAR: PENILAIAN MENTOR ---
+    public function indexPenilaian()
+    {
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') return abort(403);
+        $pendaftars = Akun::where('role', 'pendaftar')->with(['peserta.penilaianMentors'])->get();
+        return view('admin.penilaian.index', compact('pendaftars'));
+    }
+
+    public function showPenilaian($id)
+    {
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') return abort(403);
+        $user = Akun::with(['peserta.penilaianMentors.mentor', 'peserta.daftar'])->findOrFail($id);
+        return view('admin.penilaian.show', compact('user'));
+    }
+
+    // --- PENGATURAN: MANAJEMEN MENTOR ---
+    public function indexMentor()
+    {
+        if (auth()->user()->role !== 'admin') return abort(403);
+        $mentors = Akun::where('role', 'mentor')->withCount('peserta')->get();
+        return view('admin.mentor.index', compact('mentors'));
+    }
+
+    public function detailPendaftar($id)
+    {
+        $user = Akun::with(['peserta.daftar'])->findOrFail($id);
+        return view('admin.pendaftar.show', compact('user'));
+    }
+
+
     public function indexSoal(Request $request)
     {
+        if (auth()->user()->role === 'mentor') {
+            return redirect()->route('admin.dashboard')->with('loginError', 'Mentor tidak memiliki akses ke Bank Soal.');
+        }
+
         $query = \App\Models\Soal::with('ujian')->latest();
 
         // Fitur Filter by Kategori Ujian
@@ -106,12 +226,14 @@ class AdminController extends Controller
         }
 
         \App\Models\Soal::create($data);
+        $this->logAktivitas('Tambah Soal', 'Soal', null, "Menambahkan soal baru ke kategori ID: " . $data['ujian_id']);
 
         return back()->with('success', 'Soal berhasil ditambahkan!');
     }
 
     public function editSoal($id)
     {
+        if (auth()->user()->role === 'mentor') return abort(403);
         $soal = \App\Models\Soal::findOrFail($id);
         $ujians = \App\Models\Ujian::all();
         return view('admin.soal.edit', compact('soal', 'ujians'));
@@ -119,6 +241,7 @@ class AdminController extends Controller
 
     public function updateSoal(Request $request, $id)
     {
+        if (auth()->user()->role === 'mentor') return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
             'pertanyaan' => 'required',
@@ -149,10 +272,12 @@ class AdminController extends Controller
 
     public function destroySoal($id)
     {
+        if (auth()->user()->role === 'mentor') return abort(403);
         $soal = \App\Models\Soal::findOrFail($id);
         if ($soal->gambar) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
         }
+        $this->logAktivitas('Hapus Soal', 'Soal', $id, "Menghapus soal: " . substr($soal->pertanyaan, 0, 30));
         $soal->delete();
 
         return back()->with('success', 'Soal berhasil dihapus!');
@@ -253,18 +378,14 @@ class AdminController extends Controller
         return back()->with('success', 'Import Word berhasil!');
     }
 
-    public function detailPendaftar($id)
-    {
-        $user = Akun::with(['peserta.daftar', 'peserta.berkas', 'peserta.nilais.matpel'])->findOrFail($id);
-        
-        // Hitung rata-rata valid dari tabel nilai
-        $rataRata = $user->peserta->nilais->avg('nilai') ?? 0;
-        
-        return view('admin.pendaftar.show', compact('user', 'rataRata'));
-    }
+
 
     public function verifikasi(Request $request, $id)
     {
+        if (auth()->user()->role === 'mentor') {
+             return back()->with('loginError', 'Mentor tidak memiliki izin verifikasi kelulusan.');
+        }
+
         $daftar = Daftar::where('peserta_id', function($query) use ($id) {
             $query->select('id')->from('peserta')->where('akun_id', $id);
         })->firstOrFail();
@@ -272,6 +393,9 @@ class AdminController extends Controller
         $daftar->update([
             'status' => $request->status
         ]);
+
+        $akun = Akun::find($id);
+        $this->logAktivitas('Verifikasi Status', 'Peserta', $akun->peserta->id, "Mengubah status {$akun->nama} menjadi " . strtoupper($request->status));
 
         // Logic Email Notifikasi
         if ($request->status == 'lulus') {

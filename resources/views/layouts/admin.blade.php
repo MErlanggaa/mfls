@@ -14,9 +14,10 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
         @theme {
-            --color-primary-gold: #F2B451;
-            --color-primary-gold-hover: #e0a340;
-            --color-dark-navy: #111827;
+            --color-primary-gold: #FFD700;
+            --color-primary-gold-hover: #ECC900;
+            --color-dark-navy: #0F172A;
+            --color-blue-brand: #2563EB;
             --font-jakarta: "Plus Jakarta Sans", sans-serif;
         }
     </style>
@@ -32,19 +33,45 @@
                 </a>
             </div>
             
-            <nav class="flex-grow p-4 space-y-2">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.dashboard') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' }} rounded-xl font-semibold">
-                    <span>📊</span> Dashboard
+            <nav class="flex-grow p-4 space-y-1">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
+                    <span>🏠</span> Dashboard
                 </a>
-                <a href="{{ route('admin.pendaftar.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.pendaftar.index') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' }} rounded-xl font-semibold transition-all">
-                    <span>👥</span> Data Pendaftar
+
+                <div class="pt-4 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Pendaftaran</div>
+                <a href="{{ route('admin.pendaftar.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.pendaftar.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
+                    <span>👥</span> Data Profil
                 </a>
-                <a href="{{ route('admin.soal.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.soal.index') ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5' }} rounded-xl font-semibold transition-all">
+                
+                @if(auth()->user()->role !== 'mentor')
+                <a href="{{ route('admin.raport.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.raport.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
+                    <span>📚</span> Nilai Raport
+                </a>
+                <a href="{{ route('admin.berkas.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.berkas.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
+                    <span>📂</span> Verifikasi Berkas
+                </a>
+                <a href="{{ route('admin.sosmed.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.sosmed.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
+                    <span>📱</span> Kontrol Sosmed
+                </a>
+                @endif
+
+                <div class="pt-4 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Ujian & Seleksi</div>
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
+                <a href="{{ route('admin.soal.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.soal.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
                     <span>📝</span> Bank Soal
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 rounded-xl font-semibold transition-all">
-                    <span>🎓</span> Manajemen Mentor
+                @endif
+                
+                <a href="{{ route('admin.penilaian.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.penilaian.*') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
+                    <span>👨‍🏫</span> Penilaian Mentor
                 </a>
+
+                @if(auth()->user()->role === 'admin')
+                <div class="pt-4 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Pengaturan</div>
+                <a href="{{ route('admin.mentor.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.mentor.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
+                    <span>🛡️</span> Manajemen Mentor
+                </a>
+                @endif
             </nav>
 
             <div class="p-4 border-t border-gray-700">
