@@ -9,7 +9,7 @@
             <div class="text-dark-navy">
                 <h1 class="text-3xl md:text-4xl font-black mb-4">Halo, {{ explode(' ', $peserta->nama)[0] }}! 👋</h1>
                 <p class="text-dark-navy/70 font-semibold max-w-lg mb-8">
-                    Ayo lengkapi berkas pendaftaranmu untuk mendapatkan kesempatan beasiswa 100% di Telkom University.
+                    Ayo lengkapi berkas pendaftaranmu untuk mendapatkan kesempatan beasiswa 100% di MNC University.
                 </p>
                 <div class="flex items-center gap-4">
                     <div class="flex -space-x-3">

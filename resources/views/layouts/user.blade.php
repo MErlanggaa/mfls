@@ -46,17 +46,38 @@
 
                     <!-- Navigation Links -->
                     <div class="hidden md:flex items-center space-x-8">
-                        <a href="#" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Home</a>
-                        <a href="#" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Tentang Kami</a>
-                        <a href="#" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Panduan</a>
-                        <a href="#" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Kontak</a>
+                        <a href="#home" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Home</a>
+                        <a href="#about" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Tentang Kami</a>
+                        <a href="#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Timeline</a>
+                        <a href="#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">S&K</a>
+                        <a href="#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Program</a>
+                        <a href="#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Kontak</a>
                     </div>
 
                     <!-- CTA Buttons -->
                     <div class="flex items-center gap-4">
+                        <!-- Mobile menu button -->
+                        <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-600 hover:text-primary-yellow">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        
                         <a href="/login" class="bg-primary-yellow hover:bg-primary-yellow-hover text-dark-navy px-8 py-3 rounded-full text-sm font-bold shadow-md shadow-primary-yellow/10 transition-all hover:scale-105 active:scale-95">
                             Login
                         </a>
+                    </div>
+                </div>
+                
+                <!-- Mobile Navigation Menu -->
+                <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 py-4">
+                    <div class="flex flex-col space-y-4">
+                        <a href="#home" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Home</a>
+                        <a href="#about" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Tentang Kami</a>
+                        <a href="#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Timeline</a>
+                        <a href="#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">S&K</a>
+                        <a href="#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Program</a>
+                        <a href="#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Kontak</a>
                     </div>
                 </div>
             </div>
@@ -102,11 +123,14 @@
 
                     <!-- Contact -->
                     <div>
-                        <h4 class="text-white font-bold mb-6">Hubungi Kami</h4>
+                        <h4 class="text-white font-bold mb-6">Lokasi</h4>
                         <ul class="space-y-4 text-sm">
                             <li class="flex items-start gap-3">
                                 <svg class="w-5 h-5 text-primary-yellow shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                <span>Jakarta, Indonesia</span>
+                                <a href="https://maps.app.goo.gl/Nhn2Wtm5zdieA6B36" class="footer-link" target="_blank">MNC University Kampus Menteng-Jakarta Pusat</a>
+                                <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-primary-yellow shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <a href="https://maps.app.goo.gl/4GBqapcMidQRVrsUA" class="footer-link" target="_blank">MNC University-Jakarta Barat</a>
                             </li>
                         </ul>
                     </div>
@@ -114,5 +138,72 @@
             </div>
         </footer>
     </div>
+
+    <!-- Smooth Scrolling Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Smooth scrolling for navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        const offsetTop = targetElement.offsetTop - 80; // Account for fixed navbar
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Close mobile menu after clicking
+                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+
+            // Active navigation state on scroll
+            window.addEventListener('scroll', function() {
+                const sections = ['home', 'about', 'timeline', 'requirements', 'program', 'contact'];
+                const scrollPos = window.scrollY + 100;
+
+                sections.forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    const navLink = document.querySelector(`a[href="#${sectionId}"]`);
+                    
+                    if (section && navLink) {
+                        const sectionTop = section.offsetTop;
+                        const sectionHeight = section.offsetHeight;
+                        
+                        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                            // Remove active class from all nav links
+                            navLinks.forEach(link => {
+                                link.classList.remove('text-primary-yellow');
+                                link.classList.add('text-gray-600');
+                            });
+                            
+                            // Add active class to current nav link
+                            navLink.classList.remove('text-gray-600');
+                            navLink.classList.add('text-primary-yellow');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
