@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('peserta_id')->constrained('peserta')->onDelete('cascade');
             $table->foreignId('matpel_id')->constrained('matpel')->onDelete('cascade');
+            $table->integer('semester'); // Semester 1 - 6
             $table->integer('nilai');
             $table->timestamps();
         });

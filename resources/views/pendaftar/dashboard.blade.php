@@ -67,18 +67,28 @@
             </div>
         </div>
 
-        <!-- Step 3 -->
-        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative group overflow-hidden opacity-50 grayscale">
+        <!-- Step 3 (Ujian Online) -->
+        @php
+            $isLulus = ($peserta->daftar->status ?? '') == 'lulus';
+        @endphp
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative group overflow-hidden {{ $isLulus ? '' : 'opacity-50 grayscale' }}">
             <div class="absolute top-0 right-0 p-4 opacity-10">
                 <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
             </div>
-            <div class="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400 font-bold mb-6">
+            <div class="w-12 h-12 {{ $isLulus ? 'bg-primary-gold text-dark-navy' : 'bg-gray-100 text-gray-400' }} rounded-2xl flex items-center justify-center font-bold mb-6">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Ujian Online</h3>
-            <p class="text-sm text-gray-500 mb-6">Akses akan terbuka setelah seluruh berkas diverifikasi tim MFLS.</p>
+            <p class="text-sm text-gray-500 mb-6">Tes potensi akademik dan wawasan kebangsaan.</p>
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-gray-400 bg-gray-50 px-3 py-1 rounded-full uppercase tracking-wider">Terkunci</span>
+                @if($isLulus)
+                    <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">Akses Terbuka</span>
+                    <a href="https://ujian-react.mfls.com/start" target="_blank" class="text-xs font-extrabold text-white bg-dark-navy hover:bg-black px-4 py-2 rounded-xl transition-all shadow-lg hover:scale-105">
+                        Mulai Ujian 🚀
+                    </a>
+                @else
+                    <span class="text-xs font-bold text-gray-400 bg-gray-50 px-3 py-1 rounded-full uppercase tracking-wider">Terkunci</span>
+                @endif
             </div>
         </div>
     </div>

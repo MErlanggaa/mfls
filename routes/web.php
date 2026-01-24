@@ -16,8 +16,24 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Internal / Staff Routes
+Route::get('/internal/login', [AuthController::class, 'showInternalLogin'])->name('internal.login');
+Route::post('/internal/login', [AuthController::class, 'internalLogin']);
+
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
+    // Admin / Staff Dashboard
+    Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
+    
+    Route::prefix('admin/pendaftar')->name('admin.pendaftar.')->group(function() {
+        Route::get('/', [App\Http\Controllers\AdminController::class, 'indexPendaftar'])->name('index');
+        Route::get('/{id}', [App\Http\Controllers\AdminController::class, 'detailPendaftar'])->name('show');
+        Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifikasi'])->name('verify');
+        Route::post('/{id}/update-nilai', [App\Http\Controllers\AdminController::class, 'updateNilaiDummy'])->name('update_nilai'); // Routing sementara buat testing nilai
+    });
+
+    Route::get('/admin/export', [App\Http\Controllers\AdminController::class, 'exportExcel'])->name('admin.export');
+    
     Route::get('/survey', [SurveyController::class, 'show']);
     Route::post('/survey', [SurveyController::class, 'store']);
 

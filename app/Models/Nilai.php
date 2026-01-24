@@ -14,6 +14,7 @@ class Nilai extends Model
     protected $fillable = [
         'peserta_id',
         'matpel_id',
+        'semester',
         'nilai',
     ];
 

@@ -12,10 +12,13 @@ class Soal extends Model
     protected $table = 'soal';
 
     protected $fillable = [
-        'ujian_id',
         'pertanyaan',
-        'jawaban',
-        'gambar_soal',
+        'opsi_a',
+        'opsi_b',
+        'opsi_c',
+        'opsi_d',
+        'kunci_jawaban',
+        'bobot',
     ];
 
     public function ujian()

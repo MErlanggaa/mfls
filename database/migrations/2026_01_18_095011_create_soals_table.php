@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('soal', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ujian_id')->constrained('ujian')->onDelete('cascade');
+            // $table->foreignId('ujian_id')->nullable(); // Kita simplify dulu tanpa relasi ujian kompleks
             $table->text('pertanyaan');
-            $table->text('jawaban');
-            $table->string('gambar_soal')->nullable();
+            $table->string('opsi_a');
+            $table->string('opsi_b');
+            $table->string('opsi_c');
+            $table->string('opsi_d');
+            $table->enum('kunci_jawaban', ['a', 'b', 'c', 'd']);
+            $table->integer('bobot')->default(5);
             $table->timestamps();
         });
     }

@@ -24,11 +24,43 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
-            // Redirect based on role (optional logic here, but for now specific to pendaftar)
+            // Periksa role user
+            if (Auth::user()->role !== 'pendaftar') {
+                Auth::logout();
+                return back()->with('loginError', 'Area ini khusus pendaftar. Gunakan Login Internal.');
+            }
+            
             return redirect()->intended('/pendaftar/dashboard');
         }
 
         return back()->with('loginError', 'Email atau password salah!');
+    }
+
+    public function showInternalLogin()
+    {
+        return view('auth.internal_login');
+    }
+
+    public function internalLogin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            
+            // Blokir jika pendaftar mencoba login admin
+            if (Auth::user()->role === 'pendaftar') {
+                Auth::logout();
+                return back()->with('loginError', 'Pendaftar tidak memiliki akses ke sini.');
+            }
+            
+            return redirect()->intended('/admin/dashboard');
+        }
+
+        return back()->with('loginError', 'Kredensial salah atau tidak memiliki akses.');
     }
 
     public function showRegister()
