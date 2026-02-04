@@ -51,6 +51,7 @@
                         <a href="#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Timeline</a>
                         <a href="#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">S&K</a>
                         <a href="#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Program</a>
+                        <a href="/pengumuman" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Pengumuman</a>
                         <a href="#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Kontak</a>
                     </div>
 
@@ -77,6 +78,7 @@
                         <a href="#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Timeline</a>
                         <a href="#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">S&K</a>
                         <a href="#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Program</a>
+                        <a href="/pengumuman" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Pengumuman</a>
                         <a href="#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Kontak</a>
                     </div>
                 </div>

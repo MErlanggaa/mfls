@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PendaftarController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('pendaftar.home');
 });
+
+// Pengumuman Route (Public)
+Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
