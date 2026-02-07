@@ -23,6 +23,7 @@ class Berkas extends Model
         'surat_rekom',
         'personal_statement',
         'motivasi_video',
+        'surat_buta_warna',
     ];
 
     public function peserta()

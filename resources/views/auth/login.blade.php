@@ -31,15 +31,9 @@
         </div>
     </div>
 
-    <div class="flex items-center justify-between">
-        <div class="flex items-center">
-            <input type="checkbox" id="remember" name="remember" class="w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
-            <label for="remember" class="ml-3 text-sm font-semibold text-gray-600">Ingat Saya</label>
-        </div>
-        <div class="flex items-center">
-            <input type="checkbox" id="save_email" class="w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
-            <label for="save_email" class="ml-3 text-sm font-semibold text-gray-600">Simpan Email</label>
-        </div>
+    <div class="flex items-center">
+        <input type="checkbox" id="remember" class="w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
+        <label for="remember" class="ml-3 text-sm font-semibold text-gray-600">Ingat Saya</label>
     </div>
 
     <button type="submit" 

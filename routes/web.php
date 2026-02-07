@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [App\Http\Controllers\AdminController::class, 'indexPendaftar'])->name('index');
         Route::get('/{id}', [App\Http\Controllers\AdminController::class, 'detailPendaftar'])->name('show');
         Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifikasi'])->name('verify');
+        Route::get('/{id}/download-zip', [App\Http\Controllers\AdminController::class, 'downloadZip'])->name('download_zip');
         Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class, 'storePenilaianMentor'])->name('mentor_nilai');
     });
     
@@ -61,9 +62,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/survey', [SurveyController::class, 'show']);
     Route::post('/survey', [SurveyController::class, 'store']);
 
-    Route::prefix('pendaftar')->group(function () {
-        Route::get('/dashboard', [PendaftarController::class, 'index']);
-        Route::get('/biodata', [PendaftarController::class, 'biodata']);
-        Route::get('/berkas', [PendaftarController::class, 'berkas']);
+    Route::prefix('pendaftar')->middleware(['survey.check'])->group(function () {
+        Route::get('/dashboard', [PendaftarController::class, 'index'])->name('pendaftar.dashboard');
+        Route::get('/biodata', [PendaftarController::class, 'biodata'])->name('pendaftar.biodata');
+        Route::get('/berkas', [PendaftarController::class, 'berkas'])->name('pendaftar.berkas');
+        Route::post('/berkas', [PendaftarController::class, 'storeBerkas'])->name('pendaftar.berkas.store');
+        Route::get('/twibbon', [PendaftarController::class, 'twibbon'])->name('pendaftar.twibbon');
+        Route::post('/twibbon', [PendaftarController::class, 'storeTwibbon'])->name('pendaftar.twibbon.store');
+        Route::get('/nilai', [PendaftarController::class, 'nilai'])->name('pendaftar.nilai');
+        Route::post('/nilai', [PendaftarController::class, 'storeNilai'])->name('pendaftar.nilai.store');
     });
 });

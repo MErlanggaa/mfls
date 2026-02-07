@@ -143,38 +143,54 @@
                         <div class="space-y-3">
                             <div class="flex justify-between">
                                 <span class="text-gray-600 font-medium">Nama Lengkap</span>
-                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->nama ?? 'AHMAD RIZKI PRATAMA') }}</span>
+                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->nama) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600 font-medium">No. Pendaftaran</span>
-                                <span class="font-semibold text-gray-900">MFLS2026{{ str_pad($peserta->id ?? 1234, 4, '0', STR_PAD_LEFT) }}</span>
+                                <span class="font-semibold text-gray-900">MFLS2026{{ str_pad($peserta->id, 4, '0', STR_PAD_LEFT) }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600 font-medium">NISN</span>
-                                <span class="font-semibold text-gray-900">{{ $peserta->nisn ?? '0012345678' }}</span>
+                                <span class="font-semibold text-gray-900">{{ $peserta->nisn }}</span>
                             </div>
                         </div>
                         <div class="space-y-3">
                             <div class="flex justify-between">
                                 <span class="text-gray-600 font-medium">Asal Sekolah</span>
-                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->asal_sekolah ?? 'SMA NEGERI 1 JAKARTA') }}</span>
+                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->nama_sekolah ?? '-') }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600 font-medium">Program Studi</span>
-                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->program_studi ?? 'TEKNIK INFORMATIKA') }}</span>
+                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->pilihan_prodi ?? '-') }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600 font-medium">Fakultas</span>
-                                <span class="font-semibold text-gray-900">INDUSTRI DAN KREATIF</span>
+                                @php
+                                    $prodi = strtolower($peserta->pilihan_prodi);
+                                    $fakultas = 'LAINNYA';
+                                    if (in_array($prodi, ['manajemen', 'akuntansi', 'pendidikan matematika'])) {
+                                        $fakultas = 'BISNIS DAN KEUANGAN';
+                                    } elseif (in_array($prodi, ['pendidikan bahasa inggris', 'sains komunikasi', 'desain komunikasi visual', 'ilmu komputer', 'sistem informasi'])) {
+                                        $fakultas = 'INDUSTRI DAN KREATIF';
+                                    }
+                                @endphp
+                                <span class="font-semibold text-gray-900">{{ $fakultas }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 @php
-                    // Status bisa diambil dari database peserta
-                    // Contoh: $status = $peserta->status_seleksi ?? 'lulus';
-                    $status = $peserta->status_seleksi ?? 'lulus'; // 'lulus', 'tidak_lulus', 'pending'
+                    $dbStatus = $peserta->daftar->status ?? 'menunggu';
+                    
+                    // Map status database ke status tampilan
+                    if ($dbStatus === 'lulus') {
+                        $status = 'lulus';
+                    } elseif ($dbStatus === 'tidak lulus' || $dbStatus === 'gugur') {
+                        $status = 'tidak_lulus';
+                    } else {
+                        $status = 'pending';
+                    }
                 @endphp
 
                 <!-- Status Kelulusan -->

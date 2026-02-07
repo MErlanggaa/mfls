@@ -1,94 +1,260 @@
 @extends('layouts.admin')
 
 @section('content')
-<!-- Notifikasi Flash -->
-@if(session('success'))
-<div class="mb-6 p-4 bg-green-500 text-white rounded-2xl shadow-lg shadow-green-200 flex items-center justify-between animate-bounce">
-    <div class="flex items-center gap-3">
-        <span>✅</span>
-        <span class="font-bold">{{ session('success') }}</span>
+<!-- Header Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-[2rem] p-6 text-white shadow-xl shadow-orange-500/20 relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+        <h3 class="text-xs font-bold opacity-80 uppercase tracking-widest flex items-center gap-2">
+            <span class="iconify" data-icon="solar:users-group-rounded-bold"></span> Total Pendaftar
+        </h3>
+        <p class="text-4xl font-black mt-2">{{ $pendaftars->count() }}</p>
+        <div class="mt-4 text-xs font-bold bg-white/20 inline-block px-3 py-1 rounded-full">Mahasiswa Baru</div>
     </div>
-    <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">✕</button>
-</div>
-@endif
+    
+    <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-colors">
+        <div class="absolute right-0 top-0 w-20 h-20 bg-emerald-50 rounded-full blur-2xl -mr-5 -mt-5"></div>
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <span class="iconify text-emerald-500" data-icon="solar:check-circle-bold"></span> Sudah Diverifikasi
+        </h3>
+        <p class="text-4xl font-black text-slate-800 mt-2">
+            {{ $pendaftars->filter(fn($p) => ($p->peserta->daftar->status ?? 'menunggu') != 'menunggu')->count() }}
+        </p>
+        <p class="text-xs font-bold text-emerald-600 mt-4">Dokumen Lengkap</p>
+    </div>
 
-<div class="mb-8 flex justify-between items-center">
-    <div>
-        <h2 class="text-2xl font-black text-gray-800">Seleksi Administrasi</h2>
-        <p class="text-gray-500">Verifikasi Profil, Nilai Raport, dan Kelengkapan Berkas pendaftar.</p>
-    </div>
-    <div class="flex gap-3">
-        <form method="GET" class="flex gap-2">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama/Sekolah..." class="px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm w-64 focus:outline-none focus:border-blue-600">
-            <button type="submit" class="bg-dark-navy text-white px-4 py-3 rounded-xl hover:bg-black transition-colors">🔍</button>
-        </form>
+    <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-colors">
+        <div class="absolute right-0 top-0 w-20 h-20 bg-blue-50 rounded-full blur-2xl -mr-5 -mt-5"></div>
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <span class="iconify text-blue-500" data-icon="solar:clock-circle-bold"></span> Perlu Tindakan
+        </h3>
+        <p class="text-4xl font-black text-slate-800 mt-2">
+            {{ $pendaftars->filter(fn($p) => ($p->peserta->daftar->status ?? 'menunggu') == 'menunggu')->count() }}
+        </p>
+        <p class="text-xs font-bold text-blue-600 mt-4">Menunggu Review</p>
     </div>
 </div>
 
-<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/40 border border-slate-100 overflow-hidden">
+    <!-- Toolbar -->
+    <div class="p-8 border-b border-slate-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <h2 class="text-2xl font-black text-slate-800">Data Seleksi Administrasi</h2>
+            <p class="text-slate-500 text-sm font-medium mt-1">Kelola dan verifikasi berkas pendaftar.</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all uppercase tracking-widest flex items-center gap-2">
+                <span class="iconify text-lg" data-icon="solar:file-download-bold"></span>
+                Export Excel
+            </a>
+            <form method="GET" class="relative w-full md:w-auto">
+                <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" data-icon="solar:magnifer-linear"></span>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama / Sekolah..." 
+                    class="pl-12 pr-6 py-3 w-full md:w-80 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-sm font-bold transition-all outline-none text-slate-600">
+            </form>
+        </div>
+    </div>
+
     <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-            <thead class="bg-slate-50 text-slate-500 font-black uppercase text-[10px] tracking-widest px-6 py-4">
-                <tr>
-                    <th class="px-6 py-5">Mahasiswa / NISN</th>
-                    <th class="px-6 py-5 text-center">Rata-Rata Raport</th>
-                    <th class="px-6 py-5 text-center">Kelengkapan Berkas</th>
-                    <th class="px-6 py-5 text-center">Status Berkas</th>
-                    <th class="px-6 py-5 text-right">Tindakan</th>
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                    <th class="px-8 py-6">Kandidat</th>
+                    <th class="px-4 py-6 text-center">S1</th>
+                    <th class="px-4 py-6 text-center">S2</th>
+                    <th class="px-4 py-6 text-center">S3</th>
+                    <th class="px-4 py-6 text-center">S4</th>
+                    <th class="px-4 py-6 text-center">S5</th>
+                    <th class="px-4 py-6 text-center">AVG</th>
+                    <th class="px-6 py-6 text-left">Minat Prodi</th>
+                    <th class="px-2 py-6 text-center">Video</th>
+                    <th class="px-2 py-6 text-center">IG</th>
+                    <th class="px-2 py-6 text-center">TikTok</th>
+                    <th class="px-2 py-6 text-center">Twibbon</th>
+                    <th class="px-6 py-6 text-center">Berkas</th>
+                    <th class="px-6 py-6 text-center">Status</th>
+                    <th class="px-8 py-6 text-right">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50">
+            <tbody class="divide-y divide-slate-50">
                 @foreach($pendaftars as $akun)
                 @php
                     $peserta = $akun->peserta;
                     $daftar = $peserta->daftar;
                     $berkas = $peserta->berkas;
+                    $sertifikats = $peserta->sertifikats;
                     
-                    // Hitung kelengkapan
-                    $totalRequired = 8;
-                    $uploaded = 0;
-                    if($berkas) {
-                        if($berkas->foto) $uploaded++;
-                        if($berkas->rapor1) $uploaded++;
-                        if($berkas->rapor2) $uploaded++;
-                        if($berkas->rapor3) $uploaded++;
-                        if($berkas->rapor4) $uploaded++;
-                        if($berkas->rapor5) $uploaded++;
-                        if($berkas->ijazah) $uploaded++;
-                        if($berkas->motivasi_video) $uploaded++;
+                    // Hitung kelengkapan (Termasuk buta warna jika DKV)
+                    $isDKV = ($peserta->pilihan_prodi ?? '') == 'Desain Komunikasi Visual';
+                    
+                    // Check logic
+                    $filesCheck = ['foto', 'rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'ijazah', 'motivasi_video', 'personal_statement'];
+                    if($isDKV) {
+                        $filesCheck[] = 'surat_buta_warna';
                     }
+                    
+                    $uploaded = 0;
+                    $totalRequired = count($filesCheck);
+                    
+                    if($berkas) {
+                        foreach($filesCheck as $f) {
+                            if(!empty($berkas->$f)) $uploaded++;
+                        }
+                    }
+                    
+                    $percentage = $totalRequired > 0 ? round(($uploaded / $totalRequired) * 100) : 0;
+                    $percentage = $percentage > 100 ? 100 : $percentage;
                 @endphp
-                <tr class="hover:bg-slate-50/50 transition-all">
-                    <td class="px-6 py-4">
-                        <div class="font-black text-slate-800 uppercase">{{ $akun->nama }}</div>
-                        <div class="text-[10px] font-bold text-blue-500 uppercase tracking-tighter">{{ $peserta->nama_sekolah }} • {{ $peserta->nisn }}</div>
+                <tr class="group hover:bg-slate-50/50 transition-colors">
+                    <td class="px-8 py-5">
+                        <div class="flex items-center gap-4">
+                            <div class="relative w-12 h-12 rounded-2xl overflow-hidden shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
+                                @if($berkas && $berkas->foto)
+                                    <img src="{{ asset('storage/'.$berkas->foto) }}" class="w-full h-full object-cover">
+                                @else
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($akun->nama) }}&background=random&color=fff" class="w-full h-full object-cover">
+                                @endif
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 text-sm">{{ $akun->nama }}</div>
+                                <div class="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">{{ $peserta->nama_sekolah ?? '-' }}</div>
+                            </div>
+                        </div>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="text-lg font-black {{ ($daftar->rata_rata_nilai ?? 0) >= 80 ? 'text-emerald-500' : 'text-slate-700' }}">
+                    <!-- Semester Averages -->
+                    @for($sem = 1; $sem <= 5; $sem++)
+                    <td class="px-4 py-5 text-center">
+                        @php
+                            $avgSem = $daftar->{"avg_semester_{$sem}"} ?? 0;
+                            $colorClass = $avgSem >= 90 ? 'bg-green-100 text-green-700' : 
+                                         ($avgSem >= 80 ? 'bg-blue-100 text-blue-700' : 
+                                         ($avgSem >= 70 ? 'bg-yellow-100 text-yellow-700' : 'bg-slate-100 text-slate-600'));
+                        @endphp
+                        <span class="inline-block px-2 py-1 {{ $colorClass }} rounded-lg text-[11px] font-black">
+                            {{ number_format($avgSem, 1) }}
+                        </span>
+                    </td>
+                    @endfor
+                    <!-- Overall Average -->
+                    <td class="px-4 py-5 text-center">
+                        <span class="inline-block px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-xs font-black border border-orange-200">
                             {{ number_format($daftar->rata_rata_nilai ?? 0, 2) }}
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <div class="flex items-center justify-center gap-1">
-                            @for($i=0; $i<$totalRequired; $i++)
-                                <div class="w-2 h-2 rounded-full {{ $i < $uploaded ? 'bg-emerald-400' : 'bg-slate-200' }}"></div>
-                            @endfor
-                        </div>
-                        <div class="text-[9px] font-black mt-1 text-slate-400">{{ $uploaded }}/{{ $totalRequired }} FILE</div>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        @if(($daftar->status ?? 'menunggu') == 'lulus')
-                            <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black border border-emerald-100 uppercase tracking-widest">LULUS BERKAS</span>
-                        @elseif(($daftar->status ?? 'menunggu') == 'tidak_lulus')
-                            <span class="px-3 py-1 bg-red-50 text-red-600 rounded-lg text-[9px] font-black border border-red-100 uppercase tracking-widest">TIDAK LOLOS</span>
-                        @else
-                            <span class="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-lg text-[9px] font-black border border-yellow-100 uppercase tracking-widest animate-pulse">MENUNGGU</span>
+                    <td class="px-6 py-5">
+                        <div class="font-bold text-slate-800 text-xs">{{ $peserta->pilihan_prodi ?? '-' }}</div>
+                        @if($isDKV)
+                            <div class="mt-1 flex items-center gap-1.5">
+                                @if(!empty($berkas->surat_buta_warna))
+                                    <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-md text-[9px] font-black flex items-center gap-1">
+                                        <span class="iconify" data-icon="solar:eye-bold"></span> Buta Warna OK
+                                    </span>
+                                @else
+                                    <span class="px-2 py-0.5 bg-red-100 text-red-600 rounded-md text-[9px] font-black flex items-center gap-1">
+                                        <span class="iconify" data-icon="solar:close-circle-bold"></span> Buta Warna Missing
+                                    </span>
+                                @endif
+                            </div>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex gap-2 justify-end">
-                            <a href="{{ route('admin.pendaftar.show', $akun->id) }}" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-[9px] font-black hover:bg-blue-600 hover:text-white transition-all shadow-sm uppercase tracking-widest">
-                                VERIFIKASI SEKARANG 🔍
+                    <!-- Video Motivation -->
+                    <td class="px-2 py-5 text-center">
+                        @if($berkas && $berkas->motivasi_video)
+                            <a href="{{ $berkas->motivasi_video }}" target="_blank" class="w-8 h-8 inline-flex items-center justify-center bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-600 hover:text-white transition-all shadow-sm" title="Video Motivasi">
+                                <span class="iconify" data-icon="solar:videocamera-bold"></span>
+                            </a>
+                        @else
+                            <span class="text-slate-200">-</span>
+                        @endif
+                    </td>
+                    <!-- Instagram -->
+                    <td class="px-2 py-5 text-center">
+                        @if($peserta->link_ig)
+                            <a href="{{ $peserta->link_ig }}" target="_blank" class="w-8 h-8 inline-flex items-center justify-center bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-600 hover:text-white transition-all shadow-sm" title="Instagram">
+                                <span class="iconify" data-icon="solar:gallery-bold"></span>
+                            </a>
+                        @else
+                            <span class="text-slate-200">-</span>
+                        @endif
+                    </td>
+                    <!-- TikTok -->
+                    <td class="px-2 py-5 text-center">
+                        @if($peserta->link_tiktok)
+                            <a href="{{ $peserta->link_tiktok }}" target="_blank" class="w-8 h-8 inline-flex items-center justify-center bg-slate-100 text-slate-800 rounded-lg hover:bg-slate-900 hover:text-white transition-all shadow-sm" title="TikTok">
+                                <span class="iconify" data-icon="solar:music-note-bold"></span>
+                            </a>
+                        @else
+                            <span class="text-slate-200">-</span>
+                        @endif
+                    </td>
+                    <!-- Twibbon -->
+                    <td class="px-2 py-5 text-center">
+                        @if($peserta->link_twibbon)
+                            <a href="{{ $peserta->link_twibbon }}" target="_blank" class="w-8 h-8 inline-flex items-center justify-center bg-pink-100 text-pink-600 rounded-lg hover:bg-pink-600 hover:text-white transition-all shadow-sm" title="Twibbon">
+                                <span class="iconify" data-icon="solar:camera-bold"></span>
+                            </a>
+                        @else
+                            <span class="text-slate-200">-</span>
+                        @endif
+                    </td>
+                    <td class="px-6 py-5">
+                        <div class="flex flex-wrap gap-1 max-w-[120px] mx-auto">
+                            <!-- Foto -->
+                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black {{ ($berkas && $berkas->foto) ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-300 border border-slate-100' }}">FOTO</span>
+                            
+                            <!-- Ijazah -->
+                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black {{ ($berkas && $berkas->ijazah) ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-300 border border-slate-100' }}">IJAZAH</span>
+                            
+                            <!-- PS -->
+                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black {{ ($berkas && $berkas->personal_statement) ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-slate-50 text-slate-300 border border-slate-100' }}">PS</span>
+                            
+                            <!-- Rapor -->
+                            @php
+                                $raporCount = 0;
+                                foreach(['rapor1','rapor2','rapor3','rapor4','rapor5'] as $r) {
+                                    if($berkas && !empty($berkas->$r)) $raporCount++;
+                                }
+                            @endphp
+                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black {{ $raporCount == 5 ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : ($raporCount > 0 ? 'bg-blue-100 text-blue-700 border border-blue-200' : 'bg-slate-50 text-slate-300 border border-slate-100') }}">
+                                RAPOR({{ $raporCount }}/5)
+                            </span>
+
+                            <!-- Sertifikat -->
+                            <span class="px-1.5 py-0.5 rounded text-[8px] font-black {{ $sertifikats->count() > 0 ? 'bg-indigo-100 text-indigo-700 border border-indigo-200' : 'bg-slate-50 text-slate-400 border border-slate-100' }}">
+                                SRT({{ $sertifikats->count() }})
+                            </span>
+
+                            @if($isDKV)
+                                <span class="px-1.5 py-0.5 rounded text-[8px] font-black {{ !empty($berkas->surat_buta_warna) ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-red-100 text-red-600 border border-red-200' }}">
+                                    BW
+                                </span>
+                            @endif
+                        </div>
+                        <div class="text-[8px] text-slate-400 mt-2 text-center font-bold uppercase tracking-tighter">{{ $percentage }}% DONE</div>
+                    </td>
+                    <td class="px-6 py-5 text-center">
+                        @if(($daftar->status ?? 'menunggu') == 'lulus')
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wide border border-emerald-100">
+                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Lulus
+                            </span>
+                        @elseif(($daftar->status ?? 'menunggu') == 'tidak_lulus')
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-red-50 text-red-600 rounded-full text-[10px] font-black uppercase tracking-wide border border-red-100">
+                                Ditolak
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-[10px] font-black uppercase tracking-wide border border-orange-100">
+                                Menunggu
+                            </span>
+                        @endif
+                    </td>
+                    <td class="px-8 py-5 text-right">
+                        <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                             <a href="{{ route('admin.pendaftar.download_zip', $akun->id) }}" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-600 rounded-lg hover:bg-orange-600 hover:text-white transition-all shadow-sm" title="Download ZIP">
+                                <span class="iconify" data-icon="solar:folder-with-files-bold"></span>
+                            </a>
+                            <a href="{{ route('admin.pendaftar.show', $akun->id) }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                                <span>VERIFIKASI</span>
+                                <span class="iconify" data-icon="solar:pen-new-square-bold"></span>
                             </a>
                         </div>
                     </td>
@@ -97,5 +263,11 @@
             </tbody>
         </table>
     </div>
+
+    @if(count($pendaftars) == 0)
+    <div class="p-10 text-center text-slate-400">
+        <p class="text-sm font-bold">Belum ada data pendaftar.</p>
+    </div>
+    @endif
 </div>
 @endsection

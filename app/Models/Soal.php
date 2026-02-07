@@ -16,9 +16,13 @@ class Soal extends Model
         'pertanyaan',
         'gambar',
         'opsi_a',
+        'opsi_a_image',
         'opsi_b',
+        'opsi_b_image',
         'opsi_c',
+        'opsi_c_image',
         'opsi_d',
+        'opsi_d_image',
         'kunci_jawaban',
         'bobot',
     ];

@@ -51,7 +51,14 @@
                 @if($hasilUjians->isEmpty())
                 <tr>
                     <td colspan="5" class="py-20 text-center">
-                        <div class="text-slate-300 font-black uppercase tracking-widest text-sm">Belum ada peserta yang mensubmit ujian.</div>
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+                                <span class="iconify text-4xl text-slate-400" data-icon="solar:document-cross-bold"></span>
+                            </div>
+                            <h3 class="text-xl font-black text-slate-800 mb-2">Belum Ada Data Ujian</h3>
+                            <p class="text-slate-500 font-medium">Peserta belum ada yang mengerjakan ujian.</p>
+                            <p class="text-sm text-slate-400 mt-2">Data akan muncul setelah peserta menyelesaikan ujian online.</p>
+                        </div>
                     </td>
                 </tr>
                 @endif

@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'survey.check' => \App\Http\Middleware\EnsureSurveyIsFilled::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

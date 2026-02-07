@@ -14,6 +14,7 @@
 
     <!-- Tailwind CDN -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <style type="text/tailwindcss">
         @theme {
             --color-primary-gold: #F2B451;
@@ -36,15 +37,14 @@
         <main class="flex-grow flex flex-col min-w-0">
             <!-- Top Header -->
             <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-40">
-                <h2 class="text-lg font-bold text-gray-900">Selamat Datang, {{ Auth::user()->nama ?? 'Pendaftar' }}! 👋</h2>
+                <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    Selamat Datang, {{ Auth::user()->nama ?? 'Pendaftar' }}! 
+                    <span class="iconify text-yellow-500" data-icon="solar:hand-shake-bold"></span>
+                </h2>
                 <div class="flex items-center gap-4">
-                    <button class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 hover:text-primary-gold transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                    </button>
-                    <div class="h-8 w-[1px] bg-gray-100"></div>
                     <div class="text-right hidden sm:block">
-                        <p class="text-xs font-bold text-gray-900 uppercase tracking-wider">Status Akun</p>
-                        <p class="text-[10px] text-emerald-500 font-bold">Terverifikasi</p>
+                        <p class="text-xs font-bold text-gray-900 uppercase tracking-wider">Jalur Seleksi</p>
+                        <p class="text-[10px] text-primary-gold font-bold">Beasiswa Prestasi</p>
                     </div>
                 </div>
             </header>
@@ -55,5 +55,56 @@
             </div>
         </main>
     </div>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .premium-swal-popup {
+            border-radius: 2rem !important;
+            padding: 2rem !important;
+            border: 1px solid #f3f4f6 !important;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                Swal.fire({
+                    title: '<span class="text-xl font-black text-slate-800">Berhasil!</span>',
+                    html: '<p class="text-sm font-medium text-slate-500">{{ session("success") }}</p>',
+                    icon: 'success',
+                    iconColor: '#10b981',
+                    confirmButtonColor: '#F2B451',
+                    confirmButtonText: '<span class="px-4">Oke, Mengerti</span>',
+                    customClass: {
+                        popup: 'premium-swal-popup',
+                        confirmButton: 'rounded-xl font-bold uppercase tracking-widest text-[10px]'
+                    },
+                    timer: 4000,
+                    timerProgressBar: true,
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInUp'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutDown'
+                    }
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    title: '<span class="text-xl font-black text-slate-800">Upss!</span>',
+                    html: '<p class="text-sm font-medium text-slate-500">{{ session("error") }}</p>',
+                    icon: 'error',
+                    iconColor: '#ef4444',
+                    confirmButtonColor: '#F2B451',
+                    confirmButtonText: '<span class="px-4">Coba Lagi</span>',
+                    customClass: {
+                        popup: 'premium-swal-popup',
+                        confirmButton: 'rounded-xl font-bold uppercase tracking-widest text-[10px]'
+                    }
+                });
+            @endif
+        });
+    </script>
 </body>
 </html>

@@ -28,28 +28,29 @@
         }
     </style>
 </head>
-<body class="font-jakarta antialiased bg-gray-50/30 py-12 px-4">
-    <div class="max-w-3xl mx-auto bg-white border border-gray-100 shadow-2xl shadow-gray-200/50 rounded-[2.5rem] overflow-hidden">
+<body class="font-jakarta antialiased bg-slate-50 min-h-screen py-10 px-4 flex items-center justify-center">
+
+    <div class="max-w-3xl w-full bg-white border border-gray-100 shadow-xl shadow-slate-200/50 rounded-[2rem] overflow-hidden">
         <!-- Header -->
-        <div class="p-10 border-b border-gray-50 bg-gradient-to-r from-gray-50 to-white">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-primary-gold rounded-xl flex items-center justify-center shadow-lg shadow-primary-gold/20">
-                    <span class="text-dark-navy font-extrabold text-xl">M</span>
-                </div>
+        <div class="p-8 md:p-10 border-b border-gray-50 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-black text-gray-900 mb-2 tracking-tight">Quesioner Peserta 📝</h1>
+                <p class="text-gray-500 font-medium">Mohon lengkapi survei ini untuk melanjutkan pendaftaran.</p>
             </div>
-            <h1 class="text-3xl font-black text-gray-900 mb-2">Survei Peserta 📋</h1>
-            <p class="text-gray-500 font-medium">Isi survei dulu yuk ✨</p>
+            <div class="w-12 h-12 bg-primary-gold rounded-xl flex items-center justify-center shadow-lg shadow-primary-gold/20 text-dark-navy font-bold text-xl">
+                M
+            </div>
         </div>
 
-        <form action="/survey" method="POST" class="p-10 space-y-12">
+        <form action="/survey" method="POST" class="p-8 md:p-10 space-y-10">
             @csrf
 
             <!-- Question 1 -->
-            <div class="space-y-6">
-                <label class="block text-base font-bold text-gray-800 leading-relaxed">
-                    Darimanakah kamu mendapatkan informasi mengenai program MFLS 2026?
+            <div class="space-y-4">
+                <label class="block text-lg font-bold text-gray-900">
+                    1. Darimanakah kamu mendapatkan informasi mengenai program MFLS 2026?
                 </label>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     @php
                         $sources = [
                             'Guru atau Sekolah', 'Forum OSIS Jawa Barat (FOJB)', 'Forum Komunikasi Pengurus OSIS Prov. DIY',
@@ -61,10 +62,13 @@
                         ];
                     @endphp
                     @foreach($sources as $source)
-                    <label class="flex items-center group cursor-pointer">
-                        <input type="radio" name="info_sumber" value="{{ $source }}" class="w-5 h-5 border-gray-200 text-primary-gold focus:ring-primary-gold/20">
-                        <span class="ml-3 text-sm font-semibold text-gray-600 group-hover:text-gray-900 transition-colors">{{ $source }}</span>
-                    </label>
+                    <div class="relative">
+                        <input type="radio" name="info_sumber" id="sumber_{{ \Illuminate\Support\Str::slug($source) }}" value="{{ $source }}" class="peer hidden" required>
+                        <label for="sumber_{{ \Illuminate\Support\Str::slug($source) }}" 
+                            class="block w-full p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-primary-gold hover:bg-yellow-50/30 transition-all font-semibold text-gray-600 peer-checked:bg-primary-gold peer-checked:text-dark-navy peer-checked:border-primary-gold peer-checked:shadow-lg peer-checked:shadow-primary-gold/20">
+                            {{ $source }}
+                        </label>
+                    </div>
                     @endforeach
                 </div>
             </div>
@@ -72,19 +76,23 @@
             <hr class="border-gray-50">
 
             <!-- Question 2 -->
-            <div class="space-y-6">
-                <label class="block text-base font-bold text-gray-800 leading-relaxed">
-                    Apa motivasi kamu mendaftar program Beasiswa MFLS?
+            <div class="space-y-4">
+                <label class="block text-lg font-bold text-gray-900">
+                    2. Apa motivasi kamu mendaftar program Beasiswa MFLS?
                 </label>
-                <div class="space-y-4">
+                <p class="text-sm text-gray-400 font-medium -mt-2 mb-3">*Boleh pilih lebih dari satu</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     @php
                         $motivations = ['Biaya Kuliah (Beasiswa)', 'Akreditasi Kampus', 'Prospek Kerja', 'Fasilitas Pendidikan', 'Reputasi Universitas'];
                     @endphp
                     @foreach($motivations as $mot)
-                    <label class="flex items-center group cursor-pointer">
-                        <input type="checkbox" name="motivasi[]" value="{{ $mot }}" class="w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
-                        <span class="ml-3 text-sm font-semibold text-gray-600 group-hover:text-gray-900 transition-colors">{{ $mot }}</span>
-                    </label>
+                    <div class="relative">
+                        <input type="checkbox" name="motivasi[]" id="mot_{{ \Illuminate\Support\Str::slug($mot) }}" value="{{ $mot }}" class="peer hidden">
+                        <label for="mot_{{ \Illuminate\Support\Str::slug($mot) }}" 
+                            class="flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50/10 transition-all font-semibold text-gray-600 peer-checked:bg-emerald-500 peer-checked:text-white peer-checked:border-emerald-500 peer-checked:shadow-lg peer-checked:shadow-emerald-500/20">
+                            <span class="mr-2">✨</span> {{ $mot }}
+                        </label>
+                    </div>
                     @endforeach
                 </div>
             </div>
@@ -92,51 +100,66 @@
             <hr class="border-gray-50">
 
             <!-- Binary Questions -->
-            <div class="space-y-10">
+            <div class="space-y-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-6">3. Pertanyaan Tambahan</h3>
+                
                 @php
                     $binaryQuestions = [
-                        ['id' => 'bersedia_informasi_lain', 'label' => 'Apakah kamu bersedia menerima informasi tentang jalur seleksi lainnya dari MNC University?'],
-                        ['id' => 'daftar_beasiswa_lain', 'label' => 'Apakah kamu sedang mendaftar beasiswa lain?'],
-                        ['id' => 'daftar_univ_lain', 'label' => 'Apakah kamu sedang mendaftar di Universitas selain MNC University?'],
-                        ['id' => 'mengikuti_osis', 'label' => 'Apakah kamu mengikuti OSIS?'],
-                        ['id' => 'mengikuti_forum_osis', 'label' => 'Apakah kamu mengikuti Forum OSIS Daerah/Provinsi?'],
-                        ['id' => 'anggota_forum_anak', 'label' => 'Apakah Anggota Forum Anak?'],
-                        ['id' => 'sudah_diterima_kampus_lain', 'label' => 'Apakah kamu sudah diterima di kampus lain?'],
-                        ['id' => 'sudah_daftar_diterima_mncuniversity', 'label' => 'Apakah sudah mendaftar atau diterima di MNC University?'],
+                        ['id' => 'bersedia_informasi_lain', 'label' => 'Apakah kamu bersedia menerima informasi tentang jalur seleksi lainnya dari MNC University?', 'icon' => '📢'],
+                        ['id' => 'daftar_beasiswa_lain', 'label' => 'Apakah kamu sedang mendaftar beasiswa lain?', 'icon' => '🎓'],
+                        ['id' => 'daftar_univ_lain', 'label' => 'Apakah kamu sedang mendaftar di Universitas selain MNC University?', 'icon' => '🏛️'],
+                        ['id' => 'mengikuti_osis', 'label' => 'Apakah kamu mengikuti OSIS?', 'icon' => '👔'],
+                        ['id' => 'mengikuti_forum_osis', 'label' => 'Apakah kamu mengikuti Forum OSIS Daerah/Provinsi?', 'icon' => '🤝'],
+                        ['id' => 'anggota_forum_anak', 'label' => 'Apakah Anggota Forum Anak?', 'icon' => '👶'],
+                        ['id' => 'sudah_diterima_kampus_lain', 'label' => 'Apakah kamu sudah diterima di kampus lain?', 'icon' => '✅'],
+                        ['id' => 'sudah_daftar_diterima_mncuniversity', 'label' => 'Apakah sudah mendaftar atau diterima di MNC University?', 'icon' => '🏫'],
                     ];
                 @endphp
 
-                @foreach($binaryQuestions as $q)
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <label class="text-sm font-bold text-gray-800 flex-grow max-w-[60%]">{{ $q['label'] }}</label>
-                    <div class="flex gap-8">
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="{{ $q['id'] }}" value="1" class="w-5 h-5 border-gray-200 text-primary-gold focus:ring-primary-gold/20">
-                            <span class="ml-2 text-sm font-bold text-gray-600 group-hover:text-dark-navy">Ya</span>
-                        </label>
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="{{ $q['id'] }}" value="0" class="w-5 h-5 border-gray-200 text-primary-gold focus:ring-primary-gold/20">
-                            <span class="ml-2 text-sm font-bold text-gray-600 group-hover:text-dark-navy">Tidak</span>
-                        </label>
+                @foreach($binaryQuestions as $index => $q)
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 md:flex items-center justify-between gap-6 transition-all hover:bg-white hover:shadow-md">
+                    <div class="flex items-start gap-4 mb-4 md:mb-0">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-xl border border-slate-100">
+                            {{ $q['icon'] }}
+                        </div>
+                        <div class="flex-1">
+                             <label class="text-sm font-bold text-gray-800 leading-snug block pt-2">{{ $q['label'] }}</label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 bg-white p-1 rounded-xl border border-gray-200 shadow-sm">
+                        <div class="relative">
+                            <input type="radio" name="{{ $q['id'] }}" id="{{ $q['id'] }}_1" value="1" class="peer hidden" required>
+                            <label for="{{ $q['id'] }}_1" class="block px-6 py-2 rounded-lg text-sm font-bold text-gray-500 cursor-pointer transition-all peer-checked:bg-emerald-500 peer-checked:text-white hover:bg-gray-50">
+                                Ya
+                            </label>
+                        </div>
+                        <div class="relative">
+                            <input type="radio" name="{{ $q['id'] }}" id="{{ $q['id'] }}_0" value="0" class="peer hidden" required>
+                            <label for="{{ $q['id'] }}_0" class="block px-6 py-2 rounded-lg text-sm font-bold text-gray-500 cursor-pointer transition-all peer-checked:bg-red-500 peer-checked:text-white hover:bg-gray-50">
+                                Tidak
+                            </label>
+                        </div>
                     </div>
                 </div>
                 @endforeach
             </div>
 
-            <!-- Submit -->
-            <div class="pt-6">
+            <div class="pt-8 border-t border-gray-100 flex items-center justify-end gap-4">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="font-bold text-gray-400 hover:text-red-500 text-sm px-6 py-4">
+                        Keluar (Logout)
+                    </button>
+                </form>
+                
                 <button type="submit" 
-                    class="w-full bg-primary-gold hover:bg-primary-gold-hover text-dark-navy font-black py-4 rounded-2xl shadow-xl shadow-primary-gold/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                    Kirim Survei
+                    class="bg-primary-gold hover:bg-primary-gold-hover text-dark-navy font-black px-10 py-4 rounded-2xl shadow-xl shadow-primary-gold/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2">
+                    <span>Simpan & Lanjutkan</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </button>
             </div>
         </form>
-
-        <div class="p-8 text-center border-t border-gray-50">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                Copyright ©2026 Indonesian Gold Generation Scholarship. All rights reserved.
-            </p>
-        </div>
     </div>
 </body>
 </html>

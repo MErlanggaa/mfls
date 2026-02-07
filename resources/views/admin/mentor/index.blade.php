@@ -36,11 +36,36 @@
 
         <div class="flex gap-2">
             <button class="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-black hover:bg-slate-100 transition-all uppercase tracking-widest">Edit Akun</button>
-            <button class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">🗑️</button>
+            <form action="{{ route('admin.mentor.destroy', $mentor->id) }}" method="POST" class="inline">
+                @csrf
+                @method('DELETE')
+                <button type="button" onclick="confirmDeleteMentor(this, '{{ $mentor->nama }}')" class="w-10 h-10 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+                    🗑️
+                </button>
+            </form>
         </div>
     </div>
     @endforeach
 </div>
+
+<script>
+function confirmDeleteMentor(button, name) {
+    Swal.fire({
+        title: 'Hapus Mentor?',
+        text: `Hapus akun mentor ${name}? Tindakan ini akan mencabut akses penilaiannya.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.closest('form').submit();
+        }
+    });
+}
+</script>
 
 <div class="mt-12 bg-blue-50 p-8 rounded-[2rem] border border-blue-100 flex items-center gap-6">
     <div class="text-4xl">💡</div>

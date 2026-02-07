@@ -68,18 +68,26 @@
                         <input type="file" name="gambar" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"/>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-3">
                         <div>
-                            <input type="text" name="opsi_a" placeholder="Opsi A" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            <label class="block text-[10px] font-bold text-gray-400 mb-1">OPSI A</label>
+                            <input type="text" name="opsi_a" placeholder="Teks Opsi A" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-1">
+                            <input type="file" name="opsi_a_image" class="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                         </div>
                         <div>
-                            <input type="text" name="opsi_b" placeholder="Opsi B" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            <label class="block text-[10px] font-bold text-gray-400 mb-1">OPSI B</label>
+                            <input type="text" name="opsi_b" placeholder="Teks Opsi B" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-1">
+                            <input type="file" name="opsi_b_image" class="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                         </div>
                         <div>
-                            <input type="text" name="opsi_c" placeholder="Opsi C" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            <label class="block text-[10px] font-bold text-gray-400 mb-1">OPSI C</label>
+                            <input type="text" name="opsi_c" placeholder="Teks Opsi C" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-1">
+                            <input type="file" name="opsi_c_image" class="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                         </div>
                         <div>
-                            <input type="text" name="opsi_d" placeholder="Opsi D" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                            <label class="block text-[10px] font-bold text-gray-400 mb-1">OPSI D</label>
+                            <input type="text" name="opsi_d" placeholder="Teks Opsi D" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-1">
+                            <input type="file" name="opsi_d_image" class="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                         </div>
                     </div>
 
@@ -128,15 +136,34 @@
                     <a href="{{ route('admin.soal.edit', $soal->id) }}" class="text-gray-400 hover:text-blue-600 transition-colors" title="Edit">
                         ✏️
                     </a>
-                    <form action="{{ route('admin.soal.destroy', $soal->id) }}" method="POST" onsubmit="return confirm('Hapus soal ini?');" class="inline">
+                    <form action="{{ route('admin.soal.destroy', $soal->id) }}" method="POST" class="inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors" title="Hapus">
+                        <button type="button" onclick="confirmDeleteSoal(this)" class="text-gray-400 hover:text-red-600 transition-colors" title="Hapus">
                             🗑️
                         </button>
                     </form>
                 </div>
             </div>
+
+<script>
+function confirmDeleteSoal(button) {
+    Swal.fire({
+        title: 'Hapus Soal ini?',
+        text: "Tindakan ini tidak dapat dibatalkan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.closest('form').submit();
+        }
+    });
+}
+</script>
 
             <!-- Question Body -->
             <div class="flex gap-4">
@@ -155,15 +182,27 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
                         <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'a' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
                             <span class="mr-2 opacity-50">A.</span> {{ $soal->opsi_a }}
+                            @if($soal->opsi_a_image)
+                                <img src="{{ asset('storage/' . $soal->opsi_a_image) }}" class="mt-2 max-h-24 rounded border border-gray-200 cursor-pointer" onclick="window.open(this.src)">
+                            @endif
                         </div>
                         <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'b' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
                             <span class="mr-2 opacity-50">B.</span> {{ $soal->opsi_b }}
+                            @if($soal->opsi_b_image)
+                                <img src="{{ asset('storage/' . $soal->opsi_b_image) }}" class="mt-2 max-h-24 rounded border border-gray-200 cursor-pointer" onclick="window.open(this.src)">
+                            @endif
                         </div>
                         <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'c' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
                             <span class="mr-2 opacity-50">C.</span> {{ $soal->opsi_c }}
+                            @if($soal->opsi_c_image)
+                                <img src="{{ asset('storage/' . $soal->opsi_c_image) }}" class="mt-2 max-h-24 rounded border border-gray-200 cursor-pointer" onclick="window.open(this.src)">
+                            @endif
                         </div>
                         <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'd' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
                             <span class="mr-2 opacity-50">D.</span> {{ $soal->opsi_d }}
+                            @if($soal->opsi_d_image)
+                                <img src="{{ asset('storage/' . $soal->opsi_d_image) }}" class="mt-2 max-h-24 rounded border border-gray-200 cursor-pointer" onclick="window.open(this.src)">
+                            @endif
                         </div>
                     </div>
                 </div>
