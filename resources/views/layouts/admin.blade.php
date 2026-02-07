@@ -13,98 +13,118 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <style type="text/tailwindcss">
         @theme {
-            --color-primary-gold: #FFD700;
-            --color-primary-gold-hover: #ECC900;
-            --color-dark-navy: #0F172A;
-            --color-blue-brand: #2563EB;
+            --color-primary-orange: #F97316;
+            --color-primary-blue: #2563EB;
+            --color-dark-navy: #111827;
             --font-jakarta: "Plus Jakarta Sans", sans-serif;
         }
     </style>
     @stack('styles')
 </head>
-<body class="font-jakarta antialiased bg-gray-100 text-gray-800">
+<body class="font-jakarta antialiased bg-slate-50 text-slate-800">
     <div class="flex min-h-screen">
-        <!-- Sidebar Admin -->
-        <aside class="w-64 bg-dark-navy text-white flex flex-col fixed h-full z-30">
-            <div class="p-6 border-b border-gray-700">
-                <a href="#" class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-primary-gold rounded flex items-center justify-center text-dark-navy font-black">A</div>
-                    <span class="font-bold tracking-tight">Admin <span class="text-primary-gold">Panel</span></span>
+        <!-- Sidebar Admin (Light Theme: White/Orange/Blue) -->
+        <aside class="w-72 bg-white border-r border-slate-200 flex flex-col fixed h-full z-30 shadow-xl shadow-slate-200/50">
+            <div class="p-8 pb-4">
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-transform">
+                        M
+                    </div>
+                    <div>
+                        <span class="block font-black tracking-tight text-xl text-slate-800">MFLS <span class="text-orange-500">Admin</span></span>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Management Panel</span>
+                    </div>
                 </a>
             </div>
             
-            <nav class="flex-grow p-4 space-y-1">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
-                    <span>📊</span> Dashboard Admin
+            <nav class="flex-grow px-4 pb-4 space-y-1 overflow-y-auto mt-4">
+                <div class="px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">Main Menu</div>
+                
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.dashboard') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:chart-square-bold"></span> Dashboard
                 </a>
 
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
-                <a href="{{ route('admin.beasiswa.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.beasiswa.*') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all border-l-4 {{ request()->routeIs('admin.beasiswa.*') ? 'border-yellow-400' : 'border-transparent' }}">
-                    <span>🏆</span> Database Beasiswa
+                <a href="{{ route('admin.beasiswa.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.beasiswa.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.beasiswa.*') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:cup-star-bold"></span> Database Beasiswa
                 </a>
                 @endif
 
-                <div class="pt-4 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Master Data</div>
+                <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Data</div>
+                
                 @if(auth()->user()->role !== 'mentor')
-                <a href="{{ route('admin.pendaftar.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.pendaftar.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
-                    <span>🛡️</span> Seleksi Administrasi
+                <a href="{{ route('admin.pendaftar.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.pendaftar.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.pendaftar.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:shield-check-bold"></span> Seleksi Administrasi
                 </a>
-              
 
-                <div class="pt-4 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Proses Seleksi</div>
-                <a href="{{ route('admin.hasil_ujian.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.hasil_ujian.*') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
-                    <span>📖</span> Hasil Ujian
+                <a href="{{ route('admin.hasil_ujian.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.hasil_ujian.*') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.hasil_ujian.*') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:document-text-bold"></span> Hasil Ujian
                 </a>
                 @endif
 
                 @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor')
-                <a href="{{ route('admin.penilaian.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.penilaian.*') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
-                    <span>👨‍🏫</span> Penilaian Mentor
+                <a href="{{ route('admin.penilaian.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.penilaian.*') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.*') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:user-id-bold"></span> Penilaian Mentor
                 </a>
                 @endif
                 
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
-                <a href="{{ route('admin.soal.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.soal.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
-                    <span>📝</span> Bank Soal Ujian
+                <a href="{{ route('admin.soal.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.soal.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.soal.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:pen-new-square-bold"></span> Bank Soal
                 </a>
                 @endif
 
                 @if(auth()->user()->role === 'admin')
-                <div class="pt-4 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">Admin Control</div>
-                <a href="{{ route('admin.mentor.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.mentor.index') ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5' }} rounded-xl font-bold transition-all">
-                    <span>🛡️</span> Pengaturan Mentor
+                <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Control</div>
+                <a href="{{ route('admin.mentor.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.mentor.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.mentor.index') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:settings-bold"></span> Manajemen User
+                </a>
+                <a href="{{ route('pengumuman') }}" target="_blank" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all text-orange-500 hover:bg-orange-50 hover:text-orange-600">
+                    <span class="iconify text-xl text-orange-500" data-icon="solar:eye-bold"></span> Live Pengumuman
                 </a>
                 @endif
             </nav>
 
-            <div class="p-4 border-t border-gray-700">
+            <div class="p-6 border-t border-slate-100 bg-slate-50/50">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl font-semibold transition-all">
-                        <span>🚪</span> Keluar
+                    <button type="submit" class="flex items-center justify-between w-full px-5 py-3 text-red-500 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-2xl font-bold transition-all shadow-sm group">
+                        <span class="group-hover:translate-x-1 transition-transform">Keluar Sistem</span>
+                        <span class="iconify text-xl" data-icon="solar:logout-2-bold"></span>
                     </button>
                 </form>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 ml-64 p-8">
-            <header class="flex justify-between items-center mb-8">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Selamat Datang, {{ Auth::user()->nama ?? 'Admin' }}</h2>
-                    <p class="text-gray-500">Pantau perkembangan seleksi MFLS 2026 di sini.</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <span class="px-4 py-2 bg-primary-gold/20 text-primary-gold font-bold rounded-full text-sm">
-                        {{ ucfirst(Auth::user()->role ) }}
-                    </span>
-                </div>
-            </header>
-
+        <main class="flex-1 ml-72 p-8 md:p-12 min-w-0">
             @yield('content')
         </main>
     </div>
+
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                icon: 'success',
+                confirmButtonColor: '#F97316',
+                borderRadius: '1.5rem'
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                icon: 'error',
+                confirmButtonColor: '#ef4444',
+                borderRadius: '1.5rem'
+            });
+        @endif
+    </script>
 </body>
 </html>

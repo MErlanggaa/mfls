@@ -17,24 +17,57 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700">Nama Lengkap</label>
-                    <input type="text" value="{{ Auth::user()->nama }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                    <input type="text" name="nama" value="{{ $peserta->nama ?? Auth::user()->nama }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none" readonly>
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700">NISN</label>
-                    <input type="text" placeholder="Masukkan NISN" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                    <input type="text" name="nisn" value="{{ $peserta->nisn }}" placeholder="Masukkan NISN" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
                 </div>
                 <div class="space-y-2">
-                    <label class="text-sm font-bold text-gray-700">Tempat Lahir</label>
-                    <input type="text" placeholder="Kota Kelahiran" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                    <label class="text-sm font-bold text-gray-700">Nomor WhatsApp</label>
+                    <input type="text" name="no_whatsapp" value="{{ $peserta->no_whatsapp }}" placeholder="08xxxxxxxxxx" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Jenis Kelamin</label>
+                    <select name="jenis_kelamin" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                        <option value="">Pilih Jenis Kelamin</option>
+                        <option value="L" {{ $peserta->jenis_kelamin == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="P" {{ $peserta->jenis_kelamin == 'P' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700">Tanggal Lahir</label>
-                    <input type="date" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                    <input type="date" name="tgl_lahir" value="{{ $peserta->tgl_lahir }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Provinsi Domisili</label>
+                    <input type="text" name="provinsi" value="{{ $peserta->provinsi }}" placeholder="Provinsi" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Kabupaten/Kota</label>
+                    <input type="text" name="kabupaten" value="{{ $peserta->kabupaten }}" placeholder="Kabupaten/Kota" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
                 </div>
                 <div class="col-span-full space-y-2">
                     <label class="text-sm font-bold text-gray-700">Asal Sekolah</label>
-                    <input type="text" placeholder="Nama Sekolah SMA/SMK/MA" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                    <input type="text" name="nama_sekolah" value="{{ $peserta->nama_sekolah }}" placeholder="Nama Sekolah SMA/SMK/MA" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
                 </div>
+                <!-- Social Media & Additional Info -->
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Tahun Lulus</label>
+                    <input type="number" name="tahun_lulus" value="{{ $peserta->tahun_lulus }}" placeholder="2024" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div>
+                <!-- <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Link Instagram</label>
+                    <input type="text" name="link_ig" value="{{ $peserta->link_ig }}" placeholder="https://instagram.com/user" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Link TikTok</label>
+                    <input type="text" name="link_tiktok" value="{{ $peserta->link_tiktok }}" placeholder="https://tiktok.com/@user" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div> -->
+                <!-- <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Link Twibbon</label>
+                    <input type="text" name="link_twibbon" value="{{ $peserta->link_twibbon }}" placeholder="Link Postingan Twibbon" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div> -->
             </div>
 
             <div class="pt-6">

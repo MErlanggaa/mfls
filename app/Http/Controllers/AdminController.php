@@ -120,13 +120,25 @@ class AdminController extends Controller
 
         $pendaftars = $query->latest()->get();
 
-        // Auto-sync rata-rata nilai if needed
+        // Auto-sync rata-rata nilai per semester dan keseluruhan
         foreach($pendaftars as $akun) {
             if($akun->peserta && $akun->peserta->daftar) {
-                $realAvg = $akun->peserta->nilais->avg('nilai') ?? 0;
-                if(abs(($akun->peserta->daftar->rata_rata_nilai ?? 0) - $realAvg) > 0.01) {
-                    $akun->peserta->daftar->update(['rata_rata_nilai' => $realAvg]);
+                $daftar = $akun->peserta->daftar;
+                $nilais = $akun->peserta->nilais;
+                
+                // Hitung rata-rata per semester
+                $updateData = [];
+                for ($sem = 1; $sem <= 6; $sem++) {
+                    $avgSem = $nilais->where('semester', $sem)->avg('nilai') ?? 0;
+                    $updateData["avg_semester_{$sem}"] = round($avgSem, 2);
                 }
+                
+                // Hitung rata-rata keseluruhan
+                $realAvg = $nilais->avg('nilai') ?? 0;
+                $updateData['rata_rata_nilai'] = round($realAvg, 2);
+                
+                // Update jika ada perubahan
+                $daftar->update($updateData);
             }
         }
 
@@ -222,18 +234,50 @@ class AdminController extends Controller
     }
 
     // --- DATA PENDAFTAR: PENILAIAN MENTOR ---
-    public function indexPenilaian()
+    public function indexPenilaian(Request $request)
     {
         if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') return abort(403);
         
-        // Hanya tampilkan peserta yang sudah LULUS tahap administrasi
-        $pendaftars = Akun::where('role', 'pendaftar')
+        $query = Akun::where('role', 'pendaftar')
             ->whereHas('peserta.daftar', function($q) {
                 $q->where('status', 'lulus');
             })
-            ->with(['peserta.daftar', 'peserta.penilaianMentors'])
-            ->latest()
-            ->get();
+            ->with(['peserta.daftar', 'peserta.penilaianMentors']);
+
+        // Search logic
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'LIKE', "%{$search}%")
+                  ->orWhereHas('peserta', function($pq) use ($search) {
+                      $pq->where('nama_sekolah', 'LIKE', "%{$search}%")
+                        ->orWhere('kabupaten', 'LIKE', "%{$search}%")
+                        ->orWhere('provinsi', 'LIKE', "%{$search}%");
+                  });
+            });
+        }
+
+        // Sorting logic
+        $sort = $request->get('sort', 'created_at');
+        $order = $request->get('order', 'desc');
+
+        if ($sort == 'nama') {
+            $query->orderBy('nama', $order);
+        } elseif (in_array($sort, ['sekolah', 'kabupaten', 'kota'])) {
+            $field = [
+                'sekolah' => 'nama_sekolah',
+                'kabupaten' => 'kabupaten',
+                'kota' => 'provinsi'
+            ][$sort];
+
+            $query->join('peserta', 'akun.id', '=', 'peserta.akun_id')
+                  ->orderBy('peserta.'.$field, $order)
+                  ->select('akun.*');
+        } else {
+            $query->latest();
+        }
+
+        $pendaftars = $query->get();
             
         return view('admin.penilaian.index', compact('pendaftars'));
     }
@@ -501,19 +545,129 @@ class AdminController extends Controller
         return back();
     }
 
+    public function downloadZip($id)
+    {
+        $user = Akun::with(['peserta.berkas', 'peserta.sertifikats'])->findOrFail($id);
+        $peserta = $user->peserta;
+
+        if (!$peserta) {
+            return back()->with('loginError', 'Data peserta tidak ditemukan.');
+        }
+
+        $berkas = $peserta->berkas;
+        
+        $zipName = 'Dokumen_' . str_replace(' ', '_', $user->nama) . '.zip';
+        $zipPath = storage_path('app/public/temp/' . $zipName);
+        
+        // Ensure temp directory exists
+        if (!file_exists(dirname($zipPath))) {
+            mkdir(dirname($zipPath), 0755, true);
+        }
+
+        $zip = new \ZipArchive;
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+            
+            // Add Main Berkas
+            if ($berkas) {
+                $fields = [
+                    'foto' => 'Pas_Foto',
+                    'rapor1' => 'Rapor_S1',
+                    'rapor2' => 'Rapor_S2',
+                    'rapor3' => 'Rapor_S3',
+                    'rapor4' => 'Rapor_S4',
+                    'rapor5' => 'Rapor_S5',
+                    'ijazah' => 'Ijazah',
+                    'personal_statement' => 'Essay_Motivasi'
+                ];
+
+                foreach ($fields as $field => $name) {
+                    if ($berkas->$field) {
+                        $val = $berkas->$field;
+                        $decoded = json_decode($val, true);
+
+                        if (is_array($decoded)) {
+                            foreach ($decoded as $idx => $path) {
+                                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                                    $zip->addFile(storage_path('app/public/' . $path), $name . '_' . ($idx + 1) . '.' . $ext);
+                                }
+                            }
+                        } else {
+                            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($val)) {
+                                $ext = pathinfo($val, PATHINFO_EXTENSION);
+                                $zip->addFile(storage_path('app/public/' . $val), $name . '.' . $ext);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Add Sertifikats
+            if ($peserta->sertifikats) {
+                foreach ($peserta->sertifikats as $index => $sertifikat) {
+                    if (\Illuminate\Support\Facades\Storage::disk('public')->exists($sertifikat->file)) {
+                        $ext = pathinfo($sertifikat->file, PATHINFO_EXTENSION);
+                        $safeName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $sertifikat->nama);
+                        $zip->addFile(storage_path('app/public/' . $sertifikat->file), 'Sertifikat_' . $safeName . '_' . ($index+1) . '.' . $ext);
+                    }
+                }
+            }
+
+            $zip->close();
+
+            if (file_exists($zipPath)) {
+                return response()->download($zipPath)->deleteFileAfterSend(true);
+            } else {
+                return back()->with('loginError', 'Gagal membuat file ZIP (File kosong).');
+            }
+        } else {
+            return back()->with('loginError', 'Gagal membuka file ZIP.');
+        }
+    }
+
     public function exportExcel()
     {
-        $fileName = 'Master_Database_MFLS_' . date('Y-m-d_H-i') . '.csv';
+        $fileName = 'Database_Seleksi_Administrasi_' . date('Y-m-d_H-i') . '.csv';
         $pendaftars = Akun::where('role', 'pendaftar')
-                         ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas', 'peserta.penilaianMentors.mentor'])
+                         ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas'])
                          ->get();
 
+        // 1. Definisikan Mapel Core & Cari Mapel Tambahan yang ada nilainya
+        $coreNames = ['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'Informatika'];
+        $coreMatpels = \App\Models\Matpel::whereIn('nama', $coreNames)->get()->sortBy(function($m) use ($coreNames) {
+            return array_search($m->nama, $coreNames);
+        });
+
+        $allUsedMatpelIds = \App\Models\Nilai::whereIn('peserta_id', $pendaftars->pluck('peserta.id'))->pluck('matpel_id')->unique();
+        $additionalMatpels = \App\Models\Matpel::whereIn('id', $allUsedMatpelIds)
+                                              ->whereNotIn('nama', $coreNames)
+                                              ->get();
+
+        $orderedMatpels = $coreMatpels->concat($additionalMatpels);
+        
+        // 2. Definisikan Column Headers
         $columns = [
-            'Nama Lengkap', 'Email', 'NISN', 'Asal Sekolah', 'Kode Referral', 'Status Akhir', 'Nominal Beasiswa',
-            'S1 (AVG)', 'S2 (AVG)', 'S3 (AVG)', 'S4 (AVG)', 'S5 (AVG)', 'S6 (AVG)', 'TOTAL AKADEMIK',
-            'SKOR MENTOR', 'CATATAN MENTOR',
-            'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 'IJAZAH', 'VIDEO MOTIVASI'
+            'Nama Lengkap', 'Email', 'NISN', 'Asal Sekolah', 'Prodi Minat', 
+            'Kode Referral'
         ];
+        
+        // Detail Semester 1-5 sesuai request "nilai S1 apa aja terus ada avgnya"
+        for ($sem = 1; $sem <= 5; $sem++) {
+            foreach ($orderedMatpels as $mp) {
+                $columns[] = "S{$sem} - {$mp->nama}";
+            }
+            $columns[] = "Rata Rata S{$sem}";
+        }
+        
+        $columns[] = "TOTAL NILAI (S1-S5)";
+        $columns[] = "RATA RATA AKADEMIK (S1-S5)";
+        
+        // Data Berkas & Links
+        $columns = array_merge($columns, [
+            'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 
+            'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)',
+            'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK'
+        ]);
 
         $headers = [
             "Content-type"        => "text/csv",
@@ -523,7 +677,7 @@ class AdminController extends Controller
             "Expires"             => "0"
         ];
 
-        $callback = function() use($pendaftars, $columns) {
+        $callback = function() use($pendaftars, $columns, $orderedMatpels) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
@@ -533,47 +687,68 @@ class AdminController extends Controller
                 $peserta = $user->peserta;
                 $daftar = $peserta->daftar;
                 $berkas = $peserta->berkas;
-                $penilaians = $peserta->penilaianMentors;
+                $nilais = $peserta->nilais;
 
-                // 1. Identitas
+                // A. Data Identitas
                 $row = [
                     $user->nama,
                     $user->email,
                     $peserta->nisn ?? '-',
                     $daftar->asal_sekolah ?? '-',
+                    $peserta->pilihan_prodi ?? '-',
                     $daftar->kode_referral ?? '-',
-                    strtoupper($daftar->status ?? 'menunggu'),
-                    $daftar->nominal_beasiswa ?? '-',
                 ];
 
-                // 2. Akademik
-                $nilais = $peserta->nilais;
-                $totalAll = 0;
-                $countAll = 0;
-                for ($sem = 1; $sem <= 6; $sem++) {
-                    $avgSem = $nilais->where('semester', $sem)->avg('nilai') ?? 0;
-                    $row[] = number_format($avgSem, 2);
-                    if($avgSem > 0) { $totalAll += $avgSem; $countAll++; }
-                }
-                $row[] = $countAll > 0 ? number_format($totalAll / $countAll, 2) : '0';
+                // B. Data Akademik Rinci (S1-S5)
+                $grandTotalAcademic = 0;
+                $totalMatpelCount = 0;
 
-                // 3. Mentor
-                $row[] = number_format($penilaians->avg('nilai') ?? 0, 2);
-                $catatanMentor = [];
-                foreach($penilaians as $p) {
-                    $catatanMentor[] = "[{$p->mentor->nama}]: {$p->catatan}";
+                for ($sem = 1; $sem <= 5; $sem++) {
+                    $semSum = 0;
+                    $semCount = 0;
+                    
+                    foreach ($orderedMatpels as $mp) {
+                        $nilaiObj = $nilais->where('semester', $sem)->where('matpel_id', $mp->id)->first();
+                        $val = $nilaiObj ? $nilaiObj->nilai : 0;
+                        
+                        $row[] = $val > 0 ? $val : '-';
+                        
+                        if ($val > 0) {
+                            $semSum += $val;
+                            $semCount++;
+                            $grandTotalAcademic += $val;
+                            $totalMatpelCount++;
+                        }
+                    }
+                    // AVG Per Semester (Sesuai perhitungan di Web Dashboard)
+                    $row[] = $semCount > 0 ? number_format($semSum / $semCount, 2) : '0';
                 }
-                $row[] = implode(' | ', $catatanMentor);
 
-                // 4. Berkas (8 separate columns with Links for clicking)
+                // C. Summary Akhir S1-S5
+                $row[] = number_format($grandTotalAcademic, 2);
+                $row[] = $totalMatpelCount > 0 ? number_format($grandTotalAcademic / $totalMatpelCount, 2) : '0';
+
+                // D. Link Berkas
                 $row[] = ($berkas && $berkas->foto) ? url('storage/'.$berkas->foto) : '-';
-                $row[] = ($berkas && $berkas->rapor1) ? url('storage/'.$berkas->rapor1) : '-';
-                $row[] = ($berkas && $berkas->rapor2) ? url('storage/'.$berkas->rapor2) : '-';
-                $row[] = ($berkas && $berkas->rapor3) ? url('storage/'.$berkas->rapor3) : '-';
-                $row[] = ($berkas && $berkas->rapor4) ? url('storage/'.$berkas->rapor4) : '-';
-                $row[] = ($berkas && $berkas->rapor5) ? url('storage/'.$berkas->rapor5) : '-';
+                for ($s = 1; $s <= 5; $s++) {
+                    $field = "rapor{$s}";
+                    $row[] = ($berkas && $berkas->$field) ? url('storage/'.$berkas->$field) : '-';
+                }
                 $row[] = ($berkas && $berkas->ijazah) ? url('storage/'.$berkas->ijazah) : '-';
-                $row[] = ($berkas && $berkas->motivasi_video) ? url('storage/'.$berkas->motivasi_video) : '-';
+                $row[] = ($berkas && $berkas->personal_statement) ? url('storage/'.$berkas->personal_statement) : '-';
+                
+                // Khusus DKV: Surat Buta Warna
+                if (($peserta->pilihan_prodi ?? '') == 'Desain Komunikasi Visual') {
+                    $row[] = ($berkas && $berkas->surat_buta_warna) ? url('storage/'.$berkas->surat_buta_warna) : 'BELUM UNGGAH';
+                } else {
+                    $row[] = 'N/A';
+                }
+
+                // E. Media Links
+                $row[] = ($berkas && $berkas->motivasi_video) ? $berkas->motivasi_video : '-';
+                $row[] = $peserta->link_twibbon ?? '-';
+                $row[] = $peserta->link_ig ?? '-';
+                $row[] = $peserta->link_tiktok ?? '-';
 
                 fputcsv($file, $row);
             }

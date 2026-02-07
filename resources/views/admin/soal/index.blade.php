@@ -128,15 +128,34 @@
                     <a href="{{ route('admin.soal.edit', $soal->id) }}" class="text-gray-400 hover:text-blue-600 transition-colors" title="Edit">
                         ✏️
                     </a>
-                    <form action="{{ route('admin.soal.destroy', $soal->id) }}" method="POST" onsubmit="return confirm('Hapus soal ini?');" class="inline">
+                    <form action="{{ route('admin.soal.destroy', $soal->id) }}" method="POST" class="inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors" title="Hapus">
+                        <button type="button" onclick="confirmDeleteSoal(this)" class="text-gray-400 hover:text-red-600 transition-colors" title="Hapus">
                             🗑️
                         </button>
                     </form>
                 </div>
             </div>
+
+<script>
+function confirmDeleteSoal(button) {
+    Swal.fire({
+        title: 'Hapus Soal ini?',
+        text: "Tindakan ini tidak dapat dibatalkan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.closest('form').submit();
+        }
+    });
+}
+</script>
 
             <!-- Question Body -->
             <div class="flex gap-4">

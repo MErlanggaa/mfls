@@ -32,7 +32,7 @@
             
             <!-- Right Column: Hero Image -->
             <div class="relative lg:block hidden scroll-fade-right">
-                <img src="{{ asset('icon/mnclogo.jpg') }}" alt="Placeholder: Student Hero Image" class="w-full h-auto rounded-3xl shadow-2xl">
+                <img src="{{ asset('icon/mnclogo.jpg') }}" alt="Placeholder: Student Hero Image" class="w-full h-auto rounded-3xl ">
             </div>
         </div>
     </div>
@@ -254,14 +254,10 @@
             @php
                 $timeline = [
                     ['title' => 'Pendaftaran', 'date' => '15 Maret - 04 Mei 2026', 'active' => true],
-                    ['title' => 'Seleksi Administrasi Berkas', 'date' => '04 - 05 Mei 2026', 'active' => false],
                     ['title' => 'Pengumuman Hasil seleksi Administrasi', 'date' => '7 Mei 2026', 'active' => false],
-                    ['title' => 'Seminar Series 1 & 2', 'date' => '13 & 16 Mei 2026', 'active' => false],
                     ['title' => 'TPS, LBI & Pemetaan Diri', 'date' => '18 Mei 2026', 'active' => false],
-                    ['title' => 'Interview User & Presentasi Mini Project', 'date' => '20 Mei 2026', 'active' => false],
                     ['title' => 'Company Visit & Sit In Class', 'date' => '21 - 22 Mei 2026', 'active' => false],
-                    ['title' => 'Interview Dosen', 'date' => '23 Mei 2026', 'active' => false],
-                    ['title' => 'Pengumuman Hasil Akhir Beasiswa', 'date' => '27 Mei 2026', 'active' => false],
+                    ['title' => 'Interview ', 'date' => '23 Mei 2026', 'active' => false],
                     ['title' => 'Awarding', 'date' => '30 Mei 2026', 'active' => false],
                 ];
             @endphp
@@ -299,6 +295,73 @@
                 </div>
             </div>
             @endforeach
+        </div>
+    </div>
+</div>
+
+<!-- Exclusive MNC Group Benefits -->
+<div class="py-24 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+             <div class="scroll-fade-left">
+                <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-4 text-center lg:text-left">Benefit Eksklusif</h3>
+                <h2 class="text-4xl md:text-5xl font-black text-dark-navy mb-10 leading-tight text-center lg:text-left">Melangkah Lebih Jauh Bersama MNC Group</h2>
+                
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Benefit 1: Internship -->
+                    <div class="flex flex-col sm:flex-row gap-6 p-8 bg-gray-50 rounded-[2.5rem] hover:shadow-2xl hover:shadow-primary-yellow/10 transition-all duration-500 border border-transparent hover:border-primary-yellow/20 group">
+                        <div class="w-20 h-20 bg-primary-yellow rounded-3xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-yellow/30 group-hover:rotate-6 transition-transform">
+                             <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-black text-dark-navy mb-3">Internship MNC Group</h4>
+                            <p class="text-gray-600 leading-relaxed font-medium">Dapatkan kesempatan magang eksklusif di ekosistem MNC Group seperti RCTI, MNC Media, MNC Bank, dan 100+ unit bisnis lainnya.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefit 2: Job Opportunity -->
+                    <div class="flex flex-col sm:flex-row gap-6 p-8 bg-gray-50 rounded-[2.5rem] hover:shadow-2xl hover:shadow-dark-navy/10 transition-all duration-500 border border-transparent hover:border-dark-navy/10 group">
+                        <div class="w-20 h-20 bg-dark-navy rounded-3xl flex items-center justify-center shrink-0 shadow-lg shadow-dark-navy/30 group-hover:-rotate-6 transition-transform">
+                             <svg class="w-10 h-10 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-black text-dark-navy mb-3">Prioritas Rekrutmen</h4>
+                            <p class="text-gray-600 leading-relaxed font-medium">Menjadi prioritas utama dalam proses rekrutmen karyawan bagi lulusan terbaik program beasiswa MFLS di seluruh jaringan MNC Group.</p>
+                        </div>
+                    </div>
+                </div>
+             </div>
+             
+             <!-- Right Side Decoration -->
+             <div class="relative scroll-fade-right">
+                <div class="absolute -top-10 -right-10 w-80 h-80 bg-primary-yellow/20 rounded-full blur-[100px]"></div>
+                <div class="absolute -bottom-10 -left-10 w-80 h-80 bg-dark-navy/10 rounded-full blur-[100px]"></div>
+                
+                <div class="relative z-10 glass-card p-4 rounded-[3.5rem] bg-white border border-gray-100 shadow-2xl">
+                    <img src="https://placehold.co/600x800/111827/F2B451?text=Impact+Beyond+Education&font=montserrat" alt="Internship MNC Group" class="rounded-[3rem] w-full object-cover h-[550px]">
+                    
+                    <!-- Floating Badge -->
+                    <div class="absolute top-12 -left-8 bg-white p-5 rounded-3xl shadow-2xl border border-gray-50 flex items-center gap-4 animate-bounce-slow">
+                        <div class="w-12 h-12 bg-primary-yellow rounded-2xl flex items-center justify-center text-white shrink-0">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Career Path</p>
+                            <p class="font-bold text-dark-navy">MNC Group Ecosystem</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Bottom Info Box -->
+                    <div class="absolute bottom-8 left-8 right-8 bg-dark-navy/90 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-primary-yellow rounded-2xl flex items-center justify-center text-dark-navy shrink-0 font-black">
+                                +100
+                            </div>
+                            <p class="font-bold text-white text-sm">Direct access to more than 100 business units within MNC Group network.</p>
+                        </div>
+                    </div>
+                </div>
+             </div>
         </div>
     </div>
 </div>
@@ -348,7 +411,7 @@
                             ['icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'title' => 'Rapor Semester 1-5', 'format' => 'PDF (Max 5MB)'],
                             ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Pas Foto Terbaru', 'format' => 'JPG/PNG (3x4 cm)'],
                             ['icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'title' => 'Sertifikat Prestasi', 'format' => 'PDF (Jika ada)'],
-                            ['icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', 'title' => 'Essay Motivasi', 'format' => 'PDF (Max 500 kata)']
+                            ['icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', 'title' => 'Personal Statement', 'format' => 'PDF (Max 500 kata)']
                         ] as $document)
                         <div class="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all duration-300">
                             <div class="w-10 h-10 bg-primary-yellow/20 rounded-lg flex items-center justify-center shrink-0">
@@ -403,9 +466,11 @@
                 
                 @foreach([
                     ['icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Beasiswa Penuh', 'desc' => 'Pembebasan biaya pendidikan 100% hingga lulus'],
-                    ['icon' => 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z', 'title' => 'Beasiswa Parsial', 'desc' => 'Potongan biaya sesuai persentase yang diberikan'],
-                    ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Pilihan Kampus', 'desc' => 'Jakarta Barat Dan Jakarta Pusat'],
-                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Pengembangan Diri', 'desc' => 'Kegiatan volunteering dan proyek sosial'],                ] as $benefit)
+                    ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Internship MNC Group', 'desc' => 'Kesempatan magang eksklusif di berbagai perusahaan MNC Group'],
+                    ['icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => 'Peluang Karir', 'desc' => 'Prioritas rekrutmen bagi lulusan terbaik di lingkungan MNC Group'],
+                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Pengembangan Diri', 'desc' => 'Program pembinaan karakter dan skill kepemimpinan'],
+                    ['icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', 'title' => 'Networking Luas', 'desc' => 'Terhubung dengan profesional dan pemimpin industri'],
+                ] as $benefit)
                 <div class="flex gap-4 items-start">
                     <div class="w-12 h-12 bg-primary-yellow rounded-full flex items-center justify-center shrink-0">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $benefit['icon'] }}"/></svg>
@@ -634,6 +699,20 @@
 .stat-item.visible {
     opacity: 1;
     transform: scale(1);
+}
+@keyframes bounce-slow {
+    0%, 100% {
+        transform: translateY(-10%);
+        animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 3s infinite;
 }
 </style>
 

@@ -3,32 +3,32 @@
 @section('content')
 <div class="mb-8 flex justify-between items-center">
     <div>
-        <h2 class="text-2xl font-black text-gray-800">Database Terpusat & Beasiswa</h2>
-        <p class="text-gray-500">Rekapitulasi seluruh data: Administrasi, Akademik, dan Penilaian Mentor.</p>
+        <h2 class="text-2xl font-black text-slate-800">Database Terpusat & Beasiswa</h2>
+        <p class="text-slate-500">Rekapitulasi seluruh data: Administrasi, Akademik, dan Penilaian Mentor.</p>
     </div>
     <div class="flex gap-2">
         <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-green-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-green-200 hover:bg-green-700 transition-all uppercase tracking-widest flex items-center gap-2">
-            <span>📊</span> Export Laporan
+            <span class="iconify text-lg" data-icon="solar:file-download-bold"></span> Export Laporan
         </a>
     </div>
 </div>
 
 <!-- Advanced Filter Panel -->
-<div class="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm mb-8">
+<div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-8">
     <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div>
             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Pencarian Cepat</label>
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / Kode Ref..." 
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-600 outline-none text-sm font-bold">
+                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
         </div>
         <div>
             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Asal Sekolah</label>
             <input type="text" name="sekolah" value="{{ request('sekolah') }}" placeholder="Semua Sekolah..." 
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-600 outline-none text-sm font-bold">
+                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
         </div>
         <div>
             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Rank Nilai (Min)</label>
-            <select name="min_nilai" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-600 outline-none text-sm font-bold">
+            <select name="min_nilai" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
                 <option value="">Semua Nilai</option>
                 <option value="90" {{ request('min_nilai') == '90' ? 'selected' : '' }}>Nilai > 90</option>
                 <option value="80" {{ request('min_nilai') == '80' ? 'selected' : '' }}>Nilai > 80</option>
@@ -38,19 +38,21 @@
         <div>
             <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kelengkapan Berkas</label>
             <div class="flex gap-2">
-                <select name="berkas_status" class="flex-grow px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-blue-600 outline-none text-sm font-bold">
+                <select name="berkas_status" class="flex-grow px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
                     <option value="">Semua Status</option>
                     <option value="lengkap" {{ request('berkas_status') == 'lengkap' ? 'selected' : '' }}>Berkas Lengkap</option>
                     <option value="belum" {{ request('berkas_status') == 'belum' ? 'selected' : '' }}>Belum Lengkap</option>
                 </select>
-                <button type="submit" class="bg-blue-600 text-white px-4 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">🔍</button>
+                <button type="submit" class="bg-blue-600 text-white px-4 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 flex items-center justify-center">
+                    <span class="iconify" data-icon="solar:magnifer-linear"></span>
+                </button>
             </div>
         </div>
     </form>
 </div>
 
 <!-- Database Table -->
-<div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+<div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-sm text-left">
             <thead class="bg-slate-50 text-slate-400 font-black uppercase text-[10px] tracking-[0.2em]">
@@ -58,6 +60,7 @@
                     <th class="px-6 py-5">Mahasiswa / Pendaftar</th>
                     <th class="px-6 py-5 text-center">Sekolah</th>
                     <th class="px-6 py-5 text-center">Kode Ref</th>
+                    <th class="px-6 py-5 text-left">Minat Prodi</th>
                     <th class="px-6 py-5 text-center">Akademik</th>
                     <th class="px-6 py-5 text-center">Mentor Eval</th>
                     <th class="px-6 py-5 text-center">Berkas</th>
@@ -65,7 +68,7 @@
                     <th class="px-6 py-5 text-right">Opsi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50 uppercase">
+            <tbody class="divide-y divide-slate-50 uppercase">
                 @foreach($pendaftars as $akun)
                 @php
                     $avgAkademik = $akun->peserta->daftar->rata_rata_nilai ?? 0;
@@ -84,6 +87,8 @@
                         if($b->ijazah) $countBerkas++;
                         if($b->motivasi_video) $countBerkas++;
                     }
+                    // Prodi Logic
+                    $isDKV = ($akun->peserta->pilihan_prodi ?? '') == 'Desain Komunikasi Visual';
                 @endphp
                 <tr class="hover:bg-slate-50/50 transition-all group">
                     <td class="px-6 py-4">
@@ -98,6 +103,22 @@
                             {{ $akun->peserta->daftar->kode_referral ?? '-' }}
                         </span>
                     </td>
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-800 text-xs">{{ $akun->peserta->pilihan_prodi ?? '-' }}</div>
+                         @if($isDKV)
+                            <div class="mt-1 flex items-center gap-1.5">
+                                @if(!empty($akun->peserta->berkas->surat_buta_warna))
+                                    <span class="px-2 py-0.5 bg-green-50 text-green-600 rounded-md text-[9px] font-black flex items-center gap-1 border border-green-100">
+                                        <span class="iconify" data-icon="solar:eye-bold"></span> OK
+                                    </span>
+                                @else
+                                    <span class="px-2 py-0.5 bg-red-50 text-red-600 rounded-md text-[9px] font-black flex items-center gap-1 border border-red-100">
+                                        <span class="iconify" data-icon="solar:close-circle-bold"></span> Miss
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
+                    </td>
                     <td class="px-6 py-4 text-center">
                         <span class="text-base font-black text-slate-800">{{ number_format($avgAkademik, 2) }}</span>
                     </td>
@@ -105,7 +126,7 @@
                         @if($mentorScore > 0)
                             <a href="{{ route('admin.beasiswa.show', $akun->id) }}" class="group/note">
                                 <span class="text-base font-black text-blue-600 group-hover/note:underline">{{ number_format($mentorScore, 2) }}</span>
-                                <span class="block text-[8px] font-black text-blue-400 opacity-0 group-hover/note:opacity-100 transition-all">LIHAT CATATAN 📝</span>
+                                <span class="block text-[8px] font-black text-blue-400 opacity-0 group-hover/note:opacity-100 transition-all">LIHAT CATATAN </span>
                             </a>
                         @else
                             <span class="text-[10px] font-black text-slate-300 tracking-tighter">BELUM DINILAI</span>
@@ -113,7 +134,9 @@
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($countBerkas == $totalBerkas)
-                            <span class="w-8 h-8 bg-green-50 text-green-600 rounded-full inline-flex items-center justify-center font-black">✓</span>
+                            <span class="w-6 h-6 bg-green-50 text-green-600 rounded-full inline-flex items-center justify-center font-black text-xs">
+                                <span class="iconify" data-icon="solar:check-circle-bold"></span>
+                            </span>
                         @else
                             <div class="text-[9px] font-black text-red-400">{{ $countBerkas }}/{{ $totalBerkas }} FILE</div>
                         @endif
@@ -128,8 +151,8 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 text-right">
-                        <a href="{{ route('admin.beasiswa.show', $akun->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-dark-navy text-white rounded-xl text-[9px] font-black hover:bg-black transition-all shadow-sm uppercase tracking-widest leading-none">
-                            FULL REPORT 📑
+                        <a href="{{ route('admin.beasiswa.show', $akun->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-[9px] font-black hover:bg-blue-700 transition-all shadow-sm uppercase tracking-widest leading-none">
+                            FULL REPORT <span class="iconify text-xs" data-icon="solar:document-text-bold"></span>
                         </a>
                     </td>
                 </tr>

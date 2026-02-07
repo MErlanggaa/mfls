@@ -32,7 +32,7 @@
     </div>
 
     <div class="flex items-center">
-        <input type="checkbox" id="remember" class="w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
+        <input type="checkbox" id="remember" name="remember" class="w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
         <label for="remember" class="ml-3 text-sm font-semibold text-gray-600">Ingat Saya</label>
     </div>
 

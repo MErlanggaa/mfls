@@ -3,73 +3,108 @@
 @push('styles')
 <style>
     @media print {
-        /* Sembunyikan Sidebar dan Elemen UI */
-        aside, header, nav, .flex.gap-2, a[href*="index"], button {
+        /* Hide all UI elements */
+        aside, header, nav, .flex.gap-2, a[href*="index"], button, .no-print {
             display: none !important;
         }
 
-        /* Reset Layout ke Full Width */
+        /* Essential Reset */
         main {
-            margin-left: 0 !important;
+            margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
+            background: white !important;
         }
 
         body {
             background: white !important;
-            font-size: 12pt !important;
-        }
-
-        /* Rapihkan Kontainer */
-        .grid {
-            display: block !important;
-        }
-        
-        .lg\:col-span-2, .space-y-8, .space-y-6 {
-            width: 100% !important;
-        }
-
-        .bg-white, .bg-slate-50, .bg-blue-50, .bg-emerald-50, .bg-dark-navy {
-            background-color: white !important;
+            font-family: 'Times New Roman', serif; /* Classic formal look for print */
             color: black !important;
-            border: 1px solid #eee !important;
+        }
+
+        /* Report Header Styling */
+        .grid { display: block !important; }
+        .lg\:col-span-2, .space-y-8, .space-y-6, .space-y-4 { width: 100% !important; }
+
+        /* Card conversions for print */
+        .bg-white, .bg-slate-50, .bg-blue-50, .bg-emerald-50, .bg-dark-navy, .bg-orange-50 {
+            background-color: transparent !important;
+            border: 1px solid #ccc !important;
+            border-radius: 8px !important;
+            padding: 15px !important;
+            margin-bottom: 15px !important;
             box-shadow: none !important;
-            border-radius: 1rem !important;
-            padding: 20px !important;
-            margin-bottom: 20px !important;
+            page-break-inside: avoid;
         }
 
-        .text-white, .text-slate-400, .text-blue-600, .text-emerald-600 {
+        /* Color preservation for important text */
+        .text-blue-600, .text-emerald-600, .text-orange-600, .text-slate-800, .text-slate-900 {
             color: black !important;
+            font-weight: bold !important;
         }
 
-        /* Paksa Page Break jika perlu */
-        .page-break {
-            page-break-before: always;
+        /* Photo sizing for print */
+        .w-32.h-40 {
+            width: 2.5cm !important;
+            height: 3.5cm !important;
+            border: 1px solid black !important;
         }
 
-        /* Khusus Header Raport agar tetap di atas */
-        h2, p.text-gray-500 {
-            display: block !important;
-            text-align: center;
+        /* Score boxes */
+        .p-4.bg-slate-50, .p-4.bg-blue-50, .p-4.bg-emerald-50 {
+            display: inline-block !important;
+            width: 30% !important;
+            margin-right: 2% !important;
+            border: 1px solid #ddd !important;
+        }
+
+        /* Hidden decisions form in print, only show summary */
+        form { display: none !important; }
+        .decision-summary-print { display: block !important; }
+
+        .page-break { page-break-before: always; }
+        
+        /* Signature Area */
+        .print-only { display: block !important; }
+        
+        /* Official Header */
+        .official-header {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 3px double black;
+            padding-bottom: 15px;
             margin-bottom: 30px;
         }
     }
+
+    /* Web view styles for the signature and header (hidden by default) */
+    .print-only, .official-header, .decision-summary-print { display: none; }
+
 </style>
 @endpush
 
 @section('content')
-<div class="mb-8 flex items-center justify-between">
+<!-- Official Print Header -->
+<div class="official-header flex-col text-center">
+    <h1 class="text-2xl font-bold">MNC UNIVERSITY</h1>
+    <h2 class="text-lg font-bold">FUTURE LEADER SCHOLARSHIP (MFLS) 2026</h2>
+    <p class="text-sm">Jln. Panjang No. 37, Kedoya Utara, Kebon Jeruk, Jakarta Barat</p>
+    <div class="mt-4 border-t-2 border-black w-full"></div>
+    <h3 class="mt-4 text-xl font-black underline uppercase">LAPORAN HASIL SELEKSI FINAL</h3>
+</div>
+
+<div class="mb-8 flex items-center justify-between no-print">
     <div>
-        <h2 class="text-2xl font-black text-gray-800">Master Report Beasiswa</h2>
-        <p class="text-gray-500">Rekapitulasi Final: {{ $user->nama }}</p>
+        <h2 class="text-2xl font-black text-slate-800">Master Report Beasiswa</h2>
+        <p class="text-slate-500">Rekapitulasi Final: {{ $user->nama }}</p>
     </div>
     <div class="flex gap-2">
         <button onclick="window.print()" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest flex items-center gap-2">
-            <span>🖨️</span> Cetak Laporan
+            <span class="iconify" data-icon="solar:printer-bold"></span> Cetak Laporan
         </button>
-        <a href="{{ route('admin.beasiswa.index') }}" class="px-6 py-3 bg-dark-navy text-white rounded-2xl text-xs font-black shadow-lg hover:bg-black transition-all uppercase tracking-widest">
-            Kembali Ke Database
+        <a href="{{ route('admin.beasiswa.index') }}" class="px-6 py-3 bg-blue-600 text-white rounded-2xl text-xs font-black shadow-lg hover:bg-blue-700 transition-all uppercase tracking-widest flex items-center gap-2">
+            <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali Ke Database
         </a>
     </div>
 </div>
@@ -77,17 +112,22 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <!-- Kolom Utama: Data Detail -->
     <div class="lg:col-span-2 space-y-8">
-        <!-- 1. Identitas Global -->
-        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-40 h-40 bg-blue-50/50 rounded-full translate-x-1/2 -translate-y-1/2"></div>
-            <div class="flex items-center gap-8 mb-10 relative">
-                <div class="w-24 h-24 bg-blue-600 text-white rounded-[1.5rem] flex items-center justify-center text-4xl font-black shadow-xl">
-                    {{ substr($user->nama, 0, 1) }}
+        <!-- 1. Identitas Global dengan Foto 3x4 -->
+        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-orange-50/50 rounded-full translate-x-1/2 -translate-y-1/2"></div>
+            <div class="flex items-start gap-8 mb-10 relative">
+                @php
+                    $fotoPath = $user->peserta->berkas->foto ?? null;
+                    $fotoUrl = $fotoPath ? asset('storage/' . $fotoPath) : "https://ui-avatars.com/api/?name=".urlencode($user->nama)."&background=F97316&color=fff";
+                @endphp
+                <!-- Foto 3x4 -->
+                <div class="w-32 h-40 rounded-2xl overflow-hidden shadow-xl border-4 border-white ring-2 ring-orange-100 flex-shrink-0">
+                    <img src="{{ $fotoUrl }}" class="w-full h-full object-cover" alt="Foto {{ $user->nama }}">
                 </div>
-                <div>
-                    <h1 class="text-3xl font-black text-slate-900 mb-1">{{ $user->nama }}</h1>
-                    <div class="flex items-center gap-3">
-                        <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-widest">{{ $user->peserta->nisn }}</span>
+                <div class="flex-grow">
+                    <h1 class="text-3xl font-black text-slate-900 mb-2">{{ $user->nama }}</h1>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <span class="px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-orange-100">{{ $user->peserta->nisn }}</span>
                         <span class="text-slate-300 font-bold">•</span>
                         <span class="text-slate-500 font-bold uppercase text-[10px] tracking-widest">{{ $user->peserta->nama_sekolah }}</span>
                         <span class="text-slate-300 font-bold">•</span>
@@ -113,9 +153,11 @@
         </div>
 
         <!-- 2. CATATAN MENTOR (Penting!) -->
-        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100">
+        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100">
             <h3 class="text-xl font-black text-slate-800 mb-8 flex items-center gap-4">
-                <span class="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center text-xl">👨‍🏫</span>
+                <span class="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center">
+                    <span class="iconify text-2xl" data-icon="solar:user-id-bold"></span>
+                </span>
                 Evaluasi Kualitatif Mentor
             </h3>
             
@@ -169,9 +211,11 @@
         </div>
 
         <!-- 3. Rincian Akademik (Summary) -->
-        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
             <h3 class="text-xl font-black text-slate-800 mb-8 flex items-center gap-4">
-                <span class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-xl">📚</span>
+                <span class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                    <span class="iconify text-2xl" data-icon="solar:book-bold"></span>
+                </span>
                 Summary Akademik
             </h3>
             <div class="overflow-x-auto">
@@ -204,9 +248,11 @@
         </div>
 
         <!-- 4. Hasil Ujian (Baru!) -->
-        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
             <h3 class="text-xl font-black text-slate-800 mb-8 flex items-center gap-4">
-                <span class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl">📝</span>
+                <span class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+                    <span class="iconify text-2xl" data-icon="solar:pen-new-square-bold"></span>
+                </span>
                 Hasil Seleksi Online
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -233,9 +279,9 @@
 
     <!-- Sidebar: Keputusan Final -->
     <div class="space-y-8">
-        <div class="bg-dark-navy p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
-            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full"></div>
-            <h3 class="text-lg font-black mb-10 uppercase tracking-[0.2em] text-slate-400">Final Decision</h3>
+        <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/10 rounded-full"></div>
+            <h3 class="text-lg font-black mb-10 uppercase tracking-[0.2em] text-orange-100">Final Decision</h3>
             
             <form action="{{ route('admin.beasiswa.update', $user->id) }}" method="POST" class="space-y-6 relative">
                 @csrf
@@ -261,26 +307,93 @@
                     <p class="text-[9px] font-bold text-emerald-400 text-center uppercase tracking-tighter">Peserta ini otomatis dinyatakan LULUS karena telah melewati seleksi berkas.</p>
                 </div>
 
-                <button type="submit" class="w-full py-4 bg-yellow-400 text-blue-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-lg shadow-yellow-400/20">
+                <button type="button" onclick="confirmUpdate(this)" class="w-full py-4 bg-yellow-400 text-blue-900 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-yellow-500 transition-all shadow-lg shadow-yellow-400/20">
                     SIMPAN CAPAIAN BEASISWA
                 </button>
             </form>
         </div>
 
-        <div class="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm">
+        <div class="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm">
             <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 italic">Links Berkas & Media</h4>
             <div class="space-y-4">
                 @if($user->peserta->link_ig)
-                    <a href="{{ $user->peserta->link_ig }}" target="_blank" class="flex items-center gap-3 text-xs font-black text-slate-700 hover:text-blue-600 transition-all uppercase">📸 Profile Instagram ↗</a>
+                    <a href="{{ $user->peserta->link_ig }}" target="_blank" class="flex items-center gap-3 text-xs font-black text-slate-700 hover:text-blue-600 transition-all uppercase">
+                        <span class="iconify" data-icon="solar:camera-bold"></span> Profile Instagram ↗
+                    </a>
                 @endif
                 @if($user->peserta->link_tiktok)
-                    <a href="{{ $user->peserta->link_tiktok }}" target="_blank" class="flex items-center gap-3 text-xs font-black text-slate-700 hover:text-blue-600 transition-all uppercase">🎵 Konten TikTok ↗</a>
+                    <a href="{{ $user->peserta->link_tiktok }}" target="_blank" class="flex items-center gap-3 text-xs font-black text-slate-700 hover:text-blue-600 transition-all uppercase">
+                        <span class="iconify" data-icon="solar:music-note-bold"></span> Konten TikTok ↗
+                    </a>
                 @endif
                 @if($user->peserta->berkas && $user->peserta->berkas->motivasi_video)
-                    <a href="{{ asset('storage/'.$user->peserta->berkas->motivasi_video) }}" target="_blank" class="flex items-center gap-3 text-xs font-black text-blue-600 uppercase border-t border-slate-50 pt-4">🎬 Video Motivasi ↗</a>
+                    <a href="{{ $user->peserta->berkas->motivasi_video }}" target="_blank" class="flex items-center gap-3 text-xs font-black text-purple-600 uppercase border-t border-slate-50 pt-4">
+                        <span class="iconify" data-icon="solar:videocamera-bold"></span> Video Motivasi ↗
+                    </a>
                 @endif
             </div>
         </div>
     </div>
 </div>
+
+<!-- Print Only: Decision Summary & Signature Area -->
+<div class="print-only mt-12">
+    <div class="bg-white border border-black p-6 rounded-lg mb-10">
+        <h3 class="text-lg font-bold border-b border-black pb-2 mb-4 uppercase">Keputusan Panitia Seleksi</h3>
+        <div class="grid grid-cols-2 gap-8">
+            <div>
+                <p class="text-sm">Status Kelulusan: <strong>LULUS SELEKSI</strong></p>
+                <p class="text-sm">Capaian Beasiswa: <strong>{{ $user->peserta->daftar->nominal_beasiswa ?? 'Menunggu Keputusan' }}</strong></p>
+            </div>
+            <div>
+                <p class="text-sm">Skor Akhir: <strong>{{ number_format(($rataRataAkademik + $rataRataMentor)/2, 2) }}</strong></p>
+                <p class="text-sm">Tanggal Sidang: <strong>{{ date('d F Y') }}</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-between mt-20">
+        <div class="text-center w-48">
+            <p class="text-sm mb-20">Peserta Beasiswa,</p>
+            <div class="border-b border-black w-full mb-1"></div>
+            <p class="text-sm font-bold">{{ strtoupper($user->nama) }}</p>
+        </div>
+        <div class="text-center w-64">
+            <p class="text-sm mb-20">Jakarta, {{ date('d F Y') }}<br>Ketua Panitia Seleksi MFLS,</p>
+            <div class="border-b border-black w-full mb-1"></div>
+            <p class="text-sm font-bold">DR. (HC) HARY TANOESOEDIBJO</p>
+            <p class="text-[10px]">Chairman MNC Group</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmUpdate(button) {
+    const nominal = document.querySelector('select[name="nominal_beasiswa"]').value;
+    if(!nominal) {
+        Swal.fire({
+            title: 'Oppss!',
+            text: 'Harap pilih persentase beasiswa terlebih dahulu.',
+            icon: 'error',
+            confirmButtonColor: '#F97316'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Simpan Keputusan?',
+        text: `Peserta akan diberikan beasiswa sebesar ${nominal}. Data ini akan menjadi acuan pengumuman final.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#F97316',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            button.closest('form').submit();
+        }
+    });
+}
+</script>
 @endsection

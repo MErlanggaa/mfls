@@ -24,6 +24,12 @@ class Daftar extends Model
         'kode_referral',
         'status',
         'rata_rata_nilai',
+        'avg_semester_1',
+        'avg_semester_2',
+        'avg_semester_3',
+        'avg_semester_4',
+        'avg_semester_5',
+        'avg_semester_6',
         'nominal_beasiswa',
     ];
 

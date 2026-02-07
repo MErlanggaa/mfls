@@ -20,8 +20,8 @@ class PengumumanController extends Controller
                 'nisn.digits' => 'NISN harus terdiri dari 10 digit angka'
             ]);
             
-            // Cari peserta berdasarkan NISN
-            $peserta = Peserta::where('nisn', $request->nisn)->first();
+            // Cari peserta berdasarkan NISN dengan relasi daftar
+            $peserta = Peserta::with('daftar')->where('nisn', $request->nisn)->first();
             
             // Jika peserta tidak ditemukan, tetap tampilkan form dengan pesan error
             if (!$peserta) {
