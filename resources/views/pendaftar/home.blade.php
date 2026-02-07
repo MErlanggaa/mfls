@@ -89,11 +89,9 @@
                 
                 <div class="space-y-6 text-gray-700 leading-relaxed mb-12">
                     <p>
-                        Mncu Futur Leader Scholarship (MFLS) merupakan program beasiswa 100% Full sampai lulus di Media Nusantara Citra University yang dipersembahkan oleh Gala Edukasi Nusantara (GEN) untuk siswa-siswi kelas 12 yang berprestasi dan memiliki semangat juang tinggi.
-                    </p>
+MNCU Future Leader Scholarship adalah program beasiswa yang diberikan oleh MNC Group kepada calon mahasiswa berprestasi untuk melanjutkan pendidikan di MNC University. Program ini bertujuan untuk mencetak generasi muda yang unggul, inovatif, dan berjiwa kepemimpinan, dengan memberikan kesempatan kuliah hingga 100%.                    </p>
                     <p>
-                        Pada tahun pertamanya, MFLS bernama Forum OSIS Jawa Barat (FOJB) Scholarship di mana hanya menjaring siswa/i SMA se-Jawa Barat. Pada tahun 2022, program ini berkembang menjadi skala nasional melalui kolaborasi dengan Forum OSIS dan Forum Anak se-Indonesia untuk menjaring putra-putri terbaik bangsa dari berbagai provinsi.
-                    </p>
+Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetapi juga akses pada lingkungan pendidikan yang berkualitas dan terintegrasi dengan dunia industri, khususnya di bidang bisnis, keuangan, teknologi, dan industri kreatif.                    </p>
                 </div>
                 
                 <!-- Stats Grid 2x2 -->
@@ -756,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Real-time Countdown Timer
 (function() {
-    const targetDate = new Date("2026-04-13T23:59:59+07:00").getTime();
+    const targetDate = new Date("2026-05-04T23:59:59+07:00").getTime();
     
     function updateCountdown() {
         const now = new Date().getTime();
