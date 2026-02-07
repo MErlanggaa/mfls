@@ -89,11 +89,9 @@
                 
                 <div class="space-y-6 text-gray-700 leading-relaxed mb-12">
                     <p>
-                        Mncu Futur Leader Scholarship (MFLS) merupakan program beasiswa 100% Full sampai lulus di Media Nusantara Citra University yang dipersembahkan oleh Gala Edukasi Nusantara (GEN) untuk siswa-siswi kelas 12 yang berprestasi dan memiliki semangat juang tinggi.
-                    </p>
+MNCU Future Leader Scholarship adalah program beasiswa yang diberikan oleh MNC Group kepada calon mahasiswa berprestasi untuk melanjutkan pendidikan di MNC University. Program ini bertujuan untuk mencetak generasi muda yang unggul, inovatif, dan berjiwa kepemimpinan, dengan memberikan kesempatan kuliah hingga 100%.                    </p>
                     <p>
-                        Pada tahun pertamanya, MFLS bernama Forum OSIS Jawa Barat (FOJB) Scholarship di mana hanya menjaring siswa/i SMA se-Jawa Barat. Pada tahun 2022, program ini berkembang menjadi skala nasional melalui kolaborasi dengan Forum OSIS dan Forum Anak se-Indonesia untuk menjaring putra-putri terbaik bangsa dari berbagai provinsi.
-                    </p>
+Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetapi juga akses pada lingkungan pendidikan yang berkualitas dan terintegrasi dengan dunia industri, khususnya di bidang bisnis, keuangan, teknologi, dan industri kreatif.                    </p>
                 </div>
                 
                 <!-- Stats Grid 2x2 -->
@@ -382,7 +380,8 @@
                 
                 <div class="space-y-6">
                     @foreach([
-                        ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Siswa Kelas 12', 'desc' => 'Siswa/i kelas 12 SMA/SMK/MA sederajat tahun ajaran 2025/2026'],
+                        ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Gap Year', 'desc' => 'Siswa/i Lulusan tahun ajaran 2023/2024/2025'],
+                         ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Siswa Kelas 12', 'desc' => 'Siswa/i kelas 12 SMA/SMK/MA sederajat tahun ajaran 2025/2026'],
                         ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Prestasi Akademik', 'desc' => 'Memiliki nilai rapor rata-rata minimal 80 atau peringkat 10 besar di kelas'],
                         ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Domisili', 'desc' => 'Berdomisili di wilayah Jabodetabek atau bersedia tinggal di Jakarta selama kuliah'],
                         ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Komitmen', 'desc' => 'Bersedia mengikuti seluruh rangkaian seleksi dan program pembinaan'],
@@ -755,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Real-time Countdown Timer
 (function() {
-    const targetDate = new Date("2026-04-13T23:59:59+07:00").getTime();
+    const targetDate = new Date("2026-05-04T23:59:59+07:00").getTime();
     
     function updateCountdown() {
         const now = new Date().getTime();

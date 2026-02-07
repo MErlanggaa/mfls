@@ -21,7 +21,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
             // Periksa role user
@@ -48,7 +48,9 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $remember = $request->has('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             
             // Blokir jika pendaftar mencoba login admin
@@ -82,7 +84,6 @@ class AuthController extends Controller
             'provinsi' => 'required|string',
             'kabupaten' => 'required|string',
             'nama_sekolah' => 'required|string',
-            'telp_sekolah' => 'nullable|string',
             'kode_referral' => 'nullable|string|max:50',
             'g-recaptcha-response' => 'required',
         ], [
@@ -122,7 +123,6 @@ class AuthController extends Controller
                 'provinsi' => $request->provinsi,
                 'kabupaten' => $request->kabupaten,
                 'nama_sekolah' => $request->nama_sekolah,
-                'telp_sekolah' => $request->telp_sekolah,
                 'nisn' => $request->nisn,
             ]);
 
@@ -136,7 +136,6 @@ class AuthController extends Controller
                 'provinsi' => $request->provinsi,
                 'kabupaten' => $request->kabupaten,
                 'asal_sekolah' => $request->nama_sekolah,
-                'no_sekolah' => $request->telp_sekolah ?? '-', // Default if null
                 'kode_referral' => $request->kode_referral,
             ]);
         });

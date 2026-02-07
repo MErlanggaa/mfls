@@ -30,24 +30,31 @@
 
                     @php
                         $inputFiles = [
-                            ['name' => 'foto', 'label' => 'Pas Foto 4x6', 'desc' => 'Latar belakang merah, JPG/PNG', 'multiple' => false],
-                            ['name' => 'rapor1', 'label' => 'Rapor Semester 1', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true],
-                            ['name' => 'rapor2', 'label' => 'Rapor Semester 2', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true],
-                            ['name' => 'rapor3', 'label' => 'Rapor Semester 3', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true],
-                            ['name' => 'rapor4', 'label' => 'Rapor Semester 4', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true],
-                            ['name' => 'rapor5', 'label' => 'Rapor Semester 5', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true],
-                            ['name' => 'ijazah', 'label' => 'Ijazah / SKL', 'desc' => 'Jika sudah ada', 'multiple' => false],
+                            ['name' => 'foto', 'label' => 'Pas Foto 4x6', 'desc' => 'Latar belakang merah, JPG/PNG', 'multiple' => false, 'optional' => false],
+                            ['name' => 'rapor1', 'label' => 'Rapor Semester 1', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
+                            ['name' => 'rapor2', 'label' => 'Rapor Semester 2', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
+                            ['name' => 'rapor3', 'label' => 'Rapor Semester 3', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
+                            ['name' => 'rapor4', 'label' => 'Rapor Semester 4', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
+                            ['name' => 'rapor5', 'label' => 'Rapor Semester 5', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
+                            ['name' => 'ijazah', 'label' => 'Ijazah / SKL', 'desc' => 'Jika sudah ada (Opsional)', 'multiple' => false, 'optional' => true],
                         ];
                     @endphp
                     
                     @foreach($inputFiles as $file)
-                    <div class="flex items-center justify-between p-6 bg-gray-50 rounded-[2rem] border border-gray-100 group hover:border-primary-gold/50 transition-all mb-4">
+                    <div class="flex items-center justify-between p-6 bg-gray-50 rounded-[2rem] border border-gray-100 group hover:border-primary-gold/50 transition-all mb-4 {{ $file['optional'] ? 'bg-blue-50/30' : '' }}">
                         <div class="flex items-center gap-6">
                             <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-{{ $berkas && $berkas->{$file['name']} ? 'green-500' : 'gray-400' }} group-hover:text-primary-gold transition-colors shadow-sm">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900">{{ $file['label'] }}</h4>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-gray-900">{{ $file['label'] }}</h4>
+                                    @if($file['optional'])
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">Opsional</span>
+                                    @else
+                                        <span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">Wajib</span>
+                                    @endif
+                                </div>
                                 <p class="text-xs text-gray-500 font-medium">{{ $file['desc'] }}</p>
                                 @if($berkas && $berkas->{$file['name']})
                                     @php
@@ -58,7 +65,11 @@
                                     @endphp
                                     <p class="text-xs text-green-600 font-bold mt-1">✓ {{ $count }} File terunggah</p>
                                 @else
-                                    <p class="text-xs text-red-400 font-medium mt-1">Belum diunggah</p>
+                                    @if($file['optional'])
+                                        <p class="text-xs text-blue-500 font-medium mt-1">Belum diunggah (Tidak wajib)</p>
+                                    @else
+                                        <p class="text-xs text-red-400 font-medium mt-1">Belum diunggah</p>
+                                    @endif
                                 @endif
                             </div>
                         </div>

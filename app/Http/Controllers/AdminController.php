@@ -155,6 +155,13 @@ class AdminController extends Controller
             }
         }
 
+        // Urutkan berdasarkan nilai rata-rata dari tertinggi ke terendah
+        $pendaftars = $pendaftars->sortByDesc(function($akun) {
+            return $akun->peserta && $akun->peserta->daftar 
+                ? $akun->peserta->daftar->rata_rata_nilai 
+                : 0;
+        });
+
         return view('admin.pendaftar.index', compact('pendaftars'));
     }
 
@@ -190,7 +197,14 @@ class AdminController extends Controller
             });
         }
 
-        $pendaftars = $query->latest()->get();
+        $pendaftars = $query->get();
+
+        // Urutkan berdasarkan nilai rata-rata dari tertinggi ke terendah
+        $pendaftars = $pendaftars->sortByDesc(function($akun) {
+            return $akun->peserta && $akun->peserta->daftar 
+                ? $akun->peserta->daftar->rata_rata_nilai 
+                : 0;
+        });
 
         return view('admin.beasiswa.index', compact('pendaftars'));
     }
@@ -426,9 +440,13 @@ class AdminController extends Controller
             'pertanyaan' => 'required',
             'gambar' => 'nullable|image|max:2048',
             'opsi_a' => 'required',
+            'opsi_a_image' => 'nullable|image|max:2048',
             'opsi_b' => 'required',
+            'opsi_b_image' => 'nullable|image|max:2048',
             'opsi_c' => 'required',
+            'opsi_c_image' => 'nullable|image|max:2048',
             'opsi_d' => 'required',
+            'opsi_d_image' => 'nullable|image|max:2048',
             'kunci_jawaban' => 'required|in:a,b,c,d',
             'bobot' => 'required|integer'
         ]);
@@ -438,6 +456,14 @@ class AdminController extends Controller
         if ($request->hasFile('gambar')) {
             $path = $request->file('gambar')->store('soal_images', 'public');
             $data['gambar'] = $path;
+        }
+
+        // Handle option images
+        foreach (['a', 'b', 'c', 'd'] as $option) {
+            $fieldName = "opsi_{$option}_image";
+            if ($request->hasFile($fieldName)) {
+                $data[$fieldName] = $request->file($fieldName)->store('soal_images', 'public');
+            }
         }
 
         \App\Models\Soal::create($data);
@@ -462,9 +488,13 @@ class AdminController extends Controller
             'pertanyaan' => 'required',
             'gambar' => 'nullable|image|max:2048',
             'opsi_a' => 'required',
+            'opsi_a_image' => 'nullable|image|max:2048',
             'opsi_b' => 'required',
+            'opsi_b_image' => 'nullable|image|max:2048',
             'opsi_c' => 'required',
+            'opsi_c_image' => 'nullable|image|max:2048',
             'opsi_d' => 'required',
+            'opsi_d_image' => 'nullable|image|max:2048',
             'kunci_jawaban' => 'required|in:a,b,c,d',
             'bobot' => 'required|integer'
         ]);
@@ -480,6 +510,19 @@ class AdminController extends Controller
             $data['gambar'] = $request->file('gambar')->store('soal_images', 'public');
         }
 
+        // Handle option images
+        foreach (['a', 'b', 'c', 'd'] as $option) {
+            $fieldName = "opsi_{$option}_image";
+            if ($request->hasFile($fieldName)) {
+                // Delete old image if exists
+                $oldImageField = "opsi_{$option}_image";
+                if ($soal->$oldImageField) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$oldImageField);
+                }
+                $data[$fieldName] = $request->file($fieldName)->store('soal_images', 'public');
+            }
+        }
+
         $soal->update($data);
 
         return redirect()->route('admin.soal.index', ['ujian_id' => $soal->ujian_id])->with('success', 'Soal berhasil diperbarui!');
@@ -489,9 +532,20 @@ class AdminController extends Controller
     {
         if (auth()->user()->role === 'mentor') return abort(403);
         $soal = \App\Models\Soal::findOrFail($id);
+        
+        // Delete main question image
         if ($soal->gambar) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
         }
+        
+        // Delete option images
+        foreach (['a', 'b', 'c', 'd'] as $option) {
+            $fieldName = "opsi_{$option}_image";
+            if ($soal->$fieldName) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$fieldName);
+            }
+        }
+        
         $this->logAktivitas('Hapus Soal', 'Soal', $id, "Menghapus soal: " . substr($soal->pertanyaan, 0, 30));
         $soal->delete();
 

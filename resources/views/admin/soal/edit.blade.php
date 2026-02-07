@@ -41,22 +41,42 @@
                 @endif
             </div>
             
-            <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-500 mb-1">Opsi A</label>
-                    <input type="text" name="opsi_a" value="{{ $soal->opsi_a }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+                    <input type="text" name="opsi_a" value="{{ $soal->opsi_a }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm mb-2">
+                    <input type="file" name="opsi_a_image" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                    @if($soal->opsi_a_image)
+                        <div class="text-xs text-gray-400 mt-1">Gambar saat ini:</div>
+                        <img src="{{ asset('storage/' . $soal->opsi_a_image) }}" class="mt-1 h-20 rounded border border-gray-200">
+                    @endif
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 mb-1">Opsi B</label>
-                    <input type="text" name="opsi_b" value="{{ $soal->opsi_b }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+                    <input type="text" name="opsi_b" value="{{ $soal->opsi_b }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm mb-2">
+                    <input type="file" name="opsi_b_image" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                    @if($soal->opsi_b_image)
+                        <div class="text-xs text-gray-400 mt-1">Gambar saat ini:</div>
+                        <img src="{{ asset('storage/' . $soal->opsi_b_image) }}" class="mt-1 h-20 rounded border border-gray-200">
+                    @endif
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 mb-1">Opsi C</label>
-                    <input type="text" name="opsi_c" value="{{ $soal->opsi_c }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+                    <input type="text" name="opsi_c" value="{{ $soal->opsi_c }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm mb-2">
+                    <input type="file" name="opsi_c_image" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                    @if($soal->opsi_c_image)
+                        <div class="text-xs text-gray-400 mt-1">Gambar saat ini:</div>
+                        <img src="{{ asset('storage/' . $soal->opsi_c_image) }}" class="mt-1 h-20 rounded border border-gray-200">
+                    @endif
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 mb-1">Opsi D</label>
-                    <input type="text" name="opsi_d" value="{{ $soal->opsi_d }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+                    <input type="text" name="opsi_d" value="{{ $soal->opsi_d }}" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm mb-2">
+                    <input type="file" name="opsi_d_image" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                    @if($soal->opsi_d_image)
+                        <div class="text-xs text-gray-400 mt-1">Gambar saat ini:</div>
+                        <img src="{{ asset('storage/' . $soal->opsi_d_image) }}" class="mt-1 h-20 rounded border border-gray-200">
+                    @endif
                 </div>
             </div>
 
