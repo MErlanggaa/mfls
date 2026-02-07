@@ -45,7 +45,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/hasil-ujian', [App\Http\Controllers\AdminController::class, 'indexHasilUjian'])->name('admin.hasil_ujian.index');
     
     Route::get('/admin/penilaian-mentor', [App\Http\Controllers\AdminController::class, 'indexPenilaian'])->name('admin.penilaian.index');
-    Route::get('/admin/penilaian-mentor/{id}', [App\Http\Controllers\AdminController::class, 'showPenilaian'])->name('admin.penilaian.show');
+    Route::get('/admin/penilaian-akademik', [App\Http\Controllers\AdminController::class, 'indexPenilaianAkademik'])->name('admin.penilaian.akademik.index');
+    Route::get('/admin/penilaian-detail/{id}', [App\Http\Controllers\AdminController::class, 'showPenilaian'])->name('admin.penilaian.show');
+    Route::post('/admin/penilaian-akademik/{id}', [App\Http\Controllers\AdminController::class, 'storePenilaianAkademik'])->name('admin.penilaian.akademik.store');
 
     Route::get('/admin/mentor', [App\Http\Controllers\AdminController::class, 'indexMentor'])->name('admin.mentor.index');
 

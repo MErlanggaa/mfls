@@ -3,14 +3,16 @@
 @section('content')
 <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
-        <h2 class="text-2xl font-black text-slate-800">Evaluasi Peserta oleh Mentor</h2>
+        <h2 class="text-2xl font-black text-slate-800">
+            {{ $type === 'mentor' ? 'Evaluasi Peserta (Mentor)' : 'Evaluasi Peserta (Akademik)' }}
+        </h2>
         <p class="text-slate-500 font-medium">Berikan penilaian kualitatif untuk setiap peserta yang lolos seleksi berkas.</p>
     </div>
 </div>
 
 <!-- Filter & Search Section -->
 <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm mb-8">
-    <form action="{{ route('admin.penilaian.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
+    <form action="{{ $type === 'mentor' ? route('admin.penilaian.index') : route('admin.penilaian.akademik.index') }}" method="GET" class="flex flex-col lg:flex-row gap-4">
         <div class="relative flex-grow">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                 <span class="iconify" data-icon="solar:magnifer-bold"></span>
@@ -74,15 +76,25 @@
                 </div>
 
                 @php
-                    $myScore = $akun->peserta->penilaianMentors->where('mentor_id', auth()->id())->first();
+                    if($type === 'mentor') {
+                        $myScore = $akun->peserta->penilaianMentors->where('mentor_id', auth()->id())->first();
+                        $label = 'Skor Mentor';
+                        $scoreVal = $myScore ? $myScore->nilai : null;
+                        $themeColor = 'blue';
+                    } else {
+                        $myScore = $akun->peserta->penilaianAkademiks->where('penilai_id', auth()->id())->first();
+                        $label = 'Skor Akademik';
+                        $scoreVal = $myScore ? $myScore->total_akhir : null;
+                        $themeColor = 'orange';
+                    }
                 @endphp
 
                 <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
                     @if($myScore)
                         <div class="flex items-center justify-between font-black">
                             <div>
-                                <p class="text-[10px] text-slate-400 uppercase tracking-widest leading-none mb-1">Skor Mentor</p>
-                                <span class="text-3xl text-blue-600">{{ $myScore->nilai }}</span>
+                                <p class="text-[10px] text-slate-400 uppercase tracking-widest leading-none mb-1">{{ $label }}</p>
+                                <span class="text-3xl text-{{ $themeColor }}-600">{{ $scoreVal }}</span>
                             </div>
                             <div class="flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl border border-emerald-100 shadow-sm">
                                 <span class="iconify" data-icon="solar:verified-check-bold"></span>
@@ -98,7 +110,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('admin.penilaian.show', $akun->id) }}" class="block w-full py-4 rounded-2xl text-center text-[10px] font-black shadow-lg transition-all uppercase tracking-[0.2em] flex items-center justify-center gap-3 {{ $myScore ? 'bg-slate-50 text-slate-600 border border-slate-100 hover:bg-slate-100' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200' }}">
+            <a href="{{ route('admin.penilaian.show', ['id' => $akun->id, 'type' => $type]) }}" class="block w-full py-4 rounded-2xl text-center text-[10px] font-black shadow-lg transition-all uppercase tracking-[0.2em] flex items-center justify-center gap-3 {{ $myScore ? 'bg-slate-50 text-slate-600 border border-slate-100 hover:bg-slate-100' : 'bg-'.$themeColor.'-600 text-white hover:bg-'.$themeColor.'-700 shadow-'.$themeColor.'-200' }}">
                 <span class="iconify" data-icon="{{ $myScore ? 'solar:pen-bold' : 'solar:play-bold' }}"></span>
                 {{ $myScore ? 'Ubah Penilaian' : 'Mulai Evaluasi' }}
             </a>

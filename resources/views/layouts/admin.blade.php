@@ -66,8 +66,14 @@
                 @endif
 
                 @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor')
-                <a href="{{ route('admin.penilaian.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.penilaian.*') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
-                    <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.*') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:user-id-bold"></span> Penilaian Mentor
+                <a href="{{ route('admin.penilaian.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.penilaian.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:user-id-bold"></span> Penilaian Mentor
+                </a>
+                @endif
+                
+                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
+                <a href="{{ route('admin.penilaian.akademik.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.penilaian.akademik.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.akademik.*') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:medal-ribbon-bold"></span> Penilaian Akademik
                 </a>
                 @endif
                 

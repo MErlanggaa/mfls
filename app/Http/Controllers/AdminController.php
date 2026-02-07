@@ -98,7 +98,8 @@ class AdminController extends Controller
     {
         if (auth()->user()->role === 'mentor') return abort(403);
 
-        $query = Akun::where('role', 'pendaftar')->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas']);
+        $query = Akun::where('role', 'pendaftar')
+            ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -118,26 +119,38 @@ class AdminController extends Controller
             });
         }
 
-        $pendaftars = $query->latest()->get();
+        // Sorting Logic
+        if ($request->get('sort') === 'nilai_high') {
+            $query->join('peserta', 'akun.id', '=', 'peserta.akun_id')
+                  ->join('daftar', 'peserta.id', '=', 'daftar.peserta_id')
+                  ->orderBy('daftar.rata_rata_nilai', 'desc')
+                  ->select('akun.*');
+        } elseif ($request->get('sort') === 'nilai_low') {
+            $query->join('peserta', 'akun.id', '=', 'peserta.akun_id')
+                  ->join('daftar', 'peserta.id', '=', 'daftar.peserta_id')
+                  ->orderBy('daftar.rata_rata_nilai', 'asc')
+                  ->select('akun.*');
+        } else {
+            $query->latest();
+        }
+
+        $pendaftars = $query->get();
 
         // Auto-sync rata-rata nilai per semester dan keseluruhan
+        // (Keep the sync logic but maybe limit it or optimize if needed)
         foreach($pendaftars as $akun) {
             if($akun->peserta && $akun->peserta->daftar) {
                 $daftar = $akun->peserta->daftar;
                 $nilais = $akun->peserta->nilais;
                 
-                // Hitung rata-rata per semester
                 $updateData = [];
                 for ($sem = 1; $sem <= 6; $sem++) {
                     $avgSem = $nilais->where('semester', $sem)->avg('nilai') ?? 0;
                     $updateData["avg_semester_{$sem}"] = round($avgSem, 2);
                 }
                 
-                // Hitung rata-rata keseluruhan
                 $realAvg = $nilais->avg('nilai') ?? 0;
                 $updateData['rata_rata_nilai'] = round($realAvg, 2);
-                
-                // Update jika ada perubahan
                 $daftar->update($updateData);
             }
         }
@@ -191,13 +204,15 @@ class AdminController extends Controller
             'peserta.berkas', 
             'peserta.nilais.matpel', 
             'peserta.penilaianMentors.mentor',
+            'peserta.penilaianAkademiks.penilai',
             'peserta.nilaiUjians.ujian'
         ])->findOrFail($id);
 
         $rataRataAkademik = $user->peserta->nilais->avg('nilai') ?? 0;
         $rataRataMentor = $user->peserta->penilaianMentors->avg('nilai') ?? 0;
+        $rataRataAkademikFinal = $user->peserta->penilaianAkademiks->avg('total_nilai') ?? 0;
 
-        return view('admin.beasiswa.show', compact('user', 'rataRataAkademik', 'rataRataMentor'));
+        return view('admin.beasiswa.show', compact('user', 'rataRataAkademik', 'rataRataMentor', 'rataRataAkademikFinal'));
     }
 
     public function updateBeasiswa(Request $request, $id)
@@ -244,6 +259,26 @@ class AdminController extends Controller
             })
             ->with(['peserta.daftar', 'peserta.penilaianMentors']);
 
+        return $this->processPenilaianIndex($query, $request, 'mentor');
+    }
+
+    // --- DATA PENDAFTAR: PENILAIAN AKADEMIK ---
+    public function indexPenilaianAkademik(Request $request)
+    {
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin') return abort(403);
+        
+        $query = Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar', function($q) {
+                $q->where('status', 'lulus');
+            })
+            ->with(['peserta.daftar', 'peserta.penilaianAkademiks']);
+
+        return $this->processPenilaianIndex($query, $request, 'akademik');
+    }
+
+    private function processPenilaianIndex($query, $request, $type)
+    {
+
         // Search logic
         if ($request->filled('search')) {
             $search = $request->search;
@@ -278,15 +313,76 @@ class AdminController extends Controller
         }
 
         $pendaftars = $query->get();
-            
-        return view('admin.penilaian.index', compact('pendaftars'));
+
+        return view('admin.penilaian.index', compact('pendaftars', 'type'));
     }
 
-    public function showPenilaian($id)
+    public function showPenilaian($id, Request $request)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') return abort(403);
-        $user = Akun::with(['peserta.daftar', 'peserta.penilaianMentors.mentor'])->findOrFail($id);
-        return view('admin.penilaian.show', compact('user'));
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik') return abort(403);
+        
+        $type = $request->get('type', 'mentor'); // Default to mentor if not specified
+        $user = Akun::with(['peserta.daftar', 'peserta.penilaianMentors.mentor', 'peserta.penilaianAkademiks.penilai'])->findOrFail($id);
+        
+        return view('admin.penilaian.show', compact('user', 'type'));
+    }
+
+    public function storePenilaianAkademik(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin') {
+            return back()->with('loginError', 'Hanya bagian Akademik yang dapat memberikan penilaian ini.');
+        }
+
+        $request->validate([
+            'dosen_kompetensi' => 'required|numeric|min:0|max:100',
+            'dosen_motivasi' => 'required|numeric|min:0|max:100',
+            'dosen_wawasan' => 'required|numeric|min:0|max:100',
+            'dosen_karir' => 'required|numeric|min:0|max:100',
+            'dosen_integritas' => 'required|numeric|min:0|max:100',
+            
+            'mhs_leadership' => 'required|numeric|min:0|max:100',
+            'mhs_organisasi' => 'required|numeric|min:0|max:100',
+            'mhs_etika' => 'required|numeric|min:0|max:100',
+            'mhs_adaptasi' => 'required|numeric|min:0|max:100',
+            'mhs_komitmen' => 'required|numeric|min:0|max:100',
+            'catatan' => 'nullable|string'
+        ]);
+
+        $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
+        
+        $totalDosen = ($request->dosen_kompetensi + $request->dosen_motivasi + $request->dosen_wawasan + 
+                       $request->dosen_karir + $request->dosen_integritas) / 5;
+        
+        $totalMhs = ($request->mhs_leadership + $request->mhs_organisasi + $request->mhs_etika + 
+                     $request->mhs_adaptasi + $request->mhs_komitmen) / 5;
+
+        $totalAkhir = ($totalDosen + $totalMhs) / 2;
+
+        \App\Models\PenilaianAkademik::updateOrCreate(
+            ['peserta_id' => $peserta->id, 'penilai_id' => auth()->id()],
+            [
+                'dosen_kompetensi' => $request->dosen_kompetensi,
+                'dosen_motivasi' => $request->dosen_motivasi,
+                'dosen_wawasan' => $request->dosen_wawasan,
+                'dosen_karir' => $request->dosen_karir,
+                'dosen_integritas' => $request->dosen_integritas,
+                'total_dosen' => round($totalDosen, 2),
+                
+                'mhs_leadership' => $request->mhs_leadership,
+                'mhs_organisasi' => $request->mhs_organisasi,
+                'mhs_etika' => $request->mhs_etika,
+                'mhs_adaptasi' => $request->mhs_adaptasi,
+                'mhs_komitmen' => $request->mhs_komitmen,
+                'total_mhs' => round($totalMhs, 2),
+                
+                'total_akhir' => round($totalAkhir, 2),
+                'catatan' => $request->catatan,
+            ]
+        );
+
+        $this->logAktivitas('Input Penilaian Akademik', 'Peserta', $peserta->id, "Memberikan penilaian akademik untuk {$peserta->nama}");
+
+        return back()->with('success', 'Penilaian akademik berhasil disimpan!');
     }
 
     // --- PENGATURAN: MANAJEMEN MENTOR ---

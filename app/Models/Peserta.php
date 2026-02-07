@@ -70,6 +70,11 @@ class Peserta extends Model
         return $this->hasMany(PenilaianMentor::class, 'peserta_id');
     }
 
+    public function penilaianAkademiks()
+    {
+        return $this->hasMany(PenilaianAkademik::class, 'peserta_id');
+    }
+
     public function keputusan()
     {
         return $this->hasOne(Keputusan::class, 'peserta_id');

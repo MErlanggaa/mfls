@@ -43,14 +43,29 @@
             <p class="text-slate-500 text-sm font-medium mt-1">Kelola dan verifikasi berkas pendaftar.</p>
         </div>
         <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <form action="" method="GET" id="sortForm" class="flex items-center gap-2">
+                    @if(request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+                    <select name="sort" onchange="this.form.submit()" class="pl-4 pr-10 py-3 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-xs font-black uppercase tracking-widest outline-none transition-all cursor-pointer">
+                        <option value="">Sortir: Default</option>
+                        <option value="nilai_high" {{ request('sort') == 'nilai_high' ? 'selected' : '' }}>Nilai Tertinggi</option>
+                        <option value="nilai_low" {{ request('sort') == 'nilai_low' ? 'selected' : '' }}>Nilai Terendah</option>
+                    </select>
+                </form>
+            </div>
             <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all uppercase tracking-widest flex items-center gap-2">
                 <span class="iconify text-lg" data-icon="solar:file-download-bold"></span>
-                Export Excel
+                Export
             </a>
             <form method="GET" class="relative w-full md:w-auto">
+                @if(request('sort'))
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                @endif
                 <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" data-icon="solar:magnifer-linear"></span>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama / Sekolah..." 
-                    class="pl-12 pr-6 py-3 w-full md:w-80 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-sm font-bold transition-all outline-none text-slate-600">
+                    class="pl-12 pr-6 py-3 w-full md:w-64 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-sm font-bold transition-all outline-none text-slate-600">
             </form>
         </div>
     </div>
