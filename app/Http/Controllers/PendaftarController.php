@@ -113,6 +113,7 @@ class PendaftarController extends Controller
             'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
+            'rapor6.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'ijazah' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'personal_statement' => 'nullable|mimes:pdf,doc,docx|max:5120',
             'motivasi_video' => 'nullable|url|max:500', // Changed to URL
@@ -124,7 +125,7 @@ class PendaftarController extends Controller
         // Handle Berkas
         $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
 
-        $raporFields = ['rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5'];
+        $raporFields = ['rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'rapor6'];
         $singleFields = ['foto', 'ijazah', 'personal_statement'];
 
         // Handle Single Files
@@ -178,7 +179,7 @@ class PendaftarController extends Controller
         if($request->hasFile('personal_statement')) $uploaded[] = 'Personal Statement';
         if($request->filled('motivasi_video')) $uploaded[] = 'Link Video Motivasi';
         
-        for($i=1;$i<=5;$i++) {
+        for($i=1;$i<=6;$i++) {
             if($request->hasFile('rapor'.$i)) $uploaded[] = "Scan Rerata S$i";
         }
         

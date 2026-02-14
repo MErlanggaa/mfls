@@ -48,11 +48,11 @@
                     @if(request('search'))
                         <input type="hidden" name="search" value="{{ request('search') }}">
                     @endif
-                    <select name="sort" onchange="this.form.submit()" class="pl-4 pr-10 py-3 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-xs font-black uppercase tracking-widest outline-none transition-all cursor-pointer">
+                    <!-- <select name="sort" onchange="this.form.submit()" class="pl-4 pr-10 py-3 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-xs font-black uppercase tracking-widest outline-none transition-all cursor-pointer">
                         <option value="">Sortir: Default</option>
                         <option value="nilai_high" {{ request('sort') == 'nilai_high' ? 'selected' : '' }}>Nilai Tertinggi</option>
                         <option value="nilai_low" {{ request('sort') == 'nilai_low' ? 'selected' : '' }}>Nilai Terendah</option>
-                    </select>
+                    </select> -->
                 </form>
             </div>
             <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all uppercase tracking-widest flex items-center gap-2">

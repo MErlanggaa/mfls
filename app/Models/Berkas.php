@@ -19,6 +19,7 @@ class Berkas extends Model
         'rapor3',
         'rapor4',
         'rapor5',
+        'rapor6',
         'ijazah',
         'surat_rekom',
         'personal_statement',

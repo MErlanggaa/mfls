@@ -56,7 +56,6 @@ class DatabaseSeeder extends Seeder
             'provinsi' => $peserta->provinsi,
             'kabupaten' => $peserta->kabupaten,
             'asal_sekolah' => $peserta->nama_sekolah,
-            'no_sekolah' => $peserta->telp_sekolah,
             'status' => 'menunggu',
             'rata_rata_nilai' => 88.5, // Dummy awal
         ]);

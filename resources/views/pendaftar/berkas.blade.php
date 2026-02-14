@@ -19,6 +19,44 @@
             <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
+                <!-- Info Akademik Check -->
+                <div class="mb-8 p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-start gap-4">
+                    <div class="mt-1 min-w-[32px] w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-blue-900 mb-1">Info Status Akademik</h4>
+                        <p class="text-sm text-blue-800">
+                            Tahun Kelulusan Anda terbaca: <strong>{{ $peserta->daftar->tahun_lulus ?? 'Belum Diisi' }}</strong>
+                        </p>
+                        @php $tahunLulus = (int) ($peserta->daftar->tahun_lulus ?? 2026); @endphp
+                        
+                        @if($tahunLulus < 2026)
+                            <div class="mt-2">
+                                <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full border border-purple-200">
+                                    ✅ Kategori: ALUMNI
+                                </span>
+                                <p class="text-xs text-purple-600 mt-2 font-medium">
+                                    Karena Anda lulus sebelum 2026, Anda <strong>WAJIB</strong> mengunggah Rapor Semester 1 sampai 6.
+                                    <br>Kolom upload Semester 6 telah dimunculkan di bawah.
+                                </p>
+                            </div>
+                        @else
+                            <div class="mt-2">
+                                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">
+                                    🎓 Kategori: SISWA KELAS 12 / GAP YEAR 2026
+                                </span>
+                                <p class="text-xs text-blue-600 mt-2 font-medium">
+                                    Anda wajib mengunggah Rapor Semester 1 sampai 5.
+                                </p>
+                            </div>
+                        @endif
+                        <p class="text-[10px] text-gray-400 mt-3 italic border-t border-blue-100 pt-2">
+                            *Jika tahun lulus salah (misal tertulis 2026 padahal sudah lulus), silakan perbaiki di menu <strong>Biodata Diri (Isian Formulir Pendaftaran)</strong>.
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Main Documents -->
                 <div class="mb-10">
                     <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
@@ -36,8 +74,15 @@
                             ['name' => 'rapor3', 'label' => 'Rapor Semester 3', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
                             ['name' => 'rapor4', 'label' => 'Rapor Semester 4', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
                             ['name' => 'rapor5', 'label' => 'Rapor Semester 5', 'desc' => 'Scan PDF/JPG (Bisa > 1 file)', 'multiple' => true, 'optional' => false],
-                            ['name' => 'ijazah', 'label' => 'Ijazah / SKL', 'desc' => 'Jika sudah ada (Opsional)', 'multiple' => false, 'optional' => true],
                         ];
+
+                        $tahunLulus = (int) ($peserta->daftar->tahun_lulus ?? 2026);
+                        
+                        if ($tahunLulus < 2026) {
+                            $inputFiles[] = ['name' => 'rapor6', 'label' => 'Rapor Semester 6', 'desc' => 'Wajib bagi lulusan sebelum 2026', 'multiple' => true, 'optional' => false];
+                        }
+
+                        $inputFiles[] = ['name' => 'ijazah', 'label' => 'Ijazah / SKL', 'desc' => 'Jika sudah ada (Opsional)', 'multiple' => false, 'optional' => true];
                     @endphp
                     
                     @foreach($inputFiles as $file)
@@ -113,6 +158,56 @@
                             </ul>
                         </div>
                         @endif
+                    </div>
+                </div>
+
+                <!-- Personal Statement Section -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                        <div class="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        Personal Statement
+                    </h3>
+                    
+                    <div class="p-6 bg-green-50/50 rounded-[2rem] border border-green-100 mb-4">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600 mb-3">
+                                    <strong class="text-gray-900">Personal Statement</strong> adalah esai singkat tentang diri Anda, motivasi, dan rencana masa depan. 
+                                    Silakan download template, isi, dan upload kembali dalam format PDF.
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
+                                    <span class="text-xs text-gray-500">Format: PDF | Max: 5MB</span>
+                                </div>
+                            </div>
+                            <a href="{{ asset('icon/Template Personal Statement Peserta MFLS.docx') }}" download class="ml-4 flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-5 py-3 rounded-xl transition-all shadow-md hover:shadow-lg hover:scale-105">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Download Template
+                            </a>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-5 bg-white rounded-2xl border border-green-200">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-{{ $berkas && $berkas->personal_statement ? 'green-600' : 'gray-400' }}">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Upload Personal Statement (PDF)</h4>
+                                    @if($berkas && $berkas->personal_statement)
+                                        <p class="text-xs text-green-600 font-bold mt-1">✓ File terunggah</p>
+                                        <a href="{{ Storage::url($berkas->personal_statement) }}" target="_blank" class="text-xs text-blue-600 hover:underline">Lihat File →</a>
+                                    @else
+                                        <p class="text-xs text-red-400 font-medium mt-1">Belum diunggah</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <input type="file" name="personal_statement" class="hidden" id="personal_statement" accept=".pdf" onchange="document.getElementById('btn-personal-statement').innerText = this.files[0] ? this.files[0].name : 'Pilih File'">
+                            <label for="personal_statement" id="btn-personal-statement" class="cursor-pointer bg-dark-navy text-white text-xs font-bold px-6 py-3 rounded-xl hover:bg-primary-gold hover:text-dark-navy transition-all">
+                                {{ $berkas && $berkas->personal_statement ? 'Ganti File' : 'Pilih File' }}
+                            </label>
+                        </div>
                     </div>
                 </div>
 

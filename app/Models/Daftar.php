@@ -20,7 +20,6 @@ class Daftar extends Model
         'provinsi',
         'kabupaten',
         'asal_sekolah',
-        'no_sekolah',
         'kode_referral',
         'status',
         'rata_rata_nilai',

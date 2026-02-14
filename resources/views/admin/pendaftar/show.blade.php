@@ -49,7 +49,7 @@
                     <div class="mt-4 grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Email</label>
-                            <div class="text-xs font-bold text-slate-700">{{ $user->email }}</div>
+                            <div class="text-xs font-bold text-slate-700 break-all">{{ $user->email }}</div>
                         </div>
                         <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">WhatsApp</label>
@@ -58,6 +58,14 @@
                         <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Tanggal Lahir</label>
                             <div class="text-xs font-bold text-slate-700">{{ \Carbon\Carbon::parse($user->peserta->tgl_lahir)->format('d M Y') }}</div>
+                        </div>
+                        <div>
+                            <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Tahun Lulus</label>
+                            @php $thnLulus = (int) ($user->peserta->daftar->tahun_lulus ?? $user->peserta->tahun_lulus ?? 2026); @endphp
+                            <div class="text-xs font-bold {{ $thnLulus < 2026 ? 'text-purple-600' : 'text-slate-700' }}">
+                                {{ $thnLulus }} 
+                                @if($thnLulus < 2026) <span class="bg-purple-100 text-purple-600 px-1 py-0.5 rounded text-[8px] ml-1">ALUMNI</span> @endif
+                            </div>
                         </div>
                         <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Jenis Kelamin</label>
@@ -85,7 +93,8 @@
                     <thead>
                         <tr class="text-slate-400 font-black uppercase tracking-widest border-b border-slate-50">
                             <th class="py-4 text-left">Mata Pelajaran</th>
-                            @for($i=1;$i<=6;$i++) <th class="py-4 text-center">S{{$i}}</th> @endfor
+                            @php $maxSem = (int)($user->peserta->daftar->tahun_lulus ?? $user->peserta->tahun_lulus ?? 2026) < 2026 ? 6 : 5; @endphp
+                            @for($i=1;$i<=$maxSem;$i++) <th class="py-4 text-center">S{{$i}}</th> @endfor
                             <th class="py-4 text-center bg-slate-50">AVG</th>
                         </tr>
                     </thead>
@@ -95,7 +104,7 @@
                             <tr>
                                 <td class="py-4 font-black uppercase">{{ $mp->nama }}</td>
                                 @php $mpAvg = 0; $mpCount = 0; @endphp
-                                @for($sem=1;$sem<=6;$sem++)
+                                @for($sem=1;$sem<=$maxSem;$sem++)
                                     @php 
                                         $val = $user->peserta->nilais->where('matpel_id', $mp->id)->where('semester', $sem)->first()->nilai ?? 0;
                                         if($val > 0) { $mpAvg += $val; $mpCount++; $totalNilai += $val; $totalCount++; }
@@ -133,10 +142,16 @@
                         'rapor3' => 'Raport Smst 3',
                         'rapor4' => 'Raport Smst 4',
                         'rapor5' => 'Raport Smst 5',
-                        'ijazah' => 'Ijazah / SKL',
-                        'surat_buta_warna' => 'Surat Buta Warna',
-                        'personal_statement' => 'Personal Statement'
                     ];
+
+                    $tahunLulus = (int) ($user->peserta->daftar->tahun_lulus ?? $user->peserta->tahun_lulus ?? 2026);
+                    if ($tahunLulus < 2026) {
+                        $berkasItems['rapor6'] = 'Raport Smst 6';
+                    }
+
+                    $berkasItems['ijazah'] = 'Ijazah / SKL';
+                    $berkasItems['surat_buta_warna'] = 'Surat Buta Warna';
+                    $berkasItems['personal_statement'] = 'Personal Statement';
                 @endphp
                 @foreach($berkasItems as $key => $label)
                 @php 
