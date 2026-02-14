@@ -39,7 +39,7 @@
             </div>
             <div>
                 <label for="nisn" class="block text-xs font-bold text-gray-700 mb-2">NISN</label>
-                <input type="text" id="nisn" name="nisn" value="{{ old('nisn') }}" required class="w-full px-5 py-4 bg-gray-50 border {{ $errors->has('nisn') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Nomor Induk Siswa Nasional">
+                <input type="text" id="nisn" name="nisn" value="{{ old('nisn') }}" required maxlength="10" class="w-full px-5 py-4 bg-gray-50 border {{ $errors->has('nisn') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Nomor Induk Siswa Nasional (10 digit)">
                 @error('nisn') <p class="text-red-500 text-[10px] mt-1 font-bold italic">{{ $message }}</p> @enderror
             </div>
             <div>
@@ -188,6 +188,11 @@
             input.addEventListener('input', function(e) {
                 // Hapus karakter non-angka
                 this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Limit NISN to 10 digits
+                if (id === 'nisn' && this.value.length > 10) {
+                    this.value = this.value.slice(0, 10);
+                }
             });
         }
     });

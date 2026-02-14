@@ -33,16 +33,12 @@
     <div class="flex min-h-screen">
         <!-- Left Side: Image & Quote -->
         <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1541339907198-e08756eaa589?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Campus">
             <div class="absolute inset-0 bg-gradient-to-tr from-dark-navy/90 via-dark-navy/40 to-primary-gold/20"></div>
             
             <div class="relative z-10 flex flex-col justify-between p-16 w-full">
                 <div>
-                    <a href="/" class="flex items-center gap-2">
-                        <div class="w-10 h-10 bg-primary-gold rounded-xl flex items-center justify-center shadow-lg shadow-primary-gold/20">
-                            <span class="text-dark-navy font-extrabold text-xl">M</span>
-                        </div>
-                        <span class="text-xl font-bold text-white tracking-tight">MFLS <span class="text-primary-gold">2026</span></span>
+                    <a href="/" class="flex items-center gap-3">
+                        <img src="{{ asset('icon/loog.jpeg') }}" alt="Logo MFLS" class="h-12 w-auto">
                     </a>
                 </div>
 

@@ -305,50 +305,78 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             <h2 class="text-4xl md:text-5xl font-black text-dark-navy mb-6 leading-tight">Melangkah Lebih Jauh Bersama MNC Group</h2>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Benefit 1 -->
-            <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition-shadow">
-                <div class="w-16 h-16 bg-primary-yellow rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Left: 5 Benefits -->
+            <div class="space-y-6">
+                <!-- Benefit 1 -->
+                <div class="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-primary-yellow rounded-xl flex items-center justify-center shrink-0">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-dark-navy mb-2">Dukungan Biaya Kuliah Hingga 100%</h4>
+                            <p class="text-gray-600 text-sm">Mendapat keringanan biaya kuliah hingga potongan penuh sesuai kategori beasiswa.</p>
+                        </div>
+                    </div>
                 </div>
-                <h4 class="text-xl font-bold text-dark-navy mb-3">Dukungan Biaya Kuliah Hingga 100%</h4>
-                <p class="text-gray-600">Mendapat keringanan biaya kuliah hingga potongan penuh sesuai kategori beasiswa.</p>
+                
+                <!-- Benefit 2 -->
+                <div class="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-dark-navy rounded-xl flex items-center justify-center shrink-0">
+                            <svg class="w-7 h-7 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-dark-navy mb-2">Program Pengembangan Kepemimpinan & Mentorship</h4>
+                            <p class="text-gray-600 text-sm">Pelatihan leadership, personal branding, dan bimbingan langsung dari praktisi MNC Group.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Benefit 3 -->
+                <div class="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-primary-yellow rounded-xl flex items-center justify-center shrink-0">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-dark-navy mb-2">Site In Class & Company Visit MNC Group</h4>
+                            <p class="text-gray-600 text-sm">Belajar langsung di lingkungan industri serta unit bisnis MNC Group untuk mendapatkan pengalaman nyata.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Benefit 4 -->
+                <div class="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-dark-navy rounded-xl flex items-center justify-center shrink-0">
+                            <svg class="w-7 h-7 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-dark-navy mb-2">Kesempatan Magang di MNC Group</h4>
+                            <p class="text-gray-600 text-sm">Dapat pengalaman kerja profesional di berbagai divisi sesuai bidang studi dan minat karier.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Benefit 5 -->
+                <div class="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-primary-yellow rounded-xl flex items-center justify-center shrink-0">
+                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-dark-navy mb-2">Networking & Sertifikat Participation</h4>
+                            <p class="text-gray-600 text-sm">Bertemu dengan siswa/siswi berprestasi, saling belajar dan tumbuh bersama calon pemimpin serta mendapatkan sertifikat resmi dari MNC University.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <!-- Benefit 2 -->
-            <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition-shadow">
-                <div class="w-16 h-16 bg-dark-navy rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                </div>
-                <h4 class="text-xl font-bold text-dark-navy mb-3">Program Pengembangan Kepemimpinan & Mentorship</h4>
-                <p class="text-gray-600">Pelatihan leadership, personal branding, dan bimbingan langsung dari praktisi MNC Group.</p>
-            </div>
-            
-            <!-- Benefit 3 -->
-            <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition-shadow">
-                <div class="w-16 h-16 bg-primary-yellow rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                </div>
-                <h4 class="text-xl font-bold text-dark-navy mb-3">Site In Class & Company Visit MNC Group</h4>
-                <p class="text-gray-600">Belajar langsung di lingkungan industri serta unit bisnis MNC Group untuk mendapatkan pengalaman nyata.</p>
-            </div>
-            
-            <!-- Benefit 4 -->
-            <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition-shadow">
-                <div class="w-16 h-16 bg-dark-navy rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                </div>
-                <h4 class="text-xl font-bold text-dark-navy mb-3">Kesempatan Magang di MNC Group</h4>
-                <p class="text-gray-600">Dapat pengalaman kerja profesional di berbagai divisi sesuai bidang studi dan minat karier.</p>
-            </div>
-            
-            <!-- Benefit 5 -->
-            <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition-shadow md:col-span-2 lg:col-span-1">
-                <div class="w-16 h-16 bg-primary-yellow rounded-2xl flex items-center justify-center mb-6">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-                </div>
-                <h4 class="text-xl font-bold text-dark-navy mb-3">Networking & Sertifikat Participation</h4>
-                <p class="text-gray-600">Bertemu dengan siswa/siswi berprestasi, saling belajar dan tumbuh bersama calon pemimpin serta mendapatkan sertifikat resmi dari MNC University.</p>
+            <!-- Right: Image -->
+            <div class="relative">
+                <img src="{{ asset('icon/Keuntungan.jpeg') }}" alt="Benefit Keuntungan" class="rounded-3xl shadow-2xl w-full object-cover">
             </div>
         </div>
     </div>
@@ -455,7 +483,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                 
                 @foreach([
                     ['icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Beasiswa Penuh', 'desc' => 'Pembebasan biaya pendidikan 100% hingga lulus'],
-                    ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Internship MNC Group', 'desc' => 'Kesempatan magang eksklusif di berbagai perusahaan MNC Group'],
+                    ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Beasiswa Parsial', 'desc' => 'Pembebasan Biaya Pendidikan Mulai Dari 50% Hingga 70%'],
                     ['icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => 'Peluang Karir', 'desc' => 'Prioritas rekrutmen bagi lulusan terbaik di lingkungan MNC Group'],
                     ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Pengembangan Diri', 'desc' => 'Program pembinaan karakter dan skill kepemimpinan'],
                     ['icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', 'title' => 'Networking Luas', 'desc' => 'Terhubung dengan profesional dan pemimpin industri'],
@@ -474,7 +502,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             
             <!-- Right: Portrait Photo -->
             <div>
-                <img src="C:\Users\gavin\mfls\public\icon\scholar" alt="Placeholder: Scholar Portrait" class="rounded-3xl shadow-2xl w-full">
+                <img src="{{ asset('icon/scholar.png') }}" alt="Scholar Portrait" class="rounded-3xl shadow-2xl w-full">
             </div>
         </div>
     </div>

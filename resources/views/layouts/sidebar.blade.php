@@ -2,7 +2,7 @@
 <aside class="w-72 bg-white border-r border-gray-100 flex flex-col sticky top-0 h-screen">
     <div class="p-8">
         <a href="/" class="flex items-center justify-center">
-            <img src="{{ asset('icon/loog.jpg') }}" alt="Logo MFLS" class="h-12 w-auto">
+            <img src="{{ asset('icon/loog.jpeg') }}" alt="Logo MFLS" class="h-12 w-auto">
         </a>
     </div>
 
