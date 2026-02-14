@@ -3,7 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\CorsMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,8 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(CorsMiddleware::class);
-
+        $middleware->append(\App\Http\Middleware\CorsMiddleware::class);
+        
+       
+        $middleware->trustProxies(at: '*');
         $middleware->alias([
             'survey.check' => \App\Http\Middleware\EnsureSurveyIsFilled::class,
         ]);
