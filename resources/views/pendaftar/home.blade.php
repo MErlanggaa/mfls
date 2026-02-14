@@ -31,8 +31,12 @@
             </div>
             
             <!-- Right Column: Hero Image -->
-            <div class="relative lg:block hidden scroll-fade-right">
-                <img src="{{ asset('icon/mnclogo.jpg') }}" alt="Placeholder: Student Hero Image" class="w-full h-auto rounded-3xl ">
+            <!-- Right Column: Hero Image -->
+            <div class="relative w-full scroll-fade-right mt-8 lg:mt-0">
+                <img src="{{ asset('icon/mnclogo.jpg') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-[2.5rem] shadow-2xl hover:scale-[1.02] transition-transform duration-500 border-4 border-white/50">
+                <!-- Decorative element -->
+                <div class="absolute -z-10 top-10 -right-10 w-32 h-32 bg-primary-yellow/20 rounded-full blur-2xl"></div>
+                <div class="absolute -z-10 -bottom-10 -left-10 w-32 h-32 bg-primary-blue/20 rounded-full blur-2xl"></div>
             </div>
         </div>
     </div>
@@ -52,22 +56,22 @@
                     <h2 class="text-xl font-bold text-white">Pendaftaran akan ditutup dalam</h2>
                 </div>
                 
-                <div class="grid grid-cols-4 gap-8 max-w-5xl mx-auto">
-                    <div class="text-center">
-                        <div id="days" class="text-7xl font-black text-primary-yellow mb-2">00</div>
-                        <div class="text-lg font-bold text-primary-yellow uppercase">Hari</div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto">
+                    <div class="text-center p-4 rounded-2xl md:bg-transparent bg-white/5 md:shadow-none shadow-lg backdrop-blur-sm border border-white/10 md:border-none">
+                        <div id="days" class="text-4xl md:text-6xl lg:text-7xl font-black text-primary-yellow mb-1 md:mb-2">00</div>
+                        <div class="text-xs md:text-base lg:text-lg font-bold text-white md:text-primary-yellow uppercase tracking-widest">Hari</div>
                     </div>
-                    <div class="text-center">
-                        <div id="hours" class="text-7xl font-black text-primary-yellow mb-2">00</div>
-                        <div class="text-lg font-bold text-primary-yellow uppercase">Jam</div>
+                    <div class="text-center p-4 rounded-2xl md:bg-transparent bg-white/5 md:shadow-none shadow-lg backdrop-blur-sm border border-white/10 md:border-none">
+                        <div id="hours" class="text-4xl md:text-6xl lg:text-7xl font-black text-primary-yellow mb-1 md:mb-2">00</div>
+                        <div class="text-xs md:text-base lg:text-lg font-bold text-white md:text-primary-yellow uppercase tracking-widest">Jam</div>
                     </div>
-                    <div class="text-center">
-                        <div id="minutes" class="text-7xl font-black text-primary-yellow mb-2">00</div>
-                        <div class="text-lg font-bold text-primary-yellow uppercase">Menit</div>
+                    <div class="text-center p-4 rounded-2xl md:bg-transparent bg-white/5 md:shadow-none shadow-lg backdrop-blur-sm border border-white/10 md:border-none">
+                        <div id="minutes" class="text-4xl md:text-6xl lg:text-7xl font-black text-primary-yellow mb-1 md:mb-2">00</div>
+                        <div class="text-xs md:text-base lg:text-lg font-bold text-white md:text-primary-yellow uppercase tracking-widest">Menit</div>
                     </div>
-                    <div class="text-center">
-                        <div id="seconds" class="text-7xl font-black text-primary-yellow mb-2">00</div>
-                        <div class="text-lg font-bold text-primary-yellow uppercase">Detik</div>
+                    <div class="text-center p-4 rounded-2xl md:bg-transparent bg-white/5 md:shadow-none shadow-lg backdrop-blur-sm border border-white/10 md:border-none">
+                        <div id="seconds" class="text-4xl md:text-6xl lg:text-7xl font-black text-primary-yellow mb-1 md:mb-2">00</div>
+                        <div class="text-xs md:text-base lg:text-lg font-bold text-white md:text-primary-yellow uppercase tracking-widest">Detik</div>
                     </div>
                 </div>
             </div>
