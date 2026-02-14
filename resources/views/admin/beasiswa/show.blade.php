@@ -265,7 +265,7 @@
                 <input type="hidden" name="status" value="lulus">
                 
                 <div class="p-6 bg-white/5 border border-white/10 rounded-[2rem] text-center backdrop-blur-md">
-                    <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Final Weighted Eligibility</div>
+                    <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Semua Skor </div>
                     @php
                         $finalScore = ($rataRataAkademik + $rataRataMentor + $rataRataAkademikFinal + $ujianAvg) / 4;
                     @endphp
@@ -276,10 +276,10 @@
                     <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Grant Scheme</label>
                     <select name="nominal_beasiswa" required class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-yellow-400 appearance-none shadow-sm">
                         <option value="">-- Pilih Skema --</option>
-                        <option value="25%" {{ $user->peserta->daftar->nominal_beasiswa == '25%' ? 'selected' : '' }}>Scholarship 25% (Silver)</option>
-                        <option value="50%" {{ $user->peserta->daftar->nominal_beasiswa == '50%' ? 'selected' : '' }}>Scholarship 50% (Gold)</option>
-                        <option value="75%" {{ $user->peserta->daftar->nominal_beasiswa == '75%' ? 'selected' : '' }}>Scholarship 75% (Platinum)</option>
-                        <option value="100%" {{ $user->peserta->daftar->nominal_beasiswa == '100%' ? 'selected' : '' }}>Scholarship 100% (Diamond)</option>
+                        <option value="25%" {{ $user->peserta->daftar->nominal_beasiswa == '25%' ? 'selected' : '' }}>Scholarship 25% </option>
+                        <option value="50%" {{ $user->peserta->daftar->nominal_beasiswa == '50%' ? 'selected' : '' }}>Scholarship 50% </option>
+                        <option value="75%" {{ $user->peserta->daftar->nominal_beasiswa == '75%' ? 'selected' : '' }}>Scholarship 75% </option>
+                        <option value="100%" {{ $user->peserta->daftar->nominal_beasiswa == '100%' ? 'selected' : '' }}>Scholarship 100% </option>
                     </select>
                 </div>
 
