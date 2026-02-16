@@ -8,9 +8,32 @@
     <title>Survei Peserta - {{ config('app.name', 'MFLS') }}</title>
 
     <!-- Fonts -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icon/loog.jpeg') }}">
+
+    <!-- Open Graph / Facebook / WhatsApp / Instagram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ config('app.name', 'MFLS') }} - Program Beasiswa">
+    <meta property="og:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
+    <meta property="og:image" content="{{ asset('icon/loog.jpeg') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="{{ config('app.name', 'MFLS') }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ config('app.name', 'MFLS') }} - Program Beasiswa">
+    <meta name="twitter:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
+    <meta name="twitter:image" content="{{ asset('icon/loog.jpeg') }}">
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 
     <!-- Tailwind CDN -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
@@ -56,9 +79,9 @@
                             'Guru atau Sekolah', 'Forum OSIS Jawa Barat (FOJB)', 'Forum Komunikasi Pengurus OSIS Prov. DIY',
                             'Forum OSIS Jawa Tengah (FOSIS)', 'Forum Anak Jawa Tengah (FAN Jateng)', 'Himpunan Musyawarah OSIS SMA Jawa Timur',
                             'Forum Anak Jawa Timur (FA Jatim)', 'Forum OSIS DKI Jakarta (FOS DKI)', 'Himpunan Osis Banten',
-                            'Instagram @iggscholarship', 'Instagram @mncuniversity', 'Tiktok mncuniversity',
-                            'Website Indonesian Gold Generation Scholarship', 'Website MNC University', 'Teman',
-                            'Poster/Brosur IGGS', 'Sosialisasi Tim', 'Expo Campus', 'Lainnya'
+                            'Instagram @beassiwamncu', 'Instagram @mncuniversity', 'Tiktok mncuniversity',
+                             'Website MNC University', 'Teman',
+                            'Poster/Brosur beasiswamncu', 'Sosialisasi Tim', 'Expo Campus', 'Lainnya'
                         ];
                     @endphp
                     @foreach($sources as $source)
