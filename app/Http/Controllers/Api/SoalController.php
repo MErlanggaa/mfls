@@ -14,9 +14,38 @@ class SoalController extends Controller
     /**
      * Get list of available exams.
      */
-    public function getUjians()
+    public function getUjians(Request $request)
     {
-        $ujians = Ujian::select('id', 'nama')->get();
+        $user = $request->user();
+        $pesertaId = null;
+        
+        // Get peserta_id if user is logged in as pendaftar
+        if ($user && $user->role === 'pendaftar' && $user->peserta) {
+            $pesertaId = $user->peserta->id;
+        }
+        
+        $ujians = Ujian::select('id', 'nama')
+            ->withCount('soals as jumlah_soal') // Count questions
+            ->get()
+            ->map(function ($ujian) use ($pesertaId) {
+                $data = [
+                    'id' => $ujian->id,
+                    'nama' => $ujian->nama,
+                    'jumlah_soal' => $ujian->jumlah_soal,
+                    'is_submitted' => false,
+                ];
+                
+                // Check if user has already submitted this exam
+                if ($pesertaId) {
+                    $hasSubmitted = JawabanUjian::where('ujian_id', $ujian->id)
+                        ->where('peserta_id', $pesertaId)
+                        ->exists();
+                    $data['is_submitted'] = $hasSubmitted;
+                }
+                
+                return $data;
+            });
+        
         return response()->json([
             'status' => 'success',
             'data' => $ujians
