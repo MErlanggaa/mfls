@@ -9,30 +9,25 @@ class CorsMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        // Tangani Preflight Request (OPTIONS)
+        // Tangani Preflight Request (OPTIONS) secara eksplisit
         if ($request->isMethod('OPTIONS')) {
-            return response('', 204) // 204 No Content lebih standar untuk OPTIONS
-                ->header('Access-Control-Allow-Origin', '*') // Ganti * dengan domain React kamu nanti
+            return response('', 200)
+                ->header('Access-Control-Allow-Origin', '*')
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Referer');
         }
 
         $response = $next($request);
         
-        $headers = [
-            'Access-Control-Allow-Origin' => '*',
-            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With, Accept',
-        ];
-
+        // Tambahkan header ke response normal
         if (method_exists($response, 'header')) {
-            foreach ($headers as $key => $value) {
-                $response->header($key, $value);
-            }
-        } else {
-            foreach ($headers as $key => $value) {
-                $response->headers->set($key, $value);
-            }
+            $response->header('Access-Control-Allow-Origin', '*')
+                     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                     ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Referer');
+        } elseif (isset($response->headers)) {
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Referer');
         }
 
         return $response;

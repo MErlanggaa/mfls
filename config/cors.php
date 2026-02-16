@@ -19,7 +19,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        '*',
+        'https://ujianmflss.sgp.dom.my.id',
+        'http://localhost:5173',
+        'http://localhost:5174',
+    ],
 
     'allowed_origins_patterns' => [],
 

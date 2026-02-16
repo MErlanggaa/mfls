@@ -1,4 +1,14 @@
 <?php
+// Handle OPTIONS request early to avoid 405 error
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept, Origin, Referer');
+    header('Access-Control-Max-Age: 1728000');
+    header('Content-Type: text/plain; charset=utf-8');
+    header('Content-Length: 0');
+    die();
+}
 
 use Illuminate\Http\Request;
 
