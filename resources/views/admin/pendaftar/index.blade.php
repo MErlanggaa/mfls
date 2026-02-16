@@ -263,7 +263,12 @@
                         @endif
                     </td>
                     <td class="px-8 py-5 text-right">
-                        <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                         <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                             @if(auth()->user()->role === 'admin')
+                             <button type="button" onclick="confirmResetPassword({{ $akun->id }}, '{{ $akun->nama }}')" class="w-8 h-8 flex items-center justify-center bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition-all shadow-sm" title="Reset Password">
+                                <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span>
+                             </button>
+                             @endif
                              <a href="{{ route('admin.pendaftar.download_zip', $akun->id) }}" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-600 rounded-lg hover:bg-orange-600 hover:text-white transition-all shadow-sm" title="Download ZIP">
                                 <span class="iconify" data-icon="solar:folder-with-files-bold"></span>
                             </a>
@@ -285,4 +290,59 @@
     </div>
     @endif
 </div>
+@if(auth()->user()->role === 'admin')
+<form id="resetPasswordForm" method="POST" style="display:none;">
+    @csrf
+    @method('PUT')
+    <input type="hidden" name="password" id="resetPasswordInput">
+</form>
+
+<script>
+function confirmResetPassword(userId, name) {
+    Swal.fire({
+        title: 'Konfirmasi Reset',
+        text: `Apakah Anda benar-benar ingin mereset password untuk ${name}?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#f97316',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Lanjutkan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Reset Password',
+                text: `Masukkan password baru untuk ${name}:`,
+                input: 'password',
+                inputPlaceholder: 'Minimal 6 karakter',
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    autocorrect: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Reset Sekarang',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#f97316',
+                showLoaderOnConfirm: true,
+                preConfirm: (password) => {
+                    if (!password || password.length < 6) {
+                        Swal.showValidationMessage('Password minimal 6 karakter');
+                        return false;
+                    }
+                    return password;
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((inputResult) => {
+                if (inputResult.isConfirmed) {
+                    const form = document.getElementById('resetPasswordForm');
+                    form.action = `/admin/user/${userId}/reset-password`;
+                    document.getElementById('resetPasswordInput').value = inputResult.value;
+                    form.submit();
+                }
+            });
+        }
+    });
+}
+</script>
+@endif
 @endsection

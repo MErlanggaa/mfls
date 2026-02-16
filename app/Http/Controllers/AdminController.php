@@ -399,12 +399,90 @@ class AdminController extends Controller
         return back()->with('success', 'Penilaian akademik berhasil disimpan!');
     }
 
-    // --- PENGATURAN: MANAJEMEN MENTOR ---
-    public function indexMentor()
+    // --- PENGATURAN: MANAJEMEN USER ---
+    public function indexUser()
     {
         if (auth()->user()->role !== 'admin') return abort(403);
-        $mentors = Akun::where('role', 'mentor')->withCount('peserta')->get();
-        return view('admin.mentor.index', compact('mentors'));
+        $users = Akun::where('role', '!=', 'pendaftar')->withCount('peserta')->get();
+        return view('admin.user.index', compact('users'));
+    }
+
+    public function storeUser(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') return abort(403);
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:akun,email',
+            'password' => 'required|min:6',
+            'role' => 'required|in:admin,panitia,akademik,mentor'
+        ]);
+
+        Akun::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return back()->with('success', 'User berhasil ditambahkan!');
+    }
+
+    public function updateUser(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'admin') return abort(403);
+        $user = Akun::findOrFail($id);
+        
+        $rules = [
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:akun,email,' . $id,
+            'role' => 'required|in:admin,panitia,akademik,mentor'
+        ];
+
+        if ($request->password) {
+            $rules['password'] = 'min:6';
+        }
+
+        $request->validate($rules);
+
+        $user->nama = $request->nama;
+        $user->email = $request->email;
+        $user->role = $request->role;
+        
+        if ($request->password) {
+            $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Data user berhasil diperbarui!');
+    }
+
+    public function destroyUser($id)
+    {
+        if (auth()->user()->role !== 'admin') return abort(403);
+        $user = Akun::findOrFail($id);
+        
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Anda tidak bisa menghapus akun sendiri!');
+        }
+
+        $user->delete();
+        return back()->with('success', 'User berhasil dihapus!');
+    }
+
+    public function resetPassword(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'admin') return abort(403);
+        $user = Akun::findOrFail($id);
+        
+        $request->validate([
+            'password' => 'required|min:6'
+        ]);
+
+        $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password user ' . $user->nama . ' berhasil direset!');
     }
 
     public function detailPendaftar($id)

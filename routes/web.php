@@ -49,7 +49,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/penilaian-detail/{id}', [App\Http\Controllers\AdminController::class, 'showPenilaian'])->name('admin.penilaian.show');
     Route::post('/admin/penilaian-akademik/{id}', [App\Http\Controllers\AdminController::class, 'storePenilaianAkademik'])->name('admin.penilaian.akademik.store');
 
-    Route::get('/admin/mentor', [App\Http\Controllers\AdminController::class, 'indexMentor'])->name('admin.mentor.index');
+    Route::get('/admin/user', [App\Http\Controllers\AdminController::class, 'indexUser'])->name('admin.user.index');
+    Route::post('/admin/user', [App\Http\Controllers\AdminController::class, 'storeUser'])->name('admin.user.store');
+    Route::put('/admin/user/{id}', [App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.user.update');
+    Route::put('/admin/user/{id}/reset-password', [App\Http\Controllers\AdminController::class, 'resetPassword'])->name('admin.user.reset_password');
+    Route::delete('/admin/user/{id}', [App\Http\Controllers\AdminController::class, 'destroyUser'])->name('admin.user.destroy');
 
     // Manajemen Soal
     Route::get('/admin/soal', [App\Http\Controllers\AdminController::class, 'indexSoal'])->name('admin.soal.index');

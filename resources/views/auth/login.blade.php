@@ -41,7 +41,7 @@
         Masuk Sekarang
     </button>
 
-    <div class="relative py-4">
+    {{-- <div class="relative py-4">
         <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
         <div class="relative flex justify-center text-xs uppercase"><span class="bg-white px-4 text-gray-400 font-bold tracking-widest">Atau</span></div>
     </div>
@@ -50,7 +50,7 @@
         class="w-full bg-white border border-gray-100 text-gray-700 font-bold py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-gray-50 transition-all">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google">
         Masuk dengan Google
-    </button>
+    </button> --}}
 </form>
 
 <p class="mt-10 text-center text-sm font-bold text-gray-500">

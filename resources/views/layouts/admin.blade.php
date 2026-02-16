@@ -52,9 +52,7 @@
         <aside class="w-72 bg-white border-r border-slate-200 flex flex-col fixed h-full z-30 shadow-xl shadow-slate-200/50">
             <div class="p-8 pb-4">
                 <a href="#" class="flex items-center gap-3 group">
-                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg shadow-orange-500/30 group-hover:scale-110 transition-transform">
-                        M
-                    </div>
+                    <img src="{{ asset('icon/loog.jpeg') }}" class="w-12 h-12 rounded-xl object-cover shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform" alt="Logo MFLS">
                     <div>
                         <span class="block font-black tracking-tight text-xl text-slate-800">MFLS <span class="text-orange-500">Admin</span></span>
                         <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Management Panel</span>
@@ -69,7 +67,7 @@
                     <span class="iconify text-xl {{ request()->routeIs('admin.dashboard') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:chart-square-bold"></span> Dashboard
                 </a>
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia')
                 <a href="{{ route('admin.beasiswa.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.beasiswa.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.beasiswa.*') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:cup-star-bold"></span> Seleksi Beasiswa
                 </a>
@@ -77,11 +75,13 @@
 
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Data</div>
                 
-                @if(auth()->user()->role !== 'mentor')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia')
                 <a href="{{ route('admin.pendaftar.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.pendaftar.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.pendaftar.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:shield-check-bold"></span> Seleksi Administrasi
                 </a>
+                @endif
 
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
                 <a href="{{ route('admin.hasil_ujian.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.hasil_ujian.*') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.hasil_ujian.*') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:document-text-bold"></span> Hasil Ujian
                 </a>
@@ -91,11 +91,9 @@
                 <a href="{{ route('admin.penilaian.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.penilaian.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:user-id-bold"></span> Penilaian Mentor
                 </a>
-                @endif
-                
-                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
+
                 <a href="{{ route('admin.penilaian.akademik.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.penilaian.akademik.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
-                    <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.akademik.*') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:medal-ribbon-bold"></span> Penilaian Akademik
+                    <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.akademik.*') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:medal-ribbon-bold"></span> Penilaian Akademik (Wawancara)
                 </a>
                 @endif
                 
@@ -107,8 +105,8 @@
 
                 @if(auth()->user()->role === 'admin')
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Control</div>
-                <a href="{{ route('admin.mentor.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.mentor.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
-                    <span class="iconify text-xl {{ request()->routeIs('admin.mentor.index') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:settings-bold"></span> Manajemen User
+                <a href="{{ route('admin.user.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.user.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.user.index') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:settings-bold"></span> Manajemen User
                 </a>
                 <a href="{{ route('pengumuman') }}" target="_blank" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all text-orange-500 hover:bg-orange-50 hover:text-orange-600">
                     <span class="iconify text-xl text-orange-500" data-icon="solar:eye-bold"></span> Live Pengumuman
