@@ -12,18 +12,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->api(prepend: [
-            \App\Http\Middleware\CorsMiddleware::class,
-        ]);
-        
-        $middleware->prepend(\App\Http\Middleware\CorsMiddleware::class);
-        
-       
+
+        // ✅ Pakai CORS bawaan Laravel 11
+        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
+
+        // Proxy trust
         $middleware->trustProxies(at: '*');
+
+        // Alias middleware lain
         $middleware->alias([
             'survey.check' => \App\Http\Middleware\EnsureSurveyIsFilled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();
