@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 
 class PendaftarController extends Controller
 {
+    use \App\Traits\ImageCompressor;
+
     public function index()
     {
         $peserta = Auth::user()->peserta;
@@ -135,6 +137,7 @@ class PendaftarController extends Controller
             if ($request->hasFile($field)) {
                 $path = $request->file($field)->store('berkas/' . $peserta->id, 'public');
                 $berkas->$field = $path;
+                $this->compressImage($path);
             }
         }
 
@@ -146,10 +149,14 @@ class PendaftarController extends Controller
                 // Check if it's actually an array of files or just one
                 if (is_array($files)) {
                     foreach ($files as $file) {
-                        $paths[] = $file->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                        $p = $file->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                        $paths[] = $p;
+                        $this->compressImage($p);
                     }
                 } else {
-                    $paths[] = $files->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                    $p = $files->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                    $paths[] = $p;
+                    $this->compressImage($p);
                 }
                 
                 // Store as JSON
@@ -164,6 +171,7 @@ class PendaftarController extends Controller
             $sertifikatFiles = is_array($files) ? $files : [$files];
             foreach ($sertifikatFiles as $file) {
                 $path = $file->store('sertifikat/' . $peserta->id, 'public');
+                $this->compressImage($path);
                 \App\Models\Sertifikat::create([
                     'peserta_id' => $peserta->id,
                     'nama' => 'Sertifikat ' . date('Y-m-d H:i:s'), 
@@ -268,6 +276,7 @@ class PendaftarController extends Controller
         if ($request->hasFile('surat_buta_warna')) {
             $path = $request->file('surat_buta_warna')->store('berkas/' . $peserta->id, 'public');
             $berkas->surat_buta_warna = $path;
+            $this->compressImage($path);
         }
 
         // Handle Rapor Files Scans (Semester 1-5)
@@ -278,10 +287,14 @@ class PendaftarController extends Controller
                 $paths = [];
                 if (is_array($files)) {
                     foreach ($files as $file) {
-                        $paths[] = $file->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                        $p = $file->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                        $paths[] = $p;
+                        $this->compressImage($p);
                     }
                 } else {
-                    $paths[] = $files->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                    $p = $files->store('berkas/' . $peserta->id . '/' . $field, 'public');
+                    $paths[] = $p;
+                    $this->compressImage($p);
                 }
                 $berkas->$field = json_encode($paths);
             }

@@ -57,7 +57,7 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-800 mb-4 border-b border-gray-100 pb-2">Input Manual</h3>
                 
-                <form action="{{ route('admin.soal.store') }}" method="POST" class="space-y-4" enctype="multipart/form-data">
+                <form action="{{ route('admin.soal.store') }}" method="POST" class="space-y-4" enctype="multipart/form-data" id="manualInputForm">
                     @csrf
                     <div>
                         <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Kategori Ujian</label>
@@ -122,6 +122,28 @@
                         Simpan Soal
                     </button>
                 </form>
+
+                <script>
+                    document.getElementById('manualInputForm').addEventListener('submit', function(e) {
+                        const files = this.querySelectorAll('input[type="file"]');
+                        const maxSize = 100 * 1024 * 1024; // 100MB per file
+                        
+                        for (let fileInput of files) {
+                            if (fileInput.files.length > 0) {
+                                if (fileInput.files[0].size > maxSize) {
+                                    e.preventDefault();
+                                    Swal.fire({
+                                        title: 'File Terlalu Besar!',
+                                        text: `File "${fileInput.files[0].name}" melebihi batas 100MB. Silakan gunakan gambar yang lebih kecil.`,
+                                        icon: 'error',
+                                        confirmButtonColor: '#ef4444'
+                                    });
+                                    return;
+                                }
+                            }
+                        }
+                    });
+                </script>
             </div>
         </div>
     </div>

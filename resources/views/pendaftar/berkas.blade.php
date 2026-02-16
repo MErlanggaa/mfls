@@ -16,8 +16,32 @@
         <div class="p-10 space-y-10">
 
 
-            <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data" id="berkasUploadForm">
                 @csrf
+
+                <script>
+                    document.getElementById('berkasUploadForm').addEventListener('submit', function(e) {
+                        const files = this.querySelectorAll('input[type="file"]');
+                        const maxSize = 100 * 1024 * 1024; // 100MB per file
+                        
+                        for (let fileInput of files) {
+                            if (fileInput.files.length > 0) {
+                                for (let file of fileInput.files) {
+                                    if (file.size > maxSize) {
+                                        e.preventDefault();
+                                        Swal.fire({
+                                            title: 'File Terlalu Besar!',
+                                            text: `File "${file.name}" melebihi batas 100MB. Silakan gunakan file yang lebih kecil atau kompres terlebih dahulu.`,
+                                            icon: 'error',
+                                            confirmButtonColor: '#ef4444'
+                                        });
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                </script>
                 
                 <!-- Info Akademik Check -->
                 <div class="mb-8 p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-start gap-4">

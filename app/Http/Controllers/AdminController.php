@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
+    use \App\Traits\ImageCompressor;
+
     private function logAktivitas($aksi, $targetTipe = null, $targetId = null, $deskripsi = null)
     {
         \App\Models\RiwayatAktivitas::create([
@@ -535,13 +537,16 @@ class AdminController extends Controller
         if ($request->hasFile('gambar')) {
             $path = $request->file('gambar')->store('soal_images', 'public');
             $data['gambar'] = $path;
+            $this->compressImage($path);
         }
 
         // Handle option images
         foreach (['a', 'b', 'c', 'd'] as $option) {
             $fieldName = "opsi_{$option}_image";
             if ($request->hasFile($fieldName)) {
-                $data[$fieldName] = $request->file($fieldName)->store('soal_images', 'public');
+                $path = $request->file($fieldName)->store('soal_images', 'public');
+                $data[$fieldName] = $path;
+                $this->compressImage($path);
             }
         }
 
@@ -586,7 +591,9 @@ class AdminController extends Controller
             if ($soal->gambar) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
             }
-            $data['gambar'] = $request->file('gambar')->store('soal_images', 'public');
+            $path = $request->file('gambar')->store('soal_images', 'public');
+            $data['gambar'] = $path;
+            $this->compressImage($path);
         }
 
         // Handle option images
@@ -594,11 +601,12 @@ class AdminController extends Controller
             $fieldName = "opsi_{$option}_image";
             if ($request->hasFile($fieldName)) {
                 // Delete old image if exists
-                $oldImageField = "opsi_{$option}_image";
-                if ($soal->$oldImageField) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$oldImageField);
+                if ($soal->$fieldName) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$fieldName);
                 }
-                $data[$fieldName] = $request->file($fieldName)->store('soal_images', 'public');
+                $path = $request->file($fieldName)->store('soal_images', 'public');
+                $data[$fieldName] = $path;
+                $this->compressImage($path);
             }
         }
 
