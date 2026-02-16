@@ -71,7 +71,7 @@
 
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
                 <a href="{{ route('admin.beasiswa.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.beasiswa.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
-                    <span class="iconify text-xl {{ request()->routeIs('admin.beasiswa.*') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:cup-star-bold"></span> Database Beasiswa
+                    <span class="iconify text-xl {{ request()->routeIs('admin.beasiswa.*') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:cup-star-bold"></span> Seleksi Beasiswa
                 </a>
                 @endif
 

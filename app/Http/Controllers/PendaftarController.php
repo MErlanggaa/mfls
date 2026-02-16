@@ -24,7 +24,7 @@ class PendaftarController extends Controller
         }
 
         // 2. Berkas Points (40%)
-        $berkasFields = ['foto', 'rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'ijazah', 'personal_statement'];
+        $berkasFields = ['foto', 'rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'ijazah', 'personal_statement', 'study_plan', 'surat_rekomendasi_sekolah'];
         $totalPoints += count($berkasFields);
         if ($berkas) {
             foreach ($berkasFields as $field) {
@@ -116,6 +116,8 @@ class PendaftarController extends Controller
             'rapor6.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'ijazah' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
             'personal_statement' => 'nullable|mimes:pdf,doc,docx|max:5120',
+            'study_plan' => 'nullable|mimes:pdf,doc,docx|max:5120',
+            'surat_rekomendasi_sekolah' => 'nullable|mimes:pdf,doc,docx|max:5120',
             'motivasi_video' => 'nullable|url|max:500', // Changed to URL
             'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
@@ -126,7 +128,7 @@ class PendaftarController extends Controller
         $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
 
         $raporFields = ['rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'rapor6'];
-        $singleFields = ['foto', 'ijazah', 'personal_statement'];
+        $singleFields = ['foto', 'ijazah', 'personal_statement', 'study_plan', 'surat_rekomendasi_sekolah'];
 
         // Handle Single Files
         foreach ($singleFields as $field) {
@@ -177,6 +179,8 @@ class PendaftarController extends Controller
         if($request->hasFile('foto')) $uploaded[] = 'Pas Foto 4x6';
         if($request->hasFile('ijazah')) $uploaded[] = 'Ijazah/SKL';
         if($request->hasFile('personal_statement')) $uploaded[] = 'Personal Statement';
+        if($request->hasFile('study_plan')) $uploaded[] = 'Study Plan';
+        if($request->hasFile('surat_rekomendasi_sekolah')) $uploaded[] = 'Surat Rekomendasi Sekolah';
         if($request->filled('motivasi_video')) $uploaded[] = 'Link Video Motivasi';
         
         for($i=1;$i<=6;$i++) {

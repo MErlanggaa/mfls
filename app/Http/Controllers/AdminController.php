@@ -727,7 +727,9 @@ class AdminController extends Controller
                     'rapor4' => 'Rapor_S4',
                     'rapor5' => 'Rapor_S5',
                     'ijazah' => 'Ijazah',
-                    'personal_statement' => 'Essay_Motivasi'
+                    'personal_statement' => 'Essay_Motivasi',
+                    'study_plan' => 'Study_Plan',
+                    'surat_rekomendasi_sekolah' => 'Surat_Rekomendasi_Sekolah'
                 ];
 
                 foreach ($fields as $field => $name) {

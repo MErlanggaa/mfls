@@ -23,6 +23,8 @@ class Berkas extends Model
         'ijazah',
         'surat_rekom',
         'personal_statement',
+        'study_plan',
+        'surat_rekomendasi_sekolah',
         'motivasi_video',
         'surat_buta_warna',
     ];

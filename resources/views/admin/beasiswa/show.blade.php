@@ -5,11 +5,11 @@
     @media print {
         @page {
             size: A4;
-            margin: 1.5cm;
+            margin: 0.8cm 1.2cm;
         }
 
         /* Hide all UI elements */
-        aside, header, nav, .flex.gap-2, a[href*="index"], button, .no-print {
+        aside, header, nav, .flex.gap-2, a[href*="index"], button, .no-print, .iconify, .iconify-inline {
             display: none !important;
         }
 
@@ -23,66 +23,105 @@
 
         body {
             background: white !important;
-            font-family: 'Times New Roman', serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             color: black !important;
-            font-size: 9pt;
-            line-height: 1.3;
+            font-size: 8.5pt;
+            line-height: 1.2;
         }
 
-        /* Compact Layout */
-        .grid { display: block !important; margin: 0 !important; }
-        .lg\:col-span-2, .space-y-8, .space-y-6, .space-y-4 { width: 100% !important; margin: 0 !important; }
-
+        /* Extremely Compact Sectioning */
         .section-box {
             background-color: transparent !important;
-            border: 1px solid #000 !important;
+            border: none !important;
+            border-bottom: 0.5px solid #eee !important;
             border-radius: 0 !important;
-            padding: 10px !important;
-            margin-bottom: 15px !important;
+            padding: 8px 0 !important;
+            margin-bottom: 10px !important;
             box-shadow: none !important;
             page-break-inside: avoid;
         }
 
         h3 { 
-            font-size: 10pt !important; 
-            margin-bottom: 8px !important;
-            border-bottom: 1px solid #000;
-            padding-bottom: 3px;
-            font-weight: bold;
+            font-size: 9pt !important; 
+            margin-bottom: 6px !important;
+            padding-bottom: 2px;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #1a1a1a;
+            border-left: 3px solid #F97316;
+            padding-left: 8px;
         }
 
         table {
             width: 100% !important;
             border-collapse: collapse !important;
-            font-size: 8pt !important;
+            font-size: 7.5pt !important;
+            margin-top: 5px;
         }
         
-        table th, table td {
-            border: 1px solid #000 !important;
+        table th {
+            background-color: #f8fafc !important;
+            border: 0.5px solid #e2e8f0 !important;
+            padding: 4px !important;
+            font-weight: 800;
+        }
+
+        table td {
+            border: 0.5px solid #e2e8f0 !important;
             padding: 4px !important;
         }
 
-        .bg-slate-50, .bg-blue-50, .bg-emerald-50, .bg-orange-50, .bg-slate-50, .bg-white {
+        .bg-slate-50, .bg-blue-50, .bg-emerald-50, .bg-orange-50, .bg-white {
             background: transparent !important;
         }
 
-        .text-blue-600, .text-orange-600, .text-emerald-600, .text-yellow-400 {
-            color: black !important;
-        }
-
+        .text-blue-600 { color: #2563eb !important; }
+        .text-orange-600 { color: #f97316 !important; }
+        
         form { display: none !important; }
         .print-only { display: block !important; }
         
+        /* Compact Header */
         .official-header {
             display: flex !important;
-            flex-direction: column;
-            align-items: center;
-            border-bottom: 3px double black;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 15px;
+            border-bottom: 1.5px solid #333;
             padding-bottom: 15px;
-            margin-bottom: 20px;
-            text-align: center;
+            margin-bottom: 15px;
         }
+
+        .header-logo {
+            width: 60px;
+            height: auto;
+        }
+
+        .header-text h1 {
+            font-size: 14pt !important;
+            font-weight: 900 !important;
+            margin: 0;
+        }
+
+        .header-text p {
+            margin: 0;
+            font-size: 8pt;
+            line-height: 1.1;
+        }
+
+        /* Compact Grid for Print */
+        .grid { display: flex !important; flex-wrap: wrap !important; gap: 10px !important; }
+        .md\:grid-cols-2 > div { width: calc(50% - 5px) !important; }
+        .lg\:grid-cols-3 > div:first-child { width: 100% !important; }
+        
+        /* Compact Profile Detail */
+        .w-28 { width: 50px !important; height: 65px !important; }
+        .text-2xl { font-size: 14pt !important; }
+        .text-5xl { font-size: 24pt !important; }
+        
+        /* Hide non-essential sections for print if needed */
+        .preview-decision { margin-top: 5px !important; padding: 10px !important; }
     }
 
     .print-only { display: none; }
@@ -91,20 +130,19 @@
 
 @section('content')
 <!-- Official Print Header -->
-<div class="official-header hidden flex-col text-center">
-    <div class="mb-2">
-        <h1 class="text-2xl font-black">MNC UNIVERSITY</h1>
-        <p class="text-[10px] font-bold">FUTURE LEADER SCHOLARSHIP (MFLS) 2026</p>
-        <p class="text-[9px]">Kompleks MNC Studios, Jl. Perjuangan, Kebon Jeruk, Jakarta Barat</p>
+<div class="official-header hidden">
+    <img src="{{ asset('icon/loog.jpeg') }}" class="header-logo" alt="Logo MFLS">
+    <div class="header-text">
+        <h1>MNC UNIVERSITY</h1>
+        <p class="text-orange-500">MNC FUTURE LEADER SCHOLARSHIP (MFLS) 2026</p>
+        <p>Kompleks MNC Studios, Jl. Perjuangan, Kebon Jeruk, Jakarta Barat 11530</p>
+        <div class="mt-2 text-[11pt] font-black uppercase text-slate-800">Rekapitulasi Hasil Seleksi Beasiswa</div>
     </div>
-    <div class="border-t-2 border-black w-full mb-1"></div>
-    <div class="border-t border-black w-full mb-4"></div>
-    <h3 class="text-lg font-black underline uppercase">REKAPITULASI HASIL SELEKSI FINAL BEASISWA</h3>
 </div>
 
 <div class="mb-8 flex items-center justify-between no-print">
     <div>
-        <h2 class="text-2xl font-black text-slate-800">Master Report Beasiswa</h2>
+        <h2 class="text-2xl font-black text-slate-800">Laporan Utama Beasiswa</h2>
         <p class="text-slate-500 font-medium">Rekapitulasi Data & Penilaian: {{ $user->nama }}</p>
     </div>
     <div class="flex gap-3">
@@ -134,7 +172,7 @@
                 
                 <div class="grid grid-cols-4 gap-4">
                     <div class="text-center p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div class="text-[8px] font-black text-slate-400 uppercase mb-1">Rata Raport</div>
+                        <div class="text-[8px] font-black text-slate-400 uppercase mb-1">Rata Rapor</div>
                         <div class="text-sm font-black text-slate-800">{{ number_format($rataRataAkademik, 2) }}</div>
                     </div>
                     <div class="text-center p-3 bg-blue-50/50 rounded-2xl border border-blue-100">
@@ -142,7 +180,7 @@
                         <div class="text-sm font-black text-blue-600">{{ number_format($rataRataMentor, 2) }}</div>
                     </div>
                     <div class="text-center p-3 bg-orange-50/50 rounded-2xl border border-orange-100">
-                        <div class="text-[8px] font-black text-orange-400 uppercase mb-1">Interview</div>
+                        <div class="text-[8px] font-black text-orange-400 uppercase mb-1">Wawancara</div>
                         <div class="text-sm font-black text-orange-600">{{ number_format($rataRataAkademikFinal, 2) }}</div>
                     </div>
                     @php $ujianAvg = $user->peserta->nilaiUjians->avg('skor_rata') ?? 0; @endphp
@@ -158,7 +196,7 @@
         <div class="section-box bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
             <h3 class="text-sm font-black text-slate-800 mb-6 uppercase tracking-widest flex items-center gap-3">
                 <span class="iconify text-xl text-blue-600" data-icon="solar:notebook-bold"></span>
-                Rincian Nilai Raport (Semester 1-5)
+                Rincian Nilai Rapor (Semester 1-5)
             </h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-xs">
@@ -195,7 +233,7 @@
 
         <!-- 3. Review Interview Detail -->
         <div class="section-box bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-            <h3 class="text-sm font-black text-slate-800 mb-6 uppercase tracking-widest text-center">Rekapitulasi Penilaian Interview</h3>
+            <h3 class="text-sm font-black text-slate-800 mb-6 uppercase tracking-widest text-center">Rekapitulasi Penilaian Wawancara</h3>
             
             @foreach($user->peserta->penilaianAkademiks as $eval)
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -221,7 +259,7 @@
                         <div class="px-3 py-1 bg-blue-500 text-white text-[10px] font-black rounded-lg">SUBTOTAL: {{ number_format($eval->total_mhs, 2) }}</div>
                     </div>
                     <div class="grid grid-cols-2 gap-3 text-[10px]">
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Leadership</span><span class="font-black">{{ $eval->mhs_leadership }}</span></div>
+                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Kepemimpinan</span><span class="font-black">{{ $eval->mhs_leadership }}</span></div>
                         <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Organisasi</span><span class="font-black">{{ $eval->mhs_organisasi }}</span></div>
                         <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Etika</span><span class="font-black">{{ $eval->mhs_etika }}</span></div>
                         <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Adaptasi</span><span class="font-black">{{ $eval->mhs_adaptasi }}</span></div>
@@ -265,7 +303,7 @@
                 <input type="hidden" name="status" value="lulus">
                 
                 <div class="p-6 bg-white/5 border border-white/10 rounded-[2rem] text-center backdrop-blur-md">
-                    <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Semua Skor </div>
+                    <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Skor Akhir</div>
                     @php
                         $finalScore = ($rataRataAkademik + $rataRataMentor + $rataRataAkademikFinal + $ujianAvg) / 4;
                     @endphp
@@ -273,13 +311,13 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Grant Scheme</label>
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Skema Beasiswa</label>
                     <select name="nominal_beasiswa" required class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-yellow-400 appearance-none shadow-sm">
                         <option value="">-- Pilih Skema --</option>
-                        <option value="25%" {{ $user->peserta->daftar->nominal_beasiswa == '25%' ? 'selected' : '' }}>Scholarship 25% </option>
-                        <option value="50%" {{ $user->peserta->daftar->nominal_beasiswa == '50%' ? 'selected' : '' }}>Scholarship 50% </option>
-                        <option value="75%" {{ $user->peserta->daftar->nominal_beasiswa == '75%' ? 'selected' : '' }}>Scholarship 75% </option>
-                        <option value="100%" {{ $user->peserta->daftar->nominal_beasiswa == '100%' ? 'selected' : '' }}>Scholarship 100% </option>
+                        <option value="25%" {{ $user->peserta->daftar->nominal_beasiswa == '25%' ? 'selected' : '' }}>Beasiswa 25% </option>
+                        <option value="50%" {{ $user->peserta->daftar->nominal_beasiswa == '50%' ? 'selected' : '' }}>Beasiswa 50% </option>
+                        <option value="75%" {{ $user->peserta->daftar->nominal_beasiswa == '75%' ? 'selected' : '' }}>Beasiswa 75% </option>
+                        <option value="100%" {{ $user->peserta->daftar->nominal_beasiswa == '100%' ? 'selected' : '' }}>Beasiswa 100% </option>
                     </select>
                 </div>
 
@@ -290,14 +328,14 @@
         </div>
 
         <div class="preview-decision print-only section-box bg-white p-6 rounded-2xl border-2 border-slate-900">
-            <h4 class="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">Official Result Summary</h4>
+            <h4 class="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">Ringkasan Hasil Resmi</h4>
             <div class="space-y-3">
                 <div class="flex justify-between border-b pb-2">
                     <span class="text-[10px] font-bold text-slate-500">Skor Gabungan Akhir:</span>
                     <span class="text-xs font-black">{{ number_format($finalScore, 2) }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
-                    <span class="text-[10px] font-bold text-slate-500">Kapasitas Beasiswa:</span>
+                    <span class="text-[10px] font-bold text-slate-500">Skema Beasiswa:</span>
                     <span class="text-xs font-black text-blue-600">{{ $user->peserta->daftar->nominal_beasiswa ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between">
@@ -308,7 +346,7 @@
         </div>
 
         <div class="no-print bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Verification Resources</h4>
+            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Sumber Verifikasi</h4>
             <div class="space-y-4">
                 @if($user->peserta->link_ig)
                     <a href="{{ $user->peserta->link_ig }}" target="_blank" class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl group transition-all hover:bg-blue-50">
@@ -338,7 +376,7 @@
         <div class="text-center w-64">
             <p class="text-[9pt] mb-20">Jakarta, {{ date('d F Y') }}<br>Mengetahui,<br>Panitia Beasiswa MFLS 2026</p>
             <div class="border-b border-black w-full mb-1"></div>
-            <p class="text-[9pt] font-bold uppercase">MNC UNIVERSITY ADMISSION TEAM</p>
+            <p class="text-[9pt] font-bold uppercase">TIM ADMISI MNC UNIVERSITY</p>
         </div>
     </div>
 </div>

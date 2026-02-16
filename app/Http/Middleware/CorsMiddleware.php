@@ -18,11 +18,23 @@ class CorsMiddleware
         }
 
         $response = $next($request);
+        
+        $headers = [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization, X-Requested-With, Accept',
+        ];
 
-        // Tambahkan header ke response asli
-        return $response
-            ->header('Access-Control-Allow-Origin', '*') 
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+        if (method_exists($response, 'header')) {
+            foreach ($headers as $key => $value) {
+                $response->header($key, $value);
+            }
+        } else {
+            foreach ($headers as $key => $value) {
+                $response->headers->set($key, $value);
+            }
+        }
+
+        return $response;
     }
 }

@@ -211,6 +211,106 @@
                     </div>
                 </div>
 
+                <!-- Study Plan Section -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                        <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </div>
+                        Study Plan
+                    </h3>
+                    
+                    <div class="p-6 bg-blue-50/50 rounded-[2rem] border border-blue-100 mb-4">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600 mb-3">
+                                    <strong class="text-gray-900">Study Plan</strong> adalah rencana studi Anda selama menempuh pendidikan di universitas. 
+                                    Silakan download template, isi, dan upload kembali dalam format PDF.
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
+                                    <span class="text-xs text-gray-500">Format: PDF | Max: 5MB</span>
+                                </div>
+                            </div>
+                            <a href="{{ asset('icon/Study Plan MFLS 2026.pdf') }}" download class="ml-4 flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-5 py-3 rounded-xl transition-all shadow-md hover:shadow-lg hover:scale-105">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Download Template
+                            </a>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-5 bg-white rounded-2xl border border-blue-200">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-{{ $berkas && $berkas->study_plan ? 'blue-600' : 'gray-400' }}">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Upload Study Plan (PDF)</h4>
+                                    @if($berkas && $berkas->study_plan)
+                                        <p class="text-xs text-green-600 font-bold mt-1">✓ File terunggah</p>
+                                        <a href="{{ Storage::url($berkas->study_plan) }}" target="_blank" class="text-xs text-blue-600 hover:underline">Lihat File →</a>
+                                    @else
+                                        <p class="text-xs text-red-400 font-medium mt-1">Belum diunggah</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <input type="file" name="study_plan" class="hidden" id="study_plan" accept=".pdf" onchange="document.getElementById('btn-study-plan').innerText = this.files[0] ? this.files[0].name : 'Pilih File'">
+                            <label for="study_plan" id="btn-study-plan" class="cursor-pointer bg-dark-navy text-white text-xs font-bold px-6 py-3 rounded-xl hover:bg-primary-gold hover:text-dark-navy transition-all">
+                                {{ $berkas && $berkas->study_plan ? 'Ganti File' : 'Pilih File' }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Surat Rekomendasi Sekolah Section -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                        <div class="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        Surat Rekomendasi Sekolah
+                    </h3>
+                    
+                    <div class="p-6 bg-orange-50/50 rounded-[2rem] border border-orange-100 mb-4">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-600 mb-3">
+                                    <strong class="text-gray-900">Surat Rekomendasi Sekolah</strong> adalah surat pernyataan dukungan dari pihak sekolah. 
+                                    Silakan download template, isi, dan upload kembali dalam format PDF.
+                                </p>
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
+                                    <span class="text-xs text-gray-500">Format: PDF | Max: 5MB</span>
+                                </div>
+                            </div>
+                            <a href="{{ asset('icon/Surat Rekomendasi MFLS.pdf') }}" download class="ml-4 flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-5 py-3 rounded-xl transition-all shadow-md hover:shadow-lg hover:scale-105">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                Download Template
+                            </a>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-5 bg-white rounded-2xl border border-orange-200">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center text-{{ $berkas && $berkas->surat_rekomendasi_sekolah ? 'orange-600' : 'gray-400' }}">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Upload Surat Rekomendasi (PDF)</h4>
+                                    @if($berkas && $berkas->surat_rekomendasi_sekolah)
+                                        <p class="text-xs text-green-600 font-bold mt-1">✓ File terunggah</p>
+                                        <a href="{{ Storage::url($berkas->surat_rekomendasi_sekolah) }}" target="_blank" class="text-xs text-blue-600 hover:underline">Lihat File →</a>
+                                    @else
+                                        <p class="text-xs text-red-400 font-medium mt-1">Belum diunggah</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <input type="file" name="surat_rekomendasi_sekolah" class="hidden" id="surat_rekomendasi_sekolah" accept=".pdf" onchange="document.getElementById('btn-surat-rekomendasi').innerText = this.files[0] ? this.files[0].name : 'Pilih File'">
+                            <label for="surat_rekomendasi_sekolah" id="btn-surat-rekomendasi" class="cursor-pointer bg-dark-navy text-white text-xs font-bold px-6 py-3 rounded-xl hover:bg-primary-gold hover:text-dark-navy transition-all">
+                                {{ $berkas && $berkas->surat_rekomendasi_sekolah ? 'Ganti File' : 'Pilih File' }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Video Link (IG/TikTok) -->
                 <div class="mb-10">
                    <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
