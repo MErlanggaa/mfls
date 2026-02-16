@@ -6,13 +6,7 @@ use App\Http\Controllers\Api\SoalController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PengumumanController;
 
-// Public Routes
-Route::options('{any}', function() {
-    return response()->json([], 200)
-        ->header('Access-Control-Allow-Origin', '*')
-        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Referer');
-})->where('any', '.*');
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/cek-pengumuman', [PengumumanController::class, 'cekHasil']);
