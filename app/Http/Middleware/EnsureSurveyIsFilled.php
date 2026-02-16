@@ -9,24 +9,29 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureSurveyIsFilled
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
+        // 1. JANGAN CEK APAPUN JIKA REQUEST ADALAH 'OPTIONS' (Preflight)
+        if ($request->isMethod('OPTIONS')) {
+            return $next($request);
+        }
+
         if (Auth::check() && Auth::user()->role === 'pendaftar') {
-            // Check if user has filled survey
             $hasSurvey = \App\Models\Survei::where('akun_id', Auth::id())->exists();
             
-            // If not filled and not currently on survey page
-            if (!$hasSurvey && !$request->is('survey') && !$request->is('logout')) {
+            // 2. JANGAN REDIRECT JIKA REQUEST ADALAH API
+            if (!$hasSurvey && !$request->is('survey', 'logout', 'api/*')) {
+                // Jika butuh response JSON untuk frontend
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json(['message' => 'Silakan isi survei terlebih dahulu.'], 403);
+                }
                 return redirect('/survey');
             }
 
-            // If filled and accessing survey page, redirect to dashboard
             if ($hasSurvey && $request->is('survey')) {
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json(['message' => 'Survei sudah diisi.'], 200);
+                }
                 return redirect('/pendaftar/dashboard');
             }
         }
