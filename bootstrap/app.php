@@ -14,10 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-
-        // ✅ Pakai CORS bawaan Laravel 11
-        $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
-
+        
         // Proxy trust
         $middleware->trustProxies(at: '*');
 
