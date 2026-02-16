@@ -23,6 +23,17 @@
     <div class="lg:col-span-1">
         <div class="sticky top-4 space-y-6">
             
+            @if($errors->any())
+            <div class="bg-red-50 border border-red-200 p-4 rounded-xl mb-4">
+                <h4 class="text-red-800 font-bold text-xs mb-2 uppercase">Terjadi Kesalahan:</h4>
+                <ul class="list-disc list-inside text-[10px] text-red-600 font-medium">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
             <!-- Import Card -->
             <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl">
                 <h3 class="font-bold text-indigo-900 mb-2">Import Soal Massal</h3>

@@ -494,8 +494,8 @@ class AdminController extends Controller
 
     public function indexSoal(Request $request)
     {
-        if (auth()->user()->role === 'mentor') {
-            return redirect()->route('admin.dashboard')->with('loginError', 'Mentor tidak memiliki akses ke Bank Soal.');
+        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) {
+            return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke Bank Soal.');
         }
 
         $query = \App\Models\Soal::with('ujian')->latest();
@@ -513,6 +513,7 @@ class AdminController extends Controller
 
     public function storeSoal(Request $request)
     {
+        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
             'pertanyaan' => 'required',
@@ -552,7 +553,7 @@ class AdminController extends Controller
 
     public function editSoal($id)
     {
-        if (auth()->user()->role === 'mentor') return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
         $soal = \App\Models\Soal::findOrFail($id);
         $ujians = \App\Models\Ujian::all();
         return view('admin.soal.edit', compact('soal', 'ujians'));
@@ -560,7 +561,7 @@ class AdminController extends Controller
 
     public function updateSoal(Request $request, $id)
     {
-        if (auth()->user()->role === 'mentor') return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
             'pertanyaan' => 'required',
@@ -608,7 +609,7 @@ class AdminController extends Controller
 
     public function destroySoal($id)
     {
-        if (auth()->user()->role === 'mentor') return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
         $soal = \App\Models\Soal::findOrFail($id);
         
         // Delete main question image
@@ -632,6 +633,7 @@ class AdminController extends Controller
 
     public function importSoal(Request $request)
     {
+        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
             'file_soal' => 'required|mimes:csv,txt,docx'
@@ -678,7 +680,7 @@ class AdminController extends Controller
             $xmlContent = $zip->getFromName('word/document.xml');
             $zip->close();
         } else {
-            return back()->with('loginError', 'Gagal membaca file Word.');
+            return back()->with('error', 'Gagal membaca file Word.');
         }
 
         // Parsing XML sederhana
@@ -730,7 +732,7 @@ class AdminController extends Controller
     public function verifikasi(Request $request, $id)
     {
         if (auth()->user()->role === 'mentor') {
-             return back()->with('loginError', 'Mentor tidak memiliki izin verifikasi kelulusan.');
+             return back()->with('error', 'Mentor tidak memiliki izin verifikasi kelulusan.');
         }
 
         $daftar = Daftar::where('peserta_id', function($query) use ($id) {
@@ -779,7 +781,7 @@ class AdminController extends Controller
         $peserta = $user->peserta;
 
         if (!$peserta) {
-            return back()->with('loginError', 'Data peserta tidak ditemukan.');
+            return back()->with('error', 'Data peserta tidak ditemukan.');
         }
 
         $berkas = $peserta->berkas;
@@ -848,10 +850,10 @@ class AdminController extends Controller
             if (file_exists($zipPath)) {
                 return response()->download($zipPath)->deleteFileAfterSend(true);
             } else {
-                return back()->with('loginError', 'Gagal membuat file ZIP (File kosong).');
+                return back()->with('error', 'Gagal membuat file ZIP (File kosong).');
             }
         } else {
-            return back()->with('loginError', 'Gagal membuka file ZIP.');
+            return back()->with('error', 'Gagal membuka file ZIP.');
         }
     }
 
