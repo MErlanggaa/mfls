@@ -42,12 +42,15 @@ class SoalController extends Controller
             ->inRandomOrder()
             ->get(['id', 'ujian_id', 'pertanyaan', 'gambar', 'opsi_a', 'opsi_a_image', 'opsi_b', 'opsi_b_image', 'opsi_c', 'opsi_c_image', 'opsi_d', 'opsi_d_image', 'bobot'])
             ->map(function ($soal) {
-                $soal->gambar = $soal->gambar ? asset('storage/' . $soal->gambar) : null;
-                $soal->opsi_a_image = $soal->opsi_a_image ? asset('storage/' . $soal->opsi_a_image) : null;
-                $soal->opsi_b_image = $soal->opsi_b_image ? asset('storage/' . $soal->opsi_b_image) : null;
-                $soal->opsi_c_image = $soal->opsi_c_image ? asset('storage/' . $soal->opsi_c_image) : null;
-                $soal->opsi_d_image = $soal->opsi_d_image ? asset('storage/' . $soal->opsi_d_image) : null;
-                return $soal;
+                $data = $soal->toArray();
+                $baseUrl = request()->getSchemeAndHttpHost() . '/storage/';
+                
+                $data['gambar'] = $soal->gambar ? $baseUrl . $soal->gambar : null;
+                $data['opsi_a_image'] = $soal->opsi_a_image ? $baseUrl . $soal->opsi_a_image : null;
+                $data['opsi_b_image'] = $soal->opsi_b_image ? $baseUrl . $soal->opsi_b_image : null;
+                $data['opsi_c_image'] = $soal->opsi_c_image ? $baseUrl . $soal->opsi_c_image : null;
+                $data['opsi_d_image'] = $soal->opsi_d_image ? $baseUrl . $soal->opsi_d_image : null;
+                return $data;
             });
 
         return response()->json([
