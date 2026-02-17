@@ -311,7 +311,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <!-- Left: 5 Benefits -->
-            <div class="space-y-6">
+            <div class="space-y-6 order-2 lg:order-1">
                 <!-- Benefit 1 -->
                 <div class="bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-shadow">
                     <div class="flex items-start gap-4">
@@ -379,7 +379,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             </div>
             
             <!-- Right: Image -->
-            <div class="relative">
+            <div class="relative order-1 lg:order-2">
                 <img src="{{ asset('icon/Keuntungan.jpeg') }}" alt="Benefit Keuntungan" class="rounded-3xl shadow-2xl w-full object-cover">
             </div>
         </div>

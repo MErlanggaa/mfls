@@ -53,15 +53,25 @@
 </head>
 <body class="font-jakarta antialiased bg-gray-50/50">
     <div class="flex min-h-screen">
-        @include('layouts.sidebar')
+        <!-- Sidebar - Hidden on mobile, visible on desktop -->
+        <div class="hidden lg:block">
+            @include('layouts.sidebar')
+        </div>
 
         <!-- Main Content -->
-        <main class="flex-grow flex flex-col min-w-0">
+        <main class="flex-grow flex flex-col min-w-0 w-full">
             <!-- Top Header -->
-            <header class="h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-40">
-                <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    Selamat Datang, {{ Auth::user()->nama ?? 'Pendaftar' }}! 
-                    <span class="iconify text-yellow-500" data-icon="solar:hand-shake-bold"></span>
+            <header class="h-16 lg:h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-40">
+                <!-- Mobile Menu Button -->
+                <button id="mobile-sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                
+                <h2 class="text-sm lg:text-lg font-bold text-gray-900 flex items-center gap-2 truncate">
+                    <span class="hidden sm:inline">Selamat Datang,</span> {{ Str::limit(Auth::user()->nama ?? 'Pendaftar', 15) }}! 
+                    <span class="iconify text-yellow-500 hidden sm:inline" data-icon="solar:hand-shake-bold"></span>
                 </h2>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden sm:block">
@@ -72,10 +82,17 @@
             </header>
 
             <!-- Dashboard Content -->
-            <div class="p-8">
+            <div class="p-4 lg:p-8">
                 @yield('content')
             </div>
         </main>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden hidden">
+        <div id="mobile-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white transform -translate-x-full transition-transform duration-300 ease-in-out">
+            @include('layouts.sidebar')
+        </div>
     </div>
 
     <!-- SweetAlert2 -->
@@ -88,6 +105,29 @@
         }
     </style>
     <script>
+        // Mobile Sidebar Toggle
+        const mobileToggle = document.getElementById('mobile-sidebar-toggle');
+        const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+
+        if (mobileToggle && mobileOverlay && mobileSidebar) {
+            mobileToggle.addEventListener('click', () => {
+                mobileOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileSidebar.classList.remove('-translate-x-full');
+                }, 10);
+            });
+
+            mobileOverlay.addEventListener('click', (e) => {
+                if (e.target === mobileOverlay) {
+                    mobileSidebar.classList.add('-translate-x-full');
+                    setTimeout(() => {
+                        mobileOverlay.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             @if(session('success'))
                 Swal.fire({
