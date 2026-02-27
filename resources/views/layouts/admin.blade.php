@@ -103,7 +103,7 @@
                 </a>
                 @endif
 
-                @if(auth()->user()->role === 'admin')
+                @if(auth()->check() && auth()->user()->email === 'admin@mfls.com')
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Control</div>
                 <a href="{{ route('admin.user.index') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all {{ request()->routeIs('admin.user.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.user.index') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:settings-bold"></span> Manajemen User
@@ -114,7 +114,25 @@
                 @endif
             </nav>
 
-            <div class="p-6 border-t border-slate-100 bg-slate-50/50">
+            <div class="p-6 border-t border-slate-100 bg-slate-50/50 space-y-4">
+                {{-- Info Akun Login --}}
+                @auth
+                <div class="flex items-center gap-3 px-3 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                    <div class="w-9 h-9 rounded-xl bg-orange-100 flex items-center justify-center text-orange-600 font-black text-sm flex-shrink-0">
+                        {{ strtoupper(substr(auth()->user()->nama ?? auth()->user()->name ?? 'A', 0, 1)) }}
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-black text-slate-800 truncate leading-tight">
+                            {{ auth()->user()->nama ?? auth()->user()->name ?? '-' }}
+                        </p>
+                        <p class="text-[10px] text-slate-400 truncate leading-tight">
+                            {{ auth()->user()->email }}
+                        </p>
+                    </div>
+                    <span class="iconify text-slate-300 text-lg flex-shrink-0" data-icon="solar:user-circle-bold"></span>
+                </div>
+                @endauth
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="flex items-center justify-between w-full px-5 py-3 text-red-500 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-2xl font-bold transition-all shadow-sm group">
