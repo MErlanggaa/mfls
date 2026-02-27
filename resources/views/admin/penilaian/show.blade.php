@@ -1,12 +1,14 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="mb-8 flex items-center justify-between">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
-        <h2 class="text-2xl font-black text-gray-800">Evaluasi Peserta</h2>
-        <p class="text-gray-500">Memberikan penilaian untuk: {{ $user->nama }}</p>
+        <h2 class="text-xl sm:text-2xl font-black text-gray-800">Evaluasi Peserta (Mentor)</h2>
+        <p class="text-gray-500 text-sm">Berikan penilaian kualitatif untuk setiap peserta yang lolos seleksi berkas.</p>
     </div>
-    <a href="{{ $type === 'mentor' ? route('admin.penilaian.index') : route('admin.penilaian.akademik.index') }}" class="text-blue-600 font-bold hover:underline">← Kembali</a>
+    <a href="{{ $type === 'mentor' ? route('admin.penilaian.index') : route('admin.penilaian.akademik.index') }}" class="inline-flex self-start sm:self-auto items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest">
+        <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali
+    </a>
 </div>
 
 <div class="flex justify-center">
@@ -14,7 +16,7 @@
         <div class="grid grid-cols-1 {{ $type === 'admin' ? 'lg:grid-cols-2' : '' }} gap-8">
     <!-- Form Input (Mentor) -->
     @if($type === 'mentor' && (auth()->user()->role === 'mentor' || auth()->user()->role === 'admin'))
-    <div class="bg-white p-8 rounded-[2rem] border {{ auth()->user()->role === 'mentor' ? 'border-blue-100 shadow-blue-50' : 'border-gray-100' }} shadow-sm self-start">
+    <div class="bg-white p-5 sm:p-8 rounded-[2rem] border {{ auth()->user()->role === 'mentor' ? 'border-blue-100 shadow-blue-50' : 'border-gray-100' }} shadow-sm self-start">
         <h3 class="text-xl font-black text-slate-800 mb-8 flex items-center gap-2">
             <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm">✍️</span>
             Form Penilaian Mentor
@@ -67,7 +69,7 @@
 
     <!-- Form Input (Akademik) -->
     @if($type === 'akademik' && (auth()->user()->role === 'akademik' || auth()->user()->role === 'admin'))
-    <div class="bg-white p-8 rounded-[2rem] border {{ auth()->user()->role === 'akademik' ? 'border-orange-100 shadow-orange-50' : 'border-gray-100' }} shadow-sm">
+    <div class="bg-white p-5 sm:p-8 rounded-[2rem] border {{ auth()->user()->role === 'akademik' ? 'border-orange-100 shadow-orange-50' : 'border-gray-100' }} shadow-sm">
         <h3 class="text-xl font-black text-slate-800 mb-8 flex items-center gap-2">
             <span class="w-8 h-8 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center text-sm">🎓</span>
             Form Penilaian Akademik (Dosen & Kemahasiswaan)

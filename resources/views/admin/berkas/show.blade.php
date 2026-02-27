@@ -1,12 +1,14 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="mb-8 flex items-center justify-between">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
-        <h2 class="text-2xl font-black text-gray-800">Verifikasi Berkas</h2>
-        <p class="text-gray-500">Dokumen Pendaftaran: {{ $user->nama }}</p>
+        <h2 class="text-xl sm:text-2xl font-black text-gray-800">Verifikasi Berkas</h2>
+        <p class="text-gray-500 text-sm">Dokumen Pendaftaran: {{ $user->nama }}</p>
     </div>
-    <a href="{{ route('admin.berkas.index') }}" class="text-blue-600 font-bold hover:underline">← Kembali</a>
+    <a href="{{ route('admin.berkas.index') }}" class="inline-flex self-start sm:self-auto items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest">
+        <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali
+    </a>
 </div>
 
 <div class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">

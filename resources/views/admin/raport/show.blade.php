@@ -1,24 +1,24 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="mb-8 flex items-center justify-between">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
-        <h2 class="text-2xl font-black text-gray-800">Detail Akademik</h2>
-        <p class="text-gray-500">Transkrip Nilai Raport: {{ $user->nama }}</p>
+        <h2 class="text-xl sm:text-2xl font-black text-gray-800">Detail Akademik</h2>
+        <p class="text-gray-500 text-sm">Transkrip Nilai Raport: {{ $user->nama }}</p>
     </div>
-    <a href="{{ route('admin.raport.index') }}" class="text-blue-600 font-bold hover:underline">← Kembali</a>
+    <a href="{{ route('admin.raport.index') }}" class="inline-flex self-start sm:self-auto items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest">
+        <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali
+    </a>
 </div>
 
 <div class="space-y-8">
     <div class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-black text-slate-800 flex items-center gap-2">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+            <h3 class="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
                 <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-sm">📊</span>
                 Detail Transkrip (Sem. 1-6)
             </h3>
-            <div class="flex gap-2">
-                <span class="px-4 py-1.5 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-black border border-indigo-100 uppercase">Avg: {{ number_format($rataRata, 2) }}</span>
-            </div>
+            <span class="px-4 py-1.5 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-black border border-indigo-100 uppercase self-start sm:self-auto">Avg: {{ number_format($rataRata, 2) }}</span>
         </div>
         
         <div class="overflow-x-auto -mx-8 px-8">

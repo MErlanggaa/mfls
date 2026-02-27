@@ -140,16 +140,16 @@
     </div>
 </div>
 
-<div class="mb-8 flex items-center justify-between no-print">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 no-print">
     <div>
-        <h2 class="text-2xl font-black text-slate-800">Laporan Utama Beasiswa</h2>
-        <p class="text-slate-500 font-medium">Rekapitulasi Data & Penilaian: {{ $user->nama }}</p>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-800">Laporan Utama Beasiswa</h2>
+        <p class="text-slate-500 font-medium text-sm">Rekapitulasi: {{ $user->nama }}</p>
     </div>
-    <div class="flex gap-3">
-        <button onclick="window.print()" class="px-8 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black shadow-xl shadow-slate-200 hover:scale-105 transition-all uppercase tracking-[0.2em] flex items-center gap-2">
+    <div class="flex flex-col sm:flex-row gap-2">
+        <button onclick="window.print()" class="px-6 py-3 bg-slate-900 text-white rounded-2xl text-[10px] font-black shadow-xl shadow-slate-200 hover:scale-105 transition-all uppercase tracking-[0.2em] flex items-center justify-center gap-2">
             <span class="iconify" data-icon="solar:printer-bold"></span> Cetak PDF / Laporan
         </button>
-        <a href="{{ route('admin.beasiswa.index') }}" class="px-8 py-4 bg-white border border-slate-200 text-slate-700 rounded-2xl text-[10px] font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-[0.2em] flex items-center gap-2">
+        <a href="{{ route('admin.beasiswa.index') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl text-[10px] font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-[0.2em] flex items-center justify-center gap-2">
             <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali
         </a>
     </div>
@@ -158,35 +158,38 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-2 space-y-6">
         <!-- 1. Identitas Global -->
-        <div class="section-box bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 flex gap-8 items-center">
+        <div class="section-box bg-white p-5 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-slate-100">
             @php
                 $fotoPath = $user->peserta->berkas->foto ?? null;
                 $fotoUrl = $fotoPath ? asset('storage/' . $fotoPath) : "https://ui-avatars.com/api/?name=".urlencode($user->nama)."&background=0F172A&color=fff";
             @endphp
-            <div class="w-28 h-36 rounded-2xl overflow-hidden shadow-xl border-4 border-white ring-1 ring-slate-100 flex-shrink-0">
-                <img src="{{ $fotoUrl }}" class="w-full h-full object-cover" alt="Foto">
-            </div>
-            <div class="flex-grow">
-                <h1 class="text-2xl font-black text-slate-900 mb-1 uppercase tracking-tight">{{ $user->nama }}</h1>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">{{ $user->peserta->nama_sekolah }} | NISN: {{ $user->peserta->nisn }}</p>
-                
-                <div class="grid grid-cols-4 gap-4">
-                    <div class="text-center p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div class="text-[8px] font-black text-slate-400 uppercase mb-1">Rata Rapor</div>
-                        <div class="text-sm font-black text-slate-800">{{ number_format($rataRataAkademik, 2) }}</div>
-                    </div>
-                    <div class="text-center p-3 bg-blue-50/50 rounded-2xl border border-blue-100">
-                        <div class="text-[8px] font-black text-blue-400 uppercase mb-1">Skor Mentor</div>
-                        <div class="text-sm font-black text-blue-600">{{ number_format($rataRataMentor, 2) }}</div>
-                    </div>
-                    <div class="text-center p-3 bg-orange-50/50 rounded-2xl border border-orange-100">
-                        <div class="text-[8px] font-black text-orange-400 uppercase mb-1">Wawancara</div>
-                        <div class="text-sm font-black text-orange-600">{{ number_format($rataRataAkademikFinal, 2) }}</div>
-                    </div>
-                    @php $ujianAvg = $user->peserta->nilaiUjians->avg('skor_rata') ?? 0; @endphp
-                    <div class="text-center p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100">
-                        <div class="text-[8px] font-black text-emerald-400 uppercase mb-1">Skor CBT</div>
-                        <div class="text-sm font-black text-emerald-600">{{ number_format($ujianAvg, 2) }}</div>
+            {{-- Foto + Info: column di mobile, row di sm+ --}}
+            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                <div class="w-24 h-32 sm:w-28 sm:h-36 rounded-2xl overflow-hidden shadow-xl border-4 border-white ring-1 ring-slate-100 flex-shrink-0">
+                    <img src="{{ $fotoUrl }}" class="w-full h-full object-cover" alt="Foto">
+                </div>
+                <div class="flex-grow w-full text-center sm:text-left">
+                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 mb-1 uppercase tracking-tight">{{ $user->nama }}</h1>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">{{ $user->peserta->nama_sekolah }} | NISN: {{ $user->peserta->nisn }}</p>
+                    {{-- Grid skor: 2 kolom di mobile, 4 kolom di sm+ --}}
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="text-center p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                            <div class="text-[8px] font-black text-slate-400 uppercase mb-1">Rata Rapor</div>
+                            <div class="text-sm font-black text-slate-800">{{ number_format($rataRataAkademik, 2) }}</div>
+                        </div>
+                        <div class="text-center p-3 bg-blue-50/50 rounded-2xl border border-blue-100">
+                            <div class="text-[8px] font-black text-blue-400 uppercase mb-1">Skor Mentor</div>
+                            <div class="text-sm font-black text-blue-600">{{ number_format($rataRataMentor, 2) }}</div>
+                        </div>
+                        <div class="text-center p-3 bg-orange-50/50 rounded-2xl border border-orange-100">
+                            <div class="text-[8px] font-black text-orange-400 uppercase mb-1">Wawancara</div>
+                            <div class="text-sm font-black text-orange-600">{{ number_format($rataRataAkademikFinal, 2) }}</div>
+                        </div>
+                        @php $ujianAvg = $user->peserta->nilaiUjians->avg('skor_rata') ?? 0; @endphp
+                        <div class="text-center p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100">
+                            <div class="text-[8px] font-black text-emerald-400 uppercase mb-1">Skor CBT</div>
+                            <div class="text-sm font-black text-emerald-600">{{ number_format($ujianAvg, 2) }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
