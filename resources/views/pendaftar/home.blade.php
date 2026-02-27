@@ -255,7 +255,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         <div class="relative fade-in max-w-4xl mx-auto">
             @php
                 $timeline = [
-                    ['title' => 'Pendaftaran', 'date' => '15 Maret - 04 Mei 2026', 'active' => true],
+                    ['title' => 'Pendaftaran', 'date' => '16 Maret - 04 Mei 2026', 'active' => true],
                     ['title' => 'Pengumuman Hasil seleksi Administrasi', 'date' => '7 Mei 2026', 'active' => false],
                     ['title' => 'TPS, LBI & Pemetaan Diri', 'date' => '18 Mei 2026', 'active' => false],
                     ['title' => 'Company Visit & Sit In Class', 'date' => '21 - 22 Mei 2026', 'active' => false],
@@ -306,7 +306,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 scroll-fade">
             <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-4">Benefit Eksklusif</h3>
-            <h2 class="text-4xl md:text-5xl font-black text-dark-navy mb-6 leading-tight">Melangkah Lebih Jauh Bersama MNC Group</h2>
+            <h2 class="text-4xl md:text-5xl font-black text-dark-navy mb-6 leading-tight">Melangkah Lebih Jauh Bersama MNC University</h2>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -402,8 +402,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                 
                 <div class="space-y-6">
                     @foreach([
-                        ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Gap Year', 'desc' => 'Siswa/i Lulusan tahun ajaran 2023/2024/2025'],
-                         ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Siswa Kelas 12', 'desc' => 'Siswa/i kelas 12 SMA/SMK/MA sederajat tahun ajaran 2025/2026'],
+                        ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Siswa Kelas 12 & Gap Year', 'desc' => 'Siswa/i kelas 12 SMA/SMK/MA sederajat tahun ajaran 2025/2026' /  Lulusan tahun ajaran 2023/2024/2025],
                         ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Prestasi Akademik', 'desc' => 'Memiliki nilai rapor rata-rata minimal 80 atau peringkat 10 besar di kelas'],
                         ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Domisili', 'desc' => 'Berdomisili di wilayah Jabodetabek atau bersedia tinggal di Jakarta selama kuliah'],
                         ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Komitmen', 'desc' => 'Bersedia mengikuti seluruh rangkaian seleksi dan program pembinaan'],
@@ -547,9 +546,23 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         <!-- Testimonials Grid with Scroll Animation -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach([
-                ['name' => 'Sarah Amelia', 'batch' => 'MFLS 2024', 'major' => 'Teknik Informatika', 'quote' => 'MFLS bukan hanya memberikan beasiswa, tapi juga keluarga baru dan pengalaman yang luar biasa. Terima kasih atas kesempatan ini!'],
-                ['name' => 'Muhammad Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Program mentoring yang diberikan sangat membantu saya beradaptasi di dunia perkuliahan. Highly recommended!'],
-                ['name' => 'Putri Andini', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Beasiswa ini mengubah hidup saya. Dari yang awalnya ragu bisa kuliah, sekarang saya sudah semester 3 dengan prestasi yang membanggakan.']
+                ['name' => 'Putri Andini', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Beasiswa ini mengubah hidup saya. Dari yang awalnya ragu bisa kuliah, sekarang saya sudah semester 3 dengan prestasi yang membanggakan.', 'photo' => 'Andini.png'],
+                ['name' => 'Muhammad Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Program mentoring yang diberikan sangat membantu saya beradaptasi di dunia perkuliahan. Highly recommended!', 'photo' => 'Rizki.png'],
+                ['name' => 'Alfiah', 'batch' => 'MFLS 2024', 'major' => 'Manajemen', 'quote' => 'MFLS bukan hanya memberikan beasiswa, tapi juga keluarga baru dan pengalaman yang luar biasa. Terima kasih atas kesempatan ini!', 'photo' => 'Alfiah.png'],
+                ['name' => 'Baim', 'batch' => 'MFLS 2024', 'major' => 'Akuntansi', 'quote' => 'Kesempatan magang di MNC Group memberikan pengalaman kerja yang sangat berharga untuk karir saya ke depan.', 'photo' => 'Baim.png'],
+                ['name' => 'Cellindia', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Program leadership dan mentorship dari praktisi MNC Group sangat membantu mengembangkan soft skill saya.', 'photo' => 'Cellindia.png'],
+                ['name' => 'Dzakiyah', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Bahasa Inggris', 'quote' => 'Site visit dan company visit ke unit bisnis MNC memberikan wawasan industri yang tidak bisa didapat di kelas.', 'photo' => 'Dzakiyah.png'],
+                ['name' => 'Gavino', 'batch' => 'MFLS 2024', 'major' => 'Ilmu Komputer', 'quote' => 'Networking dengan sesama penerima beasiswa membuka banyak peluang kolaborasi dan pembelajaran bersama.', 'photo' => 'Gavino.png'],
+                ['name' => 'Innez', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Fasilitas kampus yang modern dan dosen-dosen berpengalaman membuat proses belajar jadi lebih menyenangkan.', 'photo' => 'Innez.png'],
+                ['name' => 'Irfan', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Beasiswa 100% dari MFLS membebaskan saya dari beban finansial dan bisa fokus pada prestasi akademik.', 'photo' => 'Irfan.png'],
+                ['name' => 'Kirania', 'batch' => 'MFLS 2024', 'major' => 'Manajemen', 'quote' => 'Program pengembangan kepemimpinan sangat membantu saya membangun personal branding yang kuat.', 'photo' => 'Kirania.png'],
+                ['name' => 'Raput', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'Sertifikat dari MNC University menjadi nilai tambah yang luar biasa di CV saya.', 'photo' => 'raput.png'],
+                ['name' => 'Rifatur', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Matematika', 'quote' => 'Bimbingan dari mentor profesional MNC Group membuka perspektif baru tentang dunia kerja.', 'photo' => 'Rifatur.png'],
+                ['name' => 'Rini Amanda', 'batch' => 'MFLS 2024', 'major' => 'Sains Komunikasi', 'quote' => 'Pengalaman sit in class di lingkungan industri memberikan pembelajaran praktis yang sangat aplikatif.', 'photo' => 'Rini Amanda.png'],
+                ['name' => 'Risky', 'batch' => 'MFLS 2025', 'major' => 'Ilmu Komputer', 'quote' => 'MFLS memberikan kesempatan untuk berkembang tidak hanya secara akademis tapi juga profesional.', 'photo' => 'Risky.png'],
+                ['name' => 'Sandy', 'batch' => 'MFLS 2023', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Komunitas MFLS sangat supportif dan membantu saya beradaptasi dengan lingkungan kampus.', 'photo' => 'Sandy.png'],
+                ['name' => 'Satria', 'batch' => 'MFLS 2024', 'major' => 'Sistem Informasi', 'quote' => 'Kesempatan magang di berbagai divisi MNC Group memberikan exposure yang luas tentang industri.', 'photo' => 'Satria.png'],
+                ['name' => 'Silvi', 'batch' => 'MFLS 2025', 'major' => 'Manajemen', 'quote' => 'Program beasiswa ini benar-benar life changing dan membuka banyak pintu kesempatan baru.', 'photo' => 'Silvi.png']
             ] as $index => $testimonial)
             <div class="testimonial-card bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:shadow-2xl hover:border-primary-yellow/30 transition-all duration-500" style="animation-delay: {{ $index * 200 }}ms;">
                 <!-- Quote Icon -->
@@ -558,9 +571,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                 <p class="text-gray-700 leading-relaxed mb-8 italic">"{{ $testimonial['quote'] }}"</p>
                 
                 <div class="flex items-center gap-4 border-t border-gray-100 pt-6">
-                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-yellow to-primary-yellow-hover flex items-center justify-center text-white font-black text-lg">
-                        {{ substr($testimonial['name'], 0, 1) }}
-                    </div>
+                    <img src="{{ asset('icon/' . $testimonial['photo']) }}" alt="{{ $testimonial['name'] }}" class="w-14 h-14 rounded-full object-cover border-2 border-primary-yellow/20">
                     <div>
                         <h4 class="font-bold text-dark-navy">{{ $testimonial['name'] }}</h4>
                         <p class="text-sm text-gray-500">{{ $testimonial['major'] }}</p>
@@ -595,7 +606,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                     <svg class="w-10 h-10 text-primary-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                 </div>
                 <h4 class="font-black text-dark-navy text-xl mb-3">WhatsApp</h4>
-                <a href="https://wa.me/6281234567890" class="text-primary-yellow font-bold text-lg hover:underline">+62 858-8005-9189</a>
+                <a href="https://wa.me/6285880059189" target="_blank" class="text-primary-yellow font-bold text-lg hover:underline">+62 858-8005-9189</a>
                 <p class="text-gray-500 text-sm mt-3">Senin - Jumat: 09.00 - 17.00 WIB</p>
             </div>
             

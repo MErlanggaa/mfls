@@ -8,16 +8,16 @@
     <title>Dashboard Pendaftar - {{ config('app.name', 'MFLS') }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('icon/loog.jpeg') }}">
+    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.png') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icon/loog.png') }}">
 
     <!-- Open Graph / Facebook / WhatsApp / Instagram -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="Dashboard Pendaftar - {{ config('app.name', 'MFLS') }}">
     <meta property="og:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
-    <meta property="og:image" content="{{ asset('icon/loog.jpeg') }}">
+    <meta property="og:image" content="{{ asset('icon/loog.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="{{ config('app.name', 'MFLS') }}">
@@ -27,7 +27,7 @@
     <meta name="twitter:url" content="{{ url()->current() }}">
     <meta name="twitter:title" content="Dashboard Pendaftar - {{ config('app.name', 'MFLS') }}">
     <meta name="twitter:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
-    <meta name="twitter:image" content="{{ asset('icon/loog.jpeg') }}">
+    <meta name="twitter:image" content="{{ asset('icon/loog.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

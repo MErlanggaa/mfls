@@ -131,7 +131,7 @@
 @section('content')
 <!-- Official Print Header -->
 <div class="official-header hidden">
-    <img src="{{ asset('icon/loog.jpeg') }}" class="header-logo" alt="Logo MFLS">
+    <img src="{{ asset('icon/loog.png') }}" class="header-logo" alt="Logo MFLS">
     <div class="header-text">
         <h1>MNC UNIVERSITY</h1>
         <p class="text-orange-500">MNC FUTURE LEADER SCHOLARSHIP (MFLS) 2026</p>

@@ -8,16 +8,16 @@
     <title>Admin Dashboard - {{ config('app.name', 'MFLS') }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('icon/loog.jpeg') }}">
+    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.png') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icon/loog.png') }}">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="Admin Dashboard - {{ config('app.name', 'MFLS') }}">
     <meta property="og:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
-    <meta property="og:image" content="{{ asset('icon/loog.jpeg') }}">
+    <meta property="og:image" content="{{ asset('icon/loog.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="{{ config('app.name', 'MFLS') }}">
@@ -27,7 +27,7 @@
     <meta name="twitter:url" content="{{ url()->current() }}">
     <meta name="twitter:title" content="Admin Dashboard - {{ config('app.name', 'MFLS') }}">
     <meta name="twitter:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
-    <meta name="twitter:image" content="{{ asset('icon/loog.jpeg') }}">
+    <meta name="twitter:image" content="{{ asset('icon/loog.png') }}">
 
     <!-- Fonts & Scripts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,7 +52,7 @@
     <header class="md:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-200 shadow-sm">
         <div class="flex items-center justify-between px-4 h-16">
             <a href="#" class="flex items-center gap-2.5">
-                <img src="{{ asset('icon/loog.jpeg') }}" class="w-9 h-9 rounded-xl object-cover shadow-md shadow-orange-400/20" alt="Logo MFLS">
+                <img src="{{ asset('icon/loog.png') }}" class="w-9 h-9 rounded-xl object-cover shadow-md shadow-orange-400/20" alt="Logo MFLS">
                 <div>
                     <span class="block font-black text-base text-slate-800 leading-tight">MFLS <span class="text-orange-500">Admin</span></span>
                     <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Management Panel</span>
@@ -83,7 +83,7 @@
             <!-- Logo - desktop only -->
             <div class="hidden md:block p-8 pb-4">
                 <a href="#" class="flex items-center gap-3 group">
-                    <img src="{{ asset('icon/loog.jpeg') }}"
+                    <img src="{{ asset('icon/loog.png') }}"
                         class="w-12 h-12 rounded-xl object-cover shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform"
                         alt="Logo MFLS">
                     <div>
