@@ -113,7 +113,7 @@
                     Dashboard
                 </a>
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia')
+                @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia') && auth()->user()->email === 'dion@gmail.com')
                 <a href="{{ route('admin.beasiswa.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.beasiswa.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -166,20 +166,25 @@
                 </a>
                 @endif
 
-                @if(auth()->check() && auth()->user()->role === 'admin')
+                @if(auth()->check() && (auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dion@gmail.com', 'adminis@mfls.com'])))
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Control</div>
+                @if(auth()->user()->role === 'admin')
                 <a href="{{ route('admin.user.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.user.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.user.index') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:settings-bold"></span>
                     Manajemen User
                 </a>
+                @endif
+
+                @if(in_array(auth()->user()->email, ['dion@gmail.com', 'adminis@mfls.com']))
                 <a href="{{ route('admin.berita.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.berita.*') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.berita.*') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:document-bold"></span>
                     Manajemen Berita
                 </a>
+                @endif
                 <a href="{{ route('pengumuman') }}" target="_blank"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all text-orange-500 hover:bg-orange-50 hover:text-orange-600">
                     <span class="iconify text-xl text-orange-500" data-icon="solar:eye-bold"></span>

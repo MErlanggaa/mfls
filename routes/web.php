@@ -47,9 +47,12 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class, 'storePenilaianMentor'])->name('mentor_nilai');
         });
         
-        Route::get('/admin/beasiswa', [App\Http\Controllers\AdminController::class, 'indexBeasiswa'])->name('admin.beasiswa.index');
-        Route::get('/admin/beasiswa/{id}', [App\Http\Controllers\AdminController::class, 'showBeasiswa'])->name('admin.beasiswa.show');
-        Route::post('/admin/beasiswa/{id}/update', [App\Http\Controllers\AdminController::class, 'updateBeasiswa'])->name('admin.beasiswa.update');
+        // Seleksi Beasiswa (Email Restricted)
+        Route::middleware(['role:email:dion@gmail.com'])->group(function () {
+            Route::get('/admin/beasiswa', [App\Http\Controllers\AdminController::class, 'indexBeasiswa'])->name('admin.beasiswa.index');
+            Route::get('/admin/beasiswa/{id}', [App\Http\Controllers\AdminController::class, 'showBeasiswa'])->name('admin.beasiswa.show');
+            Route::post('/admin/beasiswa/{id}/update', [App\Http\Controllers\AdminController::class, 'updateBeasiswa'])->name('admin.beasiswa.update');
+        });
         
         Route::get('/admin/hasil-ujian', [App\Http\Controllers\AdminController::class, 'indexHasilUjian'])->name('admin.hasil_ujian.index');
         
@@ -72,8 +75,10 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/admin/soal/{id}', [App\Http\Controllers\AdminController::class, 'destroySoal'])->name('admin.soal.destroy');
         Route::post('/admin/soal/import', [App\Http\Controllers\AdminController::class, 'importSoal'])->name('admin.soal.import');
 
-        // Manajemen Berita
-        Route::resource('admin/berita', \App\Http\Controllers\BeritaController::class, ['as' => 'admin']);
+        // Manajemen Berita (Email Restricted)
+        Route::middleware(['role:email:dion@gmail.com|adminis@mfls.com'])->group(function () {
+            Route::resource('admin/berita', \App\Http\Controllers\BeritaController::class, ['as' => 'admin']);
+        });
 
         Route::get('/admin/export', [App\Http\Controllers\AdminController::class, 'exportExcel'])->name('admin.export');
     });

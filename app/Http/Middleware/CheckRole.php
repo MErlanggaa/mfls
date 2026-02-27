@@ -25,17 +25,32 @@ class CheckRole
         $user = auth()->user();
         $userRole = strtolower(trim($user->role));
         
-        // Split roles if they came as a single string (some Laravel versions/config)
         $allowedRoles = [];
+        $allowedEmails = [];
+
         foreach ($roles as $role) {
             $parts = explode(',', $role);
             foreach ($parts as $part) {
-                $allowedRoles[] = strtolower(trim($part));
+                $trimmedPart = strtolower(trim($part));
+                if (str_starts_with($trimmedPart, 'email:')) {
+                    $emailList = substr($trimmedPart, 6);
+                    $emails = explode('|', $emailList);
+                    foreach ($emails as $e) {
+                        $allowedEmails[] = trim($e);
+                    }
+                } else {
+                    $allowedRoles[] = $trimmedPart;
+                }
             }
         }
 
         // If 'pendaftar' tries to access non-pendaftar restricted areas, or vice versa, show 404
-        if (!in_array($userRole, $allowedRoles)) {
+        if (!empty($allowedRoles) && !in_array($userRole, $allowedRoles)) {
+            abort(404);
+        }
+
+        // If specific emails are required, check them
+        if (!empty($allowedEmails) && !in_array($user->email, $allowedEmails)) {
             abort(404);
         }
 

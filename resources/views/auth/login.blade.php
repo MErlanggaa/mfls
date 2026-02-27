@@ -22,7 +22,7 @@
     <div>
         <div class="flex justify-between mb-2">
             <label for="password" class="text-sm font-bold text-gray-700">Password</label>
-            <a href="#" class="text-xs font-bold text-primary-gold hover:underline">Lupa Password?</a>
+            <a href="javascript:void(0)" onclick="showForgotInfo()" class="text-xs font-bold text-primary-gold hover:underline">Lupa Password?</a>
         </div>
         <div class="relative">
             <input type="password" id="password" name="password" required
@@ -235,6 +235,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000); // Save after 1 second of no typing
     });
 });
+
+function showForgotInfo() {
+    Swal.fire({
+        title: 'Lupa Password?',
+        text: 'Silakan hubungi admin melalui WhatsApp (+62 858-8005-9189) atau Email (beasiswamncuniversity@gmail.com) untuk reset password akun Anda.',
+        icon: 'info',
+        confirmButtonColor: '#F2B451'
+    });
+}
 </script>
 
 @if(session('success'))
