@@ -34,14 +34,9 @@ class CheckRole
             }
         }
 
-        // If 'pendaftar' tries to access non-pendaftar restricted areas, redirect to their profile
-        if ($userRole === 'pendaftar' && !in_array('pendaftar', $allowedRoles)) {
-            return redirect()->route('pendaftar.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
-        }
-
-        // Check if user has any of the required roles
+        // If 'pendaftar' tries to access non-pendaftar restricted areas, or vice versa, show 404
         if (!in_array($userRole, $allowedRoles)) {
-            return redirect('/')->with('error', 'Akses ditolak.');
+            abort(404);
         }
 
         return $next($request);
