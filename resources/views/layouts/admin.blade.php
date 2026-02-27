@@ -207,7 +207,7 @@
         </aside>
 
         <!-- ===== MAIN CONTENT ===== -->
-        <main class="flex-1 md:ml-72 pt-16 md:pt-0 p-4 sm:p-6 md:p-8 lg:p-12 min-w-0">
+        <main class="flex-1 md:ml-72 pt-20 md:pt-0 px-4 pb-8 sm:px-6 md:px-8 md:py-8 lg:px-12 lg:py-12 min-w-0">
             @yield('content')
         </main>
     </div>
