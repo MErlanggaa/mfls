@@ -14,13 +14,13 @@
 </div>
 @endif
 
-<div class="mb-8 flex items-center justify-between">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h2 class="text-2xl font-black text-slate-800">Verifikasi Seleksi Administrasi</h2>
-        <p class="text-slate-500">Cek Profil, Raport, dan Berkas Peserta: {{ $user->nama }}</p>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-800">Verifikasi Seleksi Administrasi</h2>
+        <p class="text-slate-500 text-sm">Peserta: {{ $user->nama }}</p>
     </div>
-    <a href="{{ route('admin.pendaftar.index') }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest flex items-center gap-2">
-        <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali Ke List
+    <a href="{{ route('admin.pendaftar.index') }}" class="inline-flex self-start sm:self-auto px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest items-center gap-2">
+        <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali
     </a>
 </div>
 
@@ -28,35 +28,35 @@
     <!-- Kolom Utama -->
     <div class="lg:col-span-2 space-y-8">
         <!-- 1. Identitas Global dengan Foto 3x4 -->
-        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 relative overflow-hidden">
+        <div class="bg-white p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] shadow-sm border border-slate-100 relative overflow-hidden">
             <div class="absolute top-0 right-0 w-40 h-40 bg-orange-50/50 rounded-full translate-x-1/2 -translate-y-1/2"></div>
-            <div class="flex items-start gap-8 mb-10 relative">
+            {{-- Foto + Nama: column di mobile, row di sm+ --}}
+            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8 relative">
                 @php
                     $fotoPath = $user->peserta->berkas->foto ?? null;
                     $fotoUrl = $fotoPath ? asset('storage/' . $fotoPath) : "https://ui-avatars.com/api/?name=".urlencode($user->nama)."&background=F97316&color=fff";
                 @endphp
-                <!-- Foto 3x4 -->
-                <div class="w-32 h-40 rounded-2xl overflow-hidden shadow-xl border-4 border-white ring-2 ring-orange-100 flex-shrink-0">
+                {{-- Foto 3x4 --}}
+                <div class="w-28 h-36 sm:w-32 sm:h-40 rounded-2xl overflow-hidden shadow-xl border-4 border-white ring-2 ring-orange-100 flex-shrink-0">
                     <img src="{{ $fotoUrl }}" class="w-full h-full object-cover" alt="Foto {{ $user->nama }}">
                 </div>
-                <div class="flex-grow">
-                    <h1 class="text-3xl font-black text-slate-900 mb-2">{{ $user->nama }}</h1>
-                    <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex-grow w-full text-center sm:text-left">
+                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mb-2">{{ $user->nama }}</h1>
+                    <div class="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
                         <span class="px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-orange-100">{{ $user->peserta->nisn }}</span>
                         <span class="text-slate-300 font-bold">•</span>
                         <span class="text-slate-500 font-bold uppercase text-[10px] tracking-widest">{{ $user->peserta->nama_sekolah }}</span>
                     </div>
-                    <div class="mt-4 grid grid-cols-2 gap-4">
+                    {{-- Info detail: 1 kolom di mobile, 2 kolom di sm+ --}}
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
                         <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Email</label>
-                            <div class="text-xs font-bold text-slate-700 break-all flex items-center gap-2">
-                                {{ $user->email }}
-                                @if(auth()->user()->role === 'admin')
-                                <button type="button" onclick="confirmResetPassword({{ $user->id }}, '{{ $user->nama }}')" class="px-2 py-0.5 bg-yellow-50 text-yellow-600 rounded-md text-[9px] font-black hover:bg-yellow-500 hover:text-white transition-all border border-yellow-100 flex items-center gap-1">
-                                    <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span> RESET PW
-                                </button>
-                                @endif
-                            </div>
+                            <div class="text-xs font-bold text-slate-700 break-all">{{ $user->email }}</div>
+                            @if(auth()->user()->role === 'admin')
+                            <button type="button" onclick="confirmResetPassword({{ $user->id }}, '{{ $user->nama }}')" class="mt-1 px-2 py-0.5 bg-yellow-50 text-yellow-600 rounded-md text-[9px] font-black hover:bg-yellow-500 hover:text-white transition-all border border-yellow-100 inline-flex items-center gap-1">
+                                <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span> RESET PW
+                            </button>
+                            @endif
                         </div>
                         <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">WhatsApp</label>
@@ -70,7 +70,7 @@
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Tahun Lulus</label>
                             @php $thnLulus = (int) ($user->peserta->daftar->tahun_lulus ?? $user->peserta->tahun_lulus ?? 2026); @endphp
                             <div class="text-xs font-bold {{ $thnLulus < 2026 ? 'text-purple-600' : 'text-slate-700' }}">
-                                {{ $thnLulus }} 
+                                {{ $thnLulus }}
                                 @if($thnLulus < 2026) <span class="bg-purple-100 text-purple-600 px-1 py-0.5 rounded text-[8px] ml-1">ALUMNI</span> @endif
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Jenis Kelamin</label>
                             <div class="text-xs font-bold text-slate-700">{{ $user->peserta->jenis_kelamin }}</div>
                         </div>
-                        <div class="col-span-2">
+                        <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Program Studi Pilihan</label>
                             <div class="text-xs font-black text-blue-600 uppercase">{{ $user->peserta->pilihan_prodi ?? 'Belum Memilih' }}</div>
                         </div>
