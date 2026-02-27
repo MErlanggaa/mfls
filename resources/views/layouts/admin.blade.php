@@ -44,6 +44,12 @@
             --font-jakarta: "Plus Jakarta Sans", sans-serif;
         }
     </style>
+
+    <!-- Summernote CSS & JS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
     @stack('styles')
 </head>
 <body class="font-jakarta antialiased bg-slate-50 text-slate-800">
@@ -160,13 +166,19 @@
                 </a>
                 @endif
 
-                @if(auth()->check() && auth()->user()->email === 'admin@mfls.com')
+                @if(auth()->check() && auth()->user()->role === 'admin')
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Control</div>
                 <a href="{{ route('admin.user.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.user.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
                     <span class="iconify text-xl {{ request()->routeIs('admin.user.index') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:settings-bold"></span>
                     Manajemen User
+                </a>
+                <a href="{{ route('admin.berita.index') }}" onclick="closeSidebar()"
+                    class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
+                    {{ request()->routeIs('admin.berita.*') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.berita.*') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:document-bold"></span>
+                    Manajemen Berita
                 </a>
                 <a href="{{ route('pengumuman') }}" target="_blank"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all text-orange-500 hover:bg-orange-50 hover:text-orange-600">

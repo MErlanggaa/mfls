@@ -511,7 +511,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
     </div>
 </div>
 
-<!-- Collaboration Section -->
+<!-- Collaboration Section 
 <div class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -532,6 +532,46 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         </div>
     </div>
 </div>
+-->
+<!-- Berita & Pengumuman Section -->
+@if($beritas->count() > 0)
+<div id="berita" class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in">
+            <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-2">Berita & Informasi</h3>
+            <h2 class="text-4xl font-black text-dark-navy">Kabar Terbaru MFLS</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($beritas as $berita)
+            <div class="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 scroll-fade">
+                @if($berita->thumbnail)
+                <img src="{{ asset('storage/' . $berita->thumbnail) }}" alt="{{ $berita->judul }}" class="w-full h-48 object-cover">
+                @else
+                <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                    <span class="iconify text-4xl text-gray-400" data-icon="solar:gallery-bold-duotone"></span>
+                </div>
+                @endif
+                <div class="p-6">
+                    <div class="flex items-center gap-2 text-sm text-primary-yellow font-semibold mb-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>{{ $berita->created_at->format('d M Y') }}</span>
+                    </div>
+                    <h4 class="text-xl font-bold text-dark-navy mb-3 line-clamp-2">{{ $berita->judul }}</h4>
+                    <div class="text-gray-600 text-sm line-clamp-3 mb-4">
+                        {!! strip_tags($berita->konten) !!}
+                    </div>
+                    <a href="{{ route('berita.show', $berita->slug) }}" class="inline-flex items-center gap-2 text-primary-yellow font-bold hover:gap-3 transition-all">
+                        Baca Selengkapnya
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- Testimonials Section - "Apa Kata Mereka" -->
 <div class="py-24 bg-gradient-to-br from-primary-yellow/5 to-white relative overflow-hidden">

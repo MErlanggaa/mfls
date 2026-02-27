@@ -116,6 +116,11 @@
                 <input type="text" id="nama_sekolah" name="nama_sekolah" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium" placeholder="Nama SMA/SMK/MA">
             </div>
             <div class="col-span-full">
+                <label for="no_guru_bk" class="block text-xs font-bold text-gray-700 mb-2">No. WhatsApp Guru BK (Opsional)</label>
+                <input type="text" id="no_guru_bk" name="no_guru_bk" value="{{ old('no_guru_bk') }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium" placeholder="Contoh: 0812xxxx">
+                @error('no_guru_bk') <p class="text-red-500 text-[10px] mt-1 font-bold italic">{{ $message }}</p> @enderror
+            </div>
+            <div class="col-span-full">
                 <label for="nama_sekolah" class="block text-xs font-bold text-gray-700 mb-2">Kode Referal</label>
                 <input type="text" id="kode_referral" name="kode_referral" value="{{ old('kode_referral') }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium" placeholder="Masukkan kode referral jika ada">
                 @error('kode_referral') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -180,7 +185,7 @@
     confirmPassword.addEventListener('input', checkPasswordMatch);
 
     // 2. Number Only Validation
-    const numberFields = ['no_whatsapp', 'nisn', 'telp_sekolah'];
+    const numberFields = ['no_whatsapp', 'nisn', 'telp_sekolah', 'no_guru_bk'];
 
     numberFields.forEach(id => {
         const input = document.getElementById(id);
