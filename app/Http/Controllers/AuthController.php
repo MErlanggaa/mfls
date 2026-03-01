@@ -19,7 +19,22 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'g-recaptcha-response' => 'required',
+        ], [
+            'g-recaptcha-response.required' => 'Wajib mencentang reCAPTCHA.',
         ]);
+
+        // Verify Google reCAPTCHA
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = $request->input('g-recaptcha-response');
+        $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$response}");
+        $responseData = json_decode($verifyResponse);
+
+        if (!$responseData->success) {
+            return back()->withErrors(['g-recaptcha-response' => 'Verifikasi robot gagal, silakan coba lagi.'])->withInput();
+        }
+
+        unset($credentials['g-recaptcha-response']);
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -46,7 +61,22 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'g-recaptcha-response' => 'required',
+        ], [
+            'g-recaptcha-response.required' => 'Wajib mencentang reCAPTCHA.',
         ]);
+
+        // Verify Google reCAPTCHA
+        $secretKey = env('RECAPTCHA_SECRET_KEY');
+        $response = $request->input('g-recaptcha-response');
+        $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$response}");
+        $responseData = json_decode($verifyResponse);
+
+        if (!$responseData->success) {
+            return back()->withErrors(['g-recaptcha-response' => 'Verifikasi robot gagal, silakan coba lagi.'])->withInput();
+        }
+
+        unset($credentials['g-recaptcha-response']);
 
         $remember = $request->has('remember');
 
@@ -84,6 +114,7 @@ class AuthController extends Controller
             'provinsi' => 'required|string',
             'kabupaten' => 'required|string',
             'nama_sekolah' => 'required|string',
+            'no_guru_bk' => 'nullable|string|max:30',
             'kode_referral' => 'nullable|string|max:50',
             'g-recaptcha-response' => 'required',
         ], [
@@ -123,6 +154,7 @@ class AuthController extends Controller
                 'provinsi' => $request->provinsi,
                 'kabupaten' => $request->kabupaten,
                 'nama_sekolah' => $request->nama_sekolah,
+                'no_guru_bk' => $request->no_guru_bk,
                 'nisn' => $request->nisn,
             ]);
 

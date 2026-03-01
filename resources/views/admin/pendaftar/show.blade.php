@@ -63,6 +63,10 @@
                             <div class="text-xs font-bold text-slate-700">{{ $user->peserta->no_whatsapp }}</div>
                         </div>
                         <div>
+                            <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">WhatsApp Guru BK</label>
+                            <div class="text-xs font-bold text-slate-700">{{ $user->peserta->no_guru_bk ?? '-' }}</div>
+                        </div>
+                        <div>
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Tanggal Lahir</label>
                             <div class="text-xs font-bold text-slate-700">{{ \Carbon\Carbon::parse($user->peserta->tgl_lahir)->format('d M Y') }}</div>
                         </div>

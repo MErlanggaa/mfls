@@ -22,7 +22,7 @@
     <div>
         <div class="flex justify-between mb-2">
             <label for="password" class="text-sm font-bold text-gray-700">Password</label>
-            <a href="#" class="text-xs font-bold text-primary-gold hover:underline">Lupa Password?</a>
+            <a href="javascript:void(0)" onclick="showForgotInfo()" class="text-xs font-bold text-primary-gold hover:underline">Lupa Password?</a>
         </div>
         <div class="relative">
             <input type="password" id="password" name="password" required
@@ -34,6 +34,12 @@
     <div class="flex items-center">
         <input type="checkbox" id="remember" class="w-5 h-5 border-gray-200 rounded text-primary-gold focus:ring-primary-gold/20">
         <label for="remember" class="ml-3 text-sm font-semibold text-gray-600">Ingat Saya</label>
+    </div>
+
+    <!-- Google reCAPTCHA -->
+    <div>
+        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
+        @error('g-recaptcha-response') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
     </div>
 
     <button type="submit" 
@@ -52,6 +58,8 @@
         Masuk dengan Google
     </button> --}}
 </form>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <p class="mt-10 text-center text-sm font-bold text-gray-500">
     Belum punya akun? 
@@ -227,6 +235,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000); // Save after 1 second of no typing
     });
 });
+
+function showForgotInfo() {
+    Swal.fire({
+        title: 'Lupa Password?',
+        text: 'Silakan hubungi admin melalui WhatsApp (+62 858-8005-9189) atau Email (beasiswamncuniversity@gmail.com) untuk reset password akun Anda.',
+        icon: 'info',
+        confirmButtonColor: '#F2B451'
+    });
+}
 </script>
 
 @if(session('success'))

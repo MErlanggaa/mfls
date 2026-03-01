@@ -7,6 +7,28 @@
 
     <title>{{ config('app.name', 'MFLS') }}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
+    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icon/loog.jpeg') }}">
+
+    <!-- Open Graph / Facebook / WhatsApp / Instagram -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ config('app.name', 'MFLS') }} - Program Beasiswa">
+    <meta property="og:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
+    <meta property="og:image" content="{{ asset('icon/loog.jpeg') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="{{ config('app.name', 'MFLS') }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ config('app.name', 'MFLS') }} - Program Beasiswa">
+    <meta name="twitter:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
+    <meta name="twitter:image" content="{{ asset('icon/loog.jpeg') }}">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,15 +66,15 @@
                         </a>
                     </div>
 
-                    <!-- Navigation Links -->
                     <div class="hidden md:flex items-center space-x-8">
-                        <a href="#home" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Home</a>
-                        <a href="#about" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Tentang Kami</a>
-                        <a href="#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Timeline</a>
-                        <a href="#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">S&K</a>
-                        <a href="#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Program</a>
-                        <a href="/pengumuman" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Pengumuman</a>
-                        <a href="#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Kontak</a>
+                        <a href="{{ url('/') }}#home" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Home</a>
+                        <a href="{{ url('/') }}#about" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Tentang Kami</a>
+                        <a href="{{ url('/') }}#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Timeline</a>
+                        <a href="{{ url('/') }}#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">S&K</a>
+                        <a href="{{ url('/') }}#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Program</a>
+                        <a href="{{ url('/') }}#berita" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Berita</a>
+                        <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Hasil Seleksi</a>
+                        <a href="{{ url('/') }}#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Kontak</a>
                     </div>
 
                     <!-- CTA Buttons -->
@@ -74,13 +96,14 @@
                 <!-- Mobile Navigation Menu -->
                 <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 py-4">
                     <div class="flex flex-col space-y-4">
-                        <a href="#home" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Home</a>
-                        <a href="#about" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Tentang Kami</a>
-                        <a href="#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Timeline</a>
-                        <a href="#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">S&K</a>
-                        <a href="#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Program</a>
-                        <a href="/pengumuman" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Pengumuman</a>
-                        <a href="#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Kontak</a>
+                        <a href="{{ url('/') }}#home" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Home</a>
+                        <a href="{{ url('/') }}#about" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Tentang Kami</a>
+                        <a href="{{ url('/') }}#timeline" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Timeline</a>
+                        <a href="{{ url('/') }}#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">S&K</a>
+                        <a href="{{ url('/') }}#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Program</a>
+                        <a href="{{ url('/') }}#berita" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Berita</a>
+                        <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors mobile-nav-link">Hasil Seleksi</a>
+                        <a href="{{ url('/') }}#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Kontak</a>
                     </div>
                 </div>
             </div>
@@ -160,20 +183,26 @@
             
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId);
+                    const href = this.getAttribute('href');
                     
-                    if (targetElement) {
-                        const offsetTop = targetElement.offsetTop - 80; // Account for fixed navbar
-                        window.scrollTo({
-                            top: offsetTop,
-                            behavior: 'smooth'
-                        });
+                    // Only smooth scroll if it's a hash link for the current page
+                    if (href.includes('#')) {
+                        const targetId = href.split('#')[1];
+                        const targetElement = document.getElementById(targetId);
                         
-                        // Close mobile menu after clicking
-                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-                            mobileMenu.classList.add('hidden');
+                        // If we are on the page where the target exists
+                        if (targetElement) {
+                            e.preventDefault();
+                            const offsetTop = targetElement.offsetTop - 80;
+                            window.scrollTo({
+                                top: offsetTop,
+                                behavior: 'smooth'
+                            });
+                            
+                            // Close mobile menu
+                            if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                                mobileMenu.classList.add('hidden');
+                            }
                         }
                     }
                 });
@@ -181,7 +210,7 @@
 
             // Active navigation state on scroll
             window.addEventListener('scroll', function() {
-                const sections = ['home', 'about', 'timeline', 'requirements', 'program', 'contact'];
+                const sections = ['home', 'about', 'timeline', 'requirements', 'program', 'berita', 'contact'];
                 const scrollPos = window.scrollY + 100;
 
                 sections.forEach(sectionId => {

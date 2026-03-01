@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Alias middleware lain
         $middleware->alias([
             'survey.check' => \App\Http\Middleware\EnsureSurveyIsFilled::class,
+            'role' => \App\Http\Middleware\CheckRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

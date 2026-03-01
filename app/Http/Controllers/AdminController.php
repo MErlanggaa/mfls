@@ -173,6 +173,9 @@ class AdminController extends Controller
         if (auth()->user()->role === 'mentor') return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar', function($q) {
+                $q->where('status', 'lulus');
+            })
             ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas', 'peserta.penilaianMentors.mentor', 'peserta.jawabanUjians.ujian']);
 
         // filters ...

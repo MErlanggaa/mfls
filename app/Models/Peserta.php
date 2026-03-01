@@ -23,6 +23,7 @@ class Peserta extends Model
         'kabupaten',
         'nama_sekolah',
         'telp_sekolah',
+        'no_guru_bk',
         'link_ig',
         'link_tiktok',
         'link_tiktok',
