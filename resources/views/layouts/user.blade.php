@@ -7,28 +7,6 @@
 
     <title>{{ config('app.name', 'MFLS') }}</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('icon/loog.jpeg') }}">
-
-    <!-- Open Graph / Facebook / WhatsApp / Instagram -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="{{ config('app.name', 'MFLS') }} - Program Beasiswa">
-    <meta property="og:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
-    <meta property="og:image" content="{{ asset('icon/loog.jpeg') }}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="{{ config('app.name', 'MFLS') }}">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="{{ url()->current() }}">
-    <meta name="twitter:title" content="{{ config('app.name', 'MFLS') }} - Program Beasiswa">
-    <meta name="twitter:description" content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
-    <meta name="twitter:image" content="{{ asset('icon/loog.jpeg') }}">
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,7 +40,7 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="flex items-center gap-2">
-                            <img src="{{ asset('icon/loog.jpeg') }}" alt="Logo MFLS" class="h-12 w-auto">
+                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-12 w-auto">
                         </a>
                     </div>
 
@@ -90,6 +68,7 @@
                             Login
                         </a>
                     </div>
+                
                 </div>
                 
                 <!-- Mobile Navigation Menu -->
@@ -119,7 +98,7 @@
                     <!-- Brand Info -->
                     <div class="col-span-1 md:col-span-1">
                         <a href="/" class="flex items-center gap-2 mb-6">
-                            <img src="{{ asset('icon/loog.jpeg') }}" alt="Logo MFLS" class="h-10 w-auto">
+                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-10 w-auto">
                         </a>
                         <p class="text-sm leading-relaxed mb-6">
                             Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.
