@@ -543,53 +543,133 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             <h2 class="text-4xl font-black text-dark-navy">Apa Kata Mereka?</h2>
         </div>
         
-        <!-- Testimonials Grid with Scroll Animation -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach([
-                ['name' => 'Putri Andini', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Beasiswa ini mengubah hidup saya. Dari yang awalnya ragu bisa kuliah, sekarang saya sudah semester 3 dengan prestasi yang membanggakan.', 'photo' => 'Andini.png'],
-                ['name' => 'Muhammad Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Program mentoring yang diberikan sangat membantu saya beradaptasi di dunia perkuliahan. Highly recommended!', 'photo' => 'Rizki.png'],
-                ['name' => 'Alfiah', 'batch' => 'MFLS 2024', 'major' => 'Manajemen', 'quote' => 'MFLS bukan hanya memberikan beasiswa, tapi juga keluarga baru dan pengalaman yang luar biasa. Terima kasih atas kesempatan ini!', 'photo' => 'Alfiah.png'],
-                ['name' => 'Baim', 'batch' => 'MFLS 2024', 'major' => 'Akuntansi', 'quote' => 'Kesempatan magang di MNC Group memberikan pengalaman kerja yang sangat berharga untuk karir saya ke depan.', 'photo' => 'Baim.png'],
-                ['name' => 'Cellindia', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Program leadership dan mentorship dari praktisi MNC Group sangat membantu mengembangkan soft skill saya.', 'photo' => 'Cellindia.png'],
-                ['name' => 'Dzakiyah', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Bahasa Inggris', 'quote' => 'Site visit dan company visit ke unit bisnis MNC memberikan wawasan industri yang tidak bisa didapat di kelas.', 'photo' => 'Dzakiyah.png'],
-                ['name' => 'Gavino', 'batch' => 'MFLS 2024', 'major' => 'Ilmu Komputer', 'quote' => 'Networking dengan sesama penerima beasiswa membuka banyak peluang kolaborasi dan pembelajaran bersama.', 'photo' => 'Gavino.png'],
-                ['name' => 'Innez', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Fasilitas kampus yang modern dan dosen-dosen berpengalaman membuat proses belajar jadi lebih menyenangkan.', 'photo' => 'Innez.png'],
-                ['name' => 'Irfan', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Beasiswa 100% dari MFLS membebaskan saya dari beban finansial dan bisa fokus pada prestasi akademik.', 'photo' => 'Irfan.png'],
-                ['name' => 'Kirania', 'batch' => 'MFLS 2024', 'major' => 'Manajemen', 'quote' => 'Program pengembangan kepemimpinan sangat membantu saya membangun personal branding yang kuat.', 'photo' => 'Kirania.png'],
-                ['name' => 'Raput', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'Sertifikat dari MNC University menjadi nilai tambah yang luar biasa di CV saya.', 'photo' => 'raput.png'],
-                ['name' => 'Rifatur', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Matematika', 'quote' => 'Bimbingan dari mentor profesional MNC Group membuka perspektif baru tentang dunia kerja.', 'photo' => 'Rifatur.png'],
-                ['name' => 'Rini Amanda', 'batch' => 'MFLS 2024', 'major' => 'Sains Komunikasi', 'quote' => 'Pengalaman sit in class di lingkungan industri memberikan pembelajaran praktis yang sangat aplikatif.', 'photo' => 'Rini Amanda.png'],
-                ['name' => 'Risky', 'batch' => 'MFLS 2025', 'major' => 'Ilmu Komputer', 'quote' => 'MFLS memberikan kesempatan untuk berkembang tidak hanya secara akademis tapi juga profesional.', 'photo' => 'Risky.png'],
-                ['name' => 'Sandy', 'batch' => 'MFLS 2023', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Komunitas MFLS sangat supportif dan membantu saya beradaptasi dengan lingkungan kampus.', 'photo' => 'Sandy.png'],
-                ['name' => 'Satria', 'batch' => 'MFLS 2024', 'major' => 'Sistem Informasi', 'quote' => 'Kesempatan magang di berbagai divisi MNC Group memberikan exposure yang luas tentang industri.', 'photo' => 'Satria.png'],
-                ['name' => 'Silvi', 'batch' => 'MFLS 2025', 'major' => 'Manajemen', 'quote' => 'Program beasiswa ini benar-benar life changing dan membuka banyak pintu kesempatan baru.', 'photo' => 'Silvi.png']
-            ] as $index => $testimonial)
-            <div class="testimonial-card bg-white p-8 rounded-3xl shadow-lg border border-gray-100 hover:shadow-2xl hover:border-primary-yellow/30 transition-all duration-500" style="animation-delay: {{ $index * 200 }}ms;">
-                <!-- Quote Icon -->
-                <svg class="w-12 h-12 text-primary-yellow/20 mb-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                
-                <p class="text-gray-700 leading-relaxed mb-8 italic">"{{ $testimonial['quote'] }}"</p>
-                
-                <div class="flex items-center gap-4 border-t border-gray-100 pt-6">
-                    <img src="{{ asset('icon/' . $testimonial['photo']) }}" alt="{{ $testimonial['name'] }}" class="w-14 h-14 rounded-full object-cover border-2 border-primary-yellow/20">
-                    <div>
-                        <h4 class="font-bold text-dark-navy">{{ $testimonial['name'] }}</h4>
-                        <p class="text-sm text-gray-500">{{ $testimonial['major'] }}</p>
-                        <p class="text-xs text-primary-yellow font-semibold">{{ $testimonial['batch'] }}</p>
+        <!-- Testimonials Slideshow -->
+        <div class="relative max-w-5xl mx-auto">
+            @php
+                $testimonials = [
+                    ['name' => 'Putri Andini', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Beasiswa ini mengubah hidup saya. Dari yang awalnya ragu bisa kuliah, sekarang saya sudah semester 3 dengan prestasi yang membanggakan.', 'photo' => 'Andini.png'],
+                    ['name' => 'Muhammad Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Program mentoring yang diberikan sangat membantu saya beradaptasi di dunia perkuliahan. Highly recommended!', 'photo' => 'Rizki.png'],
+                    ['name' => 'Alfiah', 'batch' => 'MFLS 2024', 'major' => 'Manajemen', 'quote' => 'MFLS bukan hanya memberikan beasiswa, tapi juga keluarga baru dan pengalaman yang luar biasa. Terima kasih atas kesempatan ini!', 'photo' => 'Alfiah.png'],
+                    ['name' => 'Baim', 'batch' => 'MFLS 2024', 'major' => 'Akuntansi', 'quote' => 'Kesempatan magang di MNC Group memberikan pengalaman kerja yang sangat berharga untuk karir saya ke depan.', 'photo' => 'Baim.png'],
+                    ['name' => 'Cellindia', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Program leadership dan mentorship dari praktisi MNC Group sangat membantu mengembangkan soft skill saya.', 'photo' => 'Cellindia.png'],
+                    ['name' => 'Dzakiyah', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Bahasa Inggris', 'quote' => 'Site visit dan company visit ke unit bisnis MNC memberikan wawasan industri yang tidak bisa didapat di kelas.', 'photo' => 'Dzakiyah.png'],
+                    ['name' => 'Gavino', 'batch' => 'MFLS 2024', 'major' => 'Ilmu Komputer', 'quote' => 'Networking dengan sesama penerima beasiswa membuka banyak peluang kolaborasi dan pembelajaran bersama.', 'photo' => 'Gavino.png'],
+                    ['name' => 'Innez', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Fasilitas kampus yang modern dan dosen-dosen berpengalaman membuat proses belajar jadi lebih menyenangkan.', 'photo' => 'Innez.png'],
+                    ['name' => 'Irfan', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Beasiswa 100% dari MFLS membebaskan saya dari beban finansial dan bisa fokus pada prestasi akademik.', 'photo' => 'Irfan.png'],
+                    ['name' => 'Kirania', 'batch' => 'MFLS 2024', 'major' => 'Manajemen', 'quote' => 'Program pengembangan kepemimpinan sangat membantu saya membangun personal branding yang kuat.', 'photo' => 'Kirania.png'],
+                    ['name' => 'Raput', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'Sertifikat dari MNC University menjadi nilai tambah yang luar biasa di CV saya.', 'photo' => 'raput.png'],
+                    ['name' => 'Rifatur', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Matematika', 'quote' => 'Bimbingan dari mentor profesional MNC Group membuka perspektif baru tentang dunia kerja.', 'photo' => 'Rifatur.png'],
+                    ['name' => 'Rini Amanda', 'batch' => 'MFLS 2024', 'major' => 'Sains Komunikasi', 'quote' => 'Pengalaman sit in class di lingkungan industri memberikan pembelajaran praktis yang sangat aplikatif.', 'photo' => 'Rini Amanda.png'],
+                    ['name' => 'Risky', 'batch' => 'MFLS 2025', 'major' => 'Ilmu Komputer', 'quote' => 'MFLS memberikan kesempatan untuk berkembang tidak hanya secara akademis tapi juga profesional.', 'photo' => 'Risky.png'],
+                    ['name' => 'Sandy', 'batch' => 'MFLS 2023', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Komunitas MFLS sangat supportif dan membantu saya beradaptasi dengan lingkungan kampus.', 'photo' => 'Sandy.png'],
+                    ['name' => 'Satria', 'batch' => 'MFLS 2024', 'major' => 'Sistem Informasi', 'quote' => 'Kesempatan magang di berbagai divisi MNC Group memberikan exposure yang luas tentang industri.', 'photo' => 'Satria.png'],
+                    ['name' => 'Silvi', 'batch' => 'MFLS 2025', 'major' => 'Manajemen', 'quote' => 'Program beasiswa ini benar-benar life changing dan membuka banyak pintu kesempatan baru.', 'photo' => 'Silvi.png']
+                ];
+            @endphp
+            
+            <!-- Slideshow Container -->
+            <div class="testimonial-slideshow relative">
+                @foreach($testimonials as $index => $testimonial)
+                <div class="testimonial-slide {{ $index === 0 ? 'active' : '' }} absolute inset-0 opacity-0 transition-opacity duration-500" data-slide="{{ $index }}">
+                    <div class="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100">
+                        <!-- Quote Icon -->
+                        <svg class="w-16 h-16 text-primary-yellow/20 mb-6 mx-auto" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                        
+                        <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-8 italic text-center">"{{ $testimonial['quote'] }}"</p>
+                        
+                        <div class="flex items-center justify-center gap-4 border-t border-gray-100 pt-6">
+                            <img src="{{ asset('icon/' . $testimonial['photo']) }}" alt="{{ $testimonial['name'] }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary-yellow/20">
+                            <div>
+                                <h4 class="font-bold text-dark-navy text-lg">{{ $testimonial['name'] }}</h4>
+                                <p class="text-sm text-gray-500">{{ $testimonial['major'] }}</p>
+                                <p class="text-xs text-primary-yellow font-semibold">{{ $testimonial['batch'] }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
+            
+            <!-- Navigation Arrows -->
+            <button onclick="changeSlide(-1)" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 w-12 h-12 bg-white rounded-full shadow-lg hover:bg-primary-yellow hover:text-white transition-all flex items-center justify-center z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button onclick="changeSlide(1)" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 w-12 h-12 bg-white rounded-full shadow-lg hover:bg-primary-yellow hover:text-white transition-all flex items-center justify-center z-10">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
         </div>
         
         <!-- Pagination Dots -->
-        <div class="flex justify-center gap-3 mt-12">
-            <div class="w-3 h-3 rounded-full bg-primary-yellow"></div>
-            <div class="w-3 h-3 rounded-full bg-gray-300"></div>
-            <div class="w-3 h-3 rounded-full bg-gray-300"></div>
+        <div class="flex justify-center gap-3 mt-12" id="testimonial-dots">
+            @foreach($testimonials as $index => $testimonial)
+            <button onclick="goToSlide({{ $index }})" class="testimonial-dot w-3 h-3 rounded-full transition-all {{ $index === 0 ? 'bg-primary-yellow w-8' : 'bg-gray-300' }}" data-dot="{{ $index }}"></button>
+            @endforeach
         </div>
     </div>
 </div>
+
+<script>
+let currentSlide = 0;
+const totalSlides = {{ count($testimonials) }};
+let autoSlideInterval;
+
+function showSlide(n) {
+    const slides = document.querySelectorAll('.testimonial-slide');
+    const dots = document.querySelectorAll('.testimonial-dot');
+    
+    if (n >= totalSlides) currentSlide = 0;
+    if (n < 0) currentSlide = totalSlides - 1;
+    
+    slides.forEach((slide, index) => {
+        if (index === currentSlide) {
+            slide.classList.add('active', 'opacity-100', 'relative');
+            slide.classList.remove('opacity-0', 'absolute');
+        } else {
+            slide.classList.remove('active', 'opacity-100', 'relative');
+            slide.classList.add('opacity-0', 'absolute');
+        }
+    });
+    
+    dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+            dot.classList.add('bg-primary-yellow', 'w-8');
+            dot.classList.remove('bg-gray-300');
+        } else {
+            dot.classList.remove('bg-primary-yellow', 'w-8');
+            dot.classList.add('bg-gray-300');
+        }
+    });
+}
+
+function changeSlide(direction) {
+    currentSlide += direction;
+    if (currentSlide >= totalSlides) currentSlide = 0;
+    if (currentSlide < 0) currentSlide = totalSlides - 1;
+    showSlide(currentSlide);
+    resetAutoSlide();
+}
+
+function goToSlide(n) {
+    currentSlide = n;
+    showSlide(currentSlide);
+    resetAutoSlide();
+}
+
+function autoSlide() {
+    currentSlide++;
+    if (currentSlide >= totalSlides) currentSlide = 0;
+    showSlide(currentSlide);
+}
+
+function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(autoSlide, 5000);
+}
+
+// Initialize slideshow
+showSlide(currentSlide);
+autoSlideInterval = setInterval(autoSlide, 5000);
+</script>
 
 <!-- Contact Section - "Hubungi Kami" -->
 <div id="contact" class="py-24 bg-white">
