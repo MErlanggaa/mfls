@@ -268,6 +268,15 @@
                              <button type="button" onclick="confirmResetPassword({{ $akun->id }}, '{{ $akun->nama }}')" class="w-8 h-8 flex items-center justify-center bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition-all shadow-sm" title="Reset Password">
                                 <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span>
                              </button>
+                             <form action="{{ route('admin.pendaftar.destroy', $akun->id) }}" method="POST"
+                                   onsubmit="return confirm('Yakin ingin menghapus peserta {{ $akun->nama }} beserta seluruh berkas dan nilainya? Tindakan ini tidak dapat dibatalkan!');"
+                                   class="inline-block">
+                                 @csrf
+                                 @method('DELETE')
+                                 <button type="submit" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm" title="Hapus Akun Peserta">
+                                     <span class="iconify" data-icon="solar:trash-bin-trash-bold"></span>
+                                 </button>
+                             </form>
                              @endif
                              <a href="{{ route('admin.pendaftar.download_zip', $akun->id) }}" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-600 rounded-lg hover:bg-orange-600 hover:text-white transition-all shadow-sm" title="Download ZIP">
                                 <span class="iconify" data-icon="solar:folder-with-files-bold"></span>

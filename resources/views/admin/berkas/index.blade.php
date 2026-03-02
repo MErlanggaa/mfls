@@ -8,8 +8,20 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @foreach($pendaftars as $akun)
-        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-blue-500/5 transition-all group">
-            <div class="flex justify-between items-start mb-6">
+        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-blue-500/5 transition-all group relative">
+            
+            <!-- Tombol Hapus Akun Pendaftar -->
+            <form action="{{ route('admin.pendaftar.destroy', $akun->id) }}" method="POST" 
+                  onsubmit="return confirm('Yakin ingin menghapus peserta {{ $akun->nama }} beserta seluruh berkas dan nilainya? Tindakan ini tidak dapat dibatalkan!');"
+                  class="absolute top-4 right-4 z-10">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" title="Hapus Peserta">
+                    <span class="iconify w-4 h-4" data-icon="solar:trash-bin-trash-bold"></span>
+                </button>
+            </form>
+
+            <div class="flex justify-between items-start mb-6 pr-10">
                 <div>
                     <h3 class="font-black text-slate-800">{{ $akun->nama }}</h3>
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $akun->peserta->nisn }}</p>

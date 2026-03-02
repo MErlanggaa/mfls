@@ -26,17 +26,18 @@ class AdminController extends Controller
     public function dashboard()
     {
         $riwayats = \App\Models\RiwayatAktivitas::with('pelaku')->latest()->take(10)->get();
-        
+
         // Stats untuk Dashboard Real-time
         $totalPendaftar = Akun::where('role', 'pendaftar')->count();
         $todayPendaftar = Akun::where('role', 'pendaftar')->whereDate('created_at', \Carbon\Carbon::today())->count();
         $yesterdayPendaftar = Akun::where('role', 'pendaftar')->whereDate('created_at', \Carbon\Carbon::yesterday())->count();
-        
+
         // Hitung kenaikan (growth)
         $growth = 0;
         if ($yesterdayPendaftar > 0) {
             $growth = (($todayPendaftar - $yesterdayPendaftar) / $yesterdayPendaftar) * 100;
-        } elseif ($todayPendaftar > 0) {
+        }
+        elseif ($todayPendaftar > 0) {
             $growth = 100;
         }
 
@@ -75,19 +76,19 @@ class AdminController extends Controller
         // 1. Kepemimpinan - 35%
         // 2. Kepribadian - 35%
         // 3. Keaktifan - 30%
-        $totalNilai = ($request->nilai_kepemimpinan * 0.35) + 
-                      ($request->nilai_kepribadian * 0.35) + 
-                      ($request->nilai_keaktifan * 0.30);
+        $totalNilai = ($request->nilai_kepemimpinan * 0.35) +
+            ($request->nilai_kepribadian * 0.35) +
+            ($request->nilai_keaktifan * 0.30);
 
         \App\Models\PenilaianMentor::updateOrCreate(
-            ['peserta_id' => $peserta->id, 'mentor_id' => auth()->id()],
-            [
-                'nilai' => $totalNilai,
-                'nilai_kepemimpinan' => $request->nilai_kepemimpinan,
-                'nilai_kepribadian' => $request->nilai_kepribadian,
-                'nilai_keaktifan' => $request->nilai_keaktifan,
-                'catatan' => $request->catatan
-            ]
+        ['peserta_id' => $peserta->id, 'mentor_id' => auth()->id()],
+        [
+            'nilai' => $totalNilai,
+            'nilai_kepemimpinan' => $request->nilai_kepemimpinan,
+            'nilai_kepribadian' => $request->nilai_kepribadian,
+            'nilai_keaktifan' => $request->nilai_keaktifan,
+            'catatan' => $request->catatan
+        ]
         );
 
         $this->logAktivitas('Menilai Peserta', 'Peserta', $peserta->id, "Memberikan nilai mentor (" . number_format($totalNilai, 2) . ") kepada " . ($peserta->akun->nama ?? 'Peserta'));
@@ -98,25 +99,27 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: UNIFIED SELEKSI ADMINISTRASI (PROFIL, RAPORT, BERKAS) ---
     public function indexPendaftar(Request $request)
     {
-        if (auth()->user()->role === 'mentor') return abort(403);
+        if (auth()->user()->role === 'mentor')
+            return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
             ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas']);
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhereHas('peserta.daftar', function($q2) use ($search) {
-                      $q2->where('asal_sekolah', 'like', "%{$search}%")
-                         ->orWhere('kode_referral', 'like', "%{$search}%");
-                  });
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('peserta.daftar', function ($q2) use ($search) {
+                    $q2->where('asal_sekolah', 'like', "%{$search}%")
+                        ->orWhere('kode_referral', 'like', "%{$search}%");
+                }
+                );
             });
         }
 
         if ($request->filled('filter_nilai')) {
-            $query->whereHas('peserta.daftar', function($q) use ($request) {
+            $query->whereHas('peserta.daftar', function ($q) use ($request) {
                 $q->where('rata_rata_nilai', '>=', $request->filter_nilai);
             });
         }
@@ -124,15 +127,17 @@ class AdminController extends Controller
         // Sorting Logic
         if ($request->get('sort') === 'nilai_high') {
             $query->join('peserta', 'akun.id', '=', 'peserta.akun_id')
-                  ->join('daftar', 'peserta.id', '=', 'daftar.peserta_id')
-                  ->orderBy('daftar.rata_rata_nilai', 'desc')
-                  ->select('akun.*');
-        } elseif ($request->get('sort') === 'nilai_low') {
+                ->join('daftar', 'peserta.id', '=', 'daftar.peserta_id')
+                ->orderBy('daftar.rata_rata_nilai', 'desc')
+                ->select('akun.*');
+        }
+        elseif ($request->get('sort') === 'nilai_low') {
             $query->join('peserta', 'akun.id', '=', 'peserta.akun_id')
-                  ->join('daftar', 'peserta.id', '=', 'daftar.peserta_id')
-                  ->orderBy('daftar.rata_rata_nilai', 'asc')
-                  ->select('akun.*');
-        } else {
+                ->join('daftar', 'peserta.id', '=', 'daftar.peserta_id')
+                ->orderBy('daftar.rata_rata_nilai', 'asc')
+                ->select('akun.*');
+        }
+        else {
             $query->latest();
         }
 
@@ -140,17 +145,17 @@ class AdminController extends Controller
 
         // Auto-sync rata-rata nilai per semester dan keseluruhan
         // (Keep the sync logic but maybe limit it or optimize if needed)
-        foreach($pendaftars as $akun) {
-            if($akun->peserta && $akun->peserta->daftar) {
+        foreach ($pendaftars as $akun) {
+            if ($akun->peserta && $akun->peserta->daftar) {
                 $daftar = $akun->peserta->daftar;
                 $nilais = $akun->peserta->nilais;
-                
+
                 $updateData = [];
                 for ($sem = 1; $sem <= 6; $sem++) {
                     $avgSem = $nilais->where('semester', $sem)->avg('nilai') ?? 0;
                     $updateData["avg_semester_{$sem}"] = round($avgSem, 2);
                 }
-                
+
                 $realAvg = $nilais->avg('nilai') ?? 0;
                 $updateData['rata_rata_nilai'] = round($realAvg, 2);
                 $daftar->update($updateData);
@@ -158,10 +163,10 @@ class AdminController extends Controller
         }
 
         // Urutkan berdasarkan nilai rata-rata dari tertinggi ke terendah
-        $pendaftars = $pendaftars->sortByDesc(function($akun) {
-            return $akun->peserta && $akun->peserta->daftar 
-                ? $akun->peserta->daftar->rata_rata_nilai 
-                : 0;
+        $pendaftars = $pendaftars->sortByDesc(function ($akun) {
+            return $akun->peserta && $akun->peserta->daftar
+            ? $akun->peserta->daftar->rata_rata_nilai
+            : 0;
         });
 
         return view('admin.pendaftar.index', compact('pendaftars'));
@@ -170,34 +175,36 @@ class AdminController extends Controller
     // --- SISTEM DATABASE TERPUSAT: BEASISWA ---
     public function indexBeasiswa(Request $request)
     {
-        if (auth()->user()->role === 'mentor') return abort(403);
+        if (auth()->user()->role === 'mentor')
+            return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
-            ->whereHas('peserta.daftar', function($q) {
-                $q->where('status', 'lulus');
-            })
+            ->whereHas('peserta.daftar', function ($q) {
+            $q->where('status', 'lulus');
+        })
             ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas', 'peserta.penilaianMentors.mentor', 'peserta.jawabanUjians.ujian']);
 
         // filters ...
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
-                  ->orWhereHas('peserta.daftar', function($q2) use ($search) {
-                      $q2->where('asal_sekolah', 'like', "%{$search}%")
-                         ->orWhere('kode_referral', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('peserta.daftar', function ($q2) use ($search) {
+                    $q2->where('asal_sekolah', 'like', "%{$search}%")
+                        ->orWhere('kode_referral', 'like', "%{$search}%");
+                }
+                );
             });
         }
 
         if ($request->filled('sekolah')) {
-            $query->whereHas('peserta.daftar', function($q) use ($request) {
+            $query->whereHas('peserta.daftar', function ($q) use ($request) {
                 $q->where('asal_sekolah', 'like', "%{$request->sekolah}%");
             });
         }
 
         if ($request->filled('min_nilai')) {
-            $query->whereHas('peserta.daftar', function($q) use ($request) {
+            $query->whereHas('peserta.daftar', function ($q) use ($request) {
                 $q->where('rata_rata_nilai', '>=', $request->min_nilai);
             });
         }
@@ -205,10 +212,10 @@ class AdminController extends Controller
         $pendaftars = $query->get();
 
         // Urutkan berdasarkan nilai rata-rata dari tertinggi ke terendah
-        $pendaftars = $pendaftars->sortByDesc(function($akun) {
-            return $akun->peserta && $akun->peserta->daftar 
-                ? $akun->peserta->daftar->rata_rata_nilai 
-                : 0;
+        $pendaftars = $pendaftars->sortByDesc(function ($akun) {
+            return $akun->peserta && $akun->peserta->daftar
+            ? $akun->peserta->daftar->rata_rata_nilai
+            : 0;
         });
 
         return view('admin.beasiswa.index', compact('pendaftars'));
@@ -216,12 +223,13 @@ class AdminController extends Controller
 
     public function showBeasiswa($id)
     {
-        if (auth()->user()->role === 'mentor') return abort(403);
-        
+        if (auth()->user()->role === 'mentor')
+            return abort(403);
+
         $user = Akun::with([
-            'peserta.daftar', 
-            'peserta.berkas', 
-            'peserta.nilais.matpel', 
+            'peserta.daftar',
+            'peserta.berkas',
+            'peserta.nilais.matpel',
             'peserta.penilaianMentors.mentor',
             'peserta.penilaianAkademiks.penilai',
             'peserta.nilaiUjians.ujian'
@@ -241,7 +249,7 @@ class AdminController extends Controller
             'status' => 'required|in:lulus,tidak_lulus,menunggu'
         ]);
 
-        $daftar = Daftar::where('peserta_id', function($query) use ($id) {
+        $daftar = Daftar::where('peserta_id', function ($query) use ($id) {
             $query->select('id')->from('peserta')->where('akun_id', $id);
         })->firstOrFail();
 
@@ -258,7 +266,8 @@ class AdminController extends Controller
 
     public function indexHasilUjian()
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik') return abort(403);
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik')
+            return abort(403);
 
         $hasilUjians = \App\Models\JawabanUjian::with(['peserta.akun', 'ujian'])
             ->latest()
@@ -270,12 +279,13 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: PENILAIAN MENTOR ---
     public function indexPenilaian(Request $request)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') return abort(403);
-        
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin')
+            return abort(403);
+
         $query = Akun::where('role', 'pendaftar')
-            ->whereHas('peserta.daftar', function($q) {
-                $q->where('status', 'lulus');
-            })
+            ->whereHas('peserta.daftar', function ($q) {
+            $q->where('status', 'lulus');
+        })
             ->with(['peserta.daftar', 'peserta.penilaianMentors']);
 
         return $this->processPenilaianIndex($query, $request, 'mentor');
@@ -284,12 +294,13 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: PENILAIAN AKADEMIK ---
     public function indexPenilaianAkademik(Request $request)
     {
-        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin') return abort(403);
-        
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin')
+            return abort(403);
+
         $query = Akun::where('role', 'pendaftar')
-            ->whereHas('peserta.daftar', function($q) {
-                $q->where('status', 'lulus');
-            })
+            ->whereHas('peserta.daftar', function ($q) {
+            $q->where('status', 'lulus');
+        })
             ->with(['peserta.daftar', 'peserta.penilaianAkademiks']);
 
         return $this->processPenilaianIndex($query, $request, 'akademik');
@@ -301,13 +312,14 @@ class AdminController extends Controller
         // Search logic
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama', 'LIKE', "%{$search}%")
-                  ->orWhereHas('peserta', function($pq) use ($search) {
-                      $pq->where('nama_sekolah', 'LIKE', "%{$search}%")
+                    ->orWhereHas('peserta', function ($pq) use ($search) {
+                    $pq->where('nama_sekolah', 'LIKE', "%{$search}%")
                         ->orWhere('kabupaten', 'LIKE', "%{$search}%")
                         ->orWhere('provinsi', 'LIKE', "%{$search}%");
-                  });
+                }
+                );
             });
         }
 
@@ -317,7 +329,8 @@ class AdminController extends Controller
 
         if ($sort == 'nama') {
             $query->orderBy('nama', $order);
-        } elseif (in_array($sort, ['sekolah', 'kabupaten', 'kota'])) {
+        }
+        elseif (in_array($sort, ['sekolah', 'kabupaten', 'kota'])) {
             $field = [
                 'sekolah' => 'nama_sekolah',
                 'kabupaten' => 'kabupaten',
@@ -325,9 +338,10 @@ class AdminController extends Controller
             ][$sort];
 
             $query->join('peserta', 'akun.id', '=', 'peserta.akun_id')
-                  ->orderBy('peserta.'.$field, $order)
-                  ->select('akun.*');
-        } else {
+                ->orderBy('peserta.' . $field, $order)
+                ->select('akun.*');
+        }
+        else {
             $query->latest();
         }
 
@@ -338,11 +352,12 @@ class AdminController extends Controller
 
     public function showPenilaian($id, Request $request)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik') return abort(403);
-        
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik')
+            return abort(403);
+
         $type = $request->get('type', 'mentor'); // Default to mentor if not specified
         $user = Akun::with(['peserta.daftar', 'peserta.penilaianMentors.mentor', 'peserta.penilaianAkademiks.penilai'])->findOrFail($id);
-        
+
         return view('admin.penilaian.show', compact('user', 'type'));
     }
 
@@ -358,7 +373,7 @@ class AdminController extends Controller
             'dosen_wawasan' => 'required|numeric|min:0|max:100',
             'dosen_karir' => 'required|numeric|min:0|max:100',
             'dosen_integritas' => 'required|numeric|min:0|max:100',
-            
+
             'mhs_leadership' => 'required|numeric|min:0|max:100',
             'mhs_organisasi' => 'required|numeric|min:0|max:100',
             'mhs_etika' => 'required|numeric|min:0|max:100',
@@ -368,35 +383,35 @@ class AdminController extends Controller
         ]);
 
         $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
-        
-        $totalDosen = ($request->dosen_kompetensi + $request->dosen_motivasi + $request->dosen_wawasan + 
-                       $request->dosen_karir + $request->dosen_integritas) / 5;
-        
-        $totalMhs = ($request->mhs_leadership + $request->mhs_organisasi + $request->mhs_etika + 
-                     $request->mhs_adaptasi + $request->mhs_komitmen) / 5;
+
+        $totalDosen = ($request->dosen_kompetensi + $request->dosen_motivasi + $request->dosen_wawasan +
+            $request->dosen_karir + $request->dosen_integritas) / 5;
+
+        $totalMhs = ($request->mhs_leadership + $request->mhs_organisasi + $request->mhs_etika +
+            $request->mhs_adaptasi + $request->mhs_komitmen) / 5;
 
         $totalAkhir = ($totalDosen + $totalMhs) / 2;
 
         \App\Models\PenilaianAkademik::updateOrCreate(
-            ['peserta_id' => $peserta->id, 'penilai_id' => auth()->id()],
-            [
-                'dosen_kompetensi' => $request->dosen_kompetensi,
-                'dosen_motivasi' => $request->dosen_motivasi,
-                'dosen_wawasan' => $request->dosen_wawasan,
-                'dosen_karir' => $request->dosen_karir,
-                'dosen_integritas' => $request->dosen_integritas,
-                'total_dosen' => round($totalDosen, 2),
-                
-                'mhs_leadership' => $request->mhs_leadership,
-                'mhs_organisasi' => $request->mhs_organisasi,
-                'mhs_etika' => $request->mhs_etika,
-                'mhs_adaptasi' => $request->mhs_adaptasi,
-                'mhs_komitmen' => $request->mhs_komitmen,
-                'total_mhs' => round($totalMhs, 2),
-                
-                'total_akhir' => round($totalAkhir, 2),
-                'catatan' => $request->catatan,
-            ]
+        ['peserta_id' => $peserta->id, 'penilai_id' => auth()->id()],
+        [
+            'dosen_kompetensi' => $request->dosen_kompetensi,
+            'dosen_motivasi' => $request->dosen_motivasi,
+            'dosen_wawasan' => $request->dosen_wawasan,
+            'dosen_karir' => $request->dosen_karir,
+            'dosen_integritas' => $request->dosen_integritas,
+            'total_dosen' => round($totalDosen, 2),
+
+            'mhs_leadership' => $request->mhs_leadership,
+            'mhs_organisasi' => $request->mhs_organisasi,
+            'mhs_etika' => $request->mhs_etika,
+            'mhs_adaptasi' => $request->mhs_adaptasi,
+            'mhs_komitmen' => $request->mhs_komitmen,
+            'total_mhs' => round($totalMhs, 2),
+
+            'total_akhir' => round($totalAkhir, 2),
+            'catatan' => $request->catatan,
+        ]
         );
 
         $this->logAktivitas('Input Penilaian Akademik', 'Peserta', $peserta->id, "Memberikan penilaian akademik untuk {$peserta->nama}");
@@ -407,14 +422,75 @@ class AdminController extends Controller
     // --- PENGATURAN: MANAJEMEN USER ---
     public function indexUser()
     {
-        if (auth()->user()->role !== 'admin') return abort(403);
+        if (auth()->user()->role !== 'admin')
+            return abort(403);
         $users = Akun::where('role', '!=', 'pendaftar')->withCount('peserta')->get();
         return view('admin.user.index', compact('users'));
     }
 
+    public function destroyPendaftar($id)
+    {
+        if (auth()->user()->role !== 'admin')
+            return abort(403);
+
+        $akun = Akun::with('peserta.berkas')->findOrFail($id);
+
+        // Pastikan yang dihapus hanya pendaftar
+        if ($akun->role !== 'pendaftar') {
+            return back()->with('error', 'Hanya akun pendaftar yang dapat dihapus melalui fitur ini.');
+        }
+
+        // Hapus file-file berkas fisik jika ada
+        if ($akun->peserta && $akun->peserta->berkas) {
+            $berkas = $akun->peserta->berkas;
+            $filesToDelete = [
+                $berkas->foto,
+                $berkas->ijazah,
+                $berkas->surat_buta_warna,
+                $berkas->surat_rekomendasi_sekolah,
+                $berkas->motivasi_video, // asumsikan video ada yang diupload juga walau db bilang text URL
+                $berkas->personal_statement,
+                $berkas->study_plan
+            ];
+
+            // Hapus rapor JSON
+            for ($i = 1; $i <= 5; $i++) {
+                $field = "rapor$i";
+                if ($berkas->$field) {
+                    $raporFiles = json_decode($berkas->$field, true);
+                    if (is_array($raporFiles)) {
+                        $filesToDelete = array_merge($filesToDelete, $raporFiles);
+                    }
+                    else {
+                        $filesToDelete[] = $berkas->$field;
+                    }
+                }
+            }
+
+            foreach ($filesToDelete as $file) {
+                if ($file && \Illuminate\Support\Facades\Storage::disk('public')->exists($file)) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($file);
+                }
+            }
+        }
+
+        $this->logAktivitas('Hapus Pendaftar', 'Akun', $id, "Menghapus akun pendaftar beserta data dan berkasnya: " . $akun->nama);
+
+        // Data peserta, berkas, daftar, nilai, dll otomatis terhapus jika di migration ada implementasi onDelete('cascade')
+        // Kalau tidak, delete instancenya terlebih dahulu via Eloquent dipastikan berjalan saat akun dihapus berantai.
+        // Kita paksa hapus manual jika tidak cascade
+        if ($akun->peserta) {
+            $akun->peserta->delete();
+        }
+        $akun->delete();
+
+        return back()->with('success', 'Akun pendaftar beserta data dan berkas berhasil dihapus!');
+    }
+
     public function storeUser(Request $request)
     {
-        if (auth()->user()->role !== 'admin') return abort(403);
+        if (auth()->user()->role !== 'admin')
+            return abort(403);
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:akun,email',
@@ -434,9 +510,10 @@ class AdminController extends Controller
 
     public function updateUser(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin') return abort(403);
+        if (auth()->user()->role !== 'admin')
+            return abort(403);
         $user = Akun::findOrFail($id);
-        
+
         $rules = [
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:akun,email,' . $id,
@@ -452,7 +529,7 @@ class AdminController extends Controller
         $user->nama = $request->nama;
         $user->email = $request->email;
         $user->role = $request->role;
-        
+
         if ($request->password) {
             $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
         }
@@ -464,9 +541,10 @@ class AdminController extends Controller
 
     public function destroyUser($id)
     {
-        if (auth()->user()->role !== 'admin') return abort(403);
+        if (auth()->user()->role !== 'admin')
+            return abort(403);
         $user = Akun::findOrFail($id);
-        
+
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Anda tidak bisa menghapus akun sendiri!');
         }
@@ -477,9 +555,10 @@ class AdminController extends Controller
 
     public function resetPassword(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin') return abort(403);
+        if (auth()->user()->role !== 'admin')
+            return abort(403);
         $user = Akun::findOrFail($id);
-        
+
         $request->validate([
             'password' => 'required|min:6'
         ]);
@@ -512,13 +591,14 @@ class AdminController extends Controller
 
         $soals = $query->get();
         $ujians = \App\Models\Ujian::all();
-        
+
         return view('admin.soal.index', compact('soals', 'ujians'));
     }
 
     public function storeSoal(Request $request)
     {
-        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik']))
+            return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
             'pertanyaan' => 'required',
@@ -561,7 +641,8 @@ class AdminController extends Controller
 
     public function editSoal($id)
     {
-        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik']))
+            return abort(403);
         $soal = \App\Models\Soal::findOrFail($id);
         $ujians = \App\Models\Ujian::all();
         return view('admin.soal.edit', compact('soal', 'ujians'));
@@ -569,7 +650,8 @@ class AdminController extends Controller
 
     public function updateSoal(Request $request, $id)
     {
-        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik']))
+            return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
             'pertanyaan' => 'required',
@@ -620,14 +702,15 @@ class AdminController extends Controller
 
     public function destroySoal($id)
     {
-        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik']))
+            return abort(403);
         $soal = \App\Models\Soal::findOrFail($id);
-        
+
         // Delete main question image
         if ($soal->gambar) {
             \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
         }
-        
+
         // Delete option images
         foreach (['a', 'b', 'c', 'd'] as $option) {
             $fieldName = "opsi_{$option}_image";
@@ -635,7 +718,7 @@ class AdminController extends Controller
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$fieldName);
             }
         }
-        
+
         $this->logAktivitas('Hapus Soal', 'Soal', $id, "Menghapus soal: " . substr($soal->pertanyaan, 0, 30));
         $soal->delete();
 
@@ -644,7 +727,8 @@ class AdminController extends Controller
 
     public function importSoal(Request $request)
     {
-        if (!in_array(auth()->user()->role, ['admin', 'akademik'])) return abort(403);
+        if (!in_array(auth()->user()->role, ['admin', 'akademik']))
+            return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
             'file_soal' => 'required|mimes:csv,txt,docx'
@@ -661,9 +745,9 @@ class AdminController extends Controller
         // ... Logic CSV lama ...
         $handle = fopen($file->getRealPath(), "r");
         fgetcsv($handle); // Skip header
-        
+
         while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            if(count($row) >= 7) {
+            if (count($row) >= 7) {
                 \App\Models\Soal::create([
                     'ujian_id' => $ujianId,
                     'pertanyaan' => $row[0],
@@ -690,7 +774,8 @@ class AdminController extends Controller
         if ($zip->open($file->getRealPath()) === TRUE) {
             $xmlContent = $zip->getFromName('word/document.xml');
             $zip->close();
-        } else {
+        }
+        else {
             return back()->with('error', 'Gagal membaca file Word.');
         }
 
@@ -704,8 +789,9 @@ class AdminController extends Controller
         foreach ($paragraphs as $p) {
             $text = $p->textContent;
             $text = trim($text);
-            if (empty($text)) continue;
-            
+            if (empty($text))
+                continue;
+
             // Deteksi Opsi (A., B., C., D.)
             if (preg_match('/^([A-D])\.\s*(.*)/i', $text, $matches)) {
                 $optKey = strtolower($matches[1]); // a, b, c, d
@@ -714,7 +800,7 @@ class AdminController extends Controller
             // Deteksi Kunci Jawaban (Kunci: A)
             elseif (preg_match('/^Kunci\s*:\s*([A-D])/i', $text, $matches)) {
                 $currentSoal['kunci_jawaban'] = strtolower($matches[1]);
-                
+
                 // Kunci biasanya baris terakhir per soal, jadi simpan
                 if (isset($currentSoal['pertanyaan'])) {
                     $currentSoal['ujian_id'] = $ujianId; // Set Ujian ID
@@ -743,10 +829,10 @@ class AdminController extends Controller
     public function verifikasi(Request $request, $id)
     {
         if (auth()->user()->role === 'mentor') {
-             return back()->with('error', 'Mentor tidak memiliki izin verifikasi kelulusan.');
+            return back()->with('error', 'Mentor tidak memiliki izin verifikasi kelulusan.');
         }
 
-        $daftar = Daftar::where('peserta_id', function($query) use ($id) {
+        $daftar = Daftar::where('peserta_id', function ($query) use ($id) {
             $query->select('id')->from('peserta')->where('akun_id', $id);
         })->firstOrFail();
 
@@ -761,13 +847,14 @@ class AdminController extends Controller
         if ($request->status == 'lulus') {
 
             // Ganti link ini dengan link React App Anda yang sebenarnya
-            $linkUjian = "https://ujian-react.mfls.com/start?token=" . base64_encode($akun->email); 
-            
+            $linkUjian = "https://ujian-react.mfls.com/start?token=" . base64_encode($akun->email);
+
             try {
                 \Illuminate\Support\Facades\Mail::to($akun->email)->send(
                     new \App\Mail\UjianLinkMail($akun->nama, $linkUjian)
                 );
-            } catch (\Exception $e) {
+            }
+            catch (\Exception $e) {
                 // Log error email tapi jangan hentikan proses
                 \Illuminate\Support\Facades\Log::error("Gagal kirim email ujian: " . $e->getMessage());
             }
@@ -776,9 +863,10 @@ class AdminController extends Controller
         return back()->with('success', 'Status kelulusan berhasil diperbarui!');
     }
 
-    public function updateNilaiDummy(Request $request, $id) {
-         // Ini method helper untuk testing update nilai rata-rata
-         $daftar = Daftar::where('peserta_id', function($query) use ($id) {
+    public function updateNilaiDummy(Request $request, $id)
+    {
+        // Ini method helper untuk testing update nilai rata-rata
+        $daftar = Daftar::where('peserta_id', function ($query) use ($id) {
             $query->select('id')->from('peserta')->where('akun_id', $id);
         })->firstOrFail();
 
@@ -796,10 +884,10 @@ class AdminController extends Controller
         }
 
         $berkas = $peserta->berkas;
-        
+
         $zipName = 'Dokumen_' . str_replace(' ', '_', $user->nama) . '.zip';
         $zipPath = storage_path('app/public/temp/' . $zipName);
-        
+
         // Ensure temp directory exists
         if (!file_exists(dirname($zipPath))) {
             mkdir(dirname($zipPath), 0755, true);
@@ -807,7 +895,7 @@ class AdminController extends Controller
 
         $zip = new \ZipArchive;
         if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
-            
+
             // Add Main Berkas
             if ($berkas) {
                 $fields = [
@@ -835,7 +923,8 @@ class AdminController extends Controller
                                     $zip->addFile(storage_path('app/public/' . $path), $name . '_' . ($idx + 1) . '.' . $ext);
                                 }
                             }
-                        } else {
+                        }
+                        else {
                             if (\Illuminate\Support\Facades\Storage::disk('public')->exists($val)) {
                                 $ext = pathinfo($val, PATHINFO_EXTENSION);
                                 $zip->addFile(storage_path('app/public/' . $val), $name . '.' . $ext);
@@ -851,7 +940,7 @@ class AdminController extends Controller
                     if (\Illuminate\Support\Facades\Storage::disk('public')->exists($sertifikat->file)) {
                         $ext = pathinfo($sertifikat->file, PATHINFO_EXTENSION);
                         $safeName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $sertifikat->nama);
-                        $zip->addFile(storage_path('app/public/' . $sertifikat->file), 'Sertifikat_' . $safeName . '_' . ($index+1) . '.' . $ext);
+                        $zip->addFile(storage_path('app/public/' . $sertifikat->file), 'Sertifikat_' . $safeName . '_' . ($index + 1) . '.' . $ext);
                     }
                 }
             }
@@ -860,10 +949,12 @@ class AdminController extends Controller
 
             if (file_exists($zipPath)) {
                 return response()->download($zipPath)->deleteFileAfterSend(true);
-            } else {
+            }
+            else {
                 return back()->with('error', 'Gagal membuat file ZIP (File kosong).');
             }
-        } else {
+        }
+        else {
             return back()->with('error', 'Gagal membuka file ZIP.');
         }
     }
@@ -872,28 +963,28 @@ class AdminController extends Controller
     {
         $fileName = 'Database_Seleksi_Administrasi_' . date('Y-m-d_H-i') . '.csv';
         $pendaftars = Akun::where('role', 'pendaftar')
-                         ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas'])
-                         ->get();
+            ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas'])
+            ->get();
 
         // 1. Definisikan Mapel Core & Cari Mapel Tambahan yang ada nilainya
         $coreNames = ['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'Informatika'];
-        $coreMatpels = \App\Models\Matpel::whereIn('nama', $coreNames)->get()->sortBy(function($m) use ($coreNames) {
+        $coreMatpels = \App\Models\Matpel::whereIn('nama', $coreNames)->get()->sortBy(function ($m) use ($coreNames) {
             return array_search($m->nama, $coreNames);
         });
 
         $allUsedMatpelIds = \App\Models\Nilai::whereIn('peserta_id', $pendaftars->pluck('peserta.id'))->pluck('matpel_id')->unique();
         $additionalMatpels = \App\Models\Matpel::whereIn('id', $allUsedMatpelIds)
-                                              ->whereNotIn('nama', $coreNames)
-                                              ->get();
+            ->whereNotIn('nama', $coreNames)
+            ->get();
 
         $orderedMatpels = $coreMatpels->concat($additionalMatpels);
-        
+
         // 2. Definisikan Column Headers
         $columns = [
-            'Nama Lengkap', 'Email', 'NISN', 'Asal Sekolah', 'Prodi Minat', 
+            'Nama Lengkap', 'Email', 'NISN', 'Asal Sekolah', 'Prodi Minat',
             'Kode Referral'
         ];
-        
+
         // Detail Semester 1-5 sesuai request "nilai S1 apa aja terus ada avgnya"
         for ($sem = 1; $sem <= 5; $sem++) {
             foreach ($orderedMatpels as $mp) {
@@ -901,31 +992,32 @@ class AdminController extends Controller
             }
             $columns[] = "Rata Rata S{$sem}";
         }
-        
+
         $columns[] = "TOTAL NILAI (S1-S5)";
         $columns[] = "RATA RATA AKADEMIK (S1-S5)";
-        
+
         // Data Berkas & Links
         $columns = array_merge($columns, [
-            'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 
+            'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5',
             'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)',
             'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK'
         ]);
 
         $headers = [
-            "Content-type"        => "text/csv",
+            "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
         ];
 
-        $callback = function() use($pendaftars, $columns, $orderedMatpels) {
+        $callback = function () use ($pendaftars, $columns, $orderedMatpels) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($pendaftars as $user) {
-                if (!$user->peserta) continue;
+                if (!$user->peserta)
+                    continue;
 
                 $peserta = $user->peserta;
                 $daftar = $peserta->daftar;
@@ -949,13 +1041,13 @@ class AdminController extends Controller
                 for ($sem = 1; $sem <= 5; $sem++) {
                     $semSum = 0;
                     $semCount = 0;
-                    
+
                     foreach ($orderedMatpels as $mp) {
                         $nilaiObj = $nilais->where('semester', $sem)->where('matpel_id', $mp->id)->first();
                         $val = $nilaiObj ? $nilaiObj->nilai : 0;
-                        
+
                         $row[] = $val > 0 ? $val : '-';
-                        
+
                         if ($val > 0) {
                             $semSum += $val;
                             $semCount++;
@@ -972,18 +1064,19 @@ class AdminController extends Controller
                 $row[] = $totalMatpelCount > 0 ? number_format($grandTotalAcademic / $totalMatpelCount, 2) : '0';
 
                 // D. Link Berkas
-                $row[] = ($berkas && $berkas->foto) ? url('storage/'.$berkas->foto) : '-';
+                $row[] = ($berkas && $berkas->foto) ? url('storage/' . $berkas->foto) : '-';
                 for ($s = 1; $s <= 5; $s++) {
                     $field = "rapor{$s}";
-                    $row[] = ($berkas && $berkas->$field) ? url('storage/'.$berkas->$field) : '-';
+                    $row[] = ($berkas && $berkas->$field) ? url('storage/' . $berkas->$field) : '-';
                 }
-                $row[] = ($berkas && $berkas->ijazah) ? url('storage/'.$berkas->ijazah) : '-';
-                $row[] = ($berkas && $berkas->personal_statement) ? url('storage/'.$berkas->personal_statement) : '-';
-                
+                $row[] = ($berkas && $berkas->ijazah) ? url('storage/' . $berkas->ijazah) : '-';
+                $row[] = ($berkas && $berkas->personal_statement) ? url('storage/' . $berkas->personal_statement) : '-';
+
                 // Khusus DKV: Surat Buta Warna
                 if (($peserta->pilihan_prodi ?? '') == 'Desain Komunikasi Visual') {
-                    $row[] = ($berkas && $berkas->surat_buta_warna) ? url('storage/'.$berkas->surat_buta_warna) : 'BELUM UNGGAH';
-                } else {
+                    $row[] = ($berkas && $berkas->surat_buta_warna) ? url('storage/' . $berkas->surat_buta_warna) : 'BELUM UNGGAH';
+                }
+                else {
                     $row[] = 'N/A';
                 }
 

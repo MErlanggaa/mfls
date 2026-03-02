@@ -6,9 +6,21 @@
         <h2 class="text-xl sm:text-2xl font-black text-gray-800">Verifikasi Berkas</h2>
         <p class="text-gray-500 text-sm">Dokumen Pendaftaran: {{ $user->nama }}</p>
     </div>
-    <a href="{{ route('admin.berkas.index') }}" class="inline-flex self-start sm:self-auto items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest">
-        <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali
-    </a>
+    
+    <div class="flex items-center gap-3 self-start sm:self-auto">
+        <form action="{{ route('admin.pendaftar.destroy', $user->id) }}" method="POST"
+              onsubmit="return confirm('Yakin ingin menghapus peserta {{ $user->nama }} beserta seluruh berkas dan nilainya? Tindakan ini tidak dapat dibatalkan!');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-xs font-black shadow-sm hover:bg-red-500 hover:text-white transition-all uppercase tracking-widest">
+                <span class="iconify" data-icon="solar:trash-bin-trash-bold"></span> Hapus Peserta
+            </button>
+        </form>
+
+        <a href="{{ route('admin.berkas.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-2xl text-xs font-black shadow-sm hover:bg-slate-50 transition-all uppercase tracking-widest">
+            <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali
+        </a>
+    </div>
 </div>
 
 <div class="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
