@@ -16,17 +16,23 @@ trait ImageCompressor
      */
     public function compressImage($path, $quality = 60, $maxWidth = 1200)
     {
+        // Jika GD extension tidak aktif, skip kompresi (file tetap tersimpan)
+        if (!extension_loaded('gd')) {
+            return true;
+        }
+
         $fullPath = storage_path('app/public/' . $path);
-        
+
         if (!file_exists($fullPath)) {
             return false;
         }
 
         $info = getimagesize($fullPath);
-        if (!$info) return false;
+        if (!$info)
+            return false;
 
         $mime = $info['mime'];
-        
+
         // Load image
         switch ($mime) {
             case 'image/jpeg':
@@ -45,7 +51,8 @@ trait ImageCompressor
                 return false;
         }
 
-        if (!$image) return false;
+        if (!$image)
+            return false;
 
         // Resize if exceeds maxWidth
         $width = imagesx($image);
@@ -54,9 +61,9 @@ trait ImageCompressor
         if ($maxWidth && $width > $maxWidth) {
             $newWidth = $maxWidth;
             $newHeight = floor($height * ($maxWidth / $width));
-            
+
             $tmpImg = imagecreatetruecolor($newWidth, $newHeight);
-            
+
             if ($mime == 'image/png') {
                 imagealphablending($tmpImg, false);
                 imagesavealpha($tmpImg, true);
@@ -78,7 +85,7 @@ trait ImageCompressor
             case 'image/png':
                 // PNG quality is 0-9 (0 = no compression, 9 = max compression)
                 // We convert 0-100 quality to 0-9 compression (9 is best compression but slowest)
-                $pngQuality = 9 - floor($quality / 11); 
+                $pngQuality = 9 - floor($quality / 11);
                 imagepng($image, $fullPath, $pngQuality);
                 break;
             case 'image/webp':

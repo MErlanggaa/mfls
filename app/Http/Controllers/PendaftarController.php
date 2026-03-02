@@ -13,7 +13,7 @@ class PendaftarController extends Controller
     {
         $peserta = Auth::user()->peserta;
         $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
-        
+
         // --- Calculate Progress ---
         $totalPoints = 0;
         $earnedPoints = 0;
@@ -22,7 +22,8 @@ class PendaftarController extends Controller
         $biodataFields = ['nama', 'nisn', 'no_whatsapp', 'tgl_lahir', 'jenis_kelamin', 'provinsi', 'kabupaten', 'nama_sekolah', 'tahun_lulus'];
         $totalPoints += count($biodataFields);
         foreach ($biodataFields as $field) {
-            if (!empty($peserta->$field)) $earnedPoints++;
+            if (!empty($peserta->$field))
+                $earnedPoints++;
         }
 
         // 2. Berkas Points (40%)
@@ -30,7 +31,8 @@ class PendaftarController extends Controller
         $totalPoints += count($berkasFields);
         if ($berkas) {
             foreach ($berkasFields as $field) {
-                if (!empty($berkas->$field)) $earnedPoints++;
+                if (!empty($berkas->$field))
+                    $earnedPoints++;
             }
         }
 
@@ -38,26 +40,31 @@ class PendaftarController extends Controller
         $sosmedFields = ['link_twibbon']; // link_ig and link_tiktok are optional in calculation or make them bonus? Let's make twibbon mandatory for progress.
         $totalPoints += count($sosmedFields);
         foreach ($sosmedFields as $field) {
-            if (!empty($peserta->$field)) $earnedPoints++;
+            if (!empty($peserta->$field))
+                $earnedPoints++;
         }
 
         $progress = ($totalPoints > 0) ? round(($earnedPoints / $totalPoints) * 100) : 0;
 
         // --- Fetch Real Activity Logs ---
         $logs = \App\Models\RiwayatAktivitas::where('pelaku_id', auth()->id())
-                    ->latest()
-                    ->take(10)
-                    ->get();
-        
+            ->latest()
+            ->take(10)
+            ->get();
+
         $history = [];
-        foreach($logs as $log) {
+        foreach ($logs as $log) {
             $icon = 'user';
             $aksi = strtolower($log->aksi);
-            if(str_contains($aksi, 'update') || str_contains($aksi, 'simpan') || str_contains($aksi, 'biodata')) $icon = 'edit';
-            if(str_contains($aksi, 'upload') || str_contains($aksi, 'berkas') || str_contains($aksi, 'file')) $icon = 'upload';
-            if(str_contains($aksi, 'nilai') || str_contains($aksi, 'rapor')) $icon = 'chart-bar';
-            if(str_contains($aksi, 'prodi')) $icon = 'graduation-cap';
-            
+            if (str_contains($aksi, 'update') || str_contains($aksi, 'simpan') || str_contains($aksi, 'biodata'))
+                $icon = 'edit';
+            if (str_contains($aksi, 'upload') || str_contains($aksi, 'berkas') || str_contains($aksi, 'file'))
+                $icon = 'upload';
+            if (str_contains($aksi, 'nilai') || str_contains($aksi, 'rapor'))
+                $icon = 'chart-bar';
+            if (str_contains($aksi, 'prodi'))
+                $icon = 'graduation-cap';
+
             $history[] = [
                 'title' => $log->aksi,
                 'desc' => $log->deskripsi,
@@ -68,7 +75,7 @@ class PendaftarController extends Controller
         }
 
         // Seed initial history if empty
-        if(count($history) == 0) {
+        if (count($history) == 0) {
             $history[] = [
                 'title' => 'Selamat Datang!',
                 'desc' => 'Akun Anda berhasil terdaftar di sistem MFLS.',
@@ -109,64 +116,73 @@ class PendaftarController extends Controller
     public function storeBerkas(Request $request)
     {
         $request->validate([
-            'foto' => 'nullable|image|max:2048',
-            'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            'rapor6.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
-            'ijazah' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
+            'foto' => 'nullable|image|max:5120',
+            'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'rapor6.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'ijazah' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
             'personal_statement' => 'nullable|mimes:pdf,doc,docx|max:5120',
             'study_plan' => 'nullable|mimes:pdf,doc,docx|max:5120',
             'surat_rekomendasi_sekolah' => 'nullable|mimes:pdf,doc,docx|max:5120',
-            'motivasi_video' => 'nullable|url|max:500', // Changed to URL
-            'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
+            'motivasi_video' => 'nullable|url|max:500',
+            'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
         $peserta = Auth::user()->peserta;
-        
-        // Handle Berkas
         $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
 
+        // Field yang di-submit oleh form (dikirim sebagai hidden input "upload_field")
+        // Jika tidak ada (backward-compat), proses semua.
+        $uploadField = $request->input('upload_field');
         $raporFields = ['rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'rapor6'];
         $singleFields = ['foto', 'ijazah', 'personal_statement', 'study_plan', 'surat_rekomendasi_sekolah'];
 
-        // Handle Single Files
+        // --- Handle Link Video Motivasi ---
+        if (!$uploadField || $uploadField === 'motivasi_video') {
+            if ($request->filled('motivasi_video')) {
+                $berkas->motivasi_video = $request->motivasi_video;
+            }
+        }
+
+        // --- Handle Single File Fields ---
         foreach ($singleFields as $field) {
-            if ($request->hasFile($field)) {
+            // Hanya proses jika tidak ada filter field ATAU field ini yang dipilih
+            if ((!$uploadField || $uploadField === $field) && $request->hasFile($field)) {
                 $path = $request->file($field)->store('berkas/' . $peserta->id, 'public');
                 $berkas->$field = $path;
                 $this->compressImage($path);
             }
         }
 
-        // Handle Array Files (Rapor)
+        // --- Handle Rapor (Array) ---
         foreach ($raporFields as $field) {
-            if ($request->hasFile($field)) {
+            if ((!$uploadField || $uploadField === $field) && $request->hasFile($field)) {
                 $files = $request->file($field);
                 $paths = [];
-                // Check if it's actually an array of files or just one
                 if (is_array($files)) {
                     foreach ($files as $file) {
                         $p = $file->store('berkas/' . $peserta->id . '/' . $field, 'public');
                         $paths[] = $p;
                         $this->compressImage($p);
                     }
-                } else {
+                }
+                else {
                     $p = $files->store('berkas/' . $peserta->id . '/' . $field, 'public');
                     $paths[] = $p;
                     $this->compressImage($p);
                 }
-                
-                // Store as JSON
                 $berkas->$field = json_encode($paths);
             }
         }
 
-        // Handle Sertifikat (Multiple Uploads)
+        $berkas->save();
+
+        // --- Handle Sertifikat ---
         $sertifikatCount = 0;
-        if ($request->hasFile('sertifikat')) {
+        if ((!$uploadField || $uploadField === 'sertifikat') && $request->hasFile('sertifikat')) {
             $files = $request->file('sertifikat');
             $sertifikatFiles = is_array($files) ? $files : [$files];
             foreach ($sertifikatFiles as $file) {
@@ -174,7 +190,7 @@ class PendaftarController extends Controller
                 $this->compressImage($path);
                 \App\Models\Sertifikat::create([
                     'peserta_id' => $peserta->id,
-                    'nama' => 'Sertifikat ' . date('Y-m-d H:i:s'), 
+                    'nama' => 'Sertifikat ' . date('Y-m-d H:i:s'),
                     'file' => $path,
                     'tahun' => date('Y'),
                 ]);
@@ -182,27 +198,33 @@ class PendaftarController extends Controller
             }
         }
 
-        // Track what was actually changed
+        // --- Log Aktivitas ---
         $uploaded = [];
-        if($request->hasFile('foto')) $uploaded[] = 'Pas Foto 4x6';
-        if($request->hasFile('ijazah')) $uploaded[] = 'Ijazah/SKL';
-        if($request->hasFile('personal_statement')) $uploaded[] = 'Personal Statement';
-        if($request->hasFile('study_plan')) $uploaded[] = 'Study Plan';
-        if($request->hasFile('surat_rekomendasi_sekolah')) $uploaded[] = 'Surat Rekomendasi Sekolah';
-        if($request->filled('motivasi_video')) $uploaded[] = 'Link Video Motivasi';
-        
-        for($i=1;$i<=6;$i++) {
-            if($request->hasFile('rapor'.$i)) $uploaded[] = "Scan Rerata S$i";
+        if ($request->hasFile('foto'))
+            $uploaded[] = 'Pas Foto 4x6';
+        if ($request->hasFile('ijazah'))
+            $uploaded[] = 'Ijazah/SKL';
+        if ($request->hasFile('personal_statement'))
+            $uploaded[] = 'Personal Statement';
+        if ($request->hasFile('study_plan'))
+            $uploaded[] = 'Study Plan';
+        if ($request->hasFile('surat_rekomendasi_sekolah'))
+            $uploaded[] = 'Surat Rekomendasi Sekolah';
+        if ($request->filled('motivasi_video'))
+            $uploaded[] = 'Link Video Motivasi';
+        for ($i = 1; $i <= 6; $i++) {
+            if ($request->hasFile('rapor' . $i))
+                $uploaded[] = "Scan Rapor S$i";
         }
-        
-        if($sertifikatCount > 0) $uploaded[] = "$sertifikatCount Sertifikat Prestasi";
-        
-        if(count($uploaded) > 0) {
+        if ($sertifikatCount > 0)
+            $uploaded[] = "$sertifikatCount Sertifikat Prestasi";
+
+        if (count($uploaded) > 0) {
             $desc = 'Berhasil memperbarui dokumen: ' . implode(', ', $uploaded);
             $this->logAktivitas('Pembaruan Berkas', 'Berkas', $berkas->id, $desc);
         }
 
-        return redirect()->back()->with('success', 'Berkas pendaftaran Anda berhasil disimpan dan dicatat dalam log!');
+        return redirect()->back()->with('success', 'Berkas berhasil disimpan!');
     }
 
     public function twibbon()
@@ -237,7 +259,7 @@ class PendaftarController extends Controller
         $matpels = \App\Models\Matpel::whereIn('nama', ['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'Informatika'])->get();
         // Fetch existing score
         $existingNilai = \App\Models\Nilai::where('peserta_id', $peserta->id)->get()->groupBy('matpel_id');
-        
+
         // Also get custom matpels IDs that are NOT in the core list but have scores for this user
         $coreIds = $matpels->pluck('id')->toArray();
         $customMatpelIds = \App\Models\Nilai::where('peserta_id', $peserta->id)->whereNotIn('matpel_id', $coreIds)->pluck('matpel_id')->unique();
@@ -262,7 +284,7 @@ class PendaftarController extends Controller
 
         $peserta = Auth::user()->peserta;
         $peserta->update(['pilihan_prodi' => $request->pilihan_prodi]);
-        
+
         $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
 
         // Handle deletions of custom subjects
@@ -291,7 +313,8 @@ class PendaftarController extends Controller
                         $paths[] = $p;
                         $this->compressImage($p);
                     }
-                } else {
+                }
+                else {
                     $p = $files->store('berkas/' . $peserta->id . '/' . $field, 'public');
                     $paths[] = $p;
                     $this->compressImage($p);
@@ -307,8 +330,8 @@ class PendaftarController extends Controller
                 foreach ($semesters as $sem => $val) {
                     if ($val || $val === '0') { // Allow 0
                         \App\Models\Nilai::updateOrCreate(
-                            ['peserta_id' => $peserta->id, 'matpel_id' => $matpelId, 'semester' => $sem],
-                            ['nilai' => $val]
+                        ['peserta_id' => $peserta->id, 'matpel_id' => $matpelId, 'semester' => $sem],
+                        ['nilai' => $val]
                         );
                     }
                 }
@@ -325,8 +348,8 @@ class PendaftarController extends Controller
                         foreach ($custom['nilai'] as $sem => $val) {
                             if ($val || $val === '0') {
                                 \App\Models\Nilai::updateOrCreate(
-                                    ['peserta_id' => $peserta->id, 'matpel_id' => $matpel->id, 'semester' => $sem],
-                                    ['nilai' => $val]
+                                ['peserta_id' => $peserta->id, 'matpel_id' => $matpel->id, 'semester' => $sem],
+                                ['nilai' => $val]
                                 );
                             }
                         }
@@ -336,8 +359,10 @@ class PendaftarController extends Controller
         }
 
         $uploadedRapor = [];
-        for($i=1;$i<=5;$i++) if($request->hasFile('rapor'.$i)) $uploadedRapor[] = "Scan Rerata S$i";
-        
+        for ($i = 1; $i <= 5; $i++)
+            if ($request->hasFile('rapor' . $i))
+                $uploadedRapor[] = "Scan Rerata S$i";
+
         $msg = "Input nilai akademik semester 1-5" . (count($uploadedRapor) > 0 ? " dan unggah berkas " . implode(', ', $uploadedRapor) : "") . ". Pilihan Prodi: {$request->pilihan_prodi}.";
 
         $this->logAktivitas('Pengisian Nilai Rapor', 'Nilai', $peserta->id, $msg);
