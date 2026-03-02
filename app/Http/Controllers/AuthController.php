@@ -13,7 +13,10 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-
+    public function maintance()
+    {
+        return view('auth.maintance');
+    }
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -38,13 +41,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             // Periksa role user
             if (Auth::user()->role !== 'pendaftar') {
                 Auth::logout();
                 return back()->with('loginError', 'Area ini khusus pendaftar. Gunakan Login Internal.');
             }
-            
+
             return redirect()->intended('/pendaftar/dashboard');
         }
 
@@ -82,13 +85,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            
+
             // Blokir jika pendaftar mencoba login admin
             if (Auth::user()->role === 'pendaftar') {
                 Auth::logout();
                 return back()->with('loginError', 'Pendaftar tidak memiliki akses ke sini.');
             }
-            
+
             return redirect()->intended('/admin/dashboard');
         }
 
