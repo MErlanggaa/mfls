@@ -93,7 +93,7 @@
                 <p class="text-sm font-medium text-slate-500 leading-relaxed mb-6">
                     Tahap seleksi administrasi telah selesai. Berkas Anda dinyatakan <span class="text-emerald-600 font-bold">LENGKAP</span>. Langkah selanjutnya adalah mengikuti <span class="font-bold underline">Ujian Seleksi Online</span>.
                 </p>
-                <div class="flex flex-wrap items-center gap-4 justify-center md:justify-start">
+                <!-- <div class="flex flex-wrap items-center gap-4 justify-center md:justify-start">
                     <a href="https://ujian-react.mfls.com/start?token={{ base64_encode(auth()->user()->email) }}" target="_blank" class="px-8 py-3 bg-blue-600 text-white rounded-2xl text-xs font-black shadow-lg hover:bg-black transition-all uppercase tracking-widest flex items-center gap-2">
                         <span class="iconify" data-icon="solar:play-bold"></span> Mulai Ujian Sekarang
                     </a>
@@ -104,7 +104,7 @@
                         </span>
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tahap 2 Aktif</span>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

@@ -467,7 +467,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         
         <!-- CTA Button -->
         <div class="text-center mt-16 fade-in">
-            <a href="/register" class="inline-flex items-center gap-3 bg-primary-yellow hover:bg-primary-yellow-hover text-dark-navy px-10 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <a href="/maintance" class="inline-flex items-center gap-3 bg-primary-yellow hover:bg-primary-yellow-hover text-dark-navy px-10 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Saya Memenuhi Syarat, Daftar Sekarang!
             </a>
