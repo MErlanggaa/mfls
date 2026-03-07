@@ -28,7 +28,7 @@ Route::get('/registertesting', [AuthController::class , 'showRegister'])->name('
 Route::post('/registertesting', [AuthController::class , 'register']);
 Route::post('/logout', [AuthController::class , 'logout'])->name('logout');
 
-// Internal / Staff Routes
+// Internal / Staff Routes    
 Route::get('/internal/login', [AuthController::class , 'showInternalLogin'])->name('internal.login');
 Route::post('/internal/login', [AuthController::class , 'internalLogin']);
 
