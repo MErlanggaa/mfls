@@ -33,7 +33,7 @@
             <!-- Right Column: Hero Image -->
             <!-- Right Column: Hero Image -->
             <div class="relative w-full scroll-fade-right mt-8 lg:mt-0">
-                <img src="{{ asset('icon/mncc.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-[2.5rem] shadow-2xl hover:scale-[1.02] transition-transform duration-500 border-4 border-white/50">
+                <img src="{{ asset('icon/mncc.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-[2.5rem] hover:scale-[1.02] transition-transform duration-500 border-4 border-white/50">
                 <!-- Decorative element -->
                 <div class="absolute -z-10 top-10 -right-10 w-32 h-32 bg-primary-yellow/20 rounded-full blur-2xl"></div>
                 <div class="absolute -z-10 -bottom-10 -left-10 w-32 h-32 bg-primary-blue/20 rounded-full blur-2xl"></div>
@@ -505,7 +505,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             
             <!-- Right: Portrait Photo -->
             <div>
-<img src="{{ asset('icon/scholar.png') }}" alt="Scholar Portrait" class="rounded-3xl shadow-2xl w-full">            </div>
+<img src="{{ asset('icon/scholar.png') }}" alt="Scholar Portrait" class="w-full">            </div>
         </div>
     </div>
 </div>
