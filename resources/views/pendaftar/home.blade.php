@@ -19,7 +19,7 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <a href="/maintanance" class="bg-primary-yellow hover:bg-primary-yellow-hover text-white px-8 py-4 rounded-full text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300"> 
+                    <a href="/maintance" class="bg-primary-yellow hover:bg-primary-yellow-hover text-white px-8 py-4 rounded-full text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300"> 
                         <i class="fas fa-rocket me-2"></i>
                         Daftar Sekarang
                     </a>
@@ -734,7 +734,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
                     <svg class="w-10 h-10 text-primary-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 </div>
                 <h4 class="font-black text-dark-navy text-xl mb-3">Email</h4>
-                <a href="mailto:iggsmfls@gmail.com" class="text-primary-yellow font-bold text-lg hover:underline">info@beasiswamncu.com</a>
+                <a href="mailto:info@beasiswamncu.com" class="text-primary-yellow font-bold text-lg hover:underline">info@beasiswamncu.com</a>
                 <p class="text-gray-500 text-sm mt-3">Respon dalam 1x24 jam</p>
             </div>
             
