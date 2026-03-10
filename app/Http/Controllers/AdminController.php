@@ -49,7 +49,51 @@ class AdminController extends Controller
             ->orderBy('date', 'ASC')
             ->get();
 
-        return view('admin.dashboard', compact('riwayats', 'totalPendaftar', 'todayPendaftar', 'growth', 'dailyTrend'));
+        // Website Analytics
+        $totalViews = \App\Models\PageView::count();
+        $todayViews = \App\Models\PageView::whereDate('viewed_at', \Carbon\Carbon::today())->count();
+        $yesterdayViews = \App\Models\PageView::whereDate('viewed_at', \Carbon\Carbon::yesterday())->count();
+        
+        // Views growth
+        $viewsGrowth = 0;
+        if ($yesterdayViews > 0) {
+            $viewsGrowth = (($todayViews - $yesterdayViews) / $yesterdayViews) * 100;
+        } elseif ($todayViews > 0) {
+            $viewsGrowth = 100;
+        }
+        
+        // Daily views trend (last 7 days)
+        $dailyViewsTrend = \App\Models\PageView::where('viewed_at', '>=', \Carbon\Carbon::now()->subDays(6))
+            ->select(DB::raw('DATE(viewed_at) as date'), DB::raw('count(*) as total'))
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get();
+        
+        // Top pages
+        $topPages = \App\Models\PageView::select('url', DB::raw('count(*) as views'))
+            ->groupBy('url')
+            ->orderBy('views', 'DESC')
+            ->limit(5)
+            ->get();
+        
+        // Unique visitors today
+        $uniqueVisitorsToday = \App\Models\PageView::whereDate('viewed_at', \Carbon\Carbon::today())
+            ->distinct('ip_address')
+            ->count('ip_address');
+
+        return view('admin.dashboard', compact(
+            'riwayats', 
+            'totalPendaftar', 
+            'todayPendaftar', 
+            'growth', 
+            'dailyTrend',
+            'totalViews',
+            'todayViews',
+            'viewsGrowth',
+            'dailyViewsTrend',
+            'topPages',
+            'uniqueVisitorsToday'
+        ));
     }
 
     public function storePenilaianMentor(Request $request, $id)

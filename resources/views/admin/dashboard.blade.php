@@ -75,6 +75,106 @@
         </div>
     </div>
 
+    <!-- WEBSITE ANALYTICS SECTION -->
+    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2.5rem] p-8 md:p-10 shadow-xl shadow-indigo-500/20 text-white relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+        <div class="absolute left-0 bottom-0 w-48 h-48 bg-white/5 rounded-full blur-2xl -ml-12 -mb-12"></div>
+        
+        <div class="relative z-10">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
+                        <span class="iconify animate-pulse" data-icon="carbon:dot-mark"></span>
+                        Website Insights
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-black">Statistik Pengunjung Website</h2>
+                    <p class="text-white/80 font-medium mt-2">Real-time analytics dan performa website</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Total Views -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <span class="iconify text-xl" data-icon="solar:eye-bold"></span>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider opacity-80">Total Views</span>
+                    </div>
+                    <div class="text-3xl font-black mb-1">{{ number_format($totalViews) }}</div>
+                    <div class="text-xs opacity-70">Semua waktu</div>
+                </div>
+
+                <!-- Today Views -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <span class="iconify text-xl" data-icon="solar:calendar-bold"></span>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider opacity-80">Hari Ini</span>
+                    </div>
+                    <div class="text-3xl font-black mb-1">{{ number_format($todayViews) }}</div>
+                    <div class="flex items-center gap-1 text-xs">
+                        <span class="iconify" data-icon="{{ $viewsGrowth >= 0 ? 'lucide:trending-up' : 'lucide:trending-down' }}"></span>
+                        <span>{{ round(abs($viewsGrowth)) }}%</span>
+                        <span class="opacity-70">vs kemarin</span>
+                    </div>
+                </div>
+
+                <!-- Unique Visitors -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <span class="iconify text-xl" data-icon="solar:user-bold"></span>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider opacity-80">Unique Visitors</span>
+                    </div>
+                    <div class="text-3xl font-black mb-1">{{ number_format($uniqueVisitorsToday) }}</div>
+                    <div class="text-xs opacity-70">Hari ini</div>
+                </div>
+
+                <!-- Avg per Day -->
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 hover:bg-white/15 transition-all">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                            <span class="iconify text-xl" data-icon="solar:chart-bold"></span>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider opacity-80">Rata-rata/Hari</span>
+                    </div>
+                    <div class="text-3xl font-black mb-1">{{ $dailyViewsTrend->count() > 0 ? number_format($dailyViewsTrend->avg('total')) : 0 }}</div>
+                    <div class="text-xs opacity-70">7 hari terakhir</div>
+                </div>
+            </div>
+
+            <!-- Top Pages -->
+            <div class="mt-8 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
+                <h3 class="text-lg font-black mb-4 flex items-center gap-2">
+                    <span class="iconify" data-icon="solar:document-bold"></span>
+                    Halaman Paling Banyak Dikunjungi
+                </h3>
+                <div class="space-y-3">
+                    @foreach($topPages as $index => $page)
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all">
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center font-black text-sm">
+                                {{ $index + 1 }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="font-bold truncate">{{ parse_url($page->url, PHP_URL_PATH) ?: '/' }}</div>
+                                <div class="text-xs opacity-70 truncate">{{ $page->url }}</div>
+                            </div>
+                        </div>
+                        <div class="text-right ml-4">
+                            <div class="font-black text-lg">{{ number_format($page->views) }}</div>
+                            <div class="text-xs opacity-70">views</div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 3. MAIN CONTENT -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Left: Chart -->

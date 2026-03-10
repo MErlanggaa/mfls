@@ -256,7 +256,7 @@ class PendaftarController extends Controller
     public function nilai()
     {
         $peserta = Auth::user()->peserta;
-        $matpels = \App\Models\Matpel::whereIn('nama', ['Matematika', 'Bahasa Indonesia', 'Bahasa Inggris', 'Informatika'])->get();
+        $matpels = \App\Models\Matpel::whereIn('nama', ['Bahasa Indonesia', 'Matematika', 'Bahasa Inggris'])->get();
         // Fetch existing score
         $existingNilai = \App\Models\Nilai::where('peserta_id', $peserta->id)->get()->groupBy('matpel_id');
 

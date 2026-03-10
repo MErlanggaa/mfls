@@ -6,15 +6,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <!-- Left Column: Text Content -->
-            <div class="text-center lg:text-left space-y-8 scroll-fade-left">
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-dark-navy leading-tight">
+            <div class="text-center lg:text-left space-y-6 md:space-y-8 scroll-fade-left">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-dark-navy leading-tight">
                   MNCU 
                     <span class="text-primary-yellow">Future</span> Leader
                     Scholarship
                 </h1>
                 
-                <p class="text-xl text-gray-700 font-semibold">
-                    Beasiswa Kuliah Up To 100% hingga lulus<br>
+                <p class="text-base sm:text-lg md:text-xl text-gray-700 font-semibold">
+                    Beasiswa Kuliah Up To 100% hingga lulus<br class="hidden sm:block">
                      di Media Nusantara Citra University
                 </p>
                 
@@ -83,9 +83,9 @@
 </div>
 
 <!-- About Section with Photos -->
-<div id="about" class="py-24 bg-gray-50">
+<div id="about" class="py-12 md:py-24 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-20 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 lg:gap-20 items-start">
             <!-- Left: Text + Stats (3 columns) -->
             <div class="lg:col-span-3 scroll-fade-left">
                 <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-4">Tentang Kami</h3>
@@ -404,7 +404,6 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                     @foreach([
                         ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Siswa Kelas 12 & Gap Year', 'desc' => 'Siswa/i kelas 12 SMA/SMK/MA sederajat tahun ajaran 2025/2026, atau lulusan tahun ajaran 2023/2024/2025'],
                         ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Prestasi Akademik', 'desc' => 'Memiliki nilai rapor rata-rata minimal 80 atau peringkat 10 besar di kelas'],
-                        ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Domisili', 'desc' => 'Berdomisili di wilayah Jabodetabek atau bersedia tinggal di Jakarta selama kuliah'],
                         ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Komitmen', 'desc' => 'Bersedia mengikuti seluruh rangkaian seleksi dan program pembinaan'],
                         ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'title' => 'Karakter', 'desc' => 'Memiliki jiwa kepemimpinan, aktif berorganisasi, dan berkarakter baik']
                     ] as $requirement)
@@ -431,7 +430,9 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                             ['icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'title' => 'Rapor Semester 1-5', 'format' => 'PDF (Max 5MB)'],
                             ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Pas Foto Terbaru', 'format' => 'JPG/PNG (3x4 cm)'],
                             ['icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4', 'title' => 'Sertifikat Prestasi', 'format' => 'PDF (Jika ada)'],
-                            ['icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', 'title' => 'Personal Statement', 'format' => 'PDF (Max 500 kata)']
+                            ['icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', 'title' => 'Personal Statement', 'format' => 'PDF (Max 500 kata)'],
+                            ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Surat Rekomendasi Sekolah', 'format' => 'PDF (Dari Sekolah)'],
+                            ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'title' => 'Study Plan', 'format' => 'PDF (Rencana Studi)']
                         ] as $document)
                         <div class="flex items-center gap-4 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-all duration-300">
                             <div class="w-10 h-10 bg-primary-yellow/20 rounded-lg flex items-center justify-center shrink-0">
@@ -586,22 +587,26 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         <div class="relative max-w-5xl mx-auto">
             @php
                 $testimonials = [
-                    ['name' => 'Irfan Syahfutra', 'batch' => 'MFLS 2024', 'major' => 'SMK Bina Putra Mandiri', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas pengalaman yang luar biasa. Selama kegiatan ini, kami belajar banyak hal baru yang melatih mental, tanggung jawab, dan kepemimpinan. Pengalaman ini menjadi momen berharga dan sangat menginspirasi kami untuk terus berkembang.', 'photo' => 'irfan2.png'],
-                    ['name' => 'Satria Pambudi Attur Rohman', 'batch' => 'MFLS 2024', 'major' => 'SMK Swasta Jakarta Barat 1', 'quote' => 'Terimakasih banyak untuk MNCU Future Leader Scholarship buat kesempatan, ilmu, dan pengalaman baru yang bener bener luar biasa. Di sini, aku nggak cuma sekedar belajar teori, tapi juga dilatih buat jadi pribadi yang punya jiwa leadership atau kepemimpinan yang kuat.', 'photo' => 'satria2.png'],
-                    ['name' => 'Cellindia Vanesa Heriyandu', 'batch' => 'MFLS 2024', 'major' => 'SMK Negeri 1 Kesana', 'quote' => 'Terima kasih kepada MNCU Future Leader Scholarship atas program yang luar biasa ini. Melalui rangkaian kegiatan, saya belajar nilai kepemimpinan, kerja sama, dan keberanian untuk terus berkembang. Dipertemukan dengan teman, kakak pembimbing, serta dosen-dosen inspiratif menjadi pengalaman berharga.', 'photo' => 'cellindia2.png'],
-                    ['name' => 'Sandy Arif Saputra', 'batch' => 'MFLS 2024', 'major' => 'SMA Negeri 78 Jakarta', 'quote' => 'Mengikuti MNCU Future Leader Scholarship jadi salah satu pengalaman paling berkesan buat aku. Bertemu teman-teman hebat, para mentor yang inspiring, serta dosen-dosen dengan kualitas yang really next level adalah hal yang nggak akan aku lupain. Failure is part of the journey, and trying is always the first win.', 'photo' => 'sandy2.png'],
-                    ['name' => 'Silvi Melani Putri', 'batch' => 'MFLS 2024', 'major' => 'SMK Swasta Tunas Harapan', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas ilmu, pengalaman, dan kesempatan yang sangat berharga. Program ini memberikan berbagai wawasan dan pengalaman baru yang sangat menginspirasi serta menjadi bekal berharga bagi kami untuk pengembangan diri di masa depan.', 'photo' => 'silvi2.png'],
-                    ['name' => 'Kirania Rizma Az-Zahra', 'batch' => 'MFLS 2024', 'major' => 'SMK Swasta As-Sa\'adah', 'quote' => 'Long story short I survived! Terima kasih MNCU Future Leader Scholarship atas beasiswa 100%. Dalam program ini, bukan hanya memberi aku beasiswa, namun juga memberi ruang untuk tumbuh, belajar, dan bermimpi lebih jauh.', 'photo' => 'kirania2.png'],
-                    ['name' => 'Innez Putria Abidin', 'batch' => 'MFLS 2024', 'major' => 'SMK Swasta Tunas Harapan', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas pengalaman dan pembelajaran yang luar biasa. Selama mengikuti program ini, saya banyak belajar hal baru dan menginspirasi terutama tentang leadership, kerja sama, dan pengembangan diri yang akan berguna di masa depan.', 'photo' => 'inez2.png'],
-                    ['name' => 'Muhammad Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Program mentoring yang diberikan sangat membantu saya beradaptasi di dunia perkuliahan. Highly recommended!', 'photo' => 'rizki2.png'],
-                    ['name' => 'Putri Andini', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Beasiswa ini mengubah hidup saya. Dari yang awalnya ragu bisa kuliah, sekarang saya sudah semester 3 dengan prestasi yang membanggakan.', 'photo' => 'andini2.png'],
-                    ['name' => 'Alfiah', 'batch' => 'MFLS 2024', 'major' => 'Manajemen', 'quote' => 'MFLS bukan hanya memberikan beasiswa, tapi juga keluarga baru dan pengalaman yang luar biasa. Terima kasih atas kesempatan ini!', 'photo' => 'alfiah2.png'],
-                    ['name' => 'Dzakiyah', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Bahasa Inggris', 'quote' => 'Site visit dan company visit ke unit bisnis MNC memberikan wawasan industri yang tidak bisa didapat di kelas.', 'photo' => 'dzakiyah2.png'],
-                    ['name' => 'Gavino', 'batch' => 'MFLS 2024', 'major' => 'Ilmu Komputer', 'quote' => 'Networking dengan sesama penerima beasiswa membuka banyak peluang kolaborasi dan pembelajaran bersama.', 'photo' => 'Gavino2.png'],
-                    ['name' => 'Raput', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'Sertifikat dari MNC University menjadi nilai tambah yang luar biasa di CV saya.', 'photo' => 'raput2.png'],
-                    ['name' => 'Rifatur', 'batch' => 'MFLS 2023', 'major' => 'Pendidikan Matematika', 'quote' => 'Bimbingan dari mentor profesional MNC Group membuka perspektif baru tentang dunia kerja.', 'photo' => 'rifatur2.png'],
-                    ['name' => 'Rini Amanda', 'batch' => 'MFLS 2024', 'major' => 'Sains Komunikasi', 'quote' => 'Pengalaman sit in class di lingkungan industri memberikan pembelajaran praktis yang sangat aplikatif.', 'photo' => 'rini2.png'],
-                    ['name' => 'Risky', 'batch' => 'MFLS 2025', 'major' => 'Ilmu Komputer', 'quote' => 'MFLS memberikan kesempatan untuk berkembang tidak hanya secara akademis tapi juga profesional.', 'photo' => 'risky2.png']
+                    ['name' => 'Irfan Syahfutra', 'batch' => 'MFLS 2025', 'major' => 'Sistem informasi', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas pengalaman yang luar biasa.Selama kegiatan ini, kami belajar banyak hal baru yang melatih mental, tanggung jawab, dan kepemimpinan. Pengalaman ini menjadi momen berharga dan sangat menginspirasi kami untuk terus berkembang.', 'photo' => 'irfan.png'],
+                    ['name' => 'Satria Pambudi Attur Rohman', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Terimakasih banyak untuk MNCU Future Leader Scholarship buat kesempatan, ilmu, dan pengalaman baru yang bener bener luar biasa. Di sini, aku nggak cuma sekedar belajar teori, tapi juga dilatih buat jadi pribadi yang punya jiwa leadership atau kepemimpinan yang kuat. Banyak hal baru yang aku dapet dan pastinya sangat menginspirasi untuk lebih semangat ke depannya.', 'photo' => 'satria.png'],
+                    ['name' => 'Cellindia Vanesa Heriyandu', 'batch' => 'MFLS 2025', 'major' => 'Pendidikan Bahasa Inggris', 'quote' => 'Terima kasih kepada MNCU Future Leader Scholarship atas program yang luar biasa ini. Melalui rangkaian kegiatan, saya belajar nilai kepemimpinan, kerja sama, dan keberanian untuk terus berkembang. Dipertemukan dengan teman, kakak pembimbing, serta dosen-dosen inspiratif menjadi pengalaman berharga yang membentuk cara berpikir saya sampai dengan detik ini.', 'photo' => 'cellin.png'],
+                    ['name' => 'Sandy Arif Saputra', 'batch' => 'MFLS 2025', 'major' => 'Ilmu Komputer', 'quote' => 'Mengikuti MNCU Future Leader Scholarship jadi salah satu pengalaman paling berkesan buat aku. Bertemu teman-teman hebat, para mentor yang inspiring, serta dosen-dosen dengan kualitas yang really next level adalah hal yang nggak akan aku lupain. Failure is part of the journey, and trying is always the first win.', 'photo' => 'sandy.png'],
+                    ['name' => 'Silvi Melani Putri', 'batch' => 'MFLS 2025', 'major' => 'Pendidikan Matematika', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas ilmu, pengalaman, dan kesempatan yang sangat berharga. Program ini memberikan berbagai wawasan dan pengalaman baru yang sangat menginspirasi serta menjadi bekal berharga bagi kami untuk pengembangan diri di masa depan.', 'photo' => 'silvi.png'],
+                    ['name' => 'Kirania Rizma Az-Zahra', 'batch' => 'MFLS 2025', 'major' => 'SMK Swasta As-Sa'adah', 'quote' => 'Long story short I survived! Terima kasih MNCU Future Leader Scholarship atas beasiswa 100%. Dalam program ini, bukan hanya memberi aku beasiswa, namun juga memberi ruang untuk tumbuh, belajar, dan bermimpi lebih jauh.', 'photo' => 'kirania.png'],
+                    ['name' => 'Innez Putria Abidin', 'batch' => 'MFLS 2025', 'major' => ' Manajemen', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas pengalaman dan pembelajaran yang luar biasa. Selama mengikuti program ini, saya banyak belajar hal baru dan menginspirasi terutama tentang leadership, kerja sama, dan pengembangan diri yang akan berguna di masa depan. Terima kasih juga untuk para mentor yang telah memberikan banyak ilmu dan support kepada teman-teman semua.', 'photo' => 'innez.png'],
+                    ['name' => 'Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Program mentoring yang diberikan sangat membantu saya beradaptasi di dunia perkuliahan. Highly recommended!', 'photo' => 'rizki.png'],
+                    ['name' => 'Andini Raissa', 'batch' => 'MFLS 2025', 'major' => 'Manajemen', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas kesempatan luar biasa yang membuka ruang tumbuh, membentuk karakter, dan menguatkan jiwa kepemimpinan kami, setiap prosesnya menjadi pijakan untuk melangkah lebih berani, berpikir lebih visioner, dan berdampak lebih nyata,semoga MNC University terus melahirkan pemimpin masa depan yang berintegritas dan berpengaruh. May MNC University continue to inspire future leaders💫.', 'photo' => 'andini.png'],
+                    ['name' => 'Alfiah Wirda Lukmansyah', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'MFLS bukan hanya memberikan beasiswa, tapi juga keluarga baru dan pengalaman yang luar biasa. Terima kasih atas kesempatan ini!', 'photo' => 'alfiah.png'],
+                    ['name' => 'Dzakiyah Febriyanti', 'batch' => 'MFLS 2023', 'major' => 'Ilmu Komputer', 'quote' => Terima kasih MNCU Future Leader Scholarship atas pengalaman luar biasa ini. Sit in class yang saya ikuti menjadi ruang belajar yang sangat berharga, di sana saya dilatih untuk mengasah leadership, memperluas wawasan, dan mendapatkan banyak inspirasi baru. Program ini tidak hanya menambah wawasan, tetapi juga membentuk mindset saya untuk terus berkembang dan berani mengambil peran di masa depan.', 'photo' => 'dzakiyah.png'],
+                    ['name' => 'Gavino Pasha Putra', 'batch' => 'MFLS 2025', 'major' => 'Ilmu Komputer', 'quote' => 'Terima kasih atas MNCU Future Leader Scholarship Atas program beasiswa yang sudah diselenggarakan, bagi saya ini bukanlah akhir, tetapi ini adalah awal untuk kita mencapai level yang lebih tinggi lagi kedepannya.', 'photo' => 'gavino.png'],
+                    ['name' => 'Rahmalia Putri', 'batch' => 'MFLS 2025', 'major' => 'Desain Komunikasi Visual', 'quote' => 'Saya sangat berterimakasih banyak kepada MNCU Future Leader Scholarship telah mengadakan program ini, karena dari sini saya belajar banyak sekali, saya bertemu teman-teman yang hebat, kaka yang keren, dosen-dosen yang sangat LUAR BIASA dan sebuah pengalaman yang sangat berharga, yang tidak pernah saya bayangkan sukses selalu untuk MNC Group dan MNC University, dimana para mimpi anak bangsa tersalurkan dengan program-program yang sangat luar biasa dan di dukung dengan banyaknya kemajuan teknologi, "tiada kesuksesan tanpa kegagalan, dan kegagalan adalah awal batu loncatan menuju kesuksesan", you never know, if you never try.", 'photo' => 'raput.png'],
+                    ['name' => 'Muhamad  Rifatur Seva Kuswara', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Saya sangat berterimakasih banyak kepada MNCU Future Leader Scholarship telah mengadakan program ini, karena dari sini saya belajar banyak sekali, saya bertemu teman-teman yang hebat, kaka yang keren, dosen-dosen yang sangat LUAR BIASA dan sebuah pengalaman yang sangat berharga, yang tidak pernah saya bayangkan sukses selalu untuk MNC Group dan MNC University, dimana para mimpi anak bangsa tersalurkan dengan program-program yang sangat luar biasa dan di dukung dengan banyaknya kemajuan teknologi, "tiada kesuksesan tanpa kegagalan, dan kegagalan adalah awal batu loncatan menuju kesuksesan", you never know, if you never try.', 'photo' => 'rifatur.png'],
+                    ['name' => 'Rini Amanda', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Kesan: Mengikuti program MNCU Future Leader Scholarship merupakan pengalaman yang sangat berharga bagi saya. Program ini tidak hanya memberikan bantuan pendidikan, tetapi juga membentuk karakter, rasa percaya diri, serta semangat untuk terus berkembang dan berprestasi. Saya merasa bangga dan bersyukur bisa menjadi bagian dari program ini. Pesan: Terima kasih kepada seluruh pihak MNC University dan penyelenggara MNCU Future Leader Scholarship atas kesempatan luar biasa yang telah diberikan. Semoga program ini terus berlanjut dan dapat menjangkau lebih banyak generasi muda agar semakin banyak calon pemimpin masa depan yang lahir, berintegritas, dan membawa dampak positif bagi masyarakat.', 'photo' => 'rini.png'],
+                    ['name' => 'Risky Zuliansyah', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Saya menghaturkan apresiasi dan rasa terima kasih yang setulus-tulusnya kepada MNC University atas hadirnya program MNCU Future Leader Scholarship, sebuah ikhtiar nyata yang tidak sekadar membuka peluang, tetapi juga menyalakan asa bagi saya untuk melangkah ke jenjang pendidikan tinggi. Program ini menjadikan impian saya bukan lagi sekadar wacana, melainkan tujuan yang kini memiliki arah dan kemungkinan. Ketertarikan saya memilih MNC University berangkat dari keyakinan bahwa kampus ini berdiri sebagai institusi pendidikan dengan ekosistem media yang sangat luas di tingkat Asia, serta berada di bawah naungan MNC Group yang bereputasi global. Di sinilah saya melihat pendidikan tidak hanya dimaknai sebagai proses akademik semata, melainkan juga sebagai ruang pembentukan jejaring, penguatan kapasitas diri, dan penempaan kepemimpinan untuk menghadapi tantangan masa depan.', 'photo' => 'risky.png']
+                    ['name' => 'Ibrahimovic', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Saya menghaturkan apresiasi dan rasa terima kasih yang setulus-tulusnya kepada MNC University atas hadirnya program MNCU Future Leader Scholarship, sebuah ikhtiar nyata yang tidak sekadar membuka peluang, tetapi juga menyalakan asa bagi saya untuk melangkah ke jenjang pendidikan tinggi. Program ini menjadikan impian saya bukan lagi sekadar wacana, melainkan tujuan yang kini memiliki arah dan kemungkinan. Ketertarikan saya memilih MNC University berangkat dari keyakinan bahwa kampus ini berdiri sebagai institusi pendidikan dengan ekosistem media yang sangat luas di tingkat Asia, serta berada di bawah naungan MNC Group yang bereputasi global. Di sinilah saya melihat pendidikan tidak hanya dimaknai sebagai proses akademik semata, melainkan juga sebagai ruang pembentukan jejaring, penguatan kapasitas diri, dan penempaan kepemimpinan untuk menghadapi tantangan masa depan.', 'photo' => 'baim.png']
+                    ['name' => 'Gracia Lamtiar Yosefine Sagala', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'Terima kasih yang sebesar-besarnya kepada MNC University melalui program MNCU Future Leader Scholarship atas kesempatan dan kepercayaan yang diberikan. Beasiswa ini bukan hanya menjadi dukungan dalam perjalanan pendidikan saya, tetapi juga menjadi sumber motivasi untuk terus belajar, berkembang, dan mempersiapkan diri sebagai calon pemimpin masa depan. Saya sangat bersyukur atas kesempatan berharga ini dan berharap dapat memanfaatkannya dengan sebaik-baiknya serta memberikan dampak positif bagi lingkungan kampus dan masyarakat.', 'photo' => 'grace.png']
+
+
                 ];
             @endphp
             
@@ -863,6 +868,125 @@ autoSlideInterval = setInterval(autoSlide, 5000);
 
 .animate-bounce-slow {
     animation: bounce-slow 3s infinite;
+}
+
+/* Mobile Responsive Fixes */
+@media (max-width: 768px) {
+    /* Prevent horizontal scroll */
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Ensure all containers fit screen */
+    .max-w-7xl,
+    .max-w-6xl,
+    .max-w-5xl,
+    .max-w-4xl {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Hero section text sizing */
+    h1 {
+        font-size: 2rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    h2 {
+        font-size: 1.75rem !important;
+    }
+    
+    h3 {
+        font-size: 1.5rem !important;
+    }
+    
+    /* Adjust padding for mobile */
+    .py-24 {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    
+    .py-20 {
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+    }
+    
+    /* Fix image overflow */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    /* Testimonial slideshow */
+    .testimonial-slideshow {
+        min-height: 400px;
+    }
+    
+    /* Modal responsive */
+    #program-studi-modal .bg-white {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+    
+    /* Contact cards stack properly */
+    .contact-card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Ensure buttons don't overflow */
+    button, a {
+        word-wrap: break-word;
+    }
+    
+    /* Fix grid gaps on mobile */
+    .gap-16 {
+        gap: 2rem;
+    }
+    
+    .gap-20 {
+        gap: 2rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.75rem !important;
+    }
+    
+    .text-5xl,
+    .text-6xl,
+    .text-7xl {
+        font-size: 1.75rem !important;
+    }
+    
+    .text-4xl {
+        font-size: 1.5rem !important;
+    }
+    
+    .text-3xl {
+        font-size: 1.25rem !important;
+    }
+    
+    .text-2xl {
+        font-size: 1.125rem !important;
+    }
+    
+    .text-xl {
+        font-size: 1rem !important;
+    }
+    
+    /* Reduce padding on very small screens */
+    .px-8 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .py-12 {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
 }
 </style>
 
