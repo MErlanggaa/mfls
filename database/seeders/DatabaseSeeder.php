@@ -66,11 +66,11 @@ class DatabaseSeeder extends Seeder
         $ujianWawancara = \App\Models\Ujian::create(['nama' => 'Wawancara Kebangsaan']);
 
         // Seed Matpel & Nilai Random
-        $matpels = ['Matematika Wajib', 'Bahasa Indonesia', 'Bahasa Inggris', 'Fisika', 'Kimia', 'Biologi'];
-        
+        $matpels = ['Matematika Wajib', 'Bahasa Indonesia', 'Bahasa Inggris'];
+
         foreach ($matpels as $namaMatpel) {
             $mp = \App\Models\Matpel::create(['nama' => $namaMatpel]);
-            
+
             // Isi nilai semester 1-6
             for ($sem = 1; $sem <= 6; $sem++) {
                 \App\Models\Nilai::create([

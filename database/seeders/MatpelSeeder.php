@@ -10,10 +10,10 @@ class MatpelSeeder extends Seeder
     public function run()
     {
         $matpels = [
-            'Matematika',
+            'Matematika Wajib',
             'Bahasa Indonesia',
             'Bahasa Inggris',
-            'Informatika'
+
         ];
 
         foreach ($matpels as $mp) {
