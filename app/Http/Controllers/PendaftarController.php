@@ -287,7 +287,7 @@ class PendaftarController extends Controller
 
         $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
 
-        // Handle deletions of custom subjects
+        // Handle deletions of custom subjects 
         if ($request->has('deleted_custom_matpels')) {
             \App\Models\Nilai::where('peserta_id', $peserta->id)
                 ->whereIn('matpel_id', $request->deleted_custom_matpels)
