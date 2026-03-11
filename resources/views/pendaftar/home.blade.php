@@ -2,38 +2,37 @@
 
 @section('content')
 <!-- Hero Section -->
-<div id="home" class="relative overflow-hidden bg-white pt-12 pb-20">
+<div id="home" class="relative overflow-hidden bg-white pt-6 sm:pt-12 pb-10 sm:pb-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <!-- Left Column: Text Content -->
-            <div class="text-center lg:text-left space-y-6 md:space-y-8 scroll-fade-left">
-                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-dark-navy leading-tight">
+            <div class="text-center lg:text-left space-y-4 sm:space-y-6 md:space-y-8 scroll-fade-left">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-dark-navy leading-tight">
                   MNCU 
                     <span class="text-primary-yellow">Future</span> Leader
                     Scholarship
                 </h1>
                 
-                <p class="text-base sm:text-lg md:text-xl text-gray-700 font-semibold">
+                <p class="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 font-semibold">
                     Beasiswa Kuliah Up To 100% hingga lulus<br class="hidden sm:block">
                      di Media Nusantara Citra University
                 </p>
                 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <a href="/maintance" class="bg-primary-yellow hover:bg-primary-yellow-hover text-white px-8 py-4 rounded-full text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300"> 
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
+                    <a href="/maintance" class="bg-primary-yellow hover:bg-primary-yellow-hover text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-sm sm:text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300"> 
                         <i class="fas fa-rocket me-2"></i>
                         Daftar Sekarang
                     </a>
-                    <a href="https://whatsapp.com/channel/0029VbC0L7I6hENrmgrr9D3D" target="_blank" class="flex items-center justify-center gap-2 text-dark-navy font-semibold hover:text-primary-yellow transition-colors">
+                    <a href="https://whatsapp.com/channel/0029VbC0L7I6hENrmgrr9D3D" target="_blank" class="flex items-center justify-center gap-2 text-dark-navy text-sm sm:text-base font-semibold hover:text-primary-yellow transition-colors">
                         Gabung Saluran WhatsApp
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                     </a>
                 </div>
             </div>
             
             <!-- Right Column: Hero Image -->
-            <!-- Right Column: Hero Image -->
-            <div class="relative w-full scroll-fade-right mt-8 lg:mt-0">
-                <img src="{{ asset('icon/mncc.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-[2.5rem] hover:scale-[1.02] transition-transform duration-500">
+            <div class="relative w-full scroll-fade-right mt-6 lg:mt-0 max-w-md mx-auto lg:max-w-none">
+                <img src="{{ asset('icon/mncc.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.02] transition-transform duration-500">
                 <!-- Decorative element -->
                 <div class="absolute -z-10 top-10 -right-10 w-32 h-32 bg-primary-yellow/20 rounded-full blur-2xl"></div>
                 <div class="absolute -z-10 -bottom-10 -left-10 w-32 h-32 bg-primary-blue/20 rounded-full blur-2xl"></div>
@@ -594,7 +593,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                     ['name' => 'Silvi Melani Putri', 'batch' => 'MFLS 2025', 'major' => 'Pendidikan Matematika', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas ilmu, pengalaman, dan kesempatan yang sangat berharga. Program ini memberikan berbagai wawasan dan pengalaman baru yang sangat menginspirasi serta menjadi bekal berharga bagi kami untuk pengembangan diri di masa depan.', 'photo' => 'Silvi.png'],
                     ['name' => 'Kirania Rizma Az-Zahra', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'Long story short I survived! Terima kasih MNCU Future Leader Scholarship atas beasiswa 100%. Dalam program ini, bukan hanya memberi aku beasiswa, namun juga memberi ruang untuk tumbuh, belajar, dan bermimpi lebih jauh.', 'photo' => 'Kirania.png'],
                     ['name' => 'Innez Putria Abidin', 'batch' => 'MFLS 2025', 'major' => ' Manajemen', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas pengalaman dan pembelajaran yang luar biasa. Selama mengikuti program ini, saya banyak belajar hal baru dan menginspirasi terutama tentang leadership, kerja sama, dan pengembangan diri yang akan berguna di masa depan. Terima kasih juga untuk para mentor yang telah memberikan banyak ilmu dan support kepada teman-teman semua.', 'photo' => 'Innez.png'],
-                    ['name' => 'Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Program mentoring yang diberikan sangat membantu saya beradaptasi di dunia perkuliahan. Highly recommended!', 'photo' => 'Rizki.png'],
+                    ['name' => 'Rizki', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Terima kasih kepada MNC University yang telah memberikan harapan bagi generasi muda Indonesia melalui Beasiswa 100% MNCU Future Leader Scholarship. Kesempatan ini menjadi jembatan untuk anak desa bisa menggapai masa depan yang lebih baik.', 'photo' => 'Rizki.png'],
                     ['name' => 'Andini Raissa', 'batch' => 'MFLS 2025', 'major' => 'Manajemen', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas kesempatan luar biasa yang membuka ruang tumbuh, membentuk karakter, dan menguatkan jiwa kepemimpinan kami, setiap prosesnya menjadi pijakan untuk melangkah lebih berani, berpikir lebih visioner, dan berdampak lebih nyata,semoga MNC University terus melahirkan pemimpin masa depan yang berintegritas dan berpengaruh. May MNC University continue to inspire future leaders💫.', 'photo' => 'andini.png'],
                     ['name' => 'Alfiah Wirda Lukmansyah', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'MFLS bukan hanya memberikan beasiswa, tapi juga keluarga baru dan pengalaman yang luar biasa. Terima kasih atas kesempatan ini!', 'photo' => 'alfiah.png'],
                     ['name' => 'Dzakiyah Febriyanti', 'batch' => 'MFLS 2023', 'major' => 'Ilmu Komputer', 'quote' => 'Terima kasih MNCU Future Leader Scholarship atas pengalaman luar biasa ini. Sit in class yang saya ikuti menjadi ruang belajar yang sangat berharga, di sana saya dilatih untuk mengasah leadership, memperluas wawasan, dan mendapatkan banyak inspirasi baru. Program ini tidak hanya menambah wawasan, tetapi juga membentuk mindset saya untuk terus berkembang dan berani mengambil peran di masa depan.', 'photo' => 'dzakiyah.png'],
@@ -603,7 +602,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                     ['name' => 'Muhamad  Rifatur Seva Kuswara', 'batch' => 'MFLS 2023', 'major' => 'Sistem Informasi', 'quote' => 'Saya sangat berterimakasih banyak kepada MNCU Future Leader Scholarship telah mengadakan program ini, karena dari sini saya belajar banyak sekali, saya bertemu teman-teman yang hebat, kaka yang keren, dosen-dosen yang sangat LUAR BIASA dan sebuah pengalaman yang sangat berharga, yang tidak pernah saya bayangkan sukses selalu untuk MNC Group dan MNC University, dimana para mimpi anak bangsa tersalurkan dengan program-program yang sangat luar biasa dan di dukung dengan banyaknya kemajuan teknologi, "tiada kesuksesan tanpa kegagalan, dan kegagalan adalah awal batu loncatan menuju kesuksesan", you never know, if you never try.', 'photo' => 'Rifatur.png'],
                     ['name' => 'Rini Amanda', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Kesan: Mengikuti program MNCU Future Leader Scholarship merupakan pengalaman yang sangat berharga bagi saya. Program ini tidak hanya memberikan bantuan pendidikan, tetapi juga membentuk karakter, rasa percaya diri, serta semangat untuk terus berkembang dan berprestasi. Saya merasa bangga dan bersyukur bisa menjadi bagian dari program ini. Pesan: Terima kasih kepada seluruh pihak MNC University dan penyelenggara MNCU Future Leader Scholarship atas kesempatan luar biasa yang telah diberikan. Semoga program ini terus berlanjut dan dapat menjangkau lebih banyak generasi muda agar semakin banyak calon pemimpin masa depan yang lahir, berintegritas, dan membawa dampak positif bagi masyarakat.', 'photo' => 'rini.png'],
                     ['name' => 'Risky Zuliansyah', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Saya menghaturkan apresiasi dan rasa terima kasih yang setulus-tulusnya kepada MNC University atas hadirnya program MNCU Future Leader Scholarship, sebuah ikhtiar nyata yang tidak sekadar membuka peluang, tetapi juga menyalakan asa bagi saya untuk melangkah ke jenjang pendidikan tinggi. Program ini menjadikan impian saya bukan lagi sekadar wacana, melainkan tujuan yang kini memiliki arah dan kemungkinan. Ketertarikan saya memilih MNC University berangkat dari keyakinan bahwa kampus ini berdiri sebagai institusi pendidikan dengan ekosistem media yang sangat luas di tingkat Asia, serta berada di bawah naungan MNC Group yang bereputasi global. Di sinilah saya melihat pendidikan tidak hanya dimaknai sebagai proses akademik semata, melainkan juga sebagai ruang pembentukan jejaring, penguatan kapasitas diri, dan penempaan kepemimpinan untuk menghadapi tantangan masa depan.', 'photo' => 'Risky.png'],
-                    ['name' => 'Ibrahimovic', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Saya menghaturkan apresiasi dan rasa terima kasih yang setulus-tulusnya kepada MNC University atas hadirnya program MNCU Future Leader Scholarship, sebuah ikhtiar nyata yang tidak sekadar membuka peluang, tetapi juga menyalakan asa bagi saya untuk melangkah ke jenjang pendidikan tinggi. Program ini menjadikan impian saya bukan lagi sekadar wacana, melainkan tujuan yang kini memiliki arah dan kemungkinan. Ketertarikan saya memilih MNC University berangkat dari keyakinan bahwa kampus ini berdiri sebagai institusi pendidikan dengan ekosistem media yang sangat luas di tingkat Asia, serta berada di bawah naungan MNC Group yang bereputasi global. Di sinilah saya melihat pendidikan tidak hanya dimaknai sebagai proses akademik semata, melainkan juga sebagai ruang pembentukan jejaring, penguatan kapasitas diri, dan penempaan kepemimpinan untuk menghadapi tantangan masa depan.', 'photo' => 'baim.png'],
+                    ['name' => 'Ibrahimovic', 'batch' => 'MFLS 2025', 'major' => 'Sains Komunikasi', 'quote' => 'Terimakasih atas kesempatan yang telah diberikan kepada saya, pada program ini saya mendapatkan banyak pelajaran dan kegiatan yang menarik selama program berlangsung. Seperti mentoring/bimbingan, leadership dan membuka lembaran baru lagi dalam hidup ku, yang bukan hanya sekedar teori tetapi praktek langsung. Semoga ini bisa membawa kebaikan kedepannya dan tempat untuk bertumbuh lebih baik.', 'photo' => 'baim.png'],
                     ['name' => 'Gracia Lamtiar Yosefine Sagala', 'batch' => 'MFLS 2025', 'major' => 'Akuntansi', 'quote' => 'Terima kasih yang sebesar-besarnya kepada MNC University melalui program MNCU Future Leader Scholarship atas kesempatan dan kepercayaan yang diberikan. Beasiswa ini bukan hanya menjadi dukungan dalam perjalanan pendidikan saya, tetapi juga menjadi sumber motivasi untuk terus belajar, berkembang, dan mempersiapkan diri sebagai calon pemimpin masa depan. Saya sangat bersyukur atas kesempatan berharga ini dan berharap dapat memanfaatkannya dengan sebaik-baiknya serta memberikan dampak positif bagi lingkungan kampus dan masyarakat.', 'photo' => 'grace.png']
                 ];
             @endphp
@@ -885,29 +884,40 @@ autoSlideInterval = setInterval(autoSlide, 5000);
         padding-right: 1rem;
     }
     
+    /* Hero section adjustments */
+    #home {
+        padding-top: 1.5rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
     /* Hero section text sizing */
     h1 {
-        font-size: 2rem !important;
-        line-height: 1.2 !important;
+        font-size: 1.5rem !important;
+        line-height: 1.3 !important;
     }
     
     h2 {
-        font-size: 1.75rem !important;
+        font-size: 1.5rem !important;
     }
     
     h3 {
-        font-size: 1.5rem !important;
+        font-size: 1.25rem !important;
     }
     
     /* Adjust padding for mobile */
     .py-24 {
-        padding-top: 3rem;
-        padding-bottom: 3rem;
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
     }
     
     .py-20 {
-        padding-top: 2.5rem;
-        padding-bottom: 2.5rem;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    .py-12 {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
     }
     
     /* Fix image overflow */
@@ -945,34 +955,39 @@ autoSlideInterval = setInterval(autoSlide, 5000);
     .gap-20 {
         gap: 2rem;
     }
+    
+    /* Reduce space-y on mobile */
+    .space-y-8 > * + * {
+        margin-top: 1rem;
+    }
 }
 
 /* Extra small devices */
 @media (max-width: 480px) {
     h1 {
-        font-size: 1.75rem !important;
+        font-size: 1.25rem !important;
     }
     
     .text-5xl,
     .text-6xl,
     .text-7xl {
-        font-size: 1.75rem !important;
-    }
-    
-    .text-4xl {
         font-size: 1.5rem !important;
     }
     
-    .text-3xl {
+    .text-4xl {
         font-size: 1.25rem !important;
     }
     
-    .text-2xl {
+    .text-3xl {
         font-size: 1.125rem !important;
     }
     
-    .text-xl {
+    .text-2xl {
         font-size: 1rem !important;
+    }
+    
+    .text-xl {
+        font-size: 0.95rem !important;
     }
     
     /* Reduce padding on very small screens */
@@ -982,8 +997,14 @@ autoSlideInterval = setInterval(autoSlide, 5000);
     }
     
     .py-12 {
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+    
+    /* Hero image size */
+    #home img {
+        max-width: 90%;
+        margin: 0 auto;
     }
 }
 </style>
