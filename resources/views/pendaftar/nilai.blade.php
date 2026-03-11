@@ -66,7 +66,7 @@
         <!-- 3. TABS NAVIGATION -->
         <div class="sticky top-4 z-30 bg-gray-50/90 backdrop-blur-lg p-1.5 sm:p-2 rounded-[1.5rem] border border-gray-200 shadow-lg flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
              @for ($i = 1; $i <= 5; $i++)
-            <button type="button" @click="activeTab = {{ $i }}" 
+            <button type="button" @click="activeTab = {{ $i }}" onclick="setActiveSem({{ $i }})"
                 class="flex-shrink-0 sm:flex-1 relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300"
                 :class="activeTab === {{ $i }} ? 'bg-white text-dark-navy shadow-md ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'">
                 <span>SEM {{ $i }}</span>
@@ -200,8 +200,8 @@
         </div>
 
         <!-- 5. FLOATING ACTIONS -->
-        <div class="fixed bottom-4 sm:bottom-6 inset-x-0 px-4 sm:px-0 mx-auto sm:w-max z-40 flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl shadow-dark-navy/20">
-             <button type="button" @click="addCustomSubject()" id="addMapelBtn" class="flex-1 sm:flex-none pl-3 sm:pl-4 pr-3 sm:pr-5 py-2.5 sm:py-3 bg-gray-100 hover:bg-gray-200 text-dark-navy font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2">
+        <div x-data class="fixed bottom-4 sm:bottom-6 inset-x-0 px-4 sm:px-0 mx-auto sm:w-max z-40 flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl shadow-dark-navy/20">
+             <button type="button" onclick="addCustomSubject(window.__activeSem || 1)" id="addMapelBtn" class="flex-1 sm:flex-none pl-3 sm:pl-4 pr-3 sm:pr-5 py-2.5 sm:py-3 bg-gray-100 hover:bg-gray-200 text-dark-navy font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2">
                 <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white flex items-center justify-center shadow-sm">
                     <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 </div>
@@ -213,23 +213,35 @@
                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             </button>
         </div>
-        
+
         <!-- Hidden Params -->
         <div id="deletedParamsContainer"></div>
     </form>
 </div>
 
-<!-- Scripts -->
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Alpine.js -->
 <script src="//unpkg.com/alpinejs" defer></script>
+
 <script>
-    let customSubjectCount = {{ $customMatpels->count() }};
-    
+    // Track current active semester so the floating button knows which tab is active
+    window.__activeSem = 1;
+    document.addEventListener('alpine:init', () => {
+        // Intercept Alpine tab changes
+    });
+
+    // Per-semester new-row counter
+    const semNewCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+
+    // Tab buttons update window.__activeSem on click (see tab buttons below)
+    function setActiveSem(n) { window.__activeSem = n; }
+
     function checkProdi() {
         const val = document.getElementById('prodiSelect').value;
         const section = document.getElementById('butaWarnaSection');
         if (val.includes('DKV') || val.includes('Desain')) {
             section.classList.remove('hidden');
-            section.classList.add('animate-fade-in');
         } else {
             section.classList.add('hidden');
         }
@@ -237,92 +249,100 @@
 
     function previewFiles(input, previewId) {
         const previewEl = document.getElementById(previewId);
-        // Don't clear existing old files display (managed by blade), but maybe clear previous *new* previews?
-        // Let's just append for now or simple replace behavior for new ones.
-        // Actually, simple visual feedback:
-        
-        let newFilesContent = '';
+        let html = '';
         if (input.files) {
             Array.from(input.files).forEach(file => {
-                newFilesContent += `
-                    <div class="flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold border border-indigo-100 animate-fade-in">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span class="truncate max-w-[150px]">${file.name}</span>
-                    </div>
-                `;
+                html += `<div class="flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold border border-indigo-100 animate-fade-in">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="truncate max-w-[150px]">${file.name}</span>
+                </div>`;
             });
         }
-        
-        // Append to container (keeping PHP generated ones)
-        // Ideally we should separate "Old" and "New" containers to avoid duplication if user re-selects
-        // Flexible approach: Find a specific 'new-files' container inside the preview div.
-        let newContainer = previewEl.querySelector('.new-files-preview');
-        if(!newContainer) {
-            newContainer = document.createElement('div');
-            newContainer.className = 'new-files-preview flex flex-wrap gap-2';
-            previewEl.appendChild(newContainer);
+        let c = previewEl.querySelector('.new-files-preview');
+        if (!c) {
+            c = document.createElement('div');
+            c.className = 'new-files-preview flex flex-wrap gap-2';
+            previewEl.appendChild(c);
         }
-        newContainer.innerHTML = newFilesContent;
+        c.innerHTML = html;
     }
 
-    function addCustomSubject() {
-        // Count existing custom subjects (old + new)
-        const existingOld = document.querySelectorAll('[class*="custom-subject-old-"]').length;
-        const existingNew = document.querySelectorAll('[class*="custom-subject-new-"]').length;
-        const totalCustom = existingOld + existingNew;
-        
-        if (totalCustom >= 2) {
-            alert('Maksimal hanya 2 Mata Pelajaran Pendukung yang dapat ditambahkan.');
+    function addCustomSubject(semTab) {
+        semTab = parseInt(semTab);
+        const container = document.getElementById(`customContainerSemester${semTab}`);
+        if (!container) return;
+
+        // Count only THIS semester's custom rows
+        const existing = container.querySelectorAll('[data-custom-row]').length;
+
+        if (existing >= 2) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Batas Tercapai!',
+                html: `Semester <strong>${semTab}</strong> sudah memiliki <strong>2 Mata Pelajaran Pendukung</strong> (maksimal).`,
+                confirmButtonColor: '#0B1221',
+                confirmButtonText: 'Mengerti'
+            });
             return;
         }
-        
-        customSubjectCount++;
-        for (let i = 1; i <= 5; i++) {
-            const container = document.getElementById(`customContainerSemester${i}`);
-            const div = document.createElement('div');
-            div.className = `custom-subject-new-${customSubjectCount} flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border-2 border-dashed border-gray-200 hover:border-orange-300 hover:bg-orange-50/10 transition-all duration-300 animate-fade-in-down`;
-            
-            let nameInput = (i === 1) 
-                ? `<input type="text" name="custom_matpel[new_${customSubjectCount}][nama]" placeholder="Nama Mapel (ex: Ekonomi)" class="w-full bg-white px-3 py-2 rounded-xl border border-gray-300 font-bold text-gray-800 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all" oninput="syncName(${customSubjectCount}, this.value)" required autoFocus>`
-                : `<input type="text" id="custom_name_${customSubjectCount}_sem_${i}" class="w-full bg-transparent font-bold text-gray-800 text-sm outline-none placeholder-gray-300" placeholder="(Nama Mapel)" readonly>`;
 
-            div.innerHTML = `
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 font-bold border border-orange-100 flex-shrink-0">✨</div>
-                <div class="flex-grow min-w-0">
-                    ${nameInput}
-                    <p class="text-xs text-orange-400 font-bold uppercase tracking-wide mt-1">Pendukung Baru</p>
-                </div>
-                <div class="w-20 sm:w-32 flex-shrink-0">
-                    <input type="number" step="0.01" name="custom_matpel[new_${customSubjectCount}][nilai][${i}]" 
-                        class="w-full text-center py-2.5 sm:py-3 rounded-xl font-black text-base sm:text-xl text-dark-navy bg-white border-2 border-gray-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none placeholder-gray-300">
-                </div>
-                <button type="button" onclick="removeNewSubject(${customSubjectCount})" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0" title="Batal">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            `;
-            container.appendChild(div);
-        }
+        semNewCount[semTab]++;
+        const uid = `sem${semTab}_new${semNewCount[semTab]}`;
+
+        const div = document.createElement('div');
+        div.setAttribute('data-custom-row', uid);
+        div.className = 'flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border-2 border-dashed border-orange-200 hover:border-orange-300 hover:bg-orange-50/10 transition-all duration-300 animate-fade-in-down';
+
+        div.innerHTML = `
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-400 border border-orange-100 flex-shrink-0 text-lg">✨</div>
+            <div class="flex-grow min-w-0">
+                <input type="text"
+                    name="custom_matpel[${uid}][nama]"
+                    placeholder="Nama Mapel (ex: Ekonomi)"
+                    class="w-full bg-white px-3 py-2 rounded-xl border border-gray-300 font-bold text-gray-800 text-sm outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 transition-all"
+                    required>
+                <p class="text-xs text-orange-400 font-bold uppercase tracking-wide mt-1">Pendukung Baru · Semester ${semTab}</p>
+                <input type="hidden" name="custom_matpel[${uid}][semester]" value="${semTab}">
+            </div>
+            <div class="w-20 sm:w-32 flex-shrink-0">
+                <input type="number" step="0.01"
+                    name="custom_matpel[${uid}][nilai][${semTab}]"
+                    class="w-full text-center py-2.5 sm:py-3 rounded-xl font-black text-base sm:text-xl text-dark-navy bg-white border-2 border-gray-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none placeholder-gray-300"
+                    placeholder="0">
+            </div>
+            <button type="button" onclick="removeNewSubject(this)" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0" title="Hapus">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        `;
+
+        container.appendChild(div);
+        div.querySelector('input[type="text"]').focus();
     }
 
-
-    function removeNewSubject(id) {
-        document.querySelectorAll(`.custom-subject-new-${id}`).forEach(el => el.remove());
+    function removeNewSubject(btn) {
+        btn.closest('[data-custom-row]').remove();
     }
 
     function removeOldSubject(id) {
-        if(!confirm('Hapus mata pelajaran ini beserta nilainya?')) return;
-        document.querySelectorAll(`.custom-subject-old-${id}`).forEach(el => el.remove());
-        const container = document.getElementById('deletedParamsContainer');
-        const input = document.createElement('input');
-        input.type = 'hidden'; type="name"; input.name = 'deleted_custom_matpels[]'; input.value = id;
-        container.appendChild(input);
-    }
-
-    function syncName(id, val) {
-        for (let i = 2; i <= 5; i++) {
-            const el = document.getElementById(`custom_name_${id}_sem_${i}`);
-            if(el) el.value = val;
-        }
+        Swal.fire({
+            icon: 'warning',
+            title: 'Hapus Mata Pelajaran?',
+            text: 'Mata pelajaran ini beserta seluruh nilai akan dihapus secara permanen.',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.querySelectorAll(`.custom-subject-old-${id}`).forEach(el => el.remove());
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'deleted_custom_matpels[]';
+                input.value = id;
+                document.getElementById('deletedParamsContainer').appendChild(input);
+            }
+        });
     }
 </script>
 
@@ -335,3 +355,4 @@
     .animate-fade-in { animation: fadeIn 0.3s ease-out; }
 </style>
 @endsection
+
