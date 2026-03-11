@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('ip_address')->nullable();
             $table->string('user_agent')->nullable();
             $table->string('referer')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->constrained('akun')->onDelete('set null');
             $table->timestamp('viewed_at');
             $table->timestamps();
             
