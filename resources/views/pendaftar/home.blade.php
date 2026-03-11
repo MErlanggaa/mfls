@@ -33,7 +33,7 @@
             <!-- Right Column: Hero Image -->
             <!-- Right Column: Hero Image -->
             <div class="relative w-full scroll-fade-right mt-8 lg:mt-0">
-                <img src="{{ asset('icon/mncc.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-[2.5rem] hover:scale-[1.02] transition-transform duration-500">
+                <img src="{{ asset('icon/mnclogo.jpg') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-[2.5rem] hover:scale-[1.02] transition-transform duration-500">
                 <!-- Decorative element -->
                 <div class="absolute -z-10 top-10 -right-10 w-32 h-32 bg-primary-yellow/20 rounded-full blur-2xl"></div>
                 <div class="absolute -z-10 -bottom-10 -left-10 w-32 h-32 bg-primary-blue/20 rounded-full blur-2xl"></div>
