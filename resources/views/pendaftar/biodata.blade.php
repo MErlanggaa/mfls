@@ -13,7 +13,8 @@
             </div>
         </div>
 
-        <form action="#" class="p-10 space-y-8">
+        <form action="{{ route('pendaftar.biodata.store') }}" method="POST" class="p-10 space-y-8">
+            @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700">Nama Lengkap</label>
@@ -31,8 +32,8 @@
                     <label class="text-sm font-bold text-gray-700">Jenis Kelamin</label>
                     <select name="jenis_kelamin" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
                         <option value="">Pilih Jenis Kelamin</option>
-                        <option value="L" {{ $peserta->jenis_kelamin == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                        <option value="P" {{ $peserta->jenis_kelamin == 'P' ? 'selected' : '' }}>Perempuan</option>
+                        <option value="Laki-laki" {{ ($peserta->jenis_kelamin == 'Laki-laki' || $peserta->jenis_kelamin == 'L') ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="Perempuan" {{ ($peserta->jenis_kelamin == 'Perempuan' || $peserta->jenis_kelamin == 'P') ? 'selected' : '' }}>Perempuan</option>
                     </select>
                 </div>
                 <div class="space-y-2">

@@ -105,6 +105,33 @@ class PendaftarController extends Controller
         return view('pendaftar.biodata', compact('peserta'));
     }
 
+    public function storeBiodata(Request $request)
+    {
+        $peserta = Auth::user()->peserta;
+        
+        $request->validate([
+            'nisn' => 'required|string|max:20|unique:peserta,nisn,' . $peserta->id,
+            'no_whatsapp' => 'required|string|max:20|unique:peserta,no_whatsapp,' . $peserta->id,
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan,L,P',
+            'tgl_lahir' => 'required|date',
+            'provinsi' => 'required|string|max:100',
+            'kabupaten' => 'required|string|max:100',
+            'nama_sekolah' => 'required|string|max:255',
+            'tahun_lulus' => 'required|integer',
+        ], [
+            'nisn.unique' => 'NISN ini sudah terdaftar dalam sistem.',
+            'no_whatsapp.unique' => 'Nomor WhatsApp ini sudah digunakan oleh pendaftar lain.',
+        ]);
+
+        $peserta->update($request->only([
+            'nisn', 'no_whatsapp', 'jenis_kelamin', 'tgl_lahir', 'provinsi', 'kabupaten', 'nama_sekolah', 'tahun_lulus'
+        ]));
+
+        $this->logAktivitas('Update Biodata', 'Peserta', $peserta->id, 'Memperbarui data profil dan biodata diri.');
+
+        return back()->with('success', 'Biodata berhasil disimpan!');
+    }
+
     public function berkas()
     {
         $peserta = Auth::user()->peserta;
@@ -256,7 +283,14 @@ class PendaftarController extends Controller
     public function nilai()
     {
         $peserta = Auth::user()->peserta;
-        $matpels = \App\Models\Matpel::whereIn('nama', ['Bahasa Indonesia', 'Matematika', 'Bahasa Inggris'])->get();
+        
+        // Ensure core subjects exist before querying them
+        $coreSubjects = ['Bahasa Indonesia', 'Matematika Wajib', 'Bahasa Inggris'];
+        foreach ($coreSubjects as $subjectName) {
+            \App\Models\Matpel::firstOrCreate(['nama' => $subjectName]);
+        }
+
+        $matpels = \App\Models\Matpel::whereIn('nama', $coreSubjects)->get();
         // Fetch existing score
         $existingNilai = \App\Models\Nilai::where('peserta_id', $peserta->id)->get()->groupBy('matpel_id');
 

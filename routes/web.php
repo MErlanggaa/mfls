@@ -94,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
             Route::prefix('pendaftar')->group(function () {
                     Route::get('/dashboard', [PendaftarController::class , 'index'])->name('pendaftar.dashboard');
                     Route::get('/biodata', [PendaftarController::class , 'biodata'])->name('pendaftar.biodata');
+                    Route::post('/biodata', [PendaftarController::class , 'storeBiodata'])->name('pendaftar.biodata.store');
                     Route::get('/berkas', [PendaftarController::class , 'berkas'])->name('pendaftar.berkas');
                     Route::post('/berkas', [PendaftarController::class , 'storeBerkas'])->name('pendaftar.berkas.store');
                     Route::get('/twibbon', [PendaftarController::class , 'twibbon'])->name('pendaftar.twibbon');

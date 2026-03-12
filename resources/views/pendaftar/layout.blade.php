@@ -166,6 +166,21 @@
                     }
                 });
             @endif
+
+            @if($errors->any())
+                Swal.fire({
+                    title: '<span class="text-xl font-black text-slate-800">Cek Kembali Berkas Anda!</span>',
+                    html: '<div class="text-sm font-medium text-slate-500 text-left w-full max-h-48 overflow-y-auto mt-2 bg-red-50 p-4 rounded-xl border border-red-100"><ul class="list-disc pl-4 space-y-1 text-red-600">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>',
+                    icon: 'error',
+                    iconColor: '#ef4444',
+                    confirmButtonColor: '#F2B451',
+                    confirmButtonText: '<span class="px-4">Mengerti</span>',
+                    customClass: {
+                        popup: 'premium-swal-popup',
+                        confirmButton: 'rounded-xl font-bold uppercase tracking-widest text-[10px]'
+                    }
+                });
+            @endif
         });
     </script>
 </body>
