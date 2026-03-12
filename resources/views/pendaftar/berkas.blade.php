@@ -468,10 +468,10 @@ function onFileSelected(input, fieldName) {
 }
 
 /**
- * Validasi ukuran file sebelum submit. Max 100MB per file.
+ * Validasi ukuran file sebelum submit. Max 5MB per file.
  */
 function validateSingleForm(form) {
-    const maxSize = 100 * 1024 * 1024; // 100MB
+    const maxSize = 5 * 1024 * 1024; // 5MB
     const fileInputs = form.querySelectorAll('input[type="file"]');
     
     for (let input of fileInputs) {
@@ -480,12 +480,20 @@ function validateSingleForm(form) {
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         title: 'File Terlalu Besar!',
-                        text: `File "${file.name}" melebihi batas 100MB.`,
+                        html: `File <strong>"${file.name}"</strong> melebihi batas maksimal <strong>5MB</strong>.<br><br>Silakan kompres atau kurangi ukuran file terlebih dahulu.`,
                         icon: 'error',
-                        confirmButtonColor: '#ef4444'
+                        confirmButtonColor: '#ef4444',
+                        confirmButtonText: 'OK, Mengerti'
                     });
                 } else {
-                    alert(`File "${file.name}" melebihi batas 100MB.`);
+                    alert(`File "${file.name}" melebihi batas 5MB.`);
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
                 }
                 return false;
             }

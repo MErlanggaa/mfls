@@ -110,10 +110,17 @@
                 <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
                     <h4 class="font-bold text-gray-800 mb-3">📋 Caption Twibbon</h4>
                     <div class="bg-white p-4 rounded-xl border border-gray-200 text-xs text-gray-600 font-mono leading-relaxed relative group" id="captionText">
-                        Halo semuanya! 👋<br><br>
-                        Saya {{ Auth::user()->nama }} siap menjadi bagian dari masa depan Indonesia bersama MNC Future Leaders Scholarship 2026! 🚀✨<br><br>
-                        Mari bergabung bersama saya untuk mewujudkan mimpi dan berkontribusi bagi bangsa. Jangan lupa daftarkan dirimu sekarang juga!<br><br>
-                        #MFLS2026 #BeasiswaMNC #FutureLeaders #GenerasiEmas
+I'M READY FOR MFLS 📢‼️<br><br>
+behind this twibbon<br>
+there's a dream,<br>
+a hope,<br>
+and a step forward ✨<br><br>
+Halo, future leader friends 👋🏻<br>
+perkenalkan saya {{ Auth::user()->nama }} berasal dari {{ $peserta->nama_sekolah ?? '[Asal sekolah]' }} dengan ini siap memulai perjalanan kepemimpinan dalam program MFLS. Bukan sekedar mengikuti program, tetapi mempersiapkan diri untuk memimpin dan membawa dampak. 🚀<br><br>
+📬 [Motivasi mengikuti MFLS]<br><br>
+🗣 The future needs leaders. Starting the journey with MFLS MNC University<br><br>
+mention @mncuniversity @beasiswamncu @3 teman<br><br>
+#mncuniversity #ShapingFutureLeader #MNCUFutureLeaderScholarship
                         
                         <button onclick="copyCaption()" class="absolute top-2 right-2 bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-lg transition-colors" title="Copy Caption">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
@@ -317,15 +324,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function copyCaption() {
     const captionElement = document.getElementById('captionText');
-    const button = captionElement.querySelector('button'); // Get button to exclude from text
-    const tempElement = captionElement.cloneNode(true); // Clone to modify
-    
+    const button = captionElement.querySelector('button');
+    const tempElement = captionElement.cloneNode(true);
+
     // Remove button from clone
     const btnInClone = tempElement.querySelector('button');
-    if(btnInClone) btnInClone.remove();
-    
-    const textToCopy = tempElement.innerText.trim();
-    
+    if (btnInClone) btnInClone.remove();
+
+    // Work with raw innerHTML
+    let html = tempElement.innerHTML;
+
+    // Step 1: Mark double <br> (paragraph break) FIRST
+    html = html.replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '%%PARA%%');
+    // Step 2: Mark single <br> (line break)
+    html = html.replace(/<br\s*\/?>/gi, '%%LINE%%');
+    // Step 3: Collapse ALL whitespace (incl. HTML source newlines from indentation)
+    html = html.replace(/\s+/g, ' ');
+    // Step 4: Strip remaining HTML tags
+    html = html.replace(/<[^>]*>/g, '');
+    // Step 5: Decode HTML entities
+    html = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+    // Step 6: Restore breaks from placeholders
+    html = html.replace(/%%PARA%%/g, '\n\n').replace(/%%LINE%%/g, '\n');
+    // Step 7: Clean up spaces around newlines
+    html = html.split('\n').map(l => l.trim()).join('\n');
+
+    const textToCopy = html.trim();
+
     navigator.clipboard.writeText(textToCopy).then(() => {
         // Show temporary success feedback
         const originalIcon = button.innerHTML;
