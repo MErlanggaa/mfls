@@ -7,13 +7,13 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <!-- Left Column: Text Content -->
             <div class="text-center lg:text-left space-y-4 sm:space-y-6 md:space-y-8 scroll-fade-left">
-                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-dark-navy leading-tight">
+                <h1 class="text-4xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-extrabold text-dark-navy leading-tight">
                   MNCU 
                     <span class="text-primary-yellow">Future</span> Leader
                     Scholarship
                 </h1>
                 
-                <p class="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 font-semibold">
+                <p class="text-base sm:text-base md:text-lg lg:text-xl text-gray-700 font-semibold">
                     Beasiswa Kuliah Up To 100% hingga lulus<br class="hidden sm:block">
                      di Media Nusantara Citra University
                 </p>
@@ -33,9 +33,6 @@
             <!-- Right Column: Hero Image -->
             <div class="relative w-full scroll-fade-right mt-6 lg:mt-0 max-w-md mx-auto lg:max-w-none">
                 <img src="{{ asset('icon/mnclogo.jpg') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.02] transition-transform duration-500">
-                <!-- Decorative element -->
-                <div class="absolute -z-10 top-10 -right-10 w-32 h-32 bg-primary-yellow/20 rounded-full blur-2xl"></div>
-                <div class="absolute -z-10 -bottom-10 -left-10 w-32 h-32 bg-primary-blue/20 rounded-full blur-2xl"></div>
             </div>
         </div>
     </div>
