@@ -379,7 +379,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             
             <!-- Right: Image -->
             <div class="relative order-1 lg:order-2">
-                <img src="{{ asset('icon/Keuntungan.jpeg') }}" alt="Benefit Keuntungan" class="rounded-3xl shadow-2xl w-full object-cover">
+                <img src="{{ asset('icon/Keuntungan.png') }}" alt="Benefit Keuntungan" class="rounded-3xl shadow-2xl w-full object-cover">
             </div>
         </div>
     </div>
@@ -485,8 +485,8 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                 <h2 class="text-4xl font-black text-white mb-8">Cakupan Beasiswa</h2>
                 
                 @foreach([
-                    ['icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Beasiswa Penuh', 'desc' => 'Pembebasan biaya pendidikan 100% hingga lulus'],
-                    ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Beasiswa Parsial', 'desc' => 'Pembebasan Biaya Pendidikan Mulai Dari 50% Hingga 70%'],
+                    ['icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Beasiswa Penuh', 'desc' => 'Pemotongan biaya pendidikan 100% sampai 8 Semester'],
+                    ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Beasiswa Parsial', 'desc' => 'Pemotongan Biaya Pendidikan Mulai Dari 50% Hingga 70% sampai 8 semester'],
                     ['icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'title' => 'Peluang Karir', 'desc' => 'Prioritas rekrutmen bagi lulusan terbaik di lingkungan MNC Group'],
                     ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Pengembangan Diri', 'desc' => 'Program pembinaan karakter dan skill kepemimpinan'],
                     ['icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', 'title' => 'Networking Luas', 'desc' => 'Terhubung dengan profesional dan pemimpin industri'],

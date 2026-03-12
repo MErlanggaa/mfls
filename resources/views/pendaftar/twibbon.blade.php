@@ -37,11 +37,21 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Ukuran Foto</label>
-                                <input type="range" id="scaleSlider" min="50" max="200" value="100" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
+                                <input type="range" id="scaleSlider" min="10" max="300" value="100" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
                                 <div class="flex justify-between text-xs text-gray-500 mt-1">
                                     <span>Kecil</span>
                                     <span id="scaleValue">100%</span>
                                     <span>Besar</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Rotasi Foto</label>
+                                <input type="range" id="rotateSlider" min="0" max="360" value="0" class="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>0°</span>
+                                    <span id="rotateValue">0°</span>
+                                    <span>360°</span>
                                 </div>
                             </div>
 
@@ -148,20 +158,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const photoUpload = document.getElementById('photoUpload');
     const scaleSlider = document.getElementById('scaleSlider');
     const scaleValue = document.getElementById('scaleValue');
+    const rotateSlider = document.getElementById('rotateSlider');
+    const rotateValue = document.getElementById('rotateValue');
     const downloadBtn = document.getElementById('downloadBtn');
     const dragHint = document.getElementById('dragHint');
 
     let userPhoto = null;
     let twibonFrame = new Image();
     let photoScale = 1;
-    let photoX = 0;
-    let photoY = 0;
+    let photoRotation = 0;
+    let photoX = 540; // Center X of 1080
+    let photoY = 540; // Center Y of 1080
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
 
     // Load twibon frame
-    twibonFrame.src = '{{ asset("icon/twibon.png") }}';
+    twibonFrame.src = '{{ asset("icon/twiibon.png") }}';
     twibonFrame.onload = function() {
         drawCanvas();
     };
@@ -175,8 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 userPhoto = new Image();
                 userPhoto.onload = function() {
                     // Center photo initially
-                    photoX = (canvas.width - userPhoto.width) / 2;
-                    photoY = (canvas.height - userPhoto.height) / 2;
+                    photoX = canvas.width / 2;
+                    photoY = canvas.height / 2;
                     dragHint.classList.add('opacity-0');
                     drawCanvas();
                 };
@@ -190,6 +203,13 @@ document.addEventListener('DOMContentLoaded', function() {
     scaleSlider.addEventListener('input', function() {
         photoScale = this.value / 100;
         scaleValue.textContent = this.value + '%';
+        drawCanvas();
+    });
+
+    // Rotate slider
+    rotateSlider.addEventListener('input', function() {
+        photoRotation = (this.value * Math.PI) / 180;
+        rotateValue.textContent = this.value + '°';
         drawCanvas();
     });
 
@@ -261,9 +281,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Draw user photo (background layer)
         if (userPhoto) {
             ctx.save();
+            ctx.translate(photoX, photoY);
+            ctx.rotate(photoRotation);
             const scaledWidth = userPhoto.width * photoScale;
             const scaledHeight = userPhoto.height * photoScale;
-            ctx.drawImage(userPhoto, photoX, photoY, scaledWidth, scaledHeight);
+            ctx.drawImage(userPhoto, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
             ctx.restore();
         } else {
             // Show hint

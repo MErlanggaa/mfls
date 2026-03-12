@@ -62,7 +62,7 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="flex items-center gap-2">
-                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-12 w-auto">
+                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-8 sm:h-12 w-auto object-contain shrink-0" style="max-height: 32px;">
                         </a>
                     </div>
 
