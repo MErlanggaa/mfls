@@ -121,7 +121,7 @@
                     $percentage = $percentage > 100 ? 100 : $percentage;
                 @endphp
                 <tr class="group hover:bg-slate-50/50 transition-colors">
-                    <td class="px-8 py-5">
+                    <td class="px-4 md:px-8 py-5">
                         <div class="flex items-center gap-4">
                             <div class="relative w-12 h-12 rounded-2xl overflow-hidden shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
                                 @if($berkas && $berkas->foto)
@@ -262,8 +262,8 @@
                             </span>
                         @endif
                     </td>
-                    <td class="px-8 py-5 text-right">
-                         <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <td class="px-4 md:px-8 py-5 text-right">
+                         <div class="flex flex-wrap items-center justify-end gap-2 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                              @if(auth()->user()->role === 'admin')
                              <button type="button" onclick="confirmResetPassword({{ $akun->id }}, '{{ $akun->nama }}')" class="w-8 h-8 flex items-center justify-center bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition-all shadow-sm" title="Reset Password">
                                 <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span>

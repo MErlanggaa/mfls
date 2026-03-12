@@ -369,17 +369,12 @@
 </div>
 
 <!-- Print Footer & Signature -->
-<div class="print-only mt-12 px-10">
-    <div class="flex justify-between items-end">
-        <div class="text-center w-48">
-            <p class="text-[9pt] mb-20 italic">Peserta Seleksi MFLS 2026,</p>
-            <div class="border-b border-black w-full mb-1"></div>
-            <p class="text-[9pt] font-bold uppercase">{{ $user->nama }}</p>
-        </div>
+<div class="print-only mt-12 px-10 border-t border-slate-100 pt-10">
+    <div class="flex justify-end">
         <div class="text-center w-64">
-            <p class="text-[9pt] mb-20">Jakarta, {{ date('d F Y') }}<br>Mengetahui,<br>Panitia Beasiswa MFLS 2026</p>
-            <div class="border-b border-black w-full mb-1"></div>
-            <p class="text-[9pt] font-bold uppercase">TIM ADMISI MNC UNIVERSITY</p>
+            <p class="text-[9pt] mb-20">Jakarta, {{ date('d F Y') }}<br>Mengajukan,<br>Panitia Beasiswa MFLS 2026</p>
+            <div class="border-b-2 border-slate-900 w-full mb-2"></div>
+            <p class="text-[9pt] font-black uppercase tracking-widest text-slate-900">TIM ADMISI MNC UNIVERSITY</p>
         </div>
     </div>
 </div>

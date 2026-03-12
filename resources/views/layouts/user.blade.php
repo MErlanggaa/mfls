@@ -55,6 +55,7 @@
             }
         }
     </style>
+    @stack('styles')
 </head>
 <body class="font-jakarta antialiased">
     <div class="min-h-screen flex flex-col bg-white w-full">
@@ -145,8 +146,8 @@
                     <div>
                         <h4 class="text-white font-bold mb-6">Bantuan</h4>
                         <ul class="space-y-4 text-sm">
-                            <li><a href="#" class="hover:text-primary-yellow transition-colors">Pusat Bantuan</a></li>
-                            <li><a href="#" class="hover:text-primary-yellow transition-colors">FAQ</a></li>
+                            <li><a href="https://wa.me/6285880059189" target="_blank" class="hover:text-primary-yellow transition-colors">Pusat Bantuan</a></li>
+                            <li><a href="https://aistudio.instagram.com/ai/4228437274072360/?utm_source=share" target="_blank" class="hover:text-primary-yellow transition-colors">FAQ</a></li>
                         </ul>
                     </div>
 
@@ -241,5 +242,6 @@
             });
         });
     </script>
+    @stack('scripts')
 </body>
 </html>
