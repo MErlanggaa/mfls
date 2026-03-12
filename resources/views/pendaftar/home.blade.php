@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <!-- Left Column: Text Content -->
             <div class="text-center lg:text-left space-y-4 sm:space-y-6 md:space-y-8 scroll-fade-left">
-                <h1 class="text-4xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-extrabold text-dark-navy leading-tight">
+                <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl font-extrabold text-dark-navy leading-tight">
                   MNCU 
                     <span class="text-primary-yellow">Future</span> Leader
                     Scholarship
