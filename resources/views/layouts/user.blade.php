@@ -54,7 +54,7 @@
     </style>
 </head>
 <body class="font-jakarta antialiased">
-    <div class="min-h-screen flex flex-col bg-white">
+    <div class="min-h-screen flex flex-col bg-white w-full overflow-x-hidden">
         <!-- Navbar -->
         <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,13 +1,34 @@
 @extends('layouts.user')
 
 @section('content')
+<style>
+/* Consistent section heading system for home.blade.php */
+.section-label {
+    font-size: clamp(1rem, 3.5vw, 1.5rem) !important;
+}
+.section-title {
+    font-size: clamp(1.75rem, 6vw, 3rem) !important;
+    line-height: 1.2 !important;
+    word-break: break-word;
+}
+.hero-title {
+    font-size: clamp(3rem, 12vw, 5.5rem) !important;
+    line-height: 1.1 !important;
+    word-break: break-word;
+}
+.about-title {
+    font-size: clamp(2.5rem, 8vw, 4.5rem) !important;
+    line-height: 1.1 !important;
+    word-break: break-word;
+}
+</style>
 <!-- Hero Section -->
-<div id="home" class="relative overflow-hidden bg-white pt-6 sm:pt-12 pb-10 sm:pb-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div id="home" class="relative bg-white pt-6 sm:pt-12 pb-10 sm:pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full overflow-x-hidden">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <!-- Left Column: Text Content -->
-            <div class="text-center lg:text-left space-y-4 sm:space-y-6 md:space-y-8 scroll-fade-left">
-                <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl font-extrabold text-dark-navy leading-tight">
+            <div class="text-center lg:text-left space-y-4 sm:space-y-6 md:space-y-8 scroll-fade-left px-2 sm:px-0">
+                <h1 class="hero-title font-extrabold text-dark-navy leading-tight">
                   MNCU 
                     <span class="text-primary-yellow">Future</span> Leader
                     Scholarship
@@ -46,10 +67,10 @@
         
         <!-- Blue Bar with Countdown -->
         <div class="bg-primary-blue py-12">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-8">
-                    <h3 class="text-primary-yellow font-caveat font-semibold text-3xl mb-2">Daftar Sekarang!</h3>
-                    <h2 class="text-xl font-bold text-white">Pendaftaran akan ditutup dalam</h2>
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="text-center mb-8 px-2 sm:px-0">
+                    <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Daftar Sekarang!</h3>
+                    <h2 class="section-title font-bold text-white">Pendaftaran akan ditutup dalam</h2>
                 </div>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto">
@@ -84,10 +105,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 lg:gap-20 items-start">
             <!-- Left: Text + Stats (3 columns) -->
             <div class="lg:col-span-3 scroll-fade-left">
-                <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-4">Tentang Kami</h3>
-                <h2 class="text-4xl md:text-5xl font-black text-dark-navy mb-8 leading-tight">MNCU Future Leader Scholarship</h2>
+                <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-4">Tentang Kami</h3>
+                <h2 class="about-title font-black text-dark-navy mb-8 leading-none">MNCU <span class="text-primary-yellow">Future</span> Leader Scholarship</h2>
                 
-                <div class="space-y-6 text-gray-700 leading-relaxed mb-12">
+                <div class="space-y-6 text-gray-700 leading-relaxed mb-12 text-base md:text-lg text-justify">
                     <p>
 MNCU Future Leader Scholarship adalah program beasiswa yang diberikan oleh MNC Group kepada calon mahasiswa berprestasi untuk melanjutkan pendidikan di MNC University. Program ini bertujuan untuk mencetak generasi muda yang unggul, inovatif, dan berjiwa kepemimpinan, dengan memberikan kesempatan kuliah hingga 100%.                    </p>
                     <p>
@@ -245,7 +266,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
 <!-- Timeline Section -->
 <div id="timeline" class="py-24 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-4xl font-black text-dark-navy text-center mb-16 fade-in">Jadwal dan Tahapan Seleksi</h2>
+        <h2 class="section-title font-black text-dark-navy text-center mb-16 fade-in">Jadwal dan Tahapan Seleksi</h2>
         
         <!-- Vertical Timeline -->
         <div class="relative fade-in max-w-4xl mx-auto">
@@ -301,8 +322,8 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
 <div class="py-24 bg-white overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 scroll-fade">
-            <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-4">Benefit Eksklusif</h3>
-            <h2 class="text-4xl md:text-5xl font-black text-dark-navy mb-6 leading-tight">Melangkah Lebih Jauh Bersama MNC University</h2>
+            <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-4">Benefit Eksklusif</h3>
+            <h2 class="section-title font-black text-dark-navy mb-6 leading-tight">Melangkah Lebih Jauh Bersama MNC University</h2>
         </div>
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -386,8 +407,8 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
 <div id="requirements" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 fade-in">
-            <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-2">Persyaratan</h3>
-            <h2 class="text-4xl font-black text-dark-navy">Syarat dan Ketentuan</h2>
+            <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Persyaratan</h3>
+            <h2 class="section-title font-black text-dark-navy">Syarat dan Ketentuan</h2>
             <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Pastikan Anda memenuhi semua persyaratan berikut sebelum mendaftar</p>
         </div>
         
@@ -479,7 +500,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         <div class="bg-dark-navy rounded-[3rem] p-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center scroll-fade">
             <!-- Left: Benefits List -->
             <div class="space-y-8">
-                <h2 class="text-4xl font-black text-white mb-8">Cakupan Beasiswa</h2>
+                <h2 class="section-title font-black text-white mb-8">Cakupan Beasiswa</h2>
                 
                 @foreach([
                     ['icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Beasiswa Penuh', 'desc' => 'Pemotongan biaya pendidikan 100% sampai 8 Semester'],
@@ -511,8 +532,8 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
 <div class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-2">Kolaborasi</h3>
-            <h2 class="text-4xl font-black text-dark-navy">Mitra dan Pendukung</h2>
+            <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Kolaborasi</h3>
+            <h2 class="section-title font-black text-dark-navy">Mitra dan Pendukung</h2>
         </div>
         
         <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center justify-items-center scroll-fade">
@@ -534,8 +555,8 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
 <div id="berita" class="py-24 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 fade-in">
-            <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-2">Berita & Informasi</h3>
-            <h2 class="text-4xl font-black text-dark-navy">Kabar Terbaru MFLS</h2>
+            <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Berita &amp; Informasi</h3>
+            <h2 class="section-title font-black text-dark-navy">Kabar Terbaru MFLS</h2>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -575,8 +596,8 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
     
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center mb-16 fade-in">
-            <h3 class="text-primary-yellow font-caveat font-semibold text-2xl mb-2">Testimonial</h3>
-            <h2 class="text-4xl font-black text-dark-navy">Apa Kata Mereka?</h2>
+            <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Testimonial</h3>
+            <h2 class="section-title font-black text-dark-navy">Apa Kata Mereka?</h2>
         </div>
         
         <!-- Testimonials Slideshow -->
@@ -712,7 +733,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
 <div id="contact" class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 fade-in">
-            <h2 class="text-4xl font-black text-dark-navy mb-4">Hubungi Kami</h2>
+            <h2 class="section-title font-black text-dark-navy mb-4">Hubungi Kami</h2>
             <p class="text-gray-600 font-semibold max-w-2xl mx-auto">Punya pertanyaan? Tim kami siap membantu Anda</p>
         </div>
         
