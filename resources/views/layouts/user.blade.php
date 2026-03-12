@@ -62,7 +62,7 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="flex items-center gap-2">
-                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-8 sm:h-12 w-auto object-contain shrink-0" style="max-height: 32px;">
+                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" style="height: 40px !important; width: auto !important;" class="object-contain shrink-0">
                         </a>
                     </div>
 
@@ -115,15 +115,15 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-dark-navy text-gray-400 py-16">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <footer class="bg-dark-navy text-gray-400 py-20">
+            <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
                     <!-- Brand Info -->
-                    <div class="col-span-1 md:col-span-1">
-                        <a href="/" class="flex items-center gap-2 mb-6">
-                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-10 w-auto">
+                    <div class="col-span-1 md:col-span-1 flex flex-col items-center md:items-start">
+                        <a href="/" class="flex items-center justify-center md:justify-start gap-2 mb-8">
+                            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" style="height: 60px !important; width: auto !important; max-width: 100% !important;" class="object-contain">
                         </a>
-                        <p class="text-sm leading-relaxed mb-6">
+                        <p class="text-sm leading-relaxed mb-8 max-w-xs mx-auto md:mx-0">
                             Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.
                         </p>
                     </div>
@@ -151,10 +151,11 @@
                     <div>
                         <h4 class="text-white font-bold mb-6">Lokasi</h4>
                         <ul class="space-y-4 text-sm">
-                            <li class="flex items-start gap-3">
+                            <li class="flex items-start md:justify-start justify-center gap-3">
                                 <svg class="w-5 h-5 text-primary-yellow shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 <a href="https://maps.app.goo.gl/Nhn2Wtm5zdieA6B36" class="footer-link" target="_blank">MNC University Kampus Menteng-Jakarta Pusat</a>
-                                <li class="flex items-start gap-3">
+                            </li>
+                            <li class="flex items-start md:justify-start justify-center gap-3">
                                 <svg class="w-5 h-5 text-primary-yellow shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 <a href="https://maps.app.goo.gl/4GBqapcMidQRVrsUA" class="footer-link" target="_blank">MNC University-Jakarta Barat</a>
                             </li>
