@@ -76,7 +76,7 @@
                         <a href="{{ url('/') }}#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">S&K</a>
                         <a href="{{ url('/') }}#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Program</a>
                         <a href="{{ url('/') }}#berita" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Berita</a>
-                        /* <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Hasil Seleksi</a> */
+                        <!-- <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Hasil Seleksi</a> -->
                         <a href="{{ url('/') }}#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Kontak</a>
                     </div>
 
@@ -105,7 +105,7 @@
                         <a href="{{ url('/') }}#requirements" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">S&K</a>
                         <a href="{{ url('/') }}#program" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Program</a>
                         <a href="{{ url('/') }}#berita" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Berita</a>
-                        /* <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors mobile-nav-link">Hasil Seleksi</a> */
+                        <!-- <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors mobile-nav-link">Hasil Seleksi</a> -->
                         <a href="{{ url('/') }}#contact" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Kontak</a>
                     </div>
                 </div>
