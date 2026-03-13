@@ -177,7 +177,7 @@
                 </a>
                 @endif
 
-                @if(in_array(auth()->user()->email, ['dion@gmail.com', 'adminis@mfls.com', 'admin@mfls.com']))
+                @if(in_array(auth()->user()->email, ['dion@gmail.com', 'dept.adminis@mfls.com', 'admin@mfls.com']))
                 <a href="{{ route('admin.berita.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.berita.*') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
