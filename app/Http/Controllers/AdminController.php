@@ -338,7 +338,7 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: PENILAIAN AKADEMIK ---
     public function indexPenilaianAkademik(Request $request)
     {
-        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin')
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor')
             return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
@@ -407,8 +407,8 @@ class AdminController extends Controller
 
     public function storePenilaianAkademik(Request $request, $id)
     {
-        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin') {
-            return back()->with('loginError', 'Hanya bagian Akademik yang dapat memberikan penilaian ini.');
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor') {
+            return back()->with('loginError', 'Hanya bagian Akademik dan Mentor yang dapat memberikan penilaian ini.');
         }
 
         $request->validate([
