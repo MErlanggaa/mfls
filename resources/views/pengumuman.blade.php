@@ -351,7 +351,10 @@ function loadImageAsBase64(url) {
             canvas.width  = img.naturalWidth;
             canvas.height = img.naturalHeight;
             canvas.getContext('2d').drawImage(img, 0, 0);
-            resolve(canvas.toDataURL('image/jpeg'));
+            resolve({
+                data: canvas.toDataURL('image/png'),
+                ratio: img.naturalWidth / img.naturalHeight
+            });
         };
         img.onerror = () => resolve(null); // fallback: no logo
         img.src = url + '?t=' + Date.now(); // cache-bust
@@ -376,7 +379,7 @@ btnText.textContent = "Membuat PDF...";
 const { jsPDF } = window.jspdf;
 const doc = new jsPDF("p","mm","a4");
 
-const logo = await loadImageAsBase64('{{ asset('icon/loog.jpeg') }}');
+const logoRes = await loadImageAsBase64('{{ asset('icon/logoo.png') }}');
 
 const marginLeft = 30;
 const marginRight = 180;
@@ -386,22 +389,28 @@ let y = 22;
 
 /* ================= HEADER ================= */
 
-if(logo){
-doc.addImage(logo,"PNG",30,18,18,18);
+if(logoRes){
+const logoW = 25;
+const logoH = logoW / logoRes.ratio;
+// Posisi logo di kiri (marginLeft)
+doc.addImage(logoRes.data,"PNG", marginLeft, 15, logoW, logoH);
 }
 
+// Teks ditengah sisa ruang (geser sedikit ke kanan dari 105 -> 110 agar seimbang)
 doc.setFont("times","bold");
-doc.setFontSize(15);
-doc.text("MNC UNIVERSITY",105,24,{align:"center"});
+doc.setFontSize(16);
+doc.text("MNC UNIVERSITY", 110, 22, {align:"center"});
 
 doc.setFont("times","normal");
 doc.setFontSize(10);
-doc.text("Jl. Panjang Blok A8, Kedoya Utara, Jakarta Barat",105,29,{align:"center"});
-doc.text("[info@beasiswamncu.com](mailto:info@beasiswamncu.com) | beasiswamncu.com",105,34,{align:"center"});
+doc.text("Jl. Panjang Blok A8, Kedoya Utara, Jakarta Barat", 110, 27, {align:"center"});
+doc.text("info@beasiswamncu.com | beasiswamncu.com", 110, 32, {align:"center"});
 
-doc.line(30,38,180,38);
+doc.setLineWidth(0.5);
+doc.line(marginLeft, 38, marginRight, 38);
+doc.setLineWidth(0.2); // reset line width
 
-y = 52;
+y = 48;
 
 /* ================= JUDUL ================= */
 
@@ -503,7 +512,7 @@ y += 14;
 
 /* ================= STATUS ================= */
 
-let status = "{{ $status }}";
+let status = "{{ $status ?? '' }}";
 
 doc.setFont("times","bold");
 doc.setFontSize(13);
