@@ -391,7 +391,7 @@ let y = 22;
 /* ================= HEADER ================= */
 
 if(logoRes){
-const logoW = 40;
+const logoW = 30;
 const logoH = logoW / logoRes.ratio;
 // Posisi logo di kiri (marginLeft)
 doc.addImage(logoRes.data,"PNG", marginLeft, 15, logoW, logoH);
@@ -606,13 +606,14 @@ doc.text("Panitia Beasiswa MFLS 2026", marginRight - 50, y, {align:"left"});
 
 y += 5;
 
-// Tambahkan gambar tanda tangan jika ada
-if(ttdRes){
-    const ttdW = 30;
+// Tambahkan gambar tanda tangan
+if(ttdRes && ttdRes.data){
+    const ttdW = 35;
     const ttdH = ttdW / ttdRes.ratio;
-    doc.addImage(ttdRes.data, "PNG", marginRight - 55, y, ttdW, ttdH);
-    y += ttdH + 2;
-}else{
+    doc.addImage(ttdRes.data, "JPEG", marginRight - 55, y, ttdW, ttdH);
+    y += ttdH + 3;
+} else {
+    // Fallback jika gagal load
     y += 20;
 }
 
