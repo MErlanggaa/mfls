@@ -61,7 +61,7 @@
             <div class="relative z-10 flex flex-col justify-between p-16 w-full">
                 <div>
                     <a href="/" class="flex items-center gap-3">
-                        <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-12 w-auto">
+                        <img src="{{ asset('icon/logoo.png') }}" alt="Logo MFLS" class="h-12 w-auto">
                     </a>
                 </div>
 

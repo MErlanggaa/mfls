@@ -380,6 +380,7 @@ const { jsPDF } = window.jspdf;
 const doc = new jsPDF("p","mm","a4");
 
 const logoRes = await loadImageAsBase64('{{ asset('icon/logoo.png') }}');
+const ttdRes = await loadImageAsBase64('{{ asset('icon/ttd.png') }}');
 
 const marginLeft = 30;
 const marginRight = 180;
@@ -396,15 +397,16 @@ const logoH = logoW / logoRes.ratio;
 doc.addImage(logoRes.data,"PNG", marginLeft, 15, logoW, logoH);
 }
 
-// Teks ditengah sisa ruang (geser sedikit ke kanan dari 105 -> 110 agar seimbang)
+// Teks di sebelah kanan logo (bukan center)
+const textX = marginLeft + 30; // posisi teks di sebelah kanan logo
 doc.setFont("times","bold");
 doc.setFontSize(16);
-doc.text("MNC UNIVERSITY", 110, 22, {align:"center"});
+doc.text("MNC UNIVERSITY", textX, 22);
 
 doc.setFont("times","normal");
 doc.setFontSize(10);
-doc.text("Jl. Panjang Blok A8, Kedoya Utara, Jakarta Barat", 110, 27, {align:"center"});
-doc.text("info@beasiswamncu.com | beasiswamncu.com", 110, 32, {align:"center"});
+doc.text("Jl. Panjang Blok A8, Kedoya Utara, Jakarta Barat", textX, 27);
+doc.text("info@beasiswamncu.com | beasiswamncu.com", textX, 32);
 
 doc.setLineWidth(0.5);
 doc.line(marginLeft, 38, marginRight, 38);
@@ -592,6 +594,32 @@ doc.text(
 marginLeft,
 y
 );
+
+y += 15;
+
+/* ================= TANDA TANGAN ================= */
+
+doc.setFontSize(11);
+doc.text("Jakarta, " + d.tanggal, marginRight - 50, y, {align:"left"});
+y += 5;
+doc.text("Panitia Beasiswa MFLS 2026", marginRight - 50, y, {align:"left"});
+
+y += 5;
+
+// Tambahkan gambar tanda tangan jika ada
+if(ttdRes){
+const ttdW = 30;
+const ttdH = ttdW / ttdRes.ratio;
+doc.addImage(ttdRes.data,"PNG", marginRight - 55, y, ttdW, ttdH);
+y += ttdH + 2;
+} else {
+y += 20; // space untuk tanda tangan manual
+}
+
+doc.setFont("times","bold");
+doc.text("TIM ADMISI MNC UNIVERSITY", marginRight - 50, y, {align:"left"});
+
+y += 10;
 
 /* ================= FOOTER ================= */
 
