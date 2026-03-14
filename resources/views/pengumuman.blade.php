@@ -380,7 +380,7 @@ const { jsPDF } = window.jspdf;
 const doc = new jsPDF("p","mm","a4");
 
 const logoRes = await loadImageAsBase64('{{ asset('icon/logoo.png') }}');
-const ttdRes = await loadImageAsBase64('{{ asset('icon/ttd.jpeg') }}');
+const ttdRes = await loadImageAsBase64('{{ asset('icon/ttd.png') }}');
 
 const marginLeft = 30;
 const marginRight = 180;
