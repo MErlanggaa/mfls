@@ -380,7 +380,7 @@ const { jsPDF } = window.jspdf;
 const doc = new jsPDF("p","mm","a4");
 
 const logoRes = await loadImageAsBase64('{{ asset('icon/logoo.png') }}');
-const ttdRes = await loadImageAsBase64('{{ asset('icon/ttd.png') }}');
+const ttdRes = await loadImageAsBase64('{{ asset('icon/ttd.jpeg') }}');
 
 const marginLeft = 30;
 const marginRight = 180;
@@ -607,19 +607,23 @@ doc.text("Panitia Beasiswa MFLS 2026", marginRight - 50, y, {align:"left"});
 y += 5;
 
 // Tambahkan gambar tanda tangan jika ada
-if(ttdRes){
-const ttdW = 30;
-const ttdH = ttdW / ttdRes.ratio;
-doc.addImage(ttdRes.data,"PNG", marginRight - 55, y, ttdW, ttdH);
-y += ttdH + 2;
-} else {
-y += 20; // space untuk tanda tangan manual
-}
+const img = new Image();
+img.src = "/public/icon/ttd.jpeg"; // path ke file jpeg kamu
 
-doc.setFont("times","bold");
-doc.text("TIM ADMISI MNC UNIVERSITY", marginRight - 50, y, {align:"left"});
+img.onload = function () {
 
-y += 10;
+    const ttdW = 30;
+    const ttdH = 15;
+
+    doc.addImage(img, "JPEG", marginRight - 55, y, ttdW, ttdH);
+
+    y += ttdH + 5;
+
+    doc.setFont("times","bold");
+    doc.text("TIM ADMISI MNC UNIVERSITY", marginRight - 55, y);
+
+    doc.save("surat.pdf");
+};
 
 /* ================= FOOTER ================= */
 
