@@ -391,7 +391,7 @@ let y = 22;
 /* ================= HEADER ================= */
 
 if(logoRes){
-const logoW = 25;
+const logoW = 40;
 const logoH = logoW / logoRes.ratio;
 // Posisi logo di kiri (marginLeft)
 doc.addImage(logoRes.data,"PNG", marginLeft, 15, logoW, logoH);
@@ -607,23 +607,17 @@ doc.text("Panitia Beasiswa MFLS 2026", marginRight - 50, y, {align:"left"});
 y += 5;
 
 // Tambahkan gambar tanda tangan jika ada
-const img = new Image();
-img.src = "/public/icon/ttd.jpeg"; // path ke file jpeg kamu
-
-img.onload = function () {
-
+if(ttdRes){
     const ttdW = 30;
-    const ttdH = 15;
+    const ttdH = ttdW / ttdRes.ratio;
+    doc.addImage(ttdRes.data, "PNG", marginRight - 55, y, ttdW, ttdH);
+    y += ttdH + 2;
+}else{
+    y += 20;
+}
 
-    doc.addImage(img, "JPEG", marginRight - 55, y, ttdW, ttdH);
-
-    y += ttdH + 5;
-
-    doc.setFont("times","bold");
-    doc.text("TIM ADMISI MNC UNIVERSITY", marginRight - 55, y);
-
-    doc.save("surat.pdf");
-};
+doc.setFont("times","bold");
+doc.text("TIM ADMISI MNC UNIVERSITY", marginRight - 55, y);
 
 /* ================= FOOTER ================= */
 
