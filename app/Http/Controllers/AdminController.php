@@ -1025,7 +1025,7 @@ class AdminController extends Controller
 
         // 2. Definisikan Column Headers
         $columns = [
-            'Nama Lengkap', 'Email', 'NISN', 'Asal Sekolah', 'Prodi Minat',
+            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Prodi Minat',
             'Kode Referral'
         ];
 
@@ -1072,6 +1072,7 @@ class AdminController extends Controller
                 $row = [
                     $user->nama,
                     $user->email,
+                    $peserta->no_whatsapp ?? '-',
                     $peserta->nisn ?? '-',
                     $daftar->asal_sekolah ?? '-',
                     $peserta->pilihan_prodi ?? '-',
