@@ -529,109 +529,6 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
     </div>
 </div>
 
-<!-- Collaboration Section -->
-<div class="py-24 bg-gradient-to-b from-white to-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16 fade-in">
-            <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Kolaborasi</h3>
-            <h2 class="section-title font-black text-dark-navy">Mitra dan Pendukung</h2>
-            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Bersama membangun generasi pemimpin masa depan</p>
-        </div>
-        
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 scroll-fade">
-            <!-- ZEEKEND -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/zeekend.jpeg') }}?v={{ time() }}" alt="ZEEKEND" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">ZEEKEND</h4>
-                </div>
-            </div>
-
-            <!-- GENSMART INDONESIA -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/gensmart.jpeg') }}?v={{ time() }}" alt="GENSMART INDONESIA" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">GENSMART INDONESIA</h4>
-                </div>
-            </div>
-
-            <!-- FORUM OSIS KABUPATEN BOGOR -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis bogor.png') }}?v={{ time() }}" alt="FORUM OSIS KABUPATEN BOGOR" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS KABUPATEN BOGOR</h4>
-                </div>
-            </div>
-
-            <!-- FORUM PEMUDA BERAKSI JABAR -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum pemuda beraksi jawa barat.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI JABAR" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM PEMUDA BERAKSI JABAR</h4>
-                </div>
-            </div>
-
-            <!-- FORUM PEMUDA BERAKSI BANTEN -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum pemuda beraksi banten.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI BANTEN" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM PEMUDA BERAKSI BANTEN</h4>
-                </div>
-            </div>
-
-            <!-- TUNAS SATRIA WIJAYA -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/tunas satria sriwijaya.jpeg') }}?v={{ time() }}" alt="TUNAS SATRIA WIJAYA" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">TUNAS SATRIA WIJAYA</h4>
-                </div>
-            </div>
-
-            <!-- FORUM SEKOLAH ISLAM TERPADU -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis sekolah islam terpadu.png') }}?v={{ time() }}" alt="FORUM SEKOLAH ISLAM TERPADU" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM SEKOLAH ISLAM TERPADU</h4>
-                </div>
-            </div>
-
-            <!-- FORUM OSIS DAERAH JAKARTA PUSAT -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis jakarta pusat.jpeg') }}?v={{ time() }}" alt="FORUM OSIS DAERAH JAKARTA PUSAT" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS DAERAH JAKARTA PUSAT</h4>
-                </div>
-            </div>
-
-            <!-- FORUM OSIS KOTA SUKABUMI -->
-            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                <div class="flex flex-col items-center justify-center h-full">
-                    <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis kota sukabumi.png') }}?v={{ time() }}" alt="FORUM OSIS KOTA SUKABUMI" class="max-w-full max-h-full object-contain">
-                    </div>
-                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS KOTA SUKABUMI</h4>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Berita & Pengumuman Section -->
 @if($beritas->count() > 0)
 <div id="berita" class="py-24 bg-gray-50">
@@ -810,6 +707,109 @@ function resetAutoSlide() {
 showSlide(currentSlide);
 autoSlideInterval = setInterval(autoSlide, 5000);
 </script>
+
+<!-- Collaboration Section -->
+<div class="py-24 bg-gradient-to-b from-white to-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 fade-in">
+            <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Kolaborasi</h3>
+            <h2 class="section-title font-black text-dark-navy">Mitra dan Pendukung</h2>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Bersama membangun generasi pemimpin masa depan</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 scroll-fade">
+            <!-- ZEEKEND -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/zeekend.jpeg') }}?v={{ time() }}" alt="ZEEKEND" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">ZEEKEND</h4>
+                </div>
+            </div>
+
+            <!-- GENSMART INDONESIA -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/gensmart.jpeg') }}?v={{ time() }}" alt="GENSMART INDONESIA" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">GENSMART INDONESIA</h4>
+                </div>
+            </div>
+
+            <!-- FORUM OSIS KABUPATEN BOGOR -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/forum osis bogor.png') }}?v={{ time() }}" alt="FORUM OSIS KABUPATEN BOGOR" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS KABUPATEN BOGOR</h4>
+                </div>
+            </div>
+
+            <!-- FORUM PEMUDA BERAKSI JABAR -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/forum pemuda beraksi jawa barat.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI JABAR" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM PEMUDA BERAKSI JABAR</h4>
+                </div>
+            </div>
+
+            <!-- FORUM PEMUDA BERAKSI BANTEN -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/forum pemuda beraksi banten.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI BANTEN" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM PEMUDA BERAKSI BANTEN</h4>
+                </div>
+            </div>
+
+            <!-- TUNAS SATRIA WIJAYA -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/tunas satria sriwijaya.jpeg') }}?v={{ time() }}" alt="TUNAS SATRIA WIJAYA" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">TUNAS SATRIA WIJAYA</h4>
+                </div>
+            </div>
+
+            <!-- FORUM SEKOLAH ISLAM TERPADU -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/forum osis sekolah islam terpadu.png') }}?v={{ time() }}" alt="FORUM SEKOLAH ISLAM TERPADU" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM SEKOLAH ISLAM TERPADU</h4>
+                </div>
+            </div>
+
+            <!-- FORUM OSIS DAERAH JAKARTA PUSAT -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/forum osis jakarta pusat.jpeg') }}?v={{ time() }}" alt="FORUM OSIS DAERAH JAKARTA PUSAT" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS DAERAH JAKARTA PUSAT</h4>
+                </div>
+            </div>
+
+            <!-- FORUM OSIS KOTA SUKABUMI -->
+            <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                <div class="flex flex-col items-center justify-center h-full">
+                    <div class="w-full h-24 flex items-center justify-center mb-4">
+                        <img src="{{ asset('icon/forum osis kota sukabumi.png') }}?v={{ time() }}" alt="FORUM OSIS KOTA SUKABUMI" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS KOTA SUKABUMI</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Contact Section - "Hubungi Kami" -->
 <div id="contact" class="py-24 bg-white">
