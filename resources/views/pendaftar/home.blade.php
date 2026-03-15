@@ -53,7 +53,7 @@
             
             <!-- Right Column: Hero Image -->
             <div class="relative w-full scroll-fade-right mt-6 lg:mt-0 max-w-md mx-auto lg:max-w-none overflow-hidden rounded-2xl sm:rounded-[2.5rem]">
-                <img src="{{ asset('icon/mnccc.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.05] transition-transform duration-500">
+                <img src="{{ asset('icon/new logo.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.05] transition-transform duration-500">
             </div>
         </div>
     </div>
@@ -722,7 +722,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/zeekend.jpeg') }}?v={{ time() }}" alt="ZEEKEND" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/zeekend.jpeg') }}?v={{ now()->timestamp }}" alt="ZEEKEND" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">ZEEKEND</h4>
                 </div>
@@ -732,7 +732,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/gensmart.jpeg') }}?v={{ time() }}" alt="GENSMART INDONESIA" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/gensmart.jpeg') }}?v={{ now()->timestamp }}" alt="GENSMART INDONESIA" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">GENSMART INDONESIA</h4>
                 </div>
@@ -742,7 +742,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis bogor.png') }}?v={{ time() }}" alt="FORUM OSIS KABUPATEN BOGOR" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/forum osis bogor.png') }}?v={{ now()->timestamp }}" alt="FORUM OSIS KABUPATEN BOGOR" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS KABUPATEN BOGOR</h4>
                 </div>
@@ -752,7 +752,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum pemuda beraksi jawa barat.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI JABAR" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/forum pemuda beraksi jawa barat.jpeg') }}?v={{ now()->timestamp }}" alt="FORUM PEMUDA BERAKSI JABAR" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM PEMUDA BERAKSI JABAR</h4>
                 </div>
@@ -762,7 +762,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum pemuda beraksi banten.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI BANTEN" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/forum pemuda beraksi banten.jpeg') }}?v={{ now()->timestamp }}" alt="FORUM PEMUDA BERAKSI BANTEN" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM PEMUDA BERAKSI BANTEN</h4>
                 </div>
@@ -772,7 +772,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/tunas satria sriwijaya.jpeg') }}?v={{ time() }}" alt="TUNAS SATRIA WIJAYA" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/tunas satria sriwijaya.jpeg') }}?v={{ now()->timestamp }}" alt="TUNAS SATRIA WIJAYA" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">TUNAS SATRIA WIJAYA</h4>
                 </div>
@@ -782,7 +782,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis sekolah islam terpadu.png') }}?v={{ time() }}" alt="FORUM SEKOLAH ISLAM TERPADU" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/forum osis sekolah islam terpadu.png') }}?v={{ now()->timestamp }}" alt="FORUM SEKOLAH ISLAM TERPADU" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM SEKOLAH ISLAM TERPADU</h4>
                 </div>
@@ -792,7 +792,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis jakarta pusat.jpeg') }}?v={{ time() }}" alt="FORUM OSIS DAERAH JAKARTA PUSAT" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/forum osis jakarta pusat.jpeg') }}?v={{ now()->timestamp }}" alt="FORUM OSIS DAERAH JAKARTA PUSAT" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS DAERAH JAKARTA PUSAT</h4>
                 </div>
@@ -802,7 +802,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
                 <div class="flex flex-col items-center justify-center h-full">
                     <div class="w-full h-24 flex items-center justify-center mb-4">
-                        <img src="{{ asset('icon/forum osis kota sukabumi.png') }}?v={{ time() }}" alt="FORUM OSIS KOTA SUKABUMI" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/forum osis kota sukabumi.png') }}?v={{ now()->timestamp }}" alt="FORUM OSIS KOTA SUKABUMI" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-sm font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors">FORUM OSIS KOTA SUKABUMI</h4>
                 </div>
