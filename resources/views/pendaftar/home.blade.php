@@ -529,7 +529,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
     </div>
 </div>
 
-<!-- Collaboration Section 
+<!-- Collaboration Section -->
 <div class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -537,20 +537,35 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             <h2 class="section-title font-black text-dark-navy">Mitra dan Pendukung</h2>
         </div>
         
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center justify-items-center scroll-fade">
-            @foreach([
-                'Telkom+University', 'GEN+Logo', 'FOJB', 'Forum+Anak',
-                'FOSIS+Jateng', 'FAN+Jateng', 'FKPO+DIY', 'HIMOSIS+Jatim',
-                'FA+Jatim', 'FOS+DKI'
-            ] as $logo)
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 items-center justify-items-center scroll-fade">
             <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
-                <img src="https://placehold.co/150x80/EEEEEE/666666?text={{ $logo }}&font=montserrat" alt="Placeholder: {{ str_replace('+', ' ', $logo) }}" class="max-w-full h-auto">
+                <img src="{{ asset('icon/tunas satria sriwijaya.jpeg') }}" alt="Tunas Satria Sriwijaya" class="max-w-full h-auto max-h-20 object-contain">
             </div>
-            @endforeach
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
+                <img src="{{ asset('icon/zeekend.jpeg') }}" alt="Zeekend" class="max-w-full h-auto max-h-20 object-contain">
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
+                <img src="{{ asset('icon/forum osis kota sukabumi.png') }}" alt="Forum OSIS Kota Sukabumi" class="max-w-full h-auto max-h-20 object-contain">
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
+                <img src="{{ asset('icon/gensmart.jpeg') }}" alt="GenSmart" class="max-w-full h-auto max-h-20 object-contain">
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
+                <img src="{{ asset('icon/forum osis jakarta pusat.jpeg') }}" alt="Forum OSIS Jakarta Pusat" class="max-w-full h-auto max-h-20 object-contain">
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
+                <img src="{{ asset('icon/forum osis sekolah islam terpadu.png') }}" alt="Forum OSIS Sekolah Islam Terpadu" class="max-w-full h-auto max-h-20 object-contain">
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
+                <img src="{{ asset('icon/forum osis bogor.png') }}" alt="Forum OSIS Bogor" class="max-w-full h-auto max-h-20 object-contain">
+            </div>
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow w-full flex items-center justify-center min-h-[120px]">
+                <img src="{{ asset('icon/forum pemuda beraksi jawa barat.jpeg') }}" alt="Forum Pemuda Beraksi Jawa Barat" class="max-w-full h-auto max-h-20 object-contain">
+            </div>
         </div>
     </div>
 </div>
--->
+
 <!-- Berita & Pengumuman Section -->
 @if($beritas->count() > 0)
 <div id="berita" class="py-24 bg-gray-50">
