@@ -88,6 +88,9 @@
                 <label for="tahun_lulus" class="block text-xs font-bold text-gray-700 mb-2">Tahun Lulus</label>
                 <select id="tahun_lulus" name="tahun_lulus" required class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium">
                     <option value="">Pilih Tahun</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
                     <option value="2024">2024</option>
                     <option value="2025">2025</option>
                     <option value="2026">2026</option>
