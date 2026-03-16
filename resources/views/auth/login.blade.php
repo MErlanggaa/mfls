@@ -63,7 +63,7 @@
 
 <p class="mt-10 text-center text-sm font-bold text-gray-500">
     Belum punya akun? 
-    <a href="/maintance" class="text-primary-gold hover:underline">Daftar Sekarang</a>
+    <a href="/register" class="text-primary-gold hover:underline">Daftar Sekarang</a>
 </p>
 @endsection
 
