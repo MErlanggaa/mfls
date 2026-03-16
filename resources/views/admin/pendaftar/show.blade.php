@@ -302,7 +302,43 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Follow Proof Section --}}
+                <div class="mt-8 pt-8 border-t border-slate-50">
+                    <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                        <span class="iconify text-lg text-pink-500" data-icon="solar:camera-minimalistic-bold"></span>
+                        Follow Proof Screenshots
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        @php
+                            $followProofs = [
+                                ['field' => 'bukti_follow_ig_beasiswamncu', 'label' => 'IG Beasiswa'],
+                                ['field' => 'bukti_follow_ig_mncu', 'label' => 'IG MNCO'],
+                                ['field' => 'bukti_follow_tiktok_beasiswamncu', 'label' => 'TikTok Beasiswa'],
+                                ['field' => 'bukti_follow_tiktok_mncu', 'label' => 'TikTok MNCU'],
+                            ];
+                        @endphp
+                        @foreach($followProofs as $proof)
+                        @php $path = $user->peserta->berkas->{$proof['field']} ?? null; @endphp
+                        <div class="p-4 rounded-2xl border {{ $path ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100' }} flex flex-col items-center">
+                            <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 text-center">{{ $proof['label'] }}</div>
+                            @if($path)
+                                <a href="{{ asset('storage/' . $path) }}" target="_blank" class="w-12 h-12 rounded-lg overflow-hidden border-2 border-white shadow-sm hover:scale-110 transition-all">
+                                    <img src="{{ asset('storage/' . $path) }}" class="w-full h-full object-cover">
+                                </a>
+                                <div class="text-[10px] font-bold text-emerald-600 mt-2">DITERIMA</div>
+                            @else
+                                <div class="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center text-slate-400">
+                                    <span class="iconify" data-icon="solar:close-circle-bold"></span>
+                                </div>
+                                <div class="text-[10px] font-bold text-slate-400 mt-2 italic uppercase">Waiting</div>
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 

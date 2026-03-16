@@ -156,6 +156,10 @@ class PendaftarController extends Controller
             'surat_rekomendasi_sekolah' => 'nullable|mimes:pdf,doc,docx|max:5120',
             'motivasi_video' => 'nullable|url|max:500',
             'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'bukti_follow_ig_beasiswamncu' => 'nullable|image|max:5120',
+            'bukti_follow_ig_mncu' => 'nullable|image|max:5120',
+            'bukti_follow_tiktok_beasiswamncu' => 'nullable|image|max:5120',
+            'bukti_follow_tiktok_mncu' => 'nullable|image|max:5120',
         ]);
 
         $peserta = Auth::user()->peserta;
@@ -165,7 +169,10 @@ class PendaftarController extends Controller
         // Jika tidak ada (backward-compat), proses semua.
         $uploadField = $request->input('upload_field');
         $raporFields = ['rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'rapor6'];
-        $singleFields = ['foto', 'ijazah', 'personal_statement', 'study_plan', 'surat_rekomendasi_sekolah'];
+        $singleFields = [
+            'foto', 'ijazah', 'personal_statement', 'study_plan', 'surat_rekomendasi_sekolah',
+            'bukti_follow_ig_beasiswamncu', 'bukti_follow_ig_mncu', 'bukti_follow_tiktok_beasiswamncu', 'bukti_follow_tiktok_mncu'
+        ];
 
         // --- Handle Link Video Motivasi ---
         if (!$uploadField || $uploadField === 'motivasi_video') {
@@ -239,6 +246,14 @@ class PendaftarController extends Controller
             $uploaded[] = 'Surat Rekomendasi Sekolah';
         if ($request->filled('motivasi_video'))
             $uploaded[] = 'Link Video Motivasi';
+        if ($request->hasFile('bukti_follow_ig_beasiswamncu'))
+            $uploaded[] = 'Bukti Follow IG Beasiswa MNCU';
+        if ($request->hasFile('bukti_follow_ig_mncu'))
+            $uploaded[] = 'Bukti Follow IG MNC University';
+        if ($request->hasFile('bukti_follow_tiktok_beasiswamncu'))
+            $uploaded[] = 'Bukti Follow TikTok Beasiswa MNCU';
+        if ($request->hasFile('bukti_follow_tiktok_mncu'))
+            $uploaded[] = 'Bukti Follow TikTok MNC University';
         for ($i = 1; $i <= 6; $i++) {
             if ($request->hasFile('rapor' . $i))
                 $uploaded[] = "Scan Rapor S$i";

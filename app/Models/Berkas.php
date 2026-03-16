@@ -27,6 +27,10 @@ class Berkas extends Model
         'surat_rekomendasi_sekolah',
         'motivasi_video',
         'surat_buta_warna',
+        'bukti_follow_ig_beasiswamncu',
+        'bukti_follow_ig_mncu',
+        'bukti_follow_tiktok_beasiswamncu',
+        'bukti_follow_tiktok_mncu',
     ];
 
     public function peserta()

@@ -155,6 +155,79 @@
             </div>
 
             {{-- ============================================================ --}}
+            {{-- BUKTI FOLLOW MEDIA SOSIAL                                      --}}
+            {{-- ============================================================ --}}
+            <div>
+                <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-pink-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    </div>
+                    Bukti Follow Media Sosial
+                </h3>
+
+                @php
+                    $sosmedFollows = [
+                        ['name' => 'bukti_follow_ig_beasiswamncu',    'label' => 'Follow IG @beasiswamncu',      'desc' => 'Screenshot bukti follow Instagram @beasiswamncu'],
+                        ['name' => 'bukti_follow_ig_mncu',           'label' => 'Follow IG @mncuniversity',     'desc' => 'Screenshot bukti follow Instagram @mncuniversity'],
+                        ['name' => 'bukti_follow_tiktok_beasiswamncu','label' => 'Follow TikTok @beasiswamncu',  'desc' => 'Screenshot bukti follow TikTok @beasiswamncu'],
+                        ['name' => 'bukti_follow_tiktok_mncu',        'label' => 'Follow TikTok @mncuniversity', 'desc' => 'Screenshot bukti follow TikTok @mncuniversity'],
+                    ];
+                @endphp
+
+                @foreach($sosmedFollows as $sosmed)
+                @php
+                    $fieldName  = $sosmed['name'];
+                    $isUploaded = $berkas && $berkas->{$fieldName};
+                @endphp
+                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data"
+                      class="mb-3" onsubmit="return validateSingleForm(this)">
+                    @csrf
+                    <input type="hidden" name="upload_field" value="{{ $fieldName }}">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 bg-gray-50 rounded-2xl sm:rounded-[2rem] border border-gray-100 hover:border-primary-gold/50 transition-all">
+                        <div class="flex items-center gap-3 sm:gap-6 min-w-0">
+                            <div class="w-11 h-11 sm:w-14 sm:h-14 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center text-{{ $isUploaded ? 'green-500' : 'gray-400' }} transition-colors shadow-sm flex-shrink-0">
+                                <svg class="w-5 h-5 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4 class="font-bold text-sm sm:text-base text-gray-900">{{ $sosmed['label'] }}</h4>
+                                    <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">Wajib</span>
+                                </div>
+                                <p class="text-xs text-gray-500 font-medium">{{ $sosmed['desc'] }}</p>
+                                @if($isUploaded)
+                                    <p class="text-xs text-green-600 font-bold mt-0.5">✓ Uploaded</p>
+                                    <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" class="text-[10px] text-blue-600 hover:underline">Lihat Bukti →</a>
+                                @else
+                                    <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
+                                @endif
+                                <p class="text-xs text-primary-gold font-medium mt-0.5 hidden" id="preview-{{ $fieldName }}"></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 sm:flex-shrink-0">
+                            <input type="file"
+                                   name="{{ $fieldName }}"
+                                   class="hidden"
+                                   id="file-{{ $fieldName }}"
+                                   accept="image/*"
+                                   onchange="onFileSelected(this, '{{ $fieldName }}')">
+                            <label for="file-{{ $fieldName }}"
+                                   class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
+                                {{ $isUploaded ? 'Pilih Ulang' : 'Pilih File' }}
+                            </label>
+                            <button type="submit"
+                                    id="btn-save-{{ $fieldName }}"
+                                    class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
+                                💾 Simpan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                @endforeach
+            </div>
+
+            {{-- ============================================================ --}}
             {{-- SERTIFIKAT PRESTASI — form sendiri                            --}}
             {{-- ============================================================ --}}
             <div>
