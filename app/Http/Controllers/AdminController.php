@@ -1072,7 +1072,7 @@ class AdminController extends Controller
                 $row = [
                     $user->nama,
                     $user->email,
-                    $peserta->no_whatsapp ?? '-',
+                    $peserta->no_whatsapp ?: ($daftar->no_wa ?: '-'),
                     $peserta->nisn ?? '-',
                     $daftar->asal_sekolah ?? '-',
                     $peserta->pilihan_prodi ?? '-',
