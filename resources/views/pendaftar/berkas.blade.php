@@ -296,7 +296,7 @@
                                     <span class="text-xs text-gray-500">Format: PDF | Max: 5MB</span>
                                 </div>
                             </div>
-                            <a href="{{ asset('icon/Template Personal Statement Peserta MFLS.pdf') }}" download
+                            <a href="{{ asset('icon/Personal Statement MFLS 2026.pdf') }}" download
                                class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md flex-shrink-0">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 Download Template
