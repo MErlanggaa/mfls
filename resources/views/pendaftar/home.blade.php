@@ -278,7 +278,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                     ['title' => 'Tes TPA, TBI & Pemetaan Diri', 'date' => '16 Mei 2026', 'active' => false],
                     ['title' => 'Interview', 'date' => '20 Mei 2026', 'active' => false],
                     ['title' => 'Sit in Class/Company Visit', 'date' => '21 & 22 Mei 2026', 'active' => false],
-                    ['title' => 'Pengumuman Awardee', 'date' => '3 Juni 2026', 'active' => false],
+                    ['title' => 'Pengumuman Awardee', 'date' => '03 Juni 2026', 'active' => false],
                 ];
             @endphp
             
@@ -421,9 +421,9 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                 <div class="space-y-6">
                     @foreach([
                         ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'title' => 'Siswa Kelas 12 & Gap Year', 'desc' => 'Siswa/i kelas 12 SMA/SMK/MA sederajat tahun ajaran 2025/2026, atau lulusan tahun ajaran 2021/2022/2023/2024/2025'],
-                        ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Memiliki Semangat Dan Kemauan Belajar', 'desc' => 'Mnunjukkan Semangat Belajar Tinggi Sera Motivasi Untuk Terus Berkembang Dan Berkontribusi'],
+                        ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', 'title' => 'Memiliki Semangat Dan Kemauan Belajar', 'desc' => 'Menunjukkan Semangat Belajar Tinggi Serta Motivasi Untuk Terus Berkembang dan Berkontribusi'],
                         ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Komitmen', 'desc' => 'Bersedia mengikuti seluruh rangkaian seleksi dan program pembinaan'],
-                        ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Memiliki Jiwa Kepemimpinan Dan Motivasi Tinggi', 'desc' => 'Aktif Di Kegiatan Sekolah, Komuntias, Atau Organisasi Yang Mencerminkan Semangat Kepemimpinan'],
+                        ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Memiliki Jiwa Kepemimpinan Dan Motivasi Tinggi', 'desc' => 'Aktif Di Kegiatan Sekolah, Komunitas, Atau Organisasi Yang Mencerminkan Semangat Kepemimpinan'],
                         ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'title' => 'Karakter', 'desc' => 'Memiliki jiwa kepemimpinan, aktif berorganisasi, dan berkarakter baik']
                     ] as $requirement)
                     <div class="flex gap-4 items-start p-6 bg-gray-50 rounded-2xl hover:bg-primary-yellow/5 hover:border-primary-yellow border border-transparent transition-all duration-300">
