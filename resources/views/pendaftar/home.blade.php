@@ -278,7 +278,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                     ['title' => 'Tes TPA, TBI & Pemetaan Diri', 'date' => '16 Mei 2026', 'active' => false],
                     ['title' => 'Interview', 'date' => '20 Mei 2026', 'active' => false],
                     ['title' => 'Sit in Class/Company Visit', 'date' => '21 & 22 Mei 2026', 'active' => false],
-                    ['title' => 'Pengumuman Awarde', 'date' => '28 Desember 2026', 'active' => false],
+                    ['title' => 'Pengumuman Awardee', 'date' => '3 Juni 2026', 'active' => false],
                 ];
             @endphp
             
