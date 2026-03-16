@@ -136,9 +136,9 @@
                     <div>
                         <h4 class="text-white font-bold mb-6">Halaman</h4>
                         <ul class="space-y-4 text-sm">
-                            <li><a href="#" class="hover:text-primary-yellow transition-colors">Beranda</a></li>
-                            <li><a href="#" class="hover:text-primary-yellow transition-colors">Tentang Kami</a></li>
-                            <li><a href="#" class="hover:text-primary-yellow transition-colors">Program Beasiswa</a></li>
+                            <li><a href="{{ url('/') }}" class="hover:text-primary-yellow transition-colors">Beranda</a></li>
+                            <li><a href="{{ url('/') }}#about" class="hover:text-primary-yellow transition-colors">Tentang Kami</a></li>
+                            <li><a href="{{ url('/') }}#program" class="hover:text-primary-yellow transition-colors">Program Beasiswa</a></li>
                         </ul>
                     </div>
 
