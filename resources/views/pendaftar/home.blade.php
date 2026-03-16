@@ -838,6 +838,16 @@ autoSlideInterval = setInterval(autoSlide, 5000);
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM OSIS KOTA SUKABUMI</h4>
                 </div>
             </div>
+
+            <!-- FORUM OSIS SMK DAERAH KHUSUS JAKARTA -->
+            <div class="group transform hover:-translate-y-1 transition-all duration-300">
+                <div class="flex flex-col items-center justify-center p-4">
+                    <div class="w-full h-28 flex items-center justify-center mb-3 bg-white rounded-xl">
+                        <img src="{{ asset('icon/FORUM OSIS SMK DAERAH KHUSUS JAKARTA.png') }}?v={{ time() }}" alt="FORUM OSIS SMK DAERAH KHUSUS JAKARTA" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM OSIS SMK DAERAH KHUSUS JAKARTA</h4>
+                </div>
+            </div>
         </div>
     </div>
 </div>
