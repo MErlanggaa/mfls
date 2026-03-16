@@ -725,7 +725,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
                     <div class="w-full h-28 flex items-center justify-center mb-3">
                         <img src="{{ asset('icon/MNCU Future Leader Scholarship_20260316_040958_0000.png') }}?v={{ time() }}" alt="MAJU BERSAMA OSIS" class="max-w-full max-h-full object-contain">
                     </div>
-                    <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">Muda Berdaya Indonesia</h4>
+                    <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">Maju Bersama Osis</h4>
                 </div>
             </div>
 
