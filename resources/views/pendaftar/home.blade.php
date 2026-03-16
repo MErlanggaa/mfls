@@ -53,7 +53,7 @@
             
             <!-- Right Column: Hero Image -->
             <div class="relative w-full scroll-fade-right mt-6 lg:mt-0 max-w-md mx-auto lg:max-w-none overflow-hidden rounded-2xl sm:rounded-[2.5rem]">
-                <img src="{{ asset('icon/new logo.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.05] transition-transform duration-500">
+                <img src="{{ asset('icon/newlogo.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.05] transition-transform duration-500">
             </div>
         </div>
     </div>
@@ -398,7 +398,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             
             <!-- Right: Image -->
             <div class="relative order-1 lg:order-2">
-                <img src="{{ asset('icon/Keuntungan.png') }}" alt="Benefit Keuntungan" class="rounded-3xl shadow-2xl w-full object-cover">
+                <img src="{{ asset('icon/Keuntungan.png') }}" alt="Benefit Keuntungan" class="  ">
             </div>
         </div>
     </div>
@@ -719,11 +719,11 @@ autoSlideInterval = setInterval(autoSlide, 5000);
         </div>
         
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 scroll-fade">
-            <!-- MUDA BERDAYA INDONESIA (MBO) -->
+            <!-- MAJU BERSAMA OSIS (MBO) -->
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/MNCU Future Leader Scholarship_20260316_040958_0000.png') }}?v={{ time() }}" alt="MUDA BERDAYA INDONESIA" class="max-w-full max-h-full object-contain">
+                        <img src="{{ asset('icon/MNCU Future Leader Scholarship_20260316_040958_0000.png') }}?v={{ time() }}" alt="MAJU BERSAMA OSIS" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">Muda Berdaya Indonesia</h4>
                 </div>
