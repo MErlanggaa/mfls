@@ -48,15 +48,21 @@
                         <div class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-red-100 text-red-500 rounded-lg flex items-center justify-center">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </div>
-                        <div class="flex-grow min-w-0">
+                        <div class="flex-grow min-w-0 space-y-2">
                             <p class="text-sm font-bold text-gray-800">Surat Keterangan Tidak Buta Warna</p>
-                            <label class="cursor-pointer">
-                                <span class="text-red-500 hover:text-red-700 text-xs font-bold underline decoration-2 underline-offset-2">Pilih File (PDF/JPG)</span>
-                                <input type="file" name="surat_buta_warna" class="hidden">
-                            </label>
-                             @if($berkas && $berkas->surat_buta_warna)
-                                <a href="{{ asset('storage/' . $berkas->surat_buta_warna) }}" target="_blank" class="ml-2 text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold hover:bg-green-200 transition-colors">Lihat File</a>
-                            @endif
+                            <div class="flex flex-wrap items-center gap-2">
+                                 <label class="cursor-pointer inline-block">
+                                     <span class="text-red-500 hover:text-red-700 text-xs font-bold underline decoration-2 underline-offset-2">Pilih File (PDF/JPG/PNG)</span>
+                                     <input type="file" name="surat_buta_warna" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="hidden" onchange="previewButaWarna(this)">
+                                 </label>
+                                 <span id="butaWarnaFileName" class="hidden text-[10px] px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md font-bold border border-indigo-100 inline-flex items-center gap-1">
+                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                     <span id="butaWarnaFileText"></span>
+                                 </span>
+                                 @if($berkas && $berkas->surat_buta_warna)
+                                     <a href="{{ asset('storage/' . $berkas->surat_buta_warna) }}" target="_blank" class="text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold hover:bg-green-200 transition-colors">Lihat File ✓</a>
+                                 @endif
+                            </div>
                         </div>
                      </div>
                 </div>
@@ -144,7 +150,7 @@
                         </div>
                     </div>
 
-                    <div class="space-y-3">
+                    <div class="space-y-3 pb-20">
                         <!-- CORE SUBJECTS -->
                         @foreach($matpels as $mp)
                         <div class="flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-blue-100 transition-all duration-300 bg-white">
@@ -234,6 +240,17 @@
 
     // Global counter for New Matpel
     let globalSemCount = 0;
+
+    function previewButaWarna(input) {
+        const nameEl = document.getElementById('butaWarnaFileName');
+        const textEl = document.getElementById('butaWarnaFileText');
+        if (input.files && input.files.length > 0) {
+            textEl.textContent = input.files[0].name;
+            nameEl.classList.remove('hidden');
+        } else {
+            nameEl.classList.add('hidden');
+        }
+    }
 
     function checkProdi() {
         const val = document.getElementById('prodiSelect').value;

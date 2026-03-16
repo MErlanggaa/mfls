@@ -308,7 +308,7 @@ class PendaftarController extends Controller
     {
         $request->validate([
             'pilihan_prodi' => 'required',
-            'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png|max:2048',
+            'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
             'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
             'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
             'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
