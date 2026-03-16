@@ -474,7 +474,8 @@ class AdminController extends Controller
 
     public function destroyPendaftar($id)
     {
-        if (auth()->user()->role !== 'admin')
+        $user = auth()->user();
+        if ($user->role !== 'admin' && !in_array($user->email, ['dept.adminis@mfls.com', 'admin@mfls.com']))
             return abort(403);
 
         $akun = Akun::with('peserta.berkas')->findOrFail($id);
@@ -599,7 +600,8 @@ class AdminController extends Controller
 
     public function resetPassword(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin')
+        $authUser = auth()->user();
+        if ($authUser->role !== 'admin' && !in_array($authUser->email, ['dept.adminis@mfls.com', 'admin@mfls.com']))
             return abort(403);
         $user = Akun::findOrFail($id);
 
