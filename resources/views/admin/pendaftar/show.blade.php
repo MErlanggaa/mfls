@@ -164,7 +164,10 @@
                     $berkasItems['surat_buta_warna'] = 'Surat Buta Warna';
                     $berkasItems['personal_statement'] = 'Personal Statement';
                     $berkasItems['study_plan'] = 'Study Plan';
-                    $berkasItems['surat_rekomendasi_sekolah'] = 'Surat Rekomendasi';
+                    
+                    if ($tahunLulus >= 2026) {
+                        $berkasItems['surat_rekomendasi_sekolah'] = 'Surat Rekomendasi';
+                    }
                 @endphp
                 @foreach($berkasItems as $key => $label)
                 @php 

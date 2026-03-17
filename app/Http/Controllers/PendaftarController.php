@@ -27,7 +27,13 @@ class PendaftarController extends Controller
         }
 
         // 2. Berkas Points (40%)
-        $berkasFields = ['foto', 'rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'ijazah', 'personal_statement', 'study_plan', 'surat_rekomendasi_sekolah'];
+        $tahunLulus = (int) ($peserta->tahun_lulus ?? 2026);
+        $berkasFields = ['foto', 'rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'ijazah', 'personal_statement', 'study_plan'];
+        
+        if ($tahunLulus >= 2026) {
+            $berkasFields[] = 'surat_rekomendasi_sekolah';
+        }
+
         $totalPoints += count($berkasFields);
         if ($berkas) {
             foreach ($berkasFields as $field) {

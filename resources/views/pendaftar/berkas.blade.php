@@ -401,6 +401,7 @@
             {{-- ============================================================ --}}
             {{-- SURAT REKOMENDASI SEKOLAH                                      --}}
             {{-- ============================================================ --}}
+            @if($tahunLulus >= 2026)
             <div>
                 <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
                     <div class="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
@@ -419,7 +420,7 @@
                             <div class="flex-1">
                                 <p class="text-xs sm:text-sm text-gray-600 mb-2">
                                     <strong class="text-gray-900">Surat Rekomendasi Sekolah</strong> adalah surat pernyataan dukungan dari pihak sekolah.
-                                    Silakan download template, isi, dan upload kembali dalam format PDF.
+                                    Silakan download template, isi, and upload kembali dalam format PDF.
                                 </p>
                                 <div class="flex items-center gap-3">
                                     <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
@@ -463,6 +464,7 @@
                     </div>
                 </form>
             </div>
+            @endif
 
             {{-- ============================================================ --}}
             {{-- LINK VIDEO MOTIVASI — form sendiri                             --}}
