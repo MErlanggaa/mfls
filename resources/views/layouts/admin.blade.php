@@ -113,7 +113,7 @@
                     Dashboard
                 </a>
 
-                @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia') && in_array(auth()->user()->email, ['dion@gmail.com', 'admin@mfls.com']))
+                @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia') && in_array(auth()->user()->email, ['dion@gmail.com', 'info@beasiswamncu.com']))
                 <a href="{{ route('admin.beasiswa.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.beasiswa.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
