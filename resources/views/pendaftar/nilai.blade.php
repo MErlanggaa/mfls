@@ -10,9 +10,15 @@
         
         <div class="relative z-10">
             <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-2 sm:mb-3">Input Nilai Rapor</h1>
-            <p class="text-gray-400 text-sm sm:text-base font-medium max-w-2xl leading-relaxed">
+            <p class="text-gray-400 text-sm sm:text-base font-medium max-w-2xl leading-relaxed mb-4">
                 Silahkan input nilai pengetahuan (Knowledge) skala 0-100 dan unggah bukti fisik rapor asli anda per semester.
             </p>
+            <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-300 px-4 py-2 rounded-lg border border-orange-500/30">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+                <span class="text-sm font-bold">Mata Pelajaran Pendukung WAJIB diisi minimal 1</span>
+            </div>
         </div>
     </div>
 
@@ -208,11 +214,11 @@
 
         <!-- 5. FLOATING ACTIONS -->
         <div x-data class="fixed bottom-4 sm:bottom-6 inset-x-0 px-4 sm:px-0 mx-auto sm:w-max z-40 flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl shadow-dark-navy/20">
-             <button type="button" onclick="addCustomSubject()" id="addMapelBtn" class="flex-1 sm:flex-none pl-3 sm:pl-4 pr-3 sm:pr-5 py-2.5 sm:py-3 bg-gray-100 hover:bg-gray-200 text-dark-navy font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2">
-                <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white flex items-center justify-center shadow-sm">
+             <button type="button" onclick="addCustomSubject()" id="addMapelBtn" class="flex-1 sm:flex-none pl-3 sm:pl-4 pr-3 sm:pr-5 py-2.5 sm:py-3 bg-orange-100 hover:bg-orange-200 text-orange-800 font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 border-2 border-orange-300">
+                <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-sm">
                     <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 </div>
-                <span class="text-sm">Mapel Pendukung</span>
+                <span class="text-sm">Mapel Pendukung <span class="text-red-500">*</span></span>
             </button>
             <div class="w-px h-7 bg-gray-300"></div>
             <button type="submit" class="flex-1 sm:flex-none pl-3 sm:pl-5 pr-4 sm:pr-6 py-2.5 sm:py-3 bg-dark-navy hover:bg-black text-white font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 sm:gap-3 shadow-lg">
@@ -381,6 +387,21 @@
             });
             return;
         }
+
+        // Check if at least 1 mata pelajaran pendukung is added
+        const customSubjects = document.querySelectorAll('[data-custom-row], [data-old-row]');
+        if (customSubjects.length === 0) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Mata Pelajaran Pendukung Wajib!',
+                html: 'Anda harus menambahkan minimal <strong>1 Mata Pelajaran Pendukung</strong>.<br><small>Klik tombol "+ Tambah Mata Pelajaran Pendukung" untuk menambahkan.</small>',
+                confirmButtonColor: '#0B1221',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         // Show loading state
         Swal.fire({
             title: 'Menyimpan...',

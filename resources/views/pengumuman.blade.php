@@ -134,38 +134,69 @@
                 </div>
 
                 <!-- Data Peserta -->
-                <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <div class="bg-gray-50 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
                     <h4 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         Data Peserta
                     </h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 font-medium">Nama Lengkap</span>
-                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->nama) }}</span>
+                    <div class="space-y-4">
+                        <!-- Mobile: Stack vertically -->
+                        <div class="space-y-3 sm:hidden">
+                            <div class="bg-white p-3 rounded-lg">
+                                <span class="text-xs text-gray-500 font-medium block mb-1">Nama Lengkap</span>
+                                <span class="font-bold text-gray-900 text-sm">{{ strtoupper($peserta->nama) }}</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 font-medium">No. Pendaftaran</span>
-                                <span class="font-semibold text-gray-900">{{ $noPendaftaran }}</span>
+                            <div class="bg-white p-3 rounded-lg">
+                                <span class="text-xs text-gray-500 font-medium block mb-1">No. Pendaftaran</span>
+                                <span class="font-bold text-gray-900 text-sm">{{ $noPendaftaran }}</span>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 font-medium">NISN</span>
-                                <span class="font-semibold text-gray-900">{{ $peserta->nisn }}</span>
+                            <div class="bg-white p-3 rounded-lg">
+                                <span class="text-xs text-gray-500 font-medium block mb-1">NISN</span>
+                                <span class="font-bold text-gray-900 text-sm">{{ $peserta->nisn }}</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg">
+                                <span class="text-xs text-gray-500 font-medium block mb-1">Asal Sekolah</span>
+                                <span class="font-bold text-gray-900 text-sm">{{ strtoupper($peserta->nama_sekolah ?? '-') }}</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg">
+                                <span class="text-xs text-gray-500 font-medium block mb-1">Program Studi</span>
+                                <span class="font-bold text-gray-900 text-sm">{{ strtoupper($peserta->pilihan_prodi ?? '-') }}</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg">
+                                <span class="text-xs text-gray-500 font-medium block mb-1">Fakultas</span>
+                                <span class="font-bold text-gray-900 text-sm">{{ $fakultas }}</span>
                             </div>
                         </div>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 font-medium">Asal Sekolah</span>
-                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->nama_sekolah ?? '-') }}</span>
+                        
+                        <!-- Desktop: Grid layout -->
+                        <div class="hidden sm:grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 font-medium">Nama Lengkap</span>
+                                    <span class="font-semibold text-gray-900">{{ strtoupper($peserta->nama) }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 font-medium">No. Pendaftaran</span>
+                                    <span class="font-semibold text-gray-900">{{ $noPendaftaran }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 font-medium">NISN</span>
+                                    <span class="font-semibold text-gray-900">{{ $peserta->nisn }}</span>
+                                </div>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 font-medium">Program Studi</span>
-                                <span class="font-semibold text-gray-900">{{ strtoupper($peserta->pilihan_prodi ?? '-') }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 font-medium">Fakultas</span>
-                                <span class="font-semibold text-gray-900">{{ $fakultas }}</span>
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 font-medium">Asal Sekolah</span>
+                                    <span class="font-semibold text-gray-900">{{ strtoupper($peserta->nama_sekolah ?? '-') }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 font-medium">Program Studi</span>
+                                    <span class="font-semibold text-gray-900">{{ strtoupper($peserta->pilihan_prodi ?? '-') }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 font-medium">Fakultas</span>
+                                    <span class="font-semibold text-gray-900">{{ $fakultas }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -193,23 +224,54 @@
                     </ul>
                 </div>
 
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
                     <h4 class="font-bold text-blue-900 mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         Jadwal Seleksi Berikutnya
                     </h4>
                     <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-white rounded border">
-                            <div><p class="font-semibold text-gray-900">TPS, LBI & Pemetaan Diri</p><p class="text-sm text-gray-600">Tes Potensi Skolastik dan Literasi</p></div>
-                            <div class="text-right"><p class="font-bold text-blue-600">18 Mei 2026</p><p class="text-sm text-gray-500">08:00 - 12:00 WIB</p></div>
+                        <!-- Mobile: Stack vertically -->
+                        <div class="sm:hidden space-y-3">
+                            <div class="bg-white p-3 rounded border">
+                                <p class="font-semibold text-gray-900 text-sm">TPS, LBI & Pemetaan Diri</p>
+                                <p class="text-xs text-gray-600 mb-2">Tes Potensi Skolastik dan Literasi</p>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-bold text-blue-600 text-sm">18 Mei 2026</p>
+                                    <p class="text-xs text-gray-500">08:00 - 12:00 WIB</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded border">
+                                <p class="font-semibold text-gray-900 text-sm">Interview User & Presentasi</p>
+                                <p class="text-xs text-gray-600 mb-2">Wawancara dan Mini Project</p>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-bold text-blue-600 text-sm">20 Mei 2026</p>
+                                    <p class="text-xs text-gray-500">09:00 - 17:00 WIB</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded border">
+                                <p class="font-semibold text-gray-900 text-sm">Company Visit & Sit In Class</p>
+                                <p class="text-xs text-gray-600 mb-2">Kunjungan Kampus dan Observasi</p>
+                                <div class="flex justify-between items-center">
+                                    <p class="font-bold text-blue-600 text-sm">21-22 Mei 2026</p>
+                                    <p class="text-xs text-gray-500">08:00 - 16:00 WIB</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between p-3 bg-white rounded border">
-                            <div><p class="font-semibold text-gray-900">Interview User & Presentasi</p><p class="text-sm text-gray-600">Wawancara dan Mini Project</p></div>
-                            <div class="text-right"><p class="font-bold text-blue-600">20 Mei 2026</p><p class="text-sm text-gray-500">09:00 - 17:00 WIB</p></div>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-white rounded border">
-                            <div><p class="font-semibold text-gray-900">Company Visit & Sit In Class</p><p class="text-sm text-gray-600">Kunjungan Kampus dan Observasi</p></div>
-                            <div class="text-right"><p class="font-bold text-blue-600">21-22 Mei 2026</p><p class="text-sm text-gray-500">08:00 - 16:00 WIB</p></div>
+                        
+                        <!-- Desktop: Original layout -->
+                        <div class="hidden sm:block space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-white rounded border">
+                                <div><p class="font-semibold text-gray-900">TPS, LBI & Pemetaan Diri</p><p class="text-sm text-gray-600">Tes Potensi Skolastik dan Literasi</p></div>
+                                <div class="text-right"><p class="font-bold text-blue-600">18 Mei 2026</p><p class="text-sm text-gray-500">08:00 - 12:00 WIB</p></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-white rounded border">
+                                <div><p class="font-semibold text-gray-900">Interview User & Presentasi</p><p class="text-sm text-gray-600">Wawancara dan Mini Project</p></div>
+                                <div class="text-right"><p class="font-bold text-blue-600">20 Mei 2026</p><p class="text-sm text-gray-500">09:00 - 17:00 WIB</p></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-white rounded border">
+                                <div><p class="font-semibold text-gray-900">Company Visit & Sit In Class</p><p class="text-sm text-gray-600">Kunjungan Kampus dan Observasi</p></div>
+                                <div class="text-right"><p class="font-bold text-blue-600">21-22 Mei 2026</p><p class="text-sm text-gray-500">08:00 - 16:00 WIB</p></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -235,14 +297,14 @@
                 </div>
 
                 @else
-                <div class="border-2 border-yellow-500 rounded-lg p-6 mb-8 bg-yellow-50">
+                <div class="border-2 border-yellow-500 rounded-lg p-4 sm:p-6 mb-6 sm:mb-8 bg-yellow-50">
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                            <svg class="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
-                        <h3 class="text-2xl font-bold text-yellow-700 mb-2">DALAM PROSES</h3>
-                        <p class="text-lg font-semibold text-yellow-600 mb-4">VERIFIKASI BERKAS</p>
-                        <p class="text-yellow-700">Mohon tunggu hasil verifikasi</p>
+                        <h3 class="text-xl sm:text-2xl font-bold text-yellow-700 mb-1 sm:mb-2">DALAM PROSES</h3>
+                        <p class="text-base sm:text-lg font-semibold text-yellow-600 mb-2 sm:mb-4">VERIFIKASI BERKAS</p>
+                        <p class="text-sm sm:text-base text-yellow-700">Mohon tunggu hasil verifikasi</p>
                     </div>
                 </div>
                 @endif
