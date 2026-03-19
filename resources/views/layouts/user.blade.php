@@ -55,6 +55,7 @@
             }
         }
     </style>
+    @stack('meta')
     @stack('styles')
 </head>
 <body class="font-jakarta antialiased">
