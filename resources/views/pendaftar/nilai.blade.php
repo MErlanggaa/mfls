@@ -289,17 +289,19 @@
     }
 
     function addCustomSubject() {
-        // Count existing from Container 1 to know the global total
-        const container1 = document.getElementById(`customContainerSemester1`);
-        if (!container1) return;
+        // Get current active tab
+        const activeTab = document.querySelector('[x-data]').__x.$data.activeTab;
+        const container = document.getElementById(`customContainerSemester${activeTab}`);
+        if (!container) return;
 
-        const existing = container1.querySelectorAll('[data-custom-row], [data-old-row]').length;
+        // Count existing subjects in current semester
+        const existing = container.querySelectorAll('[data-custom-row], [data-old-row]').length;
 
         if (existing >= 2) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Batas Tercapai!',
-                html: `Anda sudah menambahkan maksimal <strong>2 Mata Pelajaran Pendukung</strong>.`,
+                html: `Anda sudah menambahkan maksimal <strong>2 Mata Pelajaran Pendukung</strong> untuk Semester ${activeTab}.`,
                 confirmButtonColor: '#0B1221',
                 confirmButtonText: 'Mengerti'
             });
@@ -307,42 +309,28 @@
         }
 
         globalSemCount++;
-        const uid = `new${globalSemCount}`;
+        const uid = `new${globalSemCount}_sem${activeTab}`;
 
-        // Add to all 5 semester containers simultaneously
-        for (let i = 1; i <= 5; i++) {
-            const container = document.getElementById(`customContainerSemester${i}`);
-            const div = document.createElement('div');
-            div.setAttribute('data-custom-row', uid);
-            div.className = `custom-subject-new-${uid} flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border-2 border-dashed border-orange-200 hover:border-orange-300 hover:bg-orange-50/10 transition-all duration-300 animate-fade-in-down`;
+        // Add only to current semester container
+        const div = document.createElement('div');
+        div.setAttribute('data-custom-row', uid);
+        div.className = `custom-subject-new-${uid} flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border-2 border-dashed border-orange-200 hover:border-orange-300 hover:bg-orange-50/10 transition-all duration-300 animate-fade-in-down`;
 
-            let nameInput = (i === 1) 
-                ? `<input type="text" name="custom_matpel[${uid}][nama]" placeholder="Nama Mapel (ex: Ekonomi)" class="w-full bg-white px-3 py-2 rounded-xl border border-gray-300 font-bold text-gray-800 text-sm outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 transition-all" oninput="syncName('${uid}', this.value)" required autoFocus>`
-                : `<input type="text" id="custom_name_${uid}_sem_${i}" class="w-full bg-transparent font-bold text-gray-800 text-sm outline-none placeholder-gray-300" placeholder="(Nama Mapel)" readonly>`;
-
-            div.innerHTML = `
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-400 border border-orange-100 flex-shrink-0 text-lg">✨</div>
-                <div class="flex-grow min-w-0">
-                    ${nameInput}
-                    <p class="text-xs text-orange-400 font-bold uppercase tracking-wide mt-1">Pendukung Baru</p>
-                </div>
-                <div class="w-20 sm:w-32 flex-shrink-0">
-                    <input type="number" step="0.01" name="custom_matpel[${uid}][nilai][${i}]" 
-                        class="w-full text-center py-2.5 sm:py-3 rounded-xl font-black text-base sm:text-xl text-dark-navy bg-white border-2 border-gray-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none placeholder-gray-300">
-                </div>
-                <button type="button" onclick="removeNewSubject('${uid}')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0" title="Batal">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            `;
-            container.appendChild(div);
-        }
-    }
-
-    function syncName(uid, val) {
-        for (let i = 2; i <= 5; i++) {
-            const el = document.getElementById(`custom_name_${uid}_sem_${i}`);
-            if(el) el.value = val;
-        }
+        div.innerHTML = `
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-400 border border-orange-100 flex-shrink-0 text-lg">✨</div>
+            <div class="flex-grow min-w-0">
+                <input type="text" name="custom_matpel[${uid}][nama]" placeholder="Nama Mapel (ex: Ekonomi)" class="w-full bg-white px-3 py-2 rounded-xl border border-gray-300 font-bold text-gray-800 text-sm outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 transition-all" required autoFocus>
+                <p class="text-xs text-orange-400 font-bold uppercase tracking-wide mt-1">Pendukung Semester ${activeTab}</p>
+            </div>
+            <div class="w-20 sm:w-32 flex-shrink-0">
+                <input type="number" step="0.01" name="custom_matpel[${uid}][nilai][${activeTab}]" 
+                    class="w-full text-center py-2.5 sm:py-3 rounded-xl font-black text-base sm:text-xl text-dark-navy bg-white border-2 border-gray-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none placeholder-gray-300">
+            </div>
+            <button type="button" onclick="removeNewSubject('${uid}')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0" title="Batal">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        `;
+        container.appendChild(div);
     }
 
     function removeNewSubject(uid) {
@@ -389,13 +377,21 @@
         }
 
         // Check if at least 2 mata pelajaran pendukung are added
-        const customSubjects = document.querySelectorAll('[data-custom-row], [data-old-row]');
-        if (customSubjects.length < 2) {
+        // Check if at least 1 mata pelajaran pendukung is added across all semesters
+        let totalCustomSubjects = 0;
+        for (let i = 1; i <= 5; i++) {
+            const container = document.getElementById(`customContainerSemester${i}`);
+            if (container) {
+                totalCustomSubjects += container.querySelectorAll('[data-custom-row], [data-old-row]').length;
+            }
+        }
+        
+        if (totalCustomSubjects === 0) {
             e.preventDefault();
             Swal.fire({
                 icon: 'warning',
-                title: 'Mata Pelajaran Pendukung Wajib 2!',
-                html: 'Anda harus menambahkan <strong>2 Mata Pelajaran Pendukung</strong>.<br><small>Klik tombol "+ Tambah Mata Pelajaran Pendukung" untuk menambahkan.</small>',
+                title: 'Mata Pelajaran Pendukung Wajib!',
+                html: 'Anda harus menambahkan minimal <strong>1 Mata Pelajaran Pendukung</strong> di salah satu semester.<br><small>Klik tombol "+ Mapel Pendukung" untuk menambahkan.</small>',
                 confirmButtonColor: '#0B1221',
                 confirmButtonText: 'OK'
             });
