@@ -1,5 +1,47 @@
 @extends('layouts.user')
 
+@if(isset($peserta))
+    @php
+        $dbStatus = $peserta->daftar->status ?? 'menunggu';
+        if ($dbStatus === 'lulus') {
+            $statusStr = 'DINYATAKAN LULUS';
+        } elseif ($dbStatus === 'tidak lulus' || $dbStatus === 'gugur') {
+            $statusStr = 'BELUM MEMENUHI SYARAT';
+        } else {
+            $statusStr = 'BELUM DI SELEKSI';
+        }
+        $ogTitle = 'HASIL SELEKSI: ' . strtoupper($peserta->nama);
+        $ogDesc = strtoupper($peserta->nama) . ' ' . $statusStr . ' Seleksi Administrasi MFLS 2026. Cek hasil lengkapnya di sini.';
+    @endphp
+    @push('meta')
+        <meta property="og:title" content="{{ $ogTitle }}">
+        <meta property="og:description" content="{{ $ogDesc }}">
+        <meta name="twitter:title" content="{{ $ogTitle }}">
+        <meta name="twitter:description" content="{{ $ogDesc }}">
+    @endpush
+@endif
+
+@if(isset($peserta))
+    @php
+        $dbStatus = $peserta->daftar->status ?? 'menunggu';
+        if ($dbStatus === 'lulus') {
+            $statusText = 'LULUS';
+        } elseif ($dbStatus === 'tidak lulus' || $dbStatus === 'gugur') {
+            $statusText = 'TIDAK LULUS';
+        } else {
+            $statusText = 'BELUM DI SELEKSI';
+        }
+        $shareTitle = "HASIL SELEKSI: " . strtoupper($peserta->nama);
+        $shareDesc = strtoupper($peserta->nama) . " dinyatakan " . $statusText . " Seleksi Administrasi MFLS 2026. Cek hasil lengkapnya di sini.";
+    @endphp
+    @push('meta')
+        <meta property="og:title" content="{{ $shareTitle }}">
+        <meta property="og:description" content="{{ $shareDesc }}">
+        <meta name="twitter:title" content="{{ $shareTitle }}">
+        <meta name="twitter:description" content="{{ $shareDesc }}">
+    @endpush
+@endif
+
 @push('styles')
 <style>
     @media print {

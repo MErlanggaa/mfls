@@ -2,6 +2,25 @@
 
 @section('content')
 <div class="space-y-8">
+    @if(!$hasSupportingSubject)
+    <!-- Missing Supporting Subject Warning -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-600 p-6 rounded-2xl shadow-xl border border-orange-400/50">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-white font-bold text-lg mb-1">Mata Pelajaran Pendukung Belum Lengkap!</h3>
+                <p class="text-orange-100 text-sm mb-3">Data nilai Anda terdeteksi belum memiliki 2 mata pelajaran pendukung yang wajib. Silakan tambahkan minimal 2 mata pelajaran pendukung di menu Input Nilai agar pendaftaran Anda dapat diproses.</p>
+                <a href="{{ route('pendaftar.nilai') }}" class="inline-flex items-center gap-2 bg-white text-orange-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-orange-50 transition-colors">
+                    Lengkapi Sekarang
+                </a>
+            </div>
+        </div>
+    </div>
+    @endif
     <!-- WhatsApp Group Notification -->
     <div class="relative overflow-hidden bg-gradient-to-r from-green-500 to-green-600 p-6 rounded-2xl shadow-xl">
         <div class="flex items-center gap-4">

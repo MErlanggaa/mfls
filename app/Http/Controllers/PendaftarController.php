@@ -91,7 +91,15 @@ class PendaftarController extends Controller
             ];
         }
 
-        return view('pendaftar.dashboard', compact('peserta', 'berkas', 'progress', 'history'));
+        // Check if the user has added supporting subjects (at least 2 custom matpels)
+        $coreMatpelIds = \App\Models\Matpel::whereIn('nama', ['Bahasa Indonesia', 'Matematika Wajib', 'Bahasa Inggris'])->pluck('id');
+        $supportingCount = \App\Models\Nilai::where('peserta_id', $peserta->id)
+            ->whereNotIn('matpel_id', $coreMatpelIds)
+            ->distinct('matpel_id')
+            ->count('matpel_id');
+        $hasSupportingSubject = $supportingCount >= 2;
+
+        return view('pendaftar.dashboard', compact('peserta', 'berkas', 'progress', 'history', 'hasSupportingSubject'));
     }
 
     private function logAktivitas($aksi, $targetTipe = null, $targetId = null, $deskripsi = null)
@@ -339,6 +347,12 @@ class PendaftarController extends Controller
 
         $peserta = Auth::user()->peserta;
         $peserta->update(['pilihan_prodi' => $request->pilihan_prodi]);
+
+        // Server-side validation for mandatory supporting subjects
+        // We check if at least 2 custom_matpels are present in the request
+        if (!$request->has('custom_matpel') || count($request->custom_matpel) < 2) {
+            return back()->withInput()->with('error', 'Anda wajib menambahkan minimal 2 Mata Pelajaran Pendukung.');
+        }
 
         $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
 
