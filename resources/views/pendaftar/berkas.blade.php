@@ -480,29 +480,48 @@
                 <form action="{{ route('pendaftar.berkas.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="upload_field" value="motivasi_video">
-                    <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-purple-200">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Link Video - Membuat Video Motivasi (Instagram/TikTok/YouTube)</label>
-                        <div class="relative mb-3">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                    <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-purple-200 space-y-4">
+                        
+                        <!-- Instagram Link -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Link Video Motivation - Instagram Reels</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <span class="iconify text-gray-400 w-5 h-5" data-icon="solar:videocamera-record-bold"></span>
+                                </div>
+                                <input type="url" name="motivasi_video"
+                                       value="{{ old('motivasi_video', $berkas->motivasi_video ?? '') }}"
+                                       placeholder="https://instagram.com/reel/..."
+                                       class="w-full pl-12 pr-3 py-3 sm:py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500/20 outline-none transition-all text-sm">
                             </div>
-                            <input type="url" name="motivasi_video"
-                                   value="{{ old('motivasi_video', $berkas->motivasi_video ?? '') }}"
-                                   placeholder="https://instagram.com/reel/..."
-                                   class="w-full pl-12 pr-3 py-3 sm:py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500/20 outline-none transition-all text-sm">
-                        </div>
-                        <p class="text-xs text-gray-500 mb-3">💡 Bisa dari Instagram Reels, TikTok, atau YouTube. Pastikan video bisa diakses publik!</p>
-                        @if($berkas && $berkas->motivasi_video)
-                            <div class="mb-3 p-3 bg-green-50 rounded-xl border border-green-100">
-                                <p class="text-xs text-green-700 font-bold flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                    Link video sudah tersimpan
-                                </p>
-                                <a href="{{ $berkas->motivasi_video }}" target="_blank" class="text-xs text-blue-600 hover:underline mt-1 inline-block break-all">
+                            @if($berkas && $berkas->motivasi_video)
+                                <a href="{{ $berkas->motivasi_video }}" target="_blank" class="text-[10px] text-blue-600 hover:underline mt-1 inline-block break-all">
                                     {{ Str::limit($berkas->motivasi_video, 50) }} →
                                 </a>
+                            @endif
+                        </div>
+
+                        <!-- TikTok Link -->
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2">Link Video Motivation - TikTok</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <span class="iconify text-gray-400 w-5 h-5" data-icon="solar:videocamera-record-bold"></span>
+                                </div>
+                                <input type="url" name="motivasi_video_tiktok"
+                                       value="{{ old('motivasi_video_tiktok', $berkas->motivasi_video_tiktok ?? '') }}"
+                                       placeholder="https://tiktok.com/@user/video/..."
+                                       class="w-full pl-12 pr-3 py-3 sm:py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500/20 outline-none transition-all text-sm">
                             </div>
-                        @endif
+                            @if($berkas && $berkas->motivasi_video_tiktok)
+                                <a href="{{ $berkas->motivasi_video_tiktok }}" target="_blank" class="text-[10px] text-blue-600 hover:underline mt-1 inline-block break-all">
+                                    {{ Str::limit($berkas->motivasi_video_tiktok, 50) }} →
+                                </a>
+                            @endif
+                        </div>
+
+                        <p class="text-xs text-gray-500">💡 Pastikan video bisa diakses publik agar panitia dapat melakukan penilaian.</p>
+                        
                         <button type="submit"
                                 class="w-full sm:w-auto bg-primary-gold text-dark-navy text-sm font-bold px-8 py-3 rounded-xl hover:bg-primary-gold/80 transition-all">
                             💾 Simpan Link Video

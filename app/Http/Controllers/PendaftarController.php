@@ -169,6 +169,7 @@ class PendaftarController extends Controller
             'study_plan' => 'nullable|mimes:pdf,doc,docx|max:5120',
             'surat_rekomendasi_sekolah' => 'nullable|mimes:pdf,doc,docx|max:5120',
             'motivasi_video' => 'nullable|url|max:500',
+            'motivasi_video_tiktok' => 'nullable|url|max:500',
             'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
             'bukti_follow_ig_beasiswamncu' => 'nullable|image|max:5120',
             'bukti_follow_ig_mncu' => 'nullable|image|max:5120',
@@ -192,6 +193,9 @@ class PendaftarController extends Controller
         if (!$uploadField || $uploadField === 'motivasi_video') {
             if ($request->filled('motivasi_video')) {
                 $berkas->motivasi_video = $request->motivasi_video;
+            }
+            if ($request->filled('motivasi_video_tiktok')) {
+                $berkas->motivasi_video_tiktok = $request->motivasi_video_tiktok;
             }
         }
 
@@ -259,7 +263,9 @@ class PendaftarController extends Controller
         if ($request->hasFile('surat_rekomendasi_sekolah'))
             $uploaded[] = 'Surat Rekomendasi Sekolah';
         if ($request->filled('motivasi_video'))
-            $uploaded[] = 'Link Video Motivasi';
+            $uploaded[] = 'Link Video Motivasi IG';
+        if ($request->filled('motivasi_video_tiktok'))
+            $uploaded[] = 'Link Video Motivasi TikTok';
         if ($request->hasFile('bukti_follow_ig_beasiswamncu'))
             $uploaded[] = 'Bukti Follow IG Beasiswa MNCU';
         if ($request->hasFile('bukti_follow_ig_mncu'))

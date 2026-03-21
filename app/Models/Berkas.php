@@ -26,6 +26,7 @@ class Berkas extends Model
         'study_plan',
         'surat_rekomendasi_sekolah',
         'motivasi_video',
+        'motivasi_video_tiktok',
         'surat_buta_warna',
         'bukti_follow_ig_beasiswamncu',
         'bukti_follow_ig_mncu',
