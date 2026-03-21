@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         // Create Admin Account
         \App\Models\Akun::create([
             'nama' => 'Super Admin',
-            'email' => 'admin@mfls.com',
+            'email' => 'info@beasiswamncu.com',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
             'role' => 'admin',
         ]);

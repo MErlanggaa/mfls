@@ -264,7 +264,7 @@
                     </td>
                     <td class="px-4 md:px-8 py-5 text-right">
                          <div class="flex flex-wrap items-center justify-end gap-2 transition-opacity md:opacity-0 md:group-hover:opacity-100">
-                             @if(auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'admin@mfls.com']))
+                             @if(auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
                              <button type="button" onclick="confirmResetPassword({{ $akun->id }}, '{{ $akun->nama }}')" class="w-8 h-8 flex items-center justify-center bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition-all shadow-sm" title="Reset Password">
                                 <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span>
                              </button>
@@ -299,7 +299,7 @@
     </div>
     @endif
 </div>
-@if(auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'admin@mfls.com']))
+@if(auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
 <form id="resetPasswordForm" method="POST" style="display:none;">
     @csrf
     @method('PUT')

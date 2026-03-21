@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
                 );
 
                 // Seleksi Beasiswa (Email Restricted)
-                Route::middleware(['role:email:dion@gmail.com|admin@mfls.com'])->group(function () {
+                Route::middleware(['role:email:dion@gmail.com|info@beasiswamncu.com'])->group(function () {
                     Route::get('/admin/beasiswa', [App\Http\Controllers\AdminController::class , 'indexBeasiswa'])->name('admin.beasiswa.index');
                     Route::get('/admin/beasiswa/{id}', [App\Http\Controllers\AdminController::class , 'showBeasiswa'])->name('admin.beasiswa.show');
                     Route::post('/admin/beasiswa/{id}/update', [App\Http\Controllers\AdminController::class , 'updateBeasiswa'])->name('admin.beasiswa.update');

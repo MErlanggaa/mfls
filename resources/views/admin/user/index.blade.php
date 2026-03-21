@@ -6,7 +6,7 @@
         <h2 class="text-2xl font-black text-gray-800">Manajemen Pengguna</h2>
         <p class="text-gray-500">Kelola akun operasional sistem (Admin, Administrasi, Akademik, Mentor).</p>
     </div>
-    @if(auth()->check() && auth()->user()->email === 'admin@mfls.com')
+    @if(auth()->check() && auth()->user()->role === 'admin')
     <button onclick="openAddModal()" class="px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-black shadow-lg shadow-slate-200 hover:bg-black transition-all uppercase tracking-widest flex items-center gap-2">
         <span class="iconify" data-icon="solar:user-plus-bold"></span> Tambah User
     </button>
@@ -59,7 +59,7 @@
             @endif
         </div>
 
-        @if(auth()->check() && auth()->user()->email === 'admin@mfls.com')
+        @if(auth()->check() && auth()->user()->role === 'admin')
         <div class="flex gap-2">
             <button onclick="openEditModal({{ json_encode($user) }})" class="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-black hover:bg-slate-100 transition-all uppercase tracking-widest">Edit Akun</button>
             <button type="button" onclick="confirmQuickReset({{ $user->id }}, '{{ $user->nama }}')" class="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center hover:bg-yellow-500 hover:text-white transition-all shadow-sm" title="Quick Reset Password">

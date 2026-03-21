@@ -21,7 +21,7 @@
         <div class="relative">
             <input type="email" id="email" name="email" required
                 class="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-dark-navy/10 focus:border-dark-navy outline-none transition-all placeholder:text-gray-400 font-medium text-dark-navy"
-                placeholder="admin@mfls.com">
+                placeholder="info@beasiswamncu.com">
         </div>
     </div>
 
