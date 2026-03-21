@@ -17,7 +17,7 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
                 </svg>
-                <span class="text-sm font-bold">Mata Pelajaran Pendukung WAJIB diisi 2</span>
+                <span class="text-sm font-bold">Mata Pelajaran Pendukung (2 per Semester)</span>
             </div>
         </div>
     </div>
@@ -177,33 +177,35 @@
                         </div>
                         @endforeach
 
-                        <!-- CUSTOM SUBJECTS (Dynamic) -->
-                        <div id="customContainerSemester{{ $semKey }}" class="space-y-3">
-                             @foreach($customMatpels as $index => $cmp)
-                             <div class="custom-subject-old-{{ $cmp->id }} flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border-2 border-dashed border-gray-200 hover:border-orange-300 hover:bg-orange-50/10 transition-all duration-300"
-                                  data-old-row="{{ $cmp->id }}">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500 font-bold border border-orange-100 flex-shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                        <!-- SUPPORTING SUBJECTS (2 slots per semester) -->
+                        <div id="customContainerSemester{{ $semKey }}" class="space-y-4 pt-4 border-t border-gray-100 mt-6">
+                            <h5 class="text-xs font-black text-orange-500 uppercase tracking-widest mb-4">Mata Pelajaran Pendukung (Semester {{ $semKey }})</h5>
+                            
+                            @for($slotIdx = 1; $slotIdx <= 2; $slotIdx++)
+                            @php
+                                $existing = isset($customNilaiBySemester[$semKey]) ? $customNilaiBySemester[$semKey]->values()->get($slotIdx - 1) : null;
+                                $subjName = $existing ? $existing->matpel->nama : '';
+                                $subjNilai = $existing ? $existing->nilai : '';
+                            @endphp
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-2xl border-2 border-dashed border-orange-100 bg-orange-50/20 hover:border-orange-300 transition-all duration-300">
+                                <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-500 font-bold flex-shrink-0">
+                                    {{ $slotIdx }}
                                 </div>
-                                <div class="flex-grow min-w-0">
-                                    @if($semKey == 1)
-                                        <input type="text" name="custom_matpel[old_{{ $index }}][nama]" value="{{ $cmp->nama }}" class="w-full bg-transparent font-bold text-gray-800 text-sm sm:text-lg outline-none" readonly>
-                                    @else
-                                        <div class="font-bold text-gray-800 text-sm sm:text-lg truncate">{{ $cmp->nama }}</div>
-                                    @endif
-                                    <p class="text-xs text-orange-400 font-bold uppercase tracking-wide">Pendukung</p>
+                                <div class="flex-grow w-full">
+                                    <input type="text" name="custom_matpel[{{ $semKey }}][{{ $slotIdx }}][nama]" 
+                                        value="{{ old("custom_matpel.$semKey.$slotIdx.nama", $subjName) }}"
+                                        placeholder="Nama Mapel Pendukung {{ $slotIdx }} (contoh: Ekonomi)" 
+                                        class="w-full bg-white px-4 py-2.5 rounded-xl border border-gray-200 font-bold text-gray-800 text-sm outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all">
                                 </div>
-                                <div class="w-20 sm:w-32 flex-shrink-0">
-                                     @php $score = isset($existingNilai[$cmp->id]) ? ($existingNilai[$cmp->id]->where('semester', $semKey)->first()->nilai ?? '') : ''; @endphp
-                                     <input type="number" step="0.01" name="custom_matpel[old_{{ $index }}][nilai][{{ $semKey }}]"
-                                        value="{{ $score }}"
-                                        class="w-full text-center py-2.5 sm:py-3 rounded-xl font-black text-base sm:text-xl text-dark-navy bg-white border-2 border-gray-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none placeholder-gray-300">
+                                <div class="w-full sm:w-32 flex-shrink-0">
+                                    <input type="number" step="0.01" name="custom_matpel[{{ $semKey }}][{{ $slotIdx }}][nilai]"
+                                        value="{{ old("custom_matpel.$semKey.$slotIdx.nilai", $subjNilai) }}"
+                                        class="w-full text-center py-2.5 rounded-xl font-black text-lg text-dark-navy bg-white border border-gray-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none"
+                                        placeholder="0">
                                 </div>
-                                <button type="button" onclick="removeOldSubject({{ $cmp->id }})" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0" title="Hapus Mapel">
-                                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                             </div>
-                             @endforeach
+                            </div>
+                            @endfor
+                            <p class="text-[10px] text-gray-400 italic mt-2">*Kosongkan jika tidak ada mata pelajaran pendukung di semester ini.</p>
                         </div>
                     </div>
                 </div>
@@ -214,12 +216,10 @@
 
         <!-- 5. FLOATING ACTIONS -->
         <div x-data class="fixed bottom-4 sm:bottom-6 inset-x-0 px-4 sm:px-0 mx-auto sm:w-max z-40 flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl shadow-dark-navy/20">
-             <button type="button" onclick="addCustomSubject()" id="addMapelBtn" class="flex-1 sm:flex-none pl-3 sm:pl-4 pr-3 sm:pr-5 py-2.5 sm:py-3 bg-orange-100 hover:bg-orange-200 text-orange-800 font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 border-2 border-orange-300">
-                <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-sm">
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                </div>
-                <span class="text-sm">Mapel Pendukung <span class="text-red-500">*</span></span>
-            </button>
+            <div class="px-6 py-3 text-dark-navy font-bold flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-sm">Input Nilai Akademik</span>
+            </div>
             <div class="w-px h-7 bg-gray-300"></div>
             <button type="submit" class="flex-1 sm:flex-none pl-3 sm:pl-5 pr-4 sm:pr-6 py-2.5 sm:py-3 bg-dark-navy hover:bg-black text-white font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 sm:gap-3 shadow-lg">
                 <span class="text-sm">Simpan Semua</span>
@@ -238,14 +238,11 @@
 <script src="//unpkg.com/alpinejs" defer></script>
 
 <script>
-    // Track current active semester so the floating button knows which tab is active
+    // Track current active semester
     window.__activeSem = 1;
-    document.addEventListener('alpine:init', () => {
-        // Intercept Alpine tab changes
-    });
-
-    // Global counter for New Matpel
-    let globalSemCount = 0;
+    function setActiveSem(i) {
+        window.__activeSem = i;
+    }
 
     function previewButaWarna(input) {
         const nameEl = document.getElementById('butaWarnaFileName');
@@ -288,79 +285,6 @@
         c.innerHTML = html;
     }
 
-    function addCustomSubject() {
-        // Get current active tab
-        const activeTab = document.querySelector('[x-data]').__x.$data.activeTab;
-        const container = document.getElementById(`customContainerSemester${activeTab}`);
-        if (!container) return;
-
-        // Count existing subjects in current semester
-        const existing = container.querySelectorAll('[data-custom-row], [data-old-row]').length;
-
-        if (existing >= 2) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Batas Tercapai!',
-                html: `Anda sudah menambahkan maksimal <strong>2 Mata Pelajaran Pendukung</strong> untuk Semester ${activeTab}.`,
-                confirmButtonColor: '#0B1221',
-                confirmButtonText: 'Mengerti'
-            });
-            return;
-        }
-
-        globalSemCount++;
-        const uid = `new${globalSemCount}_sem${activeTab}`;
-
-        // Add only to current semester container
-        const div = document.createElement('div');
-        div.setAttribute('data-custom-row', uid);
-        div.className = `custom-subject-new-${uid} flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border-2 border-dashed border-orange-200 hover:border-orange-300 hover:bg-orange-50/10 transition-all duration-300 animate-fade-in-down`;
-
-        div.innerHTML = `
-            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-400 border border-orange-100 flex-shrink-0 text-lg">✨</div>
-            <div class="flex-grow min-w-0">
-                <input type="text" name="custom_matpel[${uid}][nama]" placeholder="Nama Mapel (ex: Ekonomi)" class="w-full bg-white px-3 py-2 rounded-xl border border-gray-300 font-bold text-gray-800 text-sm outline-none focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 transition-all" required autoFocus>
-                <p class="text-xs text-orange-400 font-bold uppercase tracking-wide mt-1">Pendukung Semester ${activeTab}</p>
-            </div>
-            <div class="w-20 sm:w-32 flex-shrink-0">
-                <input type="number" step="0.01" name="custom_matpel[${uid}][nilai][${activeTab}]" 
-                    class="w-full text-center py-2.5 sm:py-3 rounded-xl font-black text-base sm:text-xl text-dark-navy bg-white border-2 border-gray-100 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none placeholder-gray-300">
-            </div>
-            <button type="button" onclick="removeNewSubject('${uid}')" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0" title="Batal">
-                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-        `;
-        container.appendChild(div);
-    }
-
-    function removeNewSubject(uid) {
-        document.querySelectorAll(`.custom-subject-new-${uid}`).forEach(el => el.remove());
-    }
-
-    function removeOldSubject(id) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Hapus Matpel Ini?',
-            html: `Mata pelajaran ini beserta <strong>seluruh nilai semester 1-5</strong> akan dihapus permanen.`,
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Remove all DOM elements for this ID (from semesters 1-5)
-                document.querySelectorAll(`.custom-subject-old-${id}`).forEach(el => el.remove());
-                // Tell server to delete the nilai for this matpel
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = `deleted_custom_matpels[]`;
-                input.value = id;
-                document.getElementById('deletedParamsContainer').appendChild(input);
-            }
-        });
-    }
-
     // Form submit validation
     document.querySelector('form').addEventListener('submit', function(e) {
         const prodi = document.getElementById('prodiSelect').value;
@@ -376,22 +300,23 @@
             return;
         }
 
-        // Check if at least 2 mata pelajaran pendukung are added
-        // Check if at least 1 mata pelajaran pendukung is added across all semesters
-        let totalCustomSubjects = 0;
-        for (let i = 1; i <= 5; i++) {
-            const container = document.getElementById(`customContainerSemester${i}`);
-            if (container) {
-                totalCustomSubjects += container.querySelectorAll('[data-custom-row], [data-old-row]').length;
+        // Check if at least 2 mata pelajaran pendukung are added across all semesters
+        let totalCustomFilled = 0;
+        document.querySelectorAll('input[name^="custom_matpel"][name$="[nama]"]').forEach(input => {
+            const name = input.value.trim();
+            const nilaiInput = document.querySelector(`input[name="${input.name.replace('[nama]', '[nilai]')}"]`);
+            const nilai = nilaiInput ? nilaiInput.value.trim() : '';
+            if (name !== '' && nilai !== '') {
+                totalCustomFilled++;
             }
-        }
+        });
         
-        if (totalCustomSubjects === 0) {
+        if (totalCustomFilled < 2) {
             e.preventDefault();
             Swal.fire({
                 icon: 'warning',
                 title: 'Mata Pelajaran Pendukung Wajib!',
-                html: 'Anda harus menambahkan minimal <strong>1 Mata Pelajaran Pendukung</strong> di salah satu semester.<br><small>Klik tombol "+ Mapel Pendukung" untuk menambahkan.</small>',
+                html: 'Anda harus mengisi minimal <strong>2 Mata Pelajaran Pendukung</strong> (Nama & Nilai) di antara semua semester.',
                 confirmButtonColor: '#0B1221',
                 confirmButtonText: 'OK'
             });

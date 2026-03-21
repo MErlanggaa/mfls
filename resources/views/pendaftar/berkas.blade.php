@@ -474,14 +474,14 @@
                     <div class="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
                         <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                     </div>
-                    Link Video Motivasi
+                    Link Video - Membuat Video Motivasi
                 </h3>
 
                 <form action="{{ route('pendaftar.berkas.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="upload_field" value="motivasi_video">
                     <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-purple-200">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Link Video (Instagram/TikTok/YouTube)</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Link Video - Membuat Video Motivasi (Instagram/TikTok/YouTube)</label>
                         <div class="relative mb-3">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>

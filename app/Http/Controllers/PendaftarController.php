@@ -325,12 +325,15 @@ class PendaftarController extends Controller
 
         // Also get custom matpels IDs that are NOT in the core list but have scores for this user
         $coreIds = $matpels->pluck('id')->toArray();
-        $customMatpelIds = \App\Models\Nilai::where('peserta_id', $peserta->id)->whereNotIn('matpel_id', $coreIds)->pluck('matpel_id')->unique();
-        $customMatpels = \App\Models\Matpel::whereIn('id', $customMatpelIds)->get();
+        $customNilaiBySemester = \App\Models\Nilai::with('matpel')
+            ->where('peserta_id', $peserta->id)
+            ->whereNotIn('matpel_id', $coreIds)
+            ->get()
+            ->groupBy('semester');
 
         $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
 
-        return view('pendaftar.nilai', compact('peserta', 'matpels', 'existingNilai', 'customMatpels', 'berkas'));
+        return view('pendaftar.nilai', compact('peserta', 'matpels', 'existingNilai', 'customNilaiBySemester', 'berkas'));
     }
 
     public function storeNilai(Request $request)
@@ -349,8 +352,19 @@ class PendaftarController extends Controller
         $peserta->update(['pilihan_prodi' => $request->pilihan_prodi]);
 
         // Server-side validation for mandatory supporting subjects
-        // We check if at least 2 custom_matpels are present in the request
-        if (!$request->has('custom_matpel') || count($request->custom_matpel) < 2) {
+        // Validasi: harus ada minimal 2 matpel pendukung yang diisi (nama & nilai) di seluruh semester
+        $customCount = 0;
+        if ($request->has('custom_matpel')) {
+            foreach ($request->custom_matpel as $sem => $slots) {
+                foreach ($slots as $slot) {
+                    if (!empty($slot['nama']) && ($slot['nilai'] || $slot['nilai'] === '0')) {
+                        $customCount++;
+                    }
+                }
+            }
+        }
+
+        if ($customCount < 2) {
             return back()->withInput()->with('error', 'Anda wajib menambahkan minimal 2 Mata Pelajaran Pendukung.');
         }
 
@@ -407,21 +421,26 @@ class PendaftarController extends Controller
             }
         }
 
-        // Save Custom Subjects
+        // Save Custom Subjects (2 per semester)
         if ($request->has('custom_matpel')) {
-            foreach ($request->custom_matpel as $custom) {
-                if (!empty($custom['nama'])) {
-                    // Create or Get Matpel
-                    $matpel = \App\Models\Matpel::firstOrCreate(['nama' => $custom['nama']]);
-                    if (isset($custom['nilai'])) {
-                        foreach ($custom['nilai'] as $sem => $val) {
-                            if ($val || $val === '0') {
-                                \App\Models\Nilai::updateOrCreate(
-                                ['peserta_id' => $peserta->id, 'matpel_id' => $matpel->id, 'semester' => $sem],
-                                ['nilai' => $val]
-                                );
-                            }
-                        }
+            $coreSubjects = ['Bahasa Indonesia', 'Matematika Wajib', 'Bahasa Inggris'];
+            $coreIds = \App\Models\Matpel::whereIn('nama', $coreSubjects)->pluck('id')->toArray();
+            
+            // First, delete current custom scores to handle "overwriting" or clearing slots
+            // Actually, better to only delete scores for custom matpels for THIS user
+            \App\Models\Nilai::where('peserta_id', $peserta->id)
+                ->whereNotIn('matpel_id', $coreIds)
+                ->delete();
+
+            foreach ($request->custom_matpel as $sem => $slots) {
+                foreach ($slots as $slot) {
+                    if (!empty($slot['nama']) && ($slot['nilai'] || $slot['nilai'] === '0')) {
+                        // Create or Get Matpel
+                        $matpel = \App\Models\Matpel::firstOrCreate(['nama' => $slot['nama']]);
+                        \App\Models\Nilai::updateOrCreate(
+                            ['peserta_id' => $peserta->id, 'matpel_id' => $matpel->id, 'semester' => $sem],
+                            ['nilai' => $slot['nilai']]
+                        );
                     }
                 }
             }
