@@ -57,6 +57,9 @@
     </style>
     @stack('meta')
     @stack('styles')
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7284443532822005"
+         crossorigin="anonymous"></script>
 </head>
 <body class="font-jakarta antialiased">
     <div class="min-h-screen flex flex-col bg-white w-full">

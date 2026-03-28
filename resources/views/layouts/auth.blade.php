@@ -50,6 +50,9 @@
             }
         }
     </style>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7284443532822005"
+         crossorigin="anonymous"></script>
 </head>
 <body class="font-jakarta antialiased bg-white">
     <div class="flex min-h-screen">
