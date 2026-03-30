@@ -53,7 +53,7 @@
             
             <!-- Right Column: Hero Image -->
             <div class="relative w-full scroll-fade-right mt-6 lg:mt-0 max-w-md mx-auto lg:max-w-none overflow-hidden rounded-2xl sm:rounded-[2.5rem]">
-                <img src="{{ asset('icon/newlogo.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.05] transition-transform duration-500">
+                <img loading="lazy" src="{{ asset('icon/newlogo.png') }}" alt="MNCU Future Leader Scholarship" class="w-full h-auto rounded-2xl sm:rounded-[2.5rem] hover:scale-[1.05] transition-transform duration-500">
             </div>
         </div>
     </div>
@@ -147,22 +147,22 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                 <div class="grid grid-cols-2 gap-4">
                     <!-- Top Right -->
                     <div class="col-start-2">
-                        <img src="{{ asset('icon/Student1.png') }}" alt="Students Photo 1" class="rounded-2xl shadow-lg w-full h-64 object-cover">
+                        <img loading="lazy" src="{{ asset('icon/Student1.png') }}" alt="Students Photo 1" class="rounded-2xl shadow-lg w-full h-64 object-cover">
                     </div>
                     
                     <!-- Middle Left -->
                     <div class="col-start-1 row-start-2">
-                        <img src="{{ asset('icon/seminar2.jpeg') }}" alt="Seminar Photo 2" class="rounded-2xl shadow-lg w-full h-48 object-cover">
+                        <img loading="lazy" src="{{ asset('icon/seminar2.jpeg') }}" alt="Seminar Photo 2" class="rounded-2xl shadow-lg w-full h-48 object-cover">
                     </div>
                     
                     <!-- Middle Right -->
                     <div class="col-start-2 row-start-2">
-                        <img src="{{ asset('icon/group3.jpeg') }}" alt="Group Photo 3" class="rounded-2xl shadow-lg w-full h-48 object-cover">
+                        <img loading="lazy" src="{{ asset('icon/group3.jpeg') }}" alt="Group Photo 3" class="rounded-2xl shadow-lg w-full h-48 object-cover">
                     </div>
                     
                     <!-- Bottom Left -->
                     <div class="col-start-1 row-start-3">
-                        <img src="{{ asset('icon/student4.jpeg') }}" alt="Students Photo 4" class="rounded-2xl shadow-lg w-full h-64 object-cover">
+                        <img loading="lazy" src="{{ asset('icon/student4.jpeg') }}" alt="Students Photo 4" class="rounded-2xl shadow-lg w-full h-64 object-cover">
                     </div>
                 </div>
             </div>
@@ -398,7 +398,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             
             <!-- Right: Image -->
             <div class="relative order-1 lg:order-2">
-                <img src="{{ asset('icon/Keuntungan.png') }}" alt="Benefit Keuntungan" class="  ">
+                <img loading="lazy" src="{{ asset('icon/Keuntungan.png') }}" alt="Benefit Keuntungan" class="  ">
             </div>
         </div>
     </div>
@@ -528,7 +528,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             
             <!-- Right: Portrait Photo -->
             <div>
-<img src="{{ asset('icon/scholarr.png') }}" alt="Scholar Portrait" class="w-full">            </div>
+<img loading="lazy" src="{{ asset('icon/scholarr.png') }}" alt="Scholar Portrait" class="w-full">            </div>
         </div>
     </div>
 </div>
@@ -546,7 +546,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             @foreach($beritas as $berita)
             <div class="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 scroll-fade">
                 @if($berita->thumbnail)
-                <img src="{{ asset('storage/' . $berita->thumbnail) }}" alt="{{ $berita->judul }}" class="w-full h-48 object-cover">
+                <img loading="lazy" src="{{ asset('storage/' . $berita->thumbnail) }}" alt="{{ $berita->judul }}" class="w-full h-48 object-cover">
                 @else
                 <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                     <span class="iconify text-4xl text-gray-400" data-icon="solar:gallery-bold-duotone"></span>
@@ -619,7 +619,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                         <p class="text-gray-700 text-lg md:text-xl leading-relaxed mb-8 italic text-center">"{{ $testimonial['quote'] }}"</p>
                         
                         <div class="flex items-center justify-center gap-4 border-t border-gray-100 pt-6">
-                            <img src="{{ asset('icon/' . $testimonial['photo']) }}" alt="{{ $testimonial['name'] }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary-yellow/20">
+                            <img loading="lazy" src="{{ asset('icon/' . $testimonial['photo']) }}" alt="{{ $testimonial['name'] }}" class="w-16 h-16 rounded-full object-cover border-2 border-primary-yellow/20">
                             <div>
                                 <h4 class="font-bold text-dark-navy text-lg">{{ $testimonial['name'] }}</h4>
                                 <p class="text-sm text-gray-500">{{ $testimonial['major'] }}</p>
@@ -726,7 +726,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/MNCU Future Leader Scholarship_20260316_040958_0000.png') }}?v={{ time() }}" alt="MAJU BERSAMA OSIS" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/MNCU Future Leader Scholarship_20260316_040958_0000.png') }}?v={{ time() }}" alt="MAJU BERSAMA OSIS" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">Maju Bersama Osis</h4>
                 </div>
@@ -736,7 +736,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/Logo FON .png') }}?v={{ time() }}" alt="FORUM OSIS NASIONAL" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/Logo FON .png') }}?v={{ time() }}" alt="FORUM OSIS NASIONAL" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">Forum OSIS Nasional</h4>
                 </div>
@@ -746,7 +746,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/Logo_MudaBerdaya - Square Primary.png') }}?v={{ time() }}" alt="MUDA BERDAYA" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/Logo_MudaBerdaya - Square Primary.png') }}?v={{ time() }}" alt="MUDA BERDAYA" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">Muda Berdaya</h4>
                 </div>
@@ -756,7 +756,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/zeekend.png') }}?v={{ time() }}" alt="ZEEKEND" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/zeekend.png') }}?v={{ time() }}" alt="ZEEKEND" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">ZEEKEND</h4>
                 </div>
@@ -766,7 +766,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/gensmart.jpeg') }}?v={{ time() }}" alt="GENSMART INDONESIA" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/gensmart.jpeg') }}?v={{ time() }}" alt="GENSMART INDONESIA" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">GENSMART INDONESIA</h4>
                 </div>
@@ -776,7 +776,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/forum osis bogor.png') }}?v={{ time() }}" alt="FORUM OSIS KABUPATEN BOGOR" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/forum osis bogor.png') }}?v={{ time() }}" alt="FORUM OSIS KABUPATEN BOGOR" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM OSIS KABUPATEN BOGOR</h4>
                 </div>
@@ -786,7 +786,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/forum pemuda beraksi jawa barat.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI JABAR" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/forum pemuda beraksi jawa barat.jpeg') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI JABAR" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM PEMUDA BERAKSI JABAR</h4>
                 </div>
@@ -796,7 +796,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/forum osis banten.png') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI BANTEN" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/forum osis banten.png') }}?v={{ time() }}" alt="FORUM PEMUDA BERAKSI BANTEN" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM PEMUDA BERAKSI BANTEN</h4>
                 </div>
@@ -806,7 +806,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/tunas satria sriwijaya.jpeg') }}?v={{ time() }}" alt="TUNAS SATRIA WIJAYA" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/tunas satria sriwijaya.jpeg') }}?v={{ time() }}" alt="TUNAS SATRIA WIJAYA" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">TUNAS SATRIA WIJAYA</h4>
                 </div>
@@ -816,7 +816,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/forum osis sekolah islam terpadu.png') }}?v={{ time() }}" alt="FORUM SEKOLAH ISLAM TERPADU" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/forum osis sekolah islam terpadu.png') }}?v={{ time() }}" alt="FORUM SEKOLAH ISLAM TERPADU" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM SEKOLAH ISLAM TERPADU</h4>
                 </div>
@@ -826,7 +826,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/forum osis jakarta pusat.png') }}?v={{ time() }}" alt="FORUM OSIS DAERAH JAKARTA PUSAT" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/forum osis jakarta pusat.png') }}?v={{ time() }}" alt="FORUM OSIS DAERAH JAKARTA PUSAT" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM OSIS DAERAH JAKARTA PUSAT</h4>
                 </div>
@@ -836,7 +836,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3">
-                        <img src="{{ asset('icon/forum osis kota sukabumi.png') }}?v={{ time() }}" alt="FORUM OSIS KOTA SUKABUMI" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/forum osis kota sukabumi.png') }}?v={{ time() }}" alt="FORUM OSIS KOTA SUKABUMI" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM OSIS KOTA SUKABUMI</h4>
                 </div>
@@ -846,7 +846,7 @@ autoSlideInterval = setInterval(autoSlide, 5000);
             <div class="group transform hover:-translate-y-1 transition-all duration-300">
                 <div class="flex flex-col items-center justify-center p-4">
                     <div class="w-full h-28 flex items-center justify-center mb-3 bg-white rounded-xl">
-                        <img src="{{ asset('icon/FORUM OSIS SMK DAERAH KHUSUS JAKARTA.png') }}?v={{ time() }}" alt="FORUM OSIS SMK DAERAH KHUSUS JAKARTA" class="max-w-full max-h-full object-contain">
+                        <img loading="lazy" src="{{ asset('icon/FORUM OSIS SMK DAERAH KHUSUS JAKARTA.png') }}?v={{ time() }}" alt="FORUM OSIS SMK DAERAH KHUSUS JAKARTA" class="max-w-full max-h-full object-contain">
                     </div>
                     <h4 class="text-[10px] sm:text-xs font-bold text-dark-navy text-center group-hover:text-primary-blue transition-colors uppercase tracking-wider">FORUM OSIS SMK DAERAH KHUSUS JAKARTA</h4>
                 </div>
@@ -1294,22 +1294,12 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const totalPendaftar = {{ $totalPendaftar ?? 0 }};
-    const locationStats = @json($locationStats ?? []);
 
     const toastMessages = [
         { text: `🚀 Wow! Saat ini sudah <span class="text-primary-yellow text-lg">${totalPendaftar}</span> orang bergabung di jalur Future Leader.`, time: 'Daftar sekarang!' }
     ];
 
-    if (locationStats && locationStats.length > 0) {
-        locationStats.forEach(stat => {
-            if (stat.lokasi) {
-                toastMessages.push({ 
-                    text: `🎉 <span class="text-primary-blue">${stat.total} pendaftar</span> dari <span class="text-primary-blue">${stat.lokasi}</span> telah bergabung!`, 
-                    time: 'Baru saja' 
-                });
-            }
-        });
-    }
+ 
 
     let currentToast = 0;
     const toastEl = document.getElementById('live-toast');
@@ -1336,7 +1326,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 toastEl.classList.add('translate-x-[200%]');
                 toastEl.classList.remove('opacity-100');
                 currentToast = (currentToast + 1) % toastMessages.length;
-            }, 5000);
+            }, 10000);
         }, 500); // short delay to ensure clean re-render
     }
 
