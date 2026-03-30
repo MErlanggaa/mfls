@@ -57,6 +57,14 @@
                     <label class="text-sm font-bold text-gray-700">Tahun Lulus</label>
                     <input type="number" name="tahun_lulus" value="{{ $peserta->tahun_lulus }}" placeholder="2024" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
                 </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-700">No. WhatsApp Guru BK</label>
+                    <input type="text" name="no_guru_bk" value="{{ $peserta->no_guru_bk }}" placeholder="Contoh: 0812xxxx" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div>
+                <div class="col-span-full space-y-2">
+                    <label class="text-sm font-bold text-gray-700">Kode Referal (Opsional)</label>
+                    <input type="text" name="kode_referral" value="{{ $peserta->daftar->kode_referral ?? '' }}" placeholder="Masukkan kode referral jika ada" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
+                </div>
                 <!-- <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700">Link Instagram</label>
                     <input type="text" name="link_ig" value="{{ $peserta->link_ig }}" placeholder="https://instagram.com/user" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">

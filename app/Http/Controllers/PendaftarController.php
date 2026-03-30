@@ -132,14 +132,20 @@ class PendaftarController extends Controller
             'kabupaten' => 'required|string|max:100',
             'nama_sekolah' => 'required|string|max:255',
             'tahun_lulus' => 'required|integer',
+            'no_guru_bk' => 'nullable|string|max:30',
+            'kode_referral' => 'nullable|string|max:50',
         ], [
             'nisn.unique' => 'NISN ini sudah terdaftar dalam sistem.',
             'no_whatsapp.unique' => 'Nomor WhatsApp ini sudah digunakan oleh pendaftar lain.',
         ]);
 
         $peserta->update($request->only([
-            'nisn', 'no_whatsapp', 'jenis_kelamin', 'tgl_lahir', 'provinsi', 'kabupaten', 'nama_sekolah', 'tahun_lulus'
+            'nisn', 'no_whatsapp', 'jenis_kelamin', 'tgl_lahir', 'provinsi', 'kabupaten', 'nama_sekolah', 'tahun_lulus', 'no_guru_bk'
         ]));
+
+        if ($peserta->daftar) {
+            $peserta->daftar->update(['kode_referral' => $request->kode_referral]);
+        }
 
         $this->logAktivitas('Update Biodata', 'Peserta', $peserta->id, 'Memperbarui data profil dan biodata diri.');
 

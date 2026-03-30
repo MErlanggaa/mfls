@@ -621,6 +621,90 @@ class AdminController extends Controller
         return view('admin.pendaftar.show', compact('user'));
     }
 
+    public function uploadBerkas(Request $request, $id)
+    {
+        $user = auth()->user();
+        if ($user->role !== 'admin' && !in_array($user->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+            return abort(403);
+
+        $request->validate([
+            'field' => 'required|string',
+            'file' => 'required|file|max:10240' // max 10MB
+        ]);
+
+        $akun = Akun::with('peserta')->findOrFail($id);
+        $peserta = $akun->peserta;
+        if (!$peserta) return back()->with('error', 'Peserta tidak ditemukan.');
+
+        $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
+        
+        $field = $request->field;
+        // Upload
+        $path = $request->file('file')->store('berkas/' . $peserta->id . (str_starts_with($field, 'rapor') ? '/' . $field : ''), 'public');
+        $this->compressImage($path);
+
+        if (str_starts_with($field, 'rapor')) {
+            $existing = $berkas->$field ? json_decode($berkas->$field, true) : [];
+            if (!is_array($existing)) $existing = $berkas->$field ? [$berkas->$field] : [];
+            $existing[] = $path;
+            $berkas->$field = json_encode($existing);
+        } else {
+            if ($berkas->$field) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($berkas->$field);
+            }
+            $berkas->$field = $path;
+        }
+        
+        $berkas->save();
+        
+        $this->logAktivitas('Upload Berkas Admin', 'Berkas', $berkas->id, "Admin mengunggah berkas $field untuk " . $akun->nama);
+        return back()->with('success', "Berkas $field berhasil diunggah!");
+    }
+
+    public function deleteBerkas(Request $request, $id)
+    {
+        $user = auth()->user();
+        if ($user->role !== 'admin' && !in_array($user->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+            return abort(403);
+
+        $request->validate([
+            'field' => 'required|string',
+            'path' => 'nullable|string'
+        ]);
+
+        $akun = Akun::with('peserta.berkas')->findOrFail($id);
+        $berkas = $akun->peserta->berkas;
+        if (!$berkas) return back()->with('error', 'Berkas tidak ditemukan.');
+
+        $field = $request->field;
+        $pathToDelete = $request->path;
+
+        if (str_starts_with($field, 'rapor')) {
+            $existing = $berkas->$field ? json_decode($berkas->$field, true) : [];
+            if (!is_array($existing)) $existing = $berkas->$field ? [$berkas->$field] : [];
+
+            if ($pathToDelete) {
+                $existing = array_values(array_filter($existing, fn($p) => $p !== $pathToDelete));
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($pathToDelete);
+            } else {
+                foreach($existing as $p) {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($p);
+                }
+                $existing = [];
+            }
+            $berkas->$field = count($existing) > 0 ? json_encode($existing) : null;
+        } else {
+            if ($berkas->$field) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($berkas->$field);
+            }
+            $berkas->$field = null;
+        }
+
+        $berkas->save();
+
+        $this->logAktivitas('Hapus Berkas Admin', 'Berkas', $berkas->id, "Admin menghapus berkas $field untuk " . $akun->nama);
+        return back()->with('success', "Berkas $field berhasil dihapus!");
+    }
 
     public function indexSoal(Request $request)
     {

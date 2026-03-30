@@ -120,6 +120,9 @@
                                     @endif
                                 </div>
                                 <p class="text-xs text-gray-500 font-medium">{{ $file['desc'] }}</p>
+                                @if(str_starts_with($file['name'], 'rapor') || $file['name'] == 'ijazah' || $file['name'] == 'foto')
+                                    <p class="text-[9px] text-orange-400 font-bold italic mt-0.5 mb-1 leading-tight">Jika terjadi error saat upload, pastikan Anda memilih file dari "Penyimpanan Internal" HP, bukan dari sinkronisasi Google Drive/Photos.</p>
+                                @endif
                                 @if($isUploaded)
                                     <p class="text-xs text-green-600 font-bold mt-0.5">✓ {{ $fileCount }} File terunggah</p>
                                 @else

@@ -112,7 +112,7 @@
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                     </div>
                                     <p class="mb-1 text-xs sm:text-sm text-gray-500 font-bold"><span class="text-blue-600">Klik untuk upload</span> rapor</p>
-                                    <p class="text-xs text-gray-400 font-medium">PDF/JPG (Max 5MB)</p>
+                                    <p class="text-xs text-gray-400 font-medium text-center px-2">PDF/JPG (Max 5MB)<br><span class="text-[9px] text-orange-400 font-bold italic block mt-1">Jika error, pastikan pilih file dari "Penyimpanan Internal" (bukan Google Drive/Photos)</span></p>
                                 </div>
                                 <input type="file" name="rapor{{ $semKey }}[]" multiple class="hidden" onchange="previewFiles(this, 'preview-{{ $semKey }}')" />
                             </label>

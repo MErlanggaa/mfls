@@ -45,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/{id}', [App\Http\Controllers\AdminController::class , 'detailPendaftar'])->name('show');
                     Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class , 'verifikasi'])->name('verify');
                     Route::get('/{id}/download-zip', [App\Http\Controllers\AdminController::class , 'downloadZip'])->name('download_zip');
+                    Route::post('/{id}/upload-berkas', [App\Http\Controllers\AdminController::class , 'uploadBerkas'])->name('upload_berkas');
+                    Route::post('/{id}/delete-berkas', [App\Http\Controllers\AdminController::class , 'deleteBerkas'])->name('delete_berkas');
                     Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class , 'storePenilaianMentor'])->name('mentor_nilai');
                     Route::delete('/{id}', [App\Http\Controllers\AdminController::class , 'destroyPendaftar'])->name('destroy');
                 }

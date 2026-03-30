@@ -177,20 +177,50 @@
                         $files = $val ? [$val] : [];
                     }
                 @endphp
-                <div class="p-6 {{ count($files) > 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100' }} rounded-3xl border flex flex-col justify-center min-h-[100px]">
+                <div class="p-6 {{ count($files) > 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-50 border-slate-100' }} rounded-3xl border flex flex-col justify-center min-h-[100px] relative group">
                     <div class="flex items-center justify-between w-full mb-3">
                         <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $label }}</div>
-                        <div class="text-xs font-bold {{ count($files) > 0 ? 'text-emerald-600' : 'text-slate-400' }}">
-                            {{ count($files) > 0 ? count($files).' FILE' : 'KOSONG' }}
+                        <div class="flex items-center gap-2">
+                            <div class="text-xs font-bold {{ count($files) > 0 ? 'text-emerald-600' : 'text-slate-400' }}">
+                                {{ count($files) > 0 ? count($files).' FILE' : 'KOSONG' }}
+                            </div>
+                            @if(in_array(auth()->user()->role, ['admin', 'akademik']) || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+                                @if(count($files) == 0 || str_starts_with($key, 'rapor'))
+                                <button type="button" onclick="openUploadModal('{{ $key }}', '{{ $label }}')" class="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-600 hover:text-white transition-all" title="Upload Berkas">
+                                    <span class="iconify" data-icon="solar:upload-bold"></span>
+                                </button>
+                                @endif
+                                @if(count($files) > 0 && !str_starts_with($key, 'rapor'))
+                                <form action="{{ route('admin.pendaftar.delete_berkas', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin menghapus dokumen ini?')">
+                                    @csrf
+                                    <input type="hidden" name="field" value="{{ $key }}">
+                                    <button type="submit" class="p-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all" title="Hapus Berkas">
+                                        <span class="iconify" data-icon="solar:trash-bin-trash-bold"></span>
+                                    </button>
+                                </form>
+                                @endif
+                            @endif
                         </div>
                     </div>
                     
                     @if(count($files) > 0)
                         <div class="flex flex-wrap gap-2">
                         @foreach($files as $idx => $path)
-                            <a href="{{ asset('storage/' . $path) }}" target="_blank" class="px-3 py-2 bg-white text-emerald-600 rounded-xl border border-emerald-100 shadow-sm hover:scale-105 transition-all text-[10px] font-black flex items-center gap-1">
-                                <span class="iconify" data-icon="solar:document-bold"></span> FILE {{ $idx + 1 }}
-                            </a>
+                            <div class="flex items-center gap-1">
+                                <a href="{{ asset('storage/' . $path) }}" target="_blank" class="px-3 py-2 bg-white text-emerald-600 rounded-xl border border-emerald-100 shadow-sm hover:scale-105 transition-all text-[10px] font-black flex items-center gap-1">
+                                    <span class="iconify" data-icon="solar:document-bold"></span> FILE {{ $idx + 1 }}
+                                </a>
+                                @if(str_starts_with($key, 'rapor') && (in_array(auth()->user()->role, ['admin', 'akademik']) || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com'])))
+                                <form action="{{ route('admin.pendaftar.delete_berkas', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin menghapus file ini?')">
+                                    @csrf
+                                    <input type="hidden" name="field" value="{{ $key }}">
+                                    <input type="hidden" name="path" value="{{ $path }}">
+                                    <button type="submit" class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus File Rapor">
+                                        <span class="iconify w-4 h-4" data-icon="solar:close-circle-bold"></span>
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
                         @endforeach
                         </div>
                     @else
@@ -411,6 +441,39 @@ function confirmVerify(button, status, name) {
         borderRadius: '2rem',
         customClass: { title: 'font-black', content: 'font-semibold' }
     }).then((result) => { if (result.isConfirmed) { button.closest('form').submit(); } });
+}
+
+function openUploadModal(field, label) {
+    Swal.fire({
+        title: `Upload ${label}`,
+        html: `
+            <form id="adminUploadForm" action="{{ route('admin.pendaftar.upload_berkas', $user->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="field" value="${field}">
+                <div class="mt-4">
+                    <input type="file" name="file" class="w-full text-sm text-slate-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100 outline-none" required>
+                    <p class="mt-2 text-xs text-slate-400">PDF/JPG/PNG Max 10MB.</p>
+                </div>
+            </form>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Upload Sekarang',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#3b82f6',
+        preConfirm: () => {
+            const fileInput = document.querySelector('#adminUploadForm input[type="file"]');
+            if (!fileInput.files.length) {
+                Swal.showValidationMessage('Harap pilih file terlebih dahulu');
+                return false;
+            }
+            document.getElementById('adminUploadForm').submit();
+        }
+    });
 }
 </script>
 @if(auth()->user()->role === 'admin')
