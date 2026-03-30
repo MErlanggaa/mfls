@@ -94,9 +94,10 @@
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Program</a>
                         <a href="{{ url('/') }}#berita"
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Berita</a>
-                        <!-- <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors">Hasil Seleksi</a> -->
                         <a href="{{ url('/') }}#contact"
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Kontak</a>
+                        <a href="{{ route('quiz.show') }}"
+                            class="text-sm font-semibold text-primary-blue bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:bg-primary-yellow hover:text-dark-navy transition-all">Rekomendasi Prodi</a>
                     </div>
 
                     <!-- CTA Buttons -->
@@ -134,9 +135,10 @@
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Program</a>
                         <a href="{{ url('/') }}#berita"
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Berita</a>
-                        <!-- <a href="{{ url('/pengumuman') }}" class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors mobile-nav-link">Hasil Seleksi</a> -->
                         <a href="{{ url('/') }}#contact"
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Kontak</a>
+                        <a href="{{ route('quiz.show') }}"
+                            class="text-sm font-semibold text-primary-blue bg-blue-50 px-3 py-2 rounded-xl text-center border border-blue-100">Rekomendasi Prodi</a>
                     </div>
                 </div>
             </div>
