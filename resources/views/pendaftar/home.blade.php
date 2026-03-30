@@ -1330,10 +1330,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500); // short delay to ensure clean re-render
     }
 
-    // Start cycle immediately after page load
+    // Start cycle immediately after page load, but only show once per session
     setTimeout(() => {
-        showNextToast();
-        setInterval(showNextToast, 12000); // 12s cycle (5s visible, 7s hidden)
+        if (!sessionStorage.getItem('mfls_live_toast_shown')) {
+            showNextToast();
+            sessionStorage.setItem('mfls_live_toast_shown', 'true');
+        }
     }, 500);
 });
 </script>
