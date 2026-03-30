@@ -1294,18 +1294,18 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const totalPendaftar = {{ $totalPendaftar ?? 0 }};
-    const recentPesertas = @json($recentPesertas ?? []);
+    const locationStats = @json($locationStats ?? []);
 
     const toastMessages = [
         { text: `🚀 Wow! Saat ini sudah <span class="text-primary-yellow text-lg">${totalPendaftar}</span> orang bergabung di jalur Future Leader.`, time: 'Daftar sekarang!' }
     ];
 
-    if (recentPesertas && recentPesertas.length > 0) {
-        recentPesertas.forEach(p => {
-            if (p.lokasi) {
+    if (locationStats && locationStats.length > 0) {
+        locationStats.forEach(stat => {
+            if (stat.lokasi) {
                 toastMessages.push({ 
-                    text: `🎉 <span class="text-primary-blue">Seseorang</span> dari <span class="text-primary-blue">${p.lokasi}</span> baru saja menyelesaikan pendaftaran!`, 
-                    time: p.time 
+                    text: `🎉 <span class="text-primary-blue">${stat.total} pendaftar</span> dari <span class="text-primary-blue">${stat.lokasi}</span> telah bergabung!`, 
+                    time: 'Baru saja' 
                 });
             }
         });

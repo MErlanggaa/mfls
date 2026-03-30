@@ -16,20 +16,21 @@ Route::get('/', function () {
     // Asumsi ingin menambahkan efek 100 base data agar terlihat ramai di awal
     // $totalPendaftar += 100; // Un-comment jika ingin tambah data dummy
     
-    // Get 5 recent registered users for the popup
-    $recentPesertas = \App\Models\Peserta::select('nama', 'kabupaten', 'created_at')
-                        ->orderBy('created_at', 'desc')
+    // Dapatkan data agregat pendaftar berdasarkan kabupaten/kota
+    $locationStats = \App\Models\Peserta::select('kabupaten', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+                        ->whereNotNull('kabupaten')
+                        ->groupBy('kabupaten')
+                        ->orderByDesc('total')
                         ->take(5)
                         ->get()
                         ->map(function($p) {
                             return [
-                                'nama' => strtok($p->nama, " "), // Ambil kata pertama saja (nama panggilan)
-                                'lokasi' => $p->kabupaten ?? 'Indonesia',
-                                'time' => $p->created_at->diffForHumans()
+                                'total' => $p->total,
+                                'lokasi' => $p->kabupaten,
                             ];
                         });
 
-    return view('pendaftar.home', compact('beritas', 'totalPendaftar', 'recentPesertas'));
+    return view('pendaftar.home', compact('beritas', 'totalPendaftar', 'locationStats'));
 });
 
 // Pengumuman Route (Public)
