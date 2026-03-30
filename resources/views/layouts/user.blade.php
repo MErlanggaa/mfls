@@ -97,7 +97,8 @@
                         <a href="{{ url('/') }}#contact"
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link">Kontak</a>
                         <a href="{{ route('quiz.show') }}"
-                            class="text-sm font-semibold text-primary-blue bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:bg-primary-yellow hover:text-dark-navy transition-all">Rekomendasi Prodi</a>
+                            class="text-sm font-semibold text-primary-blue bg-blue-50 px-3 py-1 rounded-full border border-blue-100 hover:bg-primary-yellow hover:text-dark-navy transition-all">Rekomendasi
+                            Prodi</a>
                     </div>
 
                     <!-- CTA Buttons -->
@@ -138,7 +139,8 @@
                         <a href="{{ url('/') }}#contact"
                             class="text-sm font-semibold text-gray-600 hover:text-primary-yellow transition-colors nav-link mobile-nav-link">Kontak</a>
                         <a href="{{ route('quiz.show') }}"
-                            class="text-sm font-semibold text-primary-blue bg-blue-50 px-3 py-2 rounded-xl text-center border border-blue-100">Rekomendasi Prodi</a>
+                            class="text-sm font-semibold text-primary-blue bg-blue-50 px-3 py-2 rounded-xl text-center border border-blue-100">Rekomendasi
+                            Prodi</a>
                     </div>
                 </div>
             </div>
@@ -220,7 +222,41 @@
                     </div>
                 </div>
             </div>
+            <div
+                class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-8 mt-16 pt-8 border-t border-gray-800 text-center flex flex-col items-center">
+                <p class="text-xs text-gray-500">
+                    &copy; {{ date('Y') }} beasiswamncu. All rights reserved.
+                    <span id="easter-egg-trigger" class="ml-1 cursor-pointer hover:text-gray-400 transition-colors"
+                        title="Version Info">v1.0.0</span>
+                </p>
+            </div>
         </footer>
+
+        <script>
+            // Easter Egg Script
+            document.addEventListener('DOMContentLoaded', function () {
+                const trigger = document.getElementById('easter-egg-trigger');
+                if (trigger) {
+                    let clickCount = 0;
+                    let clickTimer;
+
+                    trigger.addEventListener('click', function () {
+                        clickCount++;
+
+                        clearTimeout(clickTimer);
+                        clickTimer = setTimeout(() => {
+                            clickCount = 0;
+                        }, 1000); // reset if gap > 1s
+
+                        if (clickCount >= 2) {
+                            alert("✨ Website ini dibangun dan didesain dengan sepenuh hati oleh Muhammad Erlangga Putra Witanto ✨");
+                            console.log("%c✨ Developed by Muhammad Erlangga Putra Witanto ✨", "color: #fff; background: #EAB308; padding: 10px; border-radius: 5px; font-size: 16px; font-weight: bold; font-family: sans-serif;");
+                            clickCount = 0;
+                        }
+                    });
+                }
+            });
+        </script>
     </div>
 
     <!-- Smooth Scrolling Navigation Script -->

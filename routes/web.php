@@ -9,7 +9,27 @@ use Illuminate\Support\Facades\Route;
 // Guest Routes
 Route::get('/', function () {
     $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
-    return view('pendaftar.home', compact('beritas'));
+    
+    // Live Counter Data
+    $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->count();
+    
+    // Asumsi ingin menambahkan efek 100 base data agar terlihat ramai di awal
+    // $totalPendaftar += 100; // Un-comment jika ingin tambah data dummy
+    
+    // Get 5 recent registered users for the popup
+    $recentPesertas = \App\Models\Peserta::select('nama', 'kabupaten', 'created_at')
+                        ->orderBy('created_at', 'desc')
+                        ->take(5)
+                        ->get()
+                        ->map(function($p) {
+                            return [
+                                'nama' => strtok($p->nama, " "), // Ambil kata pertama saja (nama panggilan)
+                                'lokasi' => $p->kabupaten ?? 'Indonesia',
+                                'time' => $p->created_at->diffForHumans()
+                            ];
+                        });
+
+    return view('pendaftar.home', compact('beritas', 'totalPendaftar', 'recentPesertas'));
 });
 
 // Pengumuman Route (Public)
