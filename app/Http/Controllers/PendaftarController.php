@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PendaftarController extends Controller
 {
@@ -468,5 +469,81 @@ class PendaftarController extends Controller
         $this->logAktivitas('Pengisian Nilai Rapor', 'Nilai', $peserta->id, $msg);
 
         return back()->with('success', 'Data akademik dan pilihan program studi berhasil disimpan!');
+    }
+
+    /**
+     * Hapus satu file dari model Berkas (bisa single path atau item dalam JSON array).
+     */
+    public function deleteFile(Request $request)
+    {
+        $request->validate([
+            'field' => 'required|string',
+            'file_path' => 'nullable|string',
+        ]);
+
+        $peserta = Auth::user()->peserta;
+        $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
+
+        if (!$berkas) {
+            return back()->with('error', 'Data berkas tidak ditemukan.');
+        }
+
+        $field = $request->field;
+        $filePath = $request->file_path; // Only used for multiple files (JSON)
+
+        // Cari tahu apakah field ini JSON array atau single path
+        $currentValue = $berkas->$field;
+        $decoded = json_decode($currentValue, true);
+
+        if (is_array($decoded)) {
+            // Kasus Multiple Files (Rapor)
+            if (!$filePath) {
+                return back()->with('error', 'Path file tidak ditentukan.');
+            }
+
+            // Hapus file dari storage
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+
+            // Hapus dari array
+            $newArray = array_values(array_filter($decoded, function ($p) use ($filePath) {
+                return $p !== $filePath;
+            }));
+
+            $berkas->$field = count($newArray) > 0 ? json_encode($newArray) : null;
+        } else {
+            // Kasus Single File (Foto, Ijazah, dsb)
+            if ($currentValue && Storage::disk('public')->exists($currentValue)) {
+                Storage::disk('public')->delete($currentValue);
+            }
+            $berkas->$field = null;
+        }
+
+        $berkas->save();
+        $this->logAktivitas('Penghapusan File', 'Berkas', $berkas->id, "Menghapus file pada bagian $field.");
+
+        return back()->with('success', 'File berhasil dihapus.');
+    }
+
+    /**
+     * Hapus Sertifikat Prestasi
+     */
+    public function destroySertifikat($id)
+    {
+        $peserta = Auth::user()->peserta;
+        $sertifikat = \App\Models\Sertifikat::where('id', $id)
+            ->where('peserta_id', $peserta->id)
+            ->firstOrFail();
+
+        // Hapus file fisik
+        if ($sertifikat->file && Storage::disk('public')->exists($sertifikat->file)) {
+            Storage::disk('public')->delete($sertifikat->file);
+        }
+
+        $sertifikat->delete();
+        $this->logAktivitas('Penghapusan Sertifikat', 'Sertifikat', $id, "Menghapus sertifikat prestasi: $sertifikat->nama.");
+
+        return back()->with('success', 'Sertifikat berhasil dihapus.');
     }
 }

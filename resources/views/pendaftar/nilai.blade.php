@@ -27,6 +27,15 @@
     <form action="{{ route('pendaftar.nilai.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
+    {{-- Hidden Delete Form --}}
+    <div x-data class="hidden">
+        <form id="deleteFileForm" action="{{ route('pendaftar.berkas.delete_file') }}" method="POST">
+            @csrf
+            <input type="hidden" name="field" id="deleteField">
+            <input type="hidden" name="file_path" id="deleteFilePath">
+        </form>
+    </div>
+
     <!-- 2. PRODI SELECTION CARD -->
         <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] p-5 sm:p-8 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/40">
             <div class="flex flex-col md:flex-row gap-5 md:gap-8 items-start">
@@ -36,7 +45,7 @@
                         <select name="pilihan_prodi" id="prodiSelect" onchange="checkProdi()" 
                             class="w-full bg-gray-50 text-gray-900 font-bold text-base sm:text-lg rounded-xl border-2 border-transparent focus:border-primary-gold focus:bg-white focus:ring-0 px-4 sm:px-5 py-3 sm:py-4 appearance-none transition-all cursor-pointer hover:bg-gray-100">
                             <option value="">-- Pilih Program Studi --</option>
-                            @php $prodis = ['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Sistem Informasi', 'Ilmu Komputer']; @endphp
+                            @php $prodis = ['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer']; @endphp
                             @foreach($prodis as $prodi)
                                 <option value="{{ $prodi }}" {{ ($peserta->pilihan_prodi == $prodi) ? 'selected' : '' }}>{{ $prodi }}</option>
                             @endforeach
@@ -66,7 +75,10 @@
                                      <span id="butaWarnaFileText"></span>
                                  </span>
                                  @if($berkas && $berkas->surat_buta_warna)
-                                     <a href="{{ asset('storage/' . $berkas->surat_buta_warna) }}" target="_blank" class="text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold hover:bg-green-200 transition-colors">Lihat File ✓</a>
+                                     <div class="flex items-center gap-2">
+                                         <a href="{{ asset('storage/' . $berkas->surat_buta_warna) }}" target="_blank" class="text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold hover:bg-green-200 transition-colors">Lihat File ✓</a>
+                                         <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" class="text-[10px] text-red-500 hover:text-red-700 font-bold underline">Hapus</button>
+                                     </div>
                                  @endif
                             </div>
                         </div>
@@ -132,11 +144,16 @@
                                     $uploadedFiles = ($berkas && $berkas->$field) ? json_decode($berkas->$field) : null;
                                 @endphp
                                 @if($uploadedFiles)
-                                    @foreach(is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles] as $file)
-                                    <a href="{{ asset('storage/' . $file) }}" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold border border-blue-100 hover:bg-blue-100 transition-colors">
-                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                        <span>File Tersimpan</span>
-                                    </a>
+                                    @foreach(is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles] as $idx => $file)
+                                    <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold border border-blue-100 overflow-hidden shadow-sm">
+                                        <a href="{{ asset('storage/' . $file) }}" target="_blank" class="flex items-center gap-2 max-w-[120px] truncate">
+                                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            <span>File {{ $idx + 1 }}</span>
+                                        </a>
+                                        <button type="button" onclick="confirmDeleteFile('rapor{{ $semKey }}', '{{ $file }}')" class="text-red-400 hover:text-red-600 transition-colors p-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </div>
                                     @endforeach
                                 @endif
                             </div>
@@ -242,6 +259,25 @@
     window.__activeSem = 1;
     function setActiveSem(i) {
         window.__activeSem = i;
+    }
+
+    function confirmDeleteFile(field, filePath = null) {
+        Swal.fire({
+            title: 'Hapus berkas ini?',
+            text: "Berkas yang dihapus tidak dapat dikembalikan.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('deleteField').value = field;
+                document.getElementById('deleteFilePath').value = filePath || '';
+                document.getElementById('deleteFileForm').submit();
+            }
+        })
     }
 
     function previewButaWarna(input) {

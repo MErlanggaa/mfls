@@ -128,6 +128,10 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/twibbon', [PendaftarController::class , 'storeTwibbon'])->name('pendaftar.twibbon.store');
                     Route::get('/nilai', [PendaftarController::class , 'nilai'])->name('pendaftar.nilai');
                     Route::post('/nilai', [PendaftarController::class , 'storeNilai'])->name('pendaftar.nilai.store');
+                    
+                    // File Deletion Routes
+                    Route::post('/berkas/delete-file', [PendaftarController::class, 'deleteFile'])->name('pendaftar.berkas.delete_file');
+                    Route::post('/berkas/delete-sertifikat/{id}', [PendaftarController::class, 'destroySertifikat'])->name('pendaftar.sertifikat.destroy');
                 }
                 );
             }

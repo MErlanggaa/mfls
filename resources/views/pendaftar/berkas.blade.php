@@ -1,7 +1,16 @@
 @extends('pendaftar.layout')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto pb-20">
+    {{-- Hidden Delete Form --}}
+    <form id="deleteFileForm" action="{{ route('pendaftar.berkas.delete_file') }}" method="POST" class="hidden">
+        @csrf
+        <input type="hidden" name="field" id="deleteField">
+        <input type="hidden" name="file_path" id="deleteFilePath">
+    </form>
+    <form id="deleteSertifikatForm" action="" method="POST" class="hidden">
+        @csrf
+    </form>
     <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-5 sm:p-10 border-b border-gray-50 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
             <div>
@@ -124,13 +133,35 @@
                                     <p class="text-[9px] text-orange-400 font-bold italic mt-0.5 mb-1 leading-tight">Jika terjadi error saat upload, pastikan Anda memilih file dari "Penyimpanan Internal" HP, bukan dari sinkronisasi Google Drive/Photos.</p>
                                 @endif
                                 @if($isUploaded)
-                                    <p class="text-xs text-green-600 font-bold mt-0.5">✓ {{ $fileCount }} File terunggah</p>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <p class="text-xs text-green-600 font-bold">✓ {{ $fileCount }} File terunggah</p>
+                                        @if(!$isMultiple)
+                                            <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" 
+                                                    class="text-[10px] text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
+                                                Hapus
+                                            </button>
+                                        @endif
+                                    </div>
                                 @else
                                     <p class="text-xs {{ $file['optional'] ? 'text-blue-500' : 'text-red-400' }} font-medium mt-0.5">
                                         {{ $file['optional'] ? 'Belum diunggah (Tidak wajib)' : 'Belum diunggah' }}
                                     </p>
                                 @endif
-                                <p class="text-xs text-primary-gold font-medium mt-0.5 hidden" id="preview-{{ $fieldName }}"></p>
+
+                                {{-- Multi-file list (if rapor) --}}
+                                @if($isUploaded && $isMultiple)
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        @php $paths = is_array($decoded) ? $decoded : [$decoded]; @endphp
+                                        @foreach($paths as $idx => $p)
+                                            <div class="flex items-center gap-2 px-2 py-1 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                                <a href="{{ Storage::url($p) }}" target="_blank" class="text-[10px] text-blue-600 font-bold hover:underline truncate max-w-[100px]">File {{ $idx+1 }}</a>
+                                                <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}', '{{ $p }}')" class="text-red-400 hover:text-red-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                </button>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
@@ -199,8 +230,14 @@
                                 </div>
                                 <p class="text-xs text-gray-500 font-medium">{{ $sosmed['desc'] }}</p>
                                 @if($isUploaded)
-                                    <p class="text-xs text-green-600 font-bold mt-0.5">✓ Uploaded</p>
-                                    <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" class="text-[10px] text-blue-600 hover:underline">Lihat Bukti →</a>
+                                    <div class="flex items-center gap-3 mt-0.5">
+                                        <p class="text-xs text-green-600 font-bold">✓ Uploaded</p>
+                                        <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" class="text-[10px] text-blue-600 hover:underline">Lihat Bukti →</a>
+                                        <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" 
+                                                class="text-[10px] text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
+                                            Hapus
+                                        </button>
+                                    </div>
                                 @else
                                     <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
                                 @endif
@@ -260,11 +297,24 @@
                         @if($sertifikats->count() > 0)
                         <div class="mt-4">
                             <h5 class="font-bold text-sm text-gray-800 mb-2">Sertifikat Terunggah:</h5>
-                            <ul class="list-disc pl-5 text-xs text-gray-600">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 @foreach($sertifikats as $s)
-                                    <li>{{ $s->nama }} ({{ $s->tahun }}) <a href="{{ Storage::url($s->file) }}" target="_blank" class="text-blue-500 hover:underline">Lihat</a></li>
+                                    <div class="flex items-center justify-between p-3 bg-white border border-blue-100 rounded-xl shadow-sm">
+                                        <div class="min-w-0">
+                                            <p class="text-xs font-bold text-gray-800 truncate">{{ $s->nama }}</p>
+                                            <p class="text-[10px] text-gray-500">{{ $s->tahun }}</p>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <a href="{{ Storage::url($s->file) }}" target="_blank" class="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                            </a>
+                                            <button type="button" onclick="confirmDeleteSertifikat({{ $s->id }}, '{{ $s->nama }}')" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
                                 @endforeach
-                            </ul>
+                            </div>
                         </div>
                         @endif
                     </div>
@@ -314,8 +364,14 @@
                                 <div>
                                     <h4 class="font-bold text-sm sm:text-base text-gray-900">Upload Personal Statement (PDF)</h4>
                                     @if($berkas && $berkas->personal_statement)
-                                        <p class="text-xs text-green-600 font-bold mt-0.5">✓ File terunggah</p>
-                                        <a href="{{ Storage::url($berkas->personal_statement) }}" target="_blank" class="text-xs text-blue-600 hover:underline">Lihat File →</a>
+                                        <div class="flex items-center gap-3 mt-0.5">
+                                            <p class="text-xs text-green-600 font-bold">✓ File terunggah</p>
+                                            <a href="{{ Storage::url($berkas->personal_statement) }}" target="_blank" class="text-xs text-blue-600 hover:underline font-bold">Lihat File</a>
+                                            <button type="button" onclick="confirmDeleteFile('personal_statement')" 
+                                                    class="text-xs text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
+                                                Hapus
+                                            </button>
+                                        </div>
                                     @else
                                         <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
                                     @endif
@@ -378,8 +434,14 @@
                                 <div>
                                     <h4 class="font-bold text-sm sm:text-base text-gray-900">Upload Study Plan (PDF)</h4>
                                     @if($berkas && $berkas->study_plan)
-                                        <p class="text-xs text-green-600 font-bold mt-0.5">✓ File terunggah</p>
-                                        <a href="{{ Storage::url($berkas->study_plan) }}" target="_blank" class="text-xs text-blue-600 hover:underline">Lihat File →</a>
+                                        <div class="flex items-center gap-3 mt-0.5">
+                                            <p class="text-xs text-green-600 font-bold">✓ File terunggah</p>
+                                            <a href="{{ Storage::url($berkas->study_plan) }}" target="_blank" class="text-xs text-blue-600 hover:underline font-bold">Lihat File</a>
+                                            <button type="button" onclick="confirmDeleteFile('study_plan')" 
+                                                    class="text-xs text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
+                                                Hapus
+                                            </button>
+                                        </div>
                                     @else
                                         <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
                                     @endif
@@ -445,8 +507,14 @@
                                 <div>
                                     <h4 class="font-bold text-sm sm:text-base text-gray-900">Upload Surat Rekomendasi (PDF)</h4>
                                     @if($berkas && $berkas->surat_rekomendasi_sekolah)
-                                        <p class="text-xs text-green-600 font-bold mt-0.5">✓ File terunggah</p>
-                                        <a href="{{ Storage::url($berkas->surat_rekomendasi_sekolah) }}" target="_blank" class="text-xs text-blue-600 hover:underline">Lihat File →</a>
+                                        <div class="flex items-center gap-3 mt-0.5">
+                                            <p class="text-xs text-green-600 font-bold">✓ File terunggah</p>
+                                            <a href="{{ Storage::url($berkas->surat_rekomendasi_sekolah) }}" target="_blank" class="text-xs text-blue-600 hover:underline font-bold">Lihat File</a>
+                                            <button type="button" onclick="confirmDeleteFile('surat_rekomendasi_sekolah')" 
+                                                    class="text-xs text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
+                                                Hapus
+                                            </button>
+                                        </div>
                                     @else
                                         <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
                                     @endif
@@ -537,7 +605,52 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+/**
+ * Konfirmasi hapus berkas
+ */
+function confirmDeleteFile(field, filePath = null) {
+    Swal.fire({
+        title: 'Hapus berkas ini?',
+        text: "Berkas yang dihapus tidak dapat dikembalikan.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('deleteField').value = field;
+            document.getElementById('deleteFilePath').value = filePath || '';
+            document.getElementById('deleteFileForm').submit();
+        }
+    })
+}
+
+/**
+ * Konfirmasi hapus sertifikat
+ */
+function confirmDeleteSertifikat(id, nama) {
+    Swal.fire({
+        title: 'Hapus sertifikat?',
+        text: "Hapus sertifikat: " + nama,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('deleteSertifikatForm');
+            form.action = "{{ url('pendaftar/berkas/delete-sertifikat') }}/" + id;
+            form.submit();
+        }
+    })
+}
+
 /**
  * Dipanggil saat file dipilih. Tampilkan tombol Simpan dan nama file.
  */
