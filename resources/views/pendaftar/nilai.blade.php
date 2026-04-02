@@ -24,17 +24,47 @@
 
 
 
-    <form action="{{ route('pendaftar.nilai.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-
-    {{-- Hidden Delete Form --}}
-    <div x-data class="hidden">
-        <form id="deleteFileForm" action="{{ route('pendaftar.berkas.delete_file') }}" method="POST">
-            @csrf
-            <input type="hidden" name="field" id="deleteField">
-            <input type="hidden" name="file_path" id="deleteFilePath">
-        </form>
+    <!-- SUCCESS ALERT -->
+    @if(session('success'))
+    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-sm animate-fade-in mb-6">
+        <div class="flex items-center gap-3">
+            <div class="shrink-0 w-8 h-8 bg-green-100 text-green-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-green-800">Berhasil!</h3>
+                <p class="text-xs text-green-600 font-medium">{{ session('success') }}</p>
+            </div>
+        </div>
     </div>
+    @endif
+
+    <!-- ERROR ALERT (NEW) -->
+    @if($errors->any() || session('error'))
+    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-sm animate-fade-in-down mb-6">
+        <div class="flex items-center gap-3">
+            <div class="shrink-0 w-8 h-8 bg-red-100 text-red-500 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-red-800">Ups! Terjadi Kesalahan</h3>
+                <p class="text-xs text-red-600 font-medium">
+                    {{ session('error') ?? ($errors->any() ? 'Silakan periksa kembali isian Anda. Pastikan semua file tidak melebihi 5MB.' : '') }}
+                </p>
+                @if($errors->any())
+                <ul class="mt-1 list-disc list-inside text-[10px] text-red-500 font-bold">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <form action="{{ route('pendaftar.nilai.store') }}" method="POST" enctype="multipart/form-data" id="mainNilaiForm">
+        @csrf
 
     <!-- 2. PRODI SELECTION CARD -->
         <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] p-5 sm:p-8 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/40">
@@ -59,25 +89,31 @@
                 <!-- DKV Special Warning -->
                 <div id="butaWarnaSection" class="w-full md:w-1/2 {{ ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') ? '' : 'hidden' }}">
                      <label class="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Persyaratan Khusus DKV</label>
-                     <div class="relative bg-red-50/50 border-2 border-dashed border-red-200 rounded-xl p-4 flex items-center gap-3 transition-all hover:border-red-300">
-                        <div class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-red-100 text-red-500 rounded-lg flex items-center justify-center">
+                     <div id="butaWarnaBox" class="relative bg-red-50/50 border-2 border-dashed border-red-200 rounded-xl p-4 flex items-center gap-3 transition-all hover:border-red-300">
+                        <div id="butaWarnaIcon" class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-red-100 text-red-500 rounded-lg flex items-center justify-center transition-colors">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </div>
-                        <div class="flex-grow min-w-0 space-y-2">
+                        <div class="flex-grow min-w-0 space-y-1">
                             <p class="text-sm font-bold text-gray-800">Surat Keterangan Tidak Buta Warna</p>
                             <div class="flex flex-wrap items-center gap-2">
                                  <label class="cursor-pointer inline-block">
                                      <span class="text-red-500 hover:text-red-700 text-xs font-bold underline decoration-2 underline-offset-2">Pilih File (PDF/JPG/PNG)</span>
                                      <input type="file" name="surat_buta_warna" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="hidden" onchange="previewButaWarna(this)">
                                  </label>
-                                 <span id="butaWarnaFileName" class="hidden text-[10px] px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md font-bold border border-indigo-100 inline-flex items-center gap-1">
-                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                     <span id="butaWarnaFileText"></span>
+                                 <span id="butaWarnaFileName" class="hidden text-xs px-2 py-1 bg-green-500 text-white rounded-md font-bold shadow-sm animate-bounce-short inline-flex items-center gap-1" title="File siap diunggah">
+                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                     <span id="butaWarnaFileText" class="max-w-[120px] truncate"></span>
+                                     <button type="button" onclick="clearButaWarnaSelection()" class="ml-1 hover:text-red-200 transition-colors" title="Batal pilih file">
+                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                     </button>
                                  </span>
                                  @if($berkas && $berkas->surat_buta_warna)
                                      <div class="flex items-center gap-2">
-                                         <a href="{{ asset('storage/' . $berkas->surat_buta_warna) }}" target="_blank" class="text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold hover:bg-green-200 transition-colors">Lihat File ✓</a>
-                                         <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" class="text-[10px] text-red-500 hover:text-red-700 font-bold underline">Hapus</button>
+                                         <a href="{{ asset('storage/' . $berkas->surat_buta_warna) }}" target="_blank" class="text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold hover:bg-green-200 transition-colors flex items-center gap-1">
+                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                             <span class="max-w-[150px] truncate">{{ basename($berkas->surat_buta_warna) }}</span>
+                                         </a>
+                                         <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" class="text-[10px] text-red-500 hover:text-red-700 font-bold underline decoration-red-500/30 hover:decoration-red-500 transition-all">Hapus Permanen dari Server</button>
                                      </div>
                                  @endif
                             </div>
@@ -244,8 +280,13 @@
             </button>
         </div>
 
-        <!-- Hidden Params -->
-        <div id="deletedParamsContainer"></div>
+    </form>
+
+    {{-- Hidden Delete Form (Moved Outside to Fix Nested Forms) --}}
+    <form id="deleteFileForm" action="{{ route('pendaftar.berkas.delete_file') }}" method="POST" class="hidden">
+        @csrf
+        <input type="hidden" name="field" id="deleteField">
+        <input type="hidden" name="file_path" id="deleteFilePath">
     </form>
 </div>
 
@@ -283,11 +324,24 @@
     function previewButaWarna(input) {
         const nameEl = document.getElementById('butaWarnaFileName');
         const textEl = document.getElementById('butaWarnaFileText');
+        const boxEl = document.getElementById('butaWarnaBox');
+        const iconEl = document.getElementById('butaWarnaIcon');
+        
         if (input.files && input.files.length > 0) {
             textEl.textContent = input.files[0].name;
             nameEl.classList.remove('hidden');
+            
+            // Highlight box
+            boxEl.classList.remove('border-red-200', 'bg-red-50/50');
+            boxEl.classList.add('border-green-400', 'bg-green-50/50', 'ring-4', 'ring-green-500/10');
+            iconEl.classList.remove('bg-red-100', 'text-red-500');
+            iconEl.classList.add('bg-green-100', 'text-green-500');
         } else {
             nameEl.classList.add('hidden');
+            boxEl.classList.add('border-red-200', 'bg-red-50/50');
+            boxEl.classList.remove('border-green-400', 'bg-green-50/50', 'ring-4', 'ring-green-500/10');
+            iconEl.classList.add('bg-red-100', 'text-red-500');
+            iconEl.classList.remove('bg-green-100', 'text-green-500');
         }
     }
 
@@ -321,8 +375,18 @@
         c.innerHTML = html;
     }
 
+    function clearButaWarnaSelection() {
+        const input = document.querySelector('input[name="surat_buta_warna"]');
+        if (input) {
+            input.value = '';
+            previewButaWarna(input);
+        }
+    }
+
     // Form submit validation
-    document.querySelector('form').addEventListener('submit', function(e) {
+    const mainForm = document.getElementById('mainNilaiForm');
+    if (mainForm) {
+        mainForm.addEventListener('submit', function(e) {
         const prodi = document.getElementById('prodiSelect').value;
         if (!prodi) {
             e.preventDefault();
@@ -367,7 +431,7 @@
             allowEscapeKey: false,
             didOpen: () => Swal.showLoading()
         });
-    });
+    }
 </script>
 
 <style>
@@ -377,6 +441,8 @@
     .animate-fade-in-down { animation: fadeInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+    @keyframes bounceShort { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    .animate-bounce-short { animation: bounceShort 0.5s ease-in-out infinite; }
 </style>
 @endsection
 

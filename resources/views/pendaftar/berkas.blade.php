@@ -95,6 +95,10 @@
                         $inputFiles[] = ['name' => 'rapor6', 'label' => 'Rapor Semester 6', 'desc' => 'Wajib bagi lulusan sebelum 2026', 'multiple' => true, 'optional' => false];
                     }
 
+                    if ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') {
+                        $inputFiles[] = ['name' => 'surat_buta_warna', 'label' => 'Surat Keterangan Tidak Buta Warna', 'desc' => 'Wajib untuk Program Studi DKV', 'multiple' => false, 'optional' => false];
+                    }
+
                     $inputFiles[] = ['name' => 'ijazah', 'label' => 'Ijazah / SKL', 'desc' => 'Jika sudah ada (Opsional)', 'multiple' => false, 'optional' => true];
                 @endphp
 

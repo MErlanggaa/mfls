@@ -178,6 +178,7 @@ class PendaftarController extends Controller
             'motivasi_video' => 'nullable|url|max:500',
             'motivasi_video_tiktok' => 'nullable|url|max:500',
             'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
             'bukti_follow_ig_beasiswamncu' => 'nullable|image|max:5120',
             'bukti_follow_ig_mncu' => 'nullable|image|max:5120',
             'bukti_follow_tiktok_beasiswamncu' => 'nullable|image|max:5120',
@@ -193,7 +194,8 @@ class PendaftarController extends Controller
         $raporFields = ['rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'rapor6'];
         $singleFields = [
             'foto', 'ijazah', 'personal_statement', 'study_plan', 'surat_rekomendasi_sekolah',
-            'bukti_follow_ig_beasiswamncu', 'bukti_follow_ig_mncu', 'bukti_follow_tiktok_beasiswamncu', 'bukti_follow_tiktok_mncu'
+            'bukti_follow_ig_beasiswamncu', 'bukti_follow_ig_mncu', 'bukti_follow_tiktok_beasiswamncu', 'bukti_follow_tiktok_mncu',
+            'surat_buta_warna'
         ];
 
         // --- Handle Link Video Motivasi ---
@@ -281,6 +283,8 @@ class PendaftarController extends Controller
             $uploaded[] = 'Bukti Follow TikTok Beasiswa MNCU';
         if ($request->hasFile('bukti_follow_tiktok_mncu'))
             $uploaded[] = 'Bukti Follow TikTok MNC University';
+        if ($request->hasFile('surat_buta_warna'))
+            $uploaded[] = 'Surat Keterangan Tidak Buta Warna';
         for ($i = 1; $i <= 6; $i++) {
             if ($request->hasFile('rapor' . $i))
                 $uploaded[] = "Scan Rapor S$i";
@@ -362,7 +366,22 @@ class PendaftarController extends Controller
         ]);
 
         $peserta = Auth::user()->peserta;
-        $peserta->update(['pilihan_prodi' => $request->pilihan_prodi]);
+        $oldProdi = $peserta->pilihan_prodi;
+        $newProdi = $request->pilihan_prodi;
+        
+        $peserta->update(['pilihan_prodi' => $newProdi]);
+
+        // Logic: If prodi changed from DKV to non-DKV, delete the certificate
+        if ($oldProdi == 'Desain Komunikasi Visual (DKV)' && $newProdi != 'Desain Komunikasi Visual (DKV)') {
+            $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
+            if ($berkas && $berkas->surat_buta_warna) {
+                if (Storage::disk('public')->exists($berkas->surat_buta_warna)) {
+                    Storage::disk('public')->delete($berkas->surat_buta_warna);
+                }
+                $berkas->surat_buta_warna = null;
+                $berkas->save();
+            }
+        }
 
         // Server-side validation for mandatory supporting subjects
         // Validasi: harus ada minimal 2 matpel pendukung yang diisi (nama & nilai) di seluruh semester
