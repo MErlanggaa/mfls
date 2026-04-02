@@ -125,6 +125,7 @@ class PendaftarController extends Controller
         $peserta = Auth::user()->peserta;
         
         $request->validate([
+            'nama' => 'required|string|max:255',
             'nisn' => 'required|string|max:20|unique:peserta,nisn,' . $peserta->id,
             'no_whatsapp' => 'required|string|max:20|unique:peserta,no_whatsapp,' . $peserta->id,
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan,L,P',
@@ -136,12 +137,16 @@ class PendaftarController extends Controller
             'no_guru_bk' => 'nullable|string|max:30',
             'kode_referral' => 'nullable|string|max:50',
         ], [
+            'nama.required' => 'Nama lengkap wajib diisi.',
             'nisn.unique' => 'NISN ini sudah terdaftar dalam sistem.',
             'no_whatsapp.unique' => 'Nomor WhatsApp ini sudah digunakan oleh pendaftar lain.',
         ]);
 
+        // Sync name to Akun (Auth User)
+        Auth::user()->update(['nama' => $request->nama]);
+
         $peserta->update($request->only([
-            'nisn', 'no_whatsapp', 'jenis_kelamin', 'tgl_lahir', 'provinsi', 'kabupaten', 'nama_sekolah', 'tahun_lulus', 'no_guru_bk'
+            'nama', 'nisn', 'no_whatsapp', 'jenis_kelamin', 'tgl_lahir', 'provinsi', 'kabupaten', 'nama_sekolah', 'tahun_lulus', 'no_guru_bk'
         ]));
 
         if ($peserta->daftar) {

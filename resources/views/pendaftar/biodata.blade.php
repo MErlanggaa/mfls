@@ -18,7 +18,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700">Nama Lengkap</label>
-                    <input type="text" name="nama" value="{{ $peserta->nama ?? Auth::user()->nama }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none" readonly>
+                    <input type="text" name="nama" value="{{ $peserta->nama ?? Auth::user()->nama }}" placeholder="Nama Lengkap" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none">
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700">NISN</label>
