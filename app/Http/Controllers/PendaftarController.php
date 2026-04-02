@@ -169,25 +169,25 @@ class PendaftarController extends Controller
     public function storeBerkas(Request $request)
     {
         $request->validate([
-            'foto' => 'nullable|image|max:5120',
-            'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor6.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'ijazah' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'personal_statement' => 'nullable|mimes:pdf,doc,docx|max:5120',
-            'study_plan' => 'nullable|mimes:pdf,doc,docx|max:5120',
-            'surat_rekomendasi_sekolah' => 'nullable|mimes:pdf,doc,docx|max:5120',
+            'foto' => 'nullable|image|max:10240',
+            'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor6.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'ijazah' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'personal_statement' => 'nullable|mimes:pdf,doc,docx|max:10240',
+            'study_plan' => 'nullable|mimes:pdf,doc,docx|max:10240',
+            'surat_rekomendasi_sekolah' => 'nullable|mimes:pdf,doc,docx|max:10240',
             'motivasi_video' => 'nullable|url|max:500',
             'motivasi_video_tiktok' => 'nullable|url|max:500',
-            'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'bukti_follow_ig_beasiswamncu' => 'nullable|image|max:5120',
-            'bukti_follow_ig_mncu' => 'nullable|image|max:5120',
-            'bukti_follow_tiktok_beasiswamncu' => 'nullable|image|max:5120',
-            'bukti_follow_tiktok_mncu' => 'nullable|image|max:5120',
+            'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'bukti_follow_ig_beasiswamncu' => 'nullable|image|max:10240',
+            'bukti_follow_ig_mncu' => 'nullable|image|max:10240',
+            'bukti_follow_tiktok_beasiswamncu' => 'nullable|image|max:10240',
+            'bukti_follow_tiktok_mncu' => 'nullable|image|max:10240',
         ]);
 
         $peserta = Auth::user()->peserta;
@@ -362,12 +362,12 @@ class PendaftarController extends Controller
     {
         $request->validate([
             'pilihan_prodi' => 'required',
-            'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
-            'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png|max:5120',
+            'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
         ]);
 
         $peserta = Auth::user()->peserta;
@@ -425,21 +425,21 @@ class PendaftarController extends Controller
         for ($i = 1; $i <= 5; $i++) {
             $field = 'rapor' . $i;
             if ($request->hasFile($field)) {
+                $existing = json_decode($berkas->$field, true) ?: [];
                 $files = $request->file($field);
-                $paths = [];
                 if (is_array($files)) {
                     foreach ($files as $file) {
                         $p = $file->store('berkas/' . $peserta->id . '/' . $field, 'public');
-                        $paths[] = $p;
+                        $existing[] = $p;
                         $this->compressImage($p);
                     }
                 }
                 else {
                     $p = $files->store('berkas/' . $peserta->id . '/' . $field, 'public');
-                    $paths[] = $p;
+                    $existing[] = $p;
                     $this->compressImage($p);
                 }
-                $berkas->$field = json_encode($paths);
+                $berkas->$field = json_encode($existing);
             }
         }
         $berkas->save();

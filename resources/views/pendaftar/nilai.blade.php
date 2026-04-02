@@ -49,7 +49,7 @@
             <div>
                 <h3 class="text-sm font-bold text-red-800">Ups! Terjadi Kesalahan</h3>
                 <p class="text-xs text-red-600 font-medium">
-                    {{ session('error') ?? ($errors->any() ? 'Silakan periksa kembali isian Anda. Pastikan semua file tidak melebihi 5MB.' : '') }}
+                    {{ session('error') ?? ($errors->any() ? 'Silakan periksa kembali isian Anda. Pastikan semua file tidak melebihi 10MB.' : '') }}
                 </p>
                 @if($errors->any())
                 <ul class="mt-1 list-disc list-inside text-[10px] text-red-500 font-bold">
@@ -97,23 +97,24 @@
                             <p class="text-sm font-bold text-gray-800">Surat Keterangan Tidak Buta Warna</p>
                             <div class="flex flex-wrap items-center gap-2">
                                  <label class="cursor-pointer inline-block">
-                                     <span class="text-red-500 hover:text-red-700 text-xs font-bold underline decoration-2 underline-offset-2">Pilih File (PDF/JPG/PNG)</span>
-                                     <input type="file" name="surat_buta_warna" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" class="hidden" onchange="previewButaWarna(this)">
+                                     <span class="text-red-500 hover:text-red-700 text-xs font-bold underline decoration-2 underline-offset-2">Pilih File (PDF/JPG/PNG/WEBP)</span>
+                                     <input type="file" name="surat_buta_warna" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" class="hidden" onchange="previewButaWarna(this)">
                                  </label>
-                                 <span id="butaWarnaFileName" class="hidden text-xs px-2 py-1 bg-green-500 text-white rounded-md font-bold shadow-sm animate-bounce-short inline-flex items-center gap-1" title="File siap diunggah">
-                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                     <span id="butaWarnaFileText" class="max-w-[120px] truncate"></span>
-                                     <button type="button" onclick="clearButaWarnaSelection()" class="ml-1 hover:text-red-200 transition-colors" title="Batal pilih file">
-                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                     </button>
+                                 <span id="butaWarnaFileName" class="hidden text-[10px] px-2 py-1 bg-green-600 text-white rounded-md font-black shadow-sm animate-pulse inline-flex items-center gap-1" title="File siap diunggah">
+                                     <span id="butaWarnaFileText" class="max-w-[150px] truncate"></span>
                                  </span>
                                  @if($berkas && $berkas->surat_buta_warna)
-                                     <div class="flex items-center gap-2">
-                                         <a href="{{ asset('storage/' . $berkas->surat_buta_warna) }}" target="_blank" class="text-[10px] px-2 py-1 bg-green-100 text-green-700 rounded-md font-bold hover:bg-green-200 transition-colors flex items-center gap-1">
-                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                             <span class="max-w-[150px] truncate">{{ basename($berkas->surat_buta_warna) }}</span>
+                                     <div class="flex items-center gap-3 mt-1">
+                                         <a href="{{ Storage::url($berkas->surat_buta_warna) }}" target="_blank" 
+                                            class="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-xl text-[10px] font-black border border-green-200 shadow-sm hover:bg-green-100 transition-all">
+                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                             <span class="max-w-[150px] truncate">Buka File: {{ basename($berkas->surat_buta_warna) }}</span>
                                          </a>
-                                         <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" class="text-[10px] text-red-500 hover:text-red-700 font-bold underline decoration-red-500/30 hover:decoration-red-500 transition-all">Hapus Permanen dari Server</button>
+                                         <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" 
+                                                 class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                 title="Hapus file ini">
+                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                         </button>
                                      </div>
                                  @endif
                             </div>
@@ -160,9 +161,9 @@
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                     </div>
                                     <p class="mb-1 text-xs sm:text-sm text-gray-500 font-bold"><span class="text-blue-600">Klik untuk upload</span> rapor</p>
-                                    <p class="text-xs text-gray-400 font-medium text-center px-2">PDF/JPG (Max 5MB)<br><span class="text-[9px] text-orange-400 font-bold italic block mt-1">Jika error, pastikan pilih file dari "Penyimpanan Internal" (bukan Google Drive/Photos)</span></p>
+                                    <p class="text-xs text-gray-400 font-medium text-center px-2">PDF/JPG/WEBP (Max 10MB)<br><span class="text-[9px] text-orange-400 font-bold italic block mt-1">Jika error, pastikan pilih file dari "Penyimpanan Internal" (bukan Google Drive/Photos)</span></p>
                                 </div>
-                                <input type="file" name="rapor{{ $semKey }}[]" multiple class="hidden" onchange="previewFiles(this, 'preview-{{ $semKey }}')" />
+                                <input type="file" name="rapor{{ $semKey }}[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="previewFiles(this, 'preview-{{ $semKey }}', {{ $semKey }})" />
                             </label>
                         </div>
 
@@ -269,9 +270,12 @@
 
         <!-- 5. FLOATING ACTIONS -->
         <div x-data class="fixed bottom-4 sm:bottom-6 inset-x-0 px-4 sm:px-0 mx-auto sm:w-max z-40 flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl shadow-dark-navy/20">
-            <div class="px-6 py-3 text-dark-navy font-bold flex items-center gap-2">
-                <svg class="w-5 h-5 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="text-sm">Input Nilai Akademik</span>
+            <div class="px-6 py-3 text-dark-navy font-bold flex flex-col items-start leading-tight">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span class="text-sm">Input Nilai Akademik</span>
+                </div>
+                <span class="text-[10px] text-orange-600 font-black uppercase mt-1">WAJIB ISI MIN. 2 MAPEL PENDUKUNG</span>
             </div>
             <div class="w-px h-7 bg-gray-300"></div>
             <button type="submit" class="flex-1 sm:flex-none pl-3 sm:pl-5 pr-4 sm:pr-6 py-2.5 sm:py-3 bg-dark-navy hover:bg-black text-white font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 sm:gap-3 shadow-lg">
@@ -328,20 +332,42 @@
         const iconEl = document.getElementById('butaWarnaIcon');
         
         if (input.files && input.files.length > 0) {
-            textEl.textContent = input.files[0].name;
+            const file = input.files[0];
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+
+            if (!allowedTypes.includes(file.type)) {
+                Swal.fire({ icon: 'error', title: 'Format File Tidak Sesuai', text: 'Gunakan format PDF, JPG, PNG, atau WEBP.' });
+                input.value = '';
+                return;
+            }
+            if (file.size > maxSize) {
+                Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: 'Ukuran maksimal file adalah 10MB.' });
+                input.value = '';
+                return;
+            }
+
+            const isPdf = file.type === 'application/pdf';
+            const iconHtml = isPdf 
+                ? '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>'
+                : '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>';
+
+            textEl.innerHTML = `<span class="bg-green-600 text-white text-[9px] px-1.5 py-0.5 rounded-[4px] mr-1 animate-pulse uppercase font-black tracking-tight">BARU</span> ${file.name}`;
             nameEl.classList.remove('hidden');
             
             // Highlight box
             boxEl.classList.remove('border-red-200', 'bg-red-50/50');
-            boxEl.classList.add('border-green-400', 'bg-green-50/50', 'ring-4', 'ring-green-500/10');
+            boxEl.classList.add('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
             iconEl.classList.remove('bg-red-100', 'text-red-500');
-            iconEl.classList.add('bg-green-100', 'text-green-500');
+            iconEl.classList.add('bg-green-100', 'text-green-500', 'animate-bounce');
+            iconEl.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
         } else {
             nameEl.classList.add('hidden');
             boxEl.classList.add('border-red-200', 'bg-red-50/50');
-            boxEl.classList.remove('border-green-400', 'bg-green-50/50', 'ring-4', 'ring-green-500/10');
+            boxEl.classList.remove('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
             iconEl.classList.add('bg-red-100', 'text-red-500');
-            iconEl.classList.remove('bg-green-100', 'text-green-500');
+            iconEl.classList.remove('bg-green-100', 'text-green-500', 'animate-bounce');
+            iconEl.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
         }
     }
 
@@ -355,33 +381,75 @@
         }
     }
 
-    function previewFiles(input, previewId) {
+    function previewFiles(input, previewId, sem = null) {
         const previewEl = document.getElementById(previewId);
+        const label = input.closest('label');
+        const labelText = label ? label.querySelector('p span') || label.querySelector('p') : null;
         let html = '';
-        if (input.files) {
-            Array.from(input.files).forEach(file => {
-                html += `<div class="flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-xs font-bold border border-indigo-100 animate-fade-in">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span class="truncate max-w-[150px]">${file.name}</span>
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+        const maxSize = 10 * 1024 * 1024; // 10MB
+
+        if (input.files && input.files.length > 0) {
+            const files = Array.from(input.files);
+            for (let file of files) {
+                if (!allowedTypes.includes(file.type)) {
+                    Swal.fire({ icon: 'error', title: 'Format File Tidak Sesuai', text: `File "${file.name}" bukan PDF/Gambar. Gunakan PDF, JPG, PNG, atau WEBP.` });
+                    input.value = '';
+                    if (labelText) labelText.innerHTML = '<span class="text-blue-600">Klik untuk upload</span> rapor';
+                    if (label) { label.classList.remove('border-green-400', 'bg-green-50/50'); label.classList.add('border-gray-200', 'bg-gray-50/50'); }
+                    return;
+                }
+                if (file.size > maxSize) {
+                    Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: `File "${file.name}" melebihi 10MB.` });
+                    input.value = '';
+                    if (labelText) labelText.innerHTML = '<span class="text-blue-600">Klik untuk upload</span> rapor';
+                    if (label) { label.classList.remove('border-green-400', 'bg-green-50/50'); label.classList.add('border-gray-200', 'bg-gray-50/50'); }
+                    return;
+                }
+
+                const isPdf = file.type === 'application/pdf';
+                const iconPath = isPdf 
+                    ? 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z'
+                    : 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z';
+
+                html += `<div class="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-xl text-[10px] font-bold border border-green-200 animate-pulse shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPath}"/></svg>
+                    <span class="truncate max-w-[220px]">
+                        <span class="bg-green-600 text-white px-1.5 py-0.5 rounded-[4px] mr-1 text-[8px] uppercase tracking-tighter">BARU</span>
+                        ${file.name}
+                    </span>
                 </div>`;
-            });
+            }
+            
+            // Success Feedback
+            const iconWrap = label ? label.querySelector('.bg-white.rounded-full') : null;
+            if (iconWrap) {
+                iconWrap.classList.remove('text-blue-500');
+                iconWrap.classList.add('text-green-500', 'animate-bounce');
+                iconWrap.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+            }
+            if (labelText) labelText.innerHTML = `<span class="text-green-600 font-black">✅ ${input.files.length} File Terpilih</span>`;
+            if (label) {
+                label.classList.remove('border-gray-200', 'bg-gray-50/50');
+                label.classList.add('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
+            }
+        } else {
+            if (labelText) labelText.innerHTML = '<span class="text-blue-600">Klik untuk upload</span> rapor';
+            if (label) {
+                label.classList.remove('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
+                label.classList.add('border-gray-200', 'bg-gray-50/50');
+            }
         }
+        
         let c = previewEl.querySelector('.new-files-preview');
         if (!c) {
             c = document.createElement('div');
-            c.className = 'new-files-preview flex flex-wrap gap-2';
+            c.className = 'new-files-preview flex flex-wrap gap-2 w-full mt-2';
             previewEl.appendChild(c);
         }
         c.innerHTML = html;
     }
 
-    function clearButaWarnaSelection() {
-        const input = document.querySelector('input[name="surat_buta_warna"]');
-        if (input) {
-            input.value = '';
-            previewButaWarna(input);
-        }
-    }
 
     // Form submit validation
     const mainForm = document.getElementById('mainNilaiForm');
@@ -430,6 +498,7 @@
             allowOutsideClick: false,
             allowEscapeKey: false,
             didOpen: () => Swal.showLoading()
+        });
         });
     }
 </script>

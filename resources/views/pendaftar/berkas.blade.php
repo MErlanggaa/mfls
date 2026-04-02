@@ -137,20 +137,33 @@
                                     <p class="text-[9px] text-orange-400 font-bold italic mt-0.5 mb-1 leading-tight">Jika terjadi error saat upload, pastikan Anda memilih file dari "Penyimpanan Internal" HP, bukan dari sinkronisasi Google Drive/Photos.</p>
                                 @endif
                                 @if($isUploaded)
-                                    <div class="flex items-center gap-2 mt-0.5">
-                                        <p class="text-xs text-green-600 font-bold">✓ {{ $fileCount }} File terunggah</p>
+                                    <div class="flex items-center gap-2 mt-1">
                                         @if(!$isMultiple)
-                                            <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" 
-                                                    class="text-[10px] text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
-                                                Hapus
-                                            </button>
+                                            <div class="flex items-center gap-3 px-3 py-1.5 bg-white border border-gray-100 rounded-xl shadow-sm w-fit">
+                                                <p class="text-[10px] text-green-600 font-black flex items-center gap-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                                    Terunggah
+                                                </p>
+                                                <div class="h-3 w-px bg-gray-200"></div>
+                                                <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" 
+                                                   class="text-[10px] text-blue-600 font-bold hover:underline">
+                                                    Buka File
+                                                </a>
+                                                <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" 
+                                                        class="text-[10px] text-red-500 hover:text-red-700 font-bold">
+                                                    Hapus
+                                                </button>
+                                            </div>
+                                        @else
+                                            <p class="text-xs text-green-600 font-bold">✓ {{ $fileCount }} File terunggah</p>
                                         @endif
                                     </div>
                                 @else
-                                    <p class="text-xs {{ $file['optional'] ? 'text-blue-500' : 'text-red-400' }} font-medium mt-0.5">
+                                    <p class="text-xs {{ $file['optional'] ? 'text-blue-500' : 'text-red-400' }} font-medium mt-1">
                                         {{ $file['optional'] ? 'Belum diunggah (Tidak wajib)' : 'Belum diunggah' }}
                                     </p>
                                 @endif
+                                <p id="preview-{{ $fieldName }}" class="text-xs text-primary-gold font-bold mt-1 hidden"></p>
 
                                 {{-- Multi-file list (if rapor) --}}
                                 @if($isUploaded && $isMultiple)
@@ -245,7 +258,7 @@
                                 @else
                                     <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
                                 @endif
-                                <p class="text-xs text-primary-gold font-medium mt-0.5 hidden" id="preview-{{ $fieldName }}"></p>
+                                <p class="text-xs text-primary-gold font-bold mt-1 hidden" id="preview-{{ $fieldName }}"></p>
                             </div>
                         </div>
 
@@ -350,7 +363,7 @@
                                 </p>
                                 <div class="flex items-center gap-3">
                                     <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
-                                    <span class="text-xs text-gray-500">Format: PDF | Max: 5MB</span>
+                                    <span class="text-xs text-gray-500">Format: PDF | Max: 10MB</span>
                                 </div>
                             </div>
                             <a href="{{ asset('icon/Personal Statement MFLS 2026.pdf') }}" download
@@ -384,8 +397,8 @@
                             <div class="flex items-center gap-2">
                                 <input type="file" name="personal_statement" class="hidden" id="file-personal_statement" accept=".pdf,.doc,.docx"
                                        onchange="onFileSelected(this, 'personal_statement')">
-                                <label for="file-personal_statement" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                    {{ $berkas && $berkas->personal_statement ? 'Pilih Ulang' : 'Pilih File' }}
+                                <label for="file-personal_statement" id="label-personal_statement" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
+                                    <span class="label-text">{{ $berkas && $berkas->personal_statement ? 'Pilih Ulang' : 'Pilih File' }}</span>
                                 </label>
                                 <button type="submit" id="btn-save-personal_statement"
                                         class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
@@ -421,7 +434,7 @@
                                 </p>
                                 <div class="flex items-center gap-3">
                                     <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
-                                    <span class="text-xs text-gray-500">Format: PDF | Max: 5MB</span>
+                                    <span class="text-xs text-gray-500">Format: PDF | Max: 10MB</span>
                                 </div>
                             </div>
                             <a href="{{ asset('icon/Study Plan MFLS 2026_2.pdf') }}" download
@@ -454,8 +467,8 @@
                             <div class="flex items-center gap-2">
                                 <input type="file" name="study_plan" class="hidden" id="file-study_plan" accept=".pdf,.doc,.docx"
                                        onchange="onFileSelected(this, 'study_plan')">
-                                <label for="file-study_plan" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                    {{ $berkas && $berkas->study_plan ? 'Pilih Ulang' : 'Pilih File' }}
+                                <label for="file-study_plan" id="label-study_plan" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
+                                    <span class="label-text">{{ $berkas && $berkas->study_plan ? 'Pilih Ulang' : 'Pilih File' }}</span>
                                 </label>
                                 <button type="submit" id="btn-save-study_plan"
                                         class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
@@ -493,7 +506,7 @@
                                 </p>
                                 <div class="flex items-center gap-3">
                                     <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
-                                    <span class="text-xs text-gray-500">Format: PDF | Max: 5MB</span>
+                                    <span class="text-xs text-gray-500">Format: PDF | Max: 10MB</span>
                                 </div>
                             </div>
                             <a href="{{ asset('icon/Surat Rekomendasi MFLS_2.pdf') }}" download
@@ -527,8 +540,8 @@
                             <div class="flex items-center gap-2">
                                 <input type="file" name="surat_rekomendasi_sekolah" class="hidden" id="file-surat_rekomendasi_sekolah" accept=".pdf,.doc,.docx"
                                        onchange="onFileSelected(this, 'surat_rekomendasi_sekolah')">
-                                <label for="file-surat_rekomendasi_sekolah" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                    {{ $berkas && $berkas->surat_rekomendasi_sekolah ? 'Pilih Ulang' : 'Pilih File' }}
+                                <label for="file-surat_rekomendasi_sekolah" id="label-surat_rekomendasi_sekolah" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
+                                    <span class="label-text">{{ $berkas && $berkas->surat_rekomendasi_sekolah ? 'Pilih Ulang' : 'Pilih File' }}</span>
                                 </label>
                                 <button type="submit" id="btn-save-surat_rekomendasi_sekolah"
                                         class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
@@ -661,11 +674,20 @@ function confirmDeleteSertifikat(id, nama) {
 function onFileSelected(input, fieldName) {
     const btn = document.getElementById('btn-save-' + fieldName);
     const preview = document.getElementById('preview-' + fieldName);
+    // Find the label associated with this file input
+    const label = document.querySelector('label[for="file-' + fieldName + '"]');
     
     if (input.files.length > 0) {
         // Tampilkan tombol simpan
         if (btn) btn.classList.remove('hidden');
         
+        // Update label text for feedback
+        if (label) {
+            label.textContent = '✅ ' + input.files.length + ' File Terpilih';
+            label.classList.remove('bg-dark-navy');
+            label.classList.add('bg-green-600');
+        }
+
         // Tampilkan nama file
         if (preview) {
             const names = Array.from(input.files).map(f => f.name).join(', ');
@@ -674,6 +696,11 @@ function onFileSelected(input, fieldName) {
         }
     } else {
         if (btn) btn.classList.add('hidden');
+        if (label) {
+            label.textContent = 'Pilih File';
+            label.classList.add('bg-dark-navy');
+            label.classList.remove('bg-green-600');
+        }
         if (preview) {
             preview.textContent = '';
             preview.classList.add('hidden');
@@ -682,10 +709,10 @@ function onFileSelected(input, fieldName) {
 }
 
 /**
- * Validasi ukuran file sebelum submit. Max 5MB per file.
+ * Validasi ukuran file sebelum submit. Max 10MB per file.
  */
 function validateSingleForm(form) {
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 10 * 1024 * 1024; // 10MB
     const fileInputs = form.querySelectorAll('input[type="file"]');
     
     for (let input of fileInputs) {
@@ -694,18 +721,32 @@ function validateSingleForm(form) {
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         title: 'File Terlalu Besar!',
-                        html: `File <strong>"${file.name}"</strong> melebihi batas maksimal <strong>5MB</strong>.<br><br>Silakan kompres atau kurangi ukuran file terlebih dahulu.`,
+                        html: `File <strong>"${file.name}"</strong> melebihi batas maksimal <strong>10MB</strong>.<br><br>Silakan kompres atau kurangi ukuran file terlebih dahulu.`,
                         icon: 'error',
                         confirmButtonColor: '#ef4444',
                         confirmButtonText: 'OK, Mengerti'
                     });
                 } else {
-                    alert(`File "${file.name}" melebihi batas 5MB.`);
+                    alert(`File "${file.name}" melebihi batas 10MB.`);
                 }
                 return false;
             }
         }
     }
+
+    // Show loading alert if valid
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Sedang Mengunggah...',
+            text: 'Mohon tunggu sebentar, file Anda sedang diproses.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+
     return true;
 }
 </script>
