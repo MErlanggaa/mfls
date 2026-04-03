@@ -7,6 +7,7 @@ use App\Models\Daftar;
 use App\Models\Nilai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -323,7 +324,7 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: PENILAIAN MENTOR ---
     public function indexPenilaian(Request $request)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin')
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik')
             return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
@@ -521,15 +522,27 @@ class AdminController extends Controller
 
         $this->logAktivitas('Hapus Pendaftar', 'Akun', $id, "Menghapus akun pendaftar beserta data dan berkasnya: " . $akun->nama);
 
-        // Data peserta, berkas, daftar, nilai, dll otomatis terhapus jika di migration ada implementasi onDelete('cascade')
-        // Kalau tidak, delete instancenya terlebih dahulu via Eloquent dipastikan berjalan saat akun dihapus berantai.
-        // Kita paksa hapus manual jika tidak cascade
-        if ($akun->peserta) {
-            $akun->peserta->delete();
-        }
-        $akun->delete();
+        $timestamp = time();
 
-        return back()->with('success', 'Akun pendaftar beserta data dan berkas berhasil dihapus!');
+        // Prefix email and NISN to free them up for new registration
+        $akun->email = 'deleted_' . $timestamp . '_' . $akun->email;
+        $akun->save();
+
+        if ($akun->peserta) {
+            $peserta = $akun->peserta;
+            
+            if ($peserta->daftar) {
+                $peserta->daftar->forceDelete();
+            }
+            
+            $peserta->forceDelete();
+        }
+
+        $akun->forceDelete();
+        
+        // Google Sheet Sync is now handled automatically by Observers in the background!
+
+        return back()->with('success', 'Akun pendaftar berhasil dihapus! Email dan NISN sekarang tersedia kembali untuk pendaftaran baru.');
     }
 
     public function storeUser(Request $request)
@@ -619,6 +632,25 @@ class AdminController extends Controller
     {
         $user = Akun::with(['peserta.daftar', 'peserta.berkas', 'peserta.nilais.matpel'])->findOrFail($id);
         return view('admin.pendaftar.show', compact('user'));
+    }
+
+    public function generateCertificate($id, \App\Services\CertificateService $certificateService)
+    {
+        $user = Akun::with('peserta')->findOrFail($id);
+        $nama = $user->nama;
+
+        return $certificateService->generatePdf($id)->stream("Sertifikat_{$nama}.pdf");
+    }
+
+    public function sendCertificateEmail(Request $request, $id, \App\Services\CertificateService $certificateService)
+    {
+        $success = $certificateService->sendEmail($id);
+
+        if ($success) {
+            return back()->with('success', "Sertifikat berhasil dikirim.");
+        } else {
+            return back()->with('error', "Gagal mengirim sertifikat.");
+        }
     }
 
     public function uploadBerkas(Request $request, $id)
@@ -1089,10 +1121,17 @@ class AdminController extends Controller
         }
     }
 
-    public function exportExcel()
+    public function exportExcel(\App\Services\GoogleSheetService $sheetService)
     {
+        // Sync to Google Sheet as requested
+        try {
+            $sheetService->syncAll();
+        } catch(\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('GSheet Sync failed during export: '.$e->getMessage());
+        }
+
         $fileName = 'Database_Seleksi_Administrasi_' . date('Y-m-d_H-i') . '.csv';
-        $pendaftars = Akun::where('role', 'pendaftar')
+        $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
             ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas'])
             ->get();
 

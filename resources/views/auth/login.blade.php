@@ -22,7 +22,7 @@
     <div>
         <div class="flex justify-between mb-2">
             <label for="password" class="text-sm font-bold text-gray-700">Password</label>
-            <a href="javascript:void(0)" onclick="showForgotInfo()" class="text-xs font-bold text-primary-gold hover:underline">Lupa Password?</a>
+            <a href="{{ route('password.request') }}" class="text-xs font-bold text-primary-gold hover:underline">Lupa Password?</a>
         </div>
         <div class="relative">
             <input type="password" id="password" name="password" required

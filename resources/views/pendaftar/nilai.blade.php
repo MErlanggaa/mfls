@@ -1,180 +1,203 @@
 @extends('pendaftar.layout')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6 sm:space-y-10 font-sans" x-data="{ activeTab: 1 }">
+<div class="max-w-6xl mx-auto space-y-10 pb-32" x-data="{ activeTab: 1 }">
     
-    <!-- 1. HEADER SECTION -->
-    <div class="relative overflow-hidden bg-[#0B1221] rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-10 md:p-14 text-white shadow-2xl">
-        <div class="absolute top-0 right-0 w-80 h-80 bg-primary-gold/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/3"></div>
+    {{-- 1. PREMIUM HEADER --}}
+    <div class="relative overflow-hidden bg-navy-mnc rounded-[3.5rem] p-10 md:p-16 text-white shadow-2xl border border-white/5">
+        <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-orange/5 rounded-full blur-[120px] -mr-40 -mt-40"></div>
         
         <div class="relative z-10">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight mb-2 sm:mb-3">Input Nilai Rapor</h1>
-            <p class="text-gray-400 text-sm sm:text-base font-medium max-w-2xl leading-relaxed mb-4">
-                Silahkan input nilai pengetahuan (Knowledge) skala 0-100 dan unggah bukti fisik rapor asli anda per semester.
+            <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl mb-8 backdrop-blur-md">
+                <span class="iconify text-primary-orange text-lg" data-icon="solar:ranking-bold-duotone"></span>
+                <span class="text-[9px] font-black uppercase tracking-[0.3em] text-primary-orange">Academic Record</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-tight">Input Nilai <span class="text-primary-orange italic">Rapor Resmi</span></h1>
+            <p class="text-orange-100/60 text-sm md:text-base font-medium max-w-2xl leading-relaxed mb-8">
+                Lengkapi transkrip nilai pengetahuan Anda (Skala 0-100) dan unggah bukti fisik rapor asli per semester untuk proses verifikasi.
             </p>
-            <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-300 px-4 py-2 rounded-lg border border-orange-500/30">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-                </svg>
-                <span class="text-sm font-bold">Mata Pelajaran Pendukung (2 per Semester)</span>
+            <div class="flex flex-wrap gap-4">
+                <div class="inline-flex items-center gap-3 bg-white/5 text-orange-100/40 px-4 py-2.5 rounded-xl border border-white/10 backdrop-blur-sm">
+                    <span class="iconify text-primary-orange" data-icon="solar:info-circle-bold-duotone"></span>
+                    <span class="text-[9px] font-black uppercase tracking-widest leading-none">Mapel Pendukung Wajib (min. 2)</span>
+                </div>
             </div>
         </div>
     </div>
 
-
-
-    <!-- SUCCESS ALERT -->
+    {{-- SUCCESS & ERROR ALERTS --}}
     @if(session('success'))
-    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-sm animate-fade-in mb-6">
-        <div class="flex items-center gap-3">
-            <div class="shrink-0 w-8 h-8 bg-green-100 text-green-500 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            </div>
-            <div>
-                <h3 class="text-sm font-bold text-green-800">Berhasil!</h3>
-                <p class="text-xs text-green-600 font-medium">{{ session('success') }}</p>
-            </div>
+    <div class="bg-navy-mnc border border-primary-orange/30 p-6 rounded-[2rem] shadow-xl animate-fade-in flex items-center gap-4">
+        <div class="w-10 h-10 bg-primary-orange text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-primary-orange/20">
+            <span class="iconify text-xl" data-icon="solar:check-circle-bold"></span>
+        </div>
+        <div>
+            <h3 class="text-white font-black uppercase tracking-widest text-[10px] mb-1">Berhasil Disimpan</h3>
+            <p class="text-orange-100/60 text-[10px] font-medium">{{ session('success') }}</p>
         </div>
     </div>
     @endif
 
-    <!-- ERROR ALERT (NEW) -->
     @if($errors->any() || session('error'))
-    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-sm animate-fade-in-down mb-6">
-        <div class="flex items-center gap-3">
-            <div class="shrink-0 w-8 h-8 bg-red-100 text-red-500 rounded-full flex items-center justify-center">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
-            </div>
-            <div>
-                <h3 class="text-sm font-bold text-red-800">Ups! Terjadi Kesalahan</h3>
-                <p class="text-xs text-red-600 font-medium">
-                    {{ session('error') ?? ($errors->any() ? 'Silakan periksa kembali isian Anda. Pastikan semua file tidak melebihi 10MB.' : '') }}
-                </p>
-                @if($errors->any())
-                <ul class="mt-1 list-disc list-inside text-[10px] text-red-500 font-bold">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                @endif
-            </div>
+    <div class="bg-navy-mnc border border-red-500/30 p-6 rounded-[2rem] shadow-xl animate-fade-in flex items-start gap-4">
+        <div class="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center shrink-0 mt-0.5">
+            <span class="iconify text-xl" data-icon="solar:danger-bold"></span>
+        </div>
+        <div class="flex-1">
+            <h3 class="text-white font-black uppercase tracking-widest text-[10px] mb-1">Terjadi Kesalahan</h3>
+            <p class="text-orange-100/60 text-[10px] font-medium mb-3">{{ session('error') ?? 'Beberapa informasi memerlukan perhatian Anda.' }}</p>
+            @if($errors->any())
+            <ul class="space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li class="text-[9px] font-bold text-red-400 uppercase tracking-wider flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span> {{ $error }}
+                    </li>
+                @endforeach
+            </ul>
+            @endif
         </div>
     </div>
     @endif
 
-    <form action="{{ route('pendaftar.nilai.store') }}" method="POST" enctype="multipart/form-data" id="mainNilaiForm">
+    <form action="{{ route('pendaftar.nilai.store') }}" method="POST" enctype="multipart/form-data" id="mainNilaiForm" class="space-y-8">
         @csrf
 
-    <!-- 2. PRODI SELECTION CARD -->
-        <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] p-5 sm:p-8 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/40">
-            <div class="flex flex-col md:flex-row gap-5 md:gap-8 items-start">
-                <div class="w-full md:w-1/2 space-y-3">
-                    <label class="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider">Program Studi Pilihan</label>
-                    <div class="relative group">
+        {{-- 2. PRODI SELECTION --}}
+        <div class="bg-white rounded-[3rem] p-8 md:p-12 border-2 border-slate-50 shadow-sm relative overflow-hidden group">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                <div class="space-y-5">
+                    <div>
+                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3">Target Academic Program</h3>
+                        <label class="block text-2xl font-black text-navy-mnc tracking-tight leading-tight">Program Studi Pilihan</label>
+                    </div>
+                    <div class="relative group/select">
+                        <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/select:text-primary-orange transition-colors z-10 pointer-events-none">
+                            <span class="iconify text-2xl" data-icon="solar:square-academic-cap-bold-duotone"></span>
+                        </div>
                         <select name="pilihan_prodi" id="prodiSelect" onchange="checkProdi()" 
-                            class="w-full bg-gray-50 text-gray-900 font-bold text-base sm:text-lg rounded-xl border-2 border-transparent focus:border-primary-gold focus:bg-white focus:ring-0 px-4 sm:px-5 py-3 sm:py-4 appearance-none transition-all cursor-pointer hover:bg-gray-100">
+                            class="w-full bg-slate-50 text-navy-mnc font-black text-base rounded-2xl border-2 border-transparent focus:border-primary-orange/30 focus:bg-white focus:ring-4 focus:ring-primary-orange/5 pl-14 pr-12 py-5 appearance-none transition-all cursor-pointer shadow-sm">
                             <option value="">-- Pilih Program Studi --</option>
                             @php $prodis = ['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer']; @endphp
                             @foreach($prodis as $prodi)
                                 <option value="{{ $prodi }}" {{ ($peserta->pilihan_prodi == $prodi) ? 'selected' : '' }}>{{ $prodi }}</option>
                             @endforeach
                         </select>
-                        <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                            <span class="iconify text-xl" data-icon="solar:alt-arrow-down-bold-duotone"></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- DKV Special Warning -->
-                <div id="butaWarnaSection" class="w-full md:w-1/2 {{ ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') ? '' : 'hidden' }}">
-                     <label class="block text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-wider mb-3">Persyaratan Khusus DKV</label>
-                     <div id="butaWarnaBox" class="relative bg-red-50/50 border-2 border-dashed border-red-200 rounded-xl p-4 flex items-center gap-3 transition-all hover:border-red-300">
-                        <div id="butaWarnaIcon" class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-red-100 text-red-500 rounded-lg flex items-center justify-center transition-colors">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </div>
-                        <div class="flex-grow min-w-0 space-y-1">
-                            <p class="text-sm font-bold text-gray-800">Surat Keterangan Tidak Buta Warna</p>
-                            <div class="flex flex-wrap items-center gap-2">
-                                 <label class="cursor-pointer inline-block">
-                                     <span class="text-red-500 hover:text-red-700 text-xs font-bold underline decoration-2 underline-offset-2">Pilih File (PDF/JPG/PNG/WEBP)</span>
-                                     <input type="file" name="surat_buta_warna" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" class="hidden" onchange="previewButaWarna(this)">
-                                 </label>
-                                 <span id="butaWarnaFileName" class="hidden text-[10px] px-2 py-1 bg-green-600 text-white rounded-md font-black shadow-sm animate-pulse inline-flex items-center gap-1" title="File siap diunggah">
-                                     <span id="butaWarnaFileText" class="max-w-[150px] truncate"></span>
-                                 </span>
-                                 @if($berkas && $berkas->surat_buta_warna)
-                                     <div class="flex items-center gap-3 mt-1">
-                                         <a href="{{ Storage::url($berkas->surat_buta_warna) }}" target="_blank" 
-                                            class="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-xl text-[10px] font-black border border-green-200 shadow-sm hover:bg-green-100 transition-all">
-                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                             <span class="max-w-[150px] truncate">Buka File: {{ basename($berkas->surat_buta_warna) }}</span>
-                                         </a>
-                                         <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" 
-                                                 class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                                 title="Hapus file ini">
-                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                         </button>
-                                     </div>
-                                 @endif
+                {{-- DKV Special Alert --}}
+                <div id="butaWarnaSection" class="{{ ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') ? '' : 'hidden' }}">
+                    <div id="butaWarnaBox" class="bg-navy-mnc rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden transition-all duration-500 shadow-2xl">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-primary-orange/5 rounded-full blur-2xl -mr-16 -mt-16 transition-colors duration-700"></div>
+                        
+                        <div class="relative z-10 space-y-5">
+                            <div class="flex items-center gap-4">
+                                <div id="butaWarnaIcon" class="w-12 h-12 bg-white/5 text-primary-orange rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
+                                    <span class="iconify text-2xl" data-icon="solar:eye-scan-bold-duotone"></span>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="text-white font-black text-xs uppercase tracking-widest truncate">Persyaratan Khusus</h4>
+                                    <p class="text-[9px] text-orange-200/40 font-bold uppercase tracking-widest mt-1">Surat Tidak Buta Warna</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div id="butaWarnaFileName" class="hidden px-4 py-3 bg-white/10 border border-white/10 rounded-xl max-w-full">
+                                    <p class="text-[8px] font-black text-primary-orange uppercase tracking-[0.2em] flex items-center gap-2">
+                                        <span class="iconify" data-icon="solar:check-circle-bold"></span> 
+                                        <span id="butaWarnaFileText" class="truncate">File Terpilih</span>
+                                    </p>
+                                </div>
+
+                                @if($berkas && $berkas->surat_buta_warna)
+                                    <div class="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-md">
+                                        <a href="{{ Storage::url($berkas->surat_buta_warna) }}" target="_blank" class="text-[8px] font-black text-primary-orange uppercase tracking-widest flex items-center gap-2 hover:underline">
+                                            <span class="iconify" data-icon="solar:file-check-bold"></span> Buka File
+                                        </a>
+                                        <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" class="text-[8px] font-black text-red-400 uppercase tracking-widest hover:text-red-300 transition-colors">Hapus</button>
+                                    </div>
+                                @endif
+
+                                <div class="flex items-center gap-3">
+                                    <input type="file" name="surat_buta_warna" id="input-buta-warna" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.webp" onchange="previewButaWarna(this)">
+                                    <label for="input-buta-warna" class="flex-1 cursor-pointer px-6 py-5 bg-primary-orange text-white rounded-xl text-[10px] font-black uppercase tracking-[0.25em] text-center hover:bg-white hover:text-navy-mnc transition-all shadow-xl shadow-primary-orange/20 active:scale-95 border border-transparent">
+                                        Pilih Dokumen
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                     </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 3. TABS NAVIGATION -->
-        <div class="sticky top-4 z-30 bg-gray-50/90 backdrop-blur-lg p-1.5 sm:p-2 rounded-[1.5rem] border border-gray-200 shadow-lg flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
-             @for ($i = 1; $i <= 5; $i++)
-            <button type="button" @click="activeTab = {{ $i }}" onclick="setActiveSem({{ $i }})"
-                class="flex-shrink-0 sm:flex-1 relative px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300"
-                :class="activeTab === {{ $i }} ? 'bg-white text-dark-navy shadow-md ring-1 ring-black/5' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'">
-                <span>SEM {{ $i }}</span>
-                <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-gold opacity-0 transition-all duration-300"
-                    :class="activeTab === {{ $i }} ? 'opacity-100 w-4' : ''"></div>
-            </button>
-            @endfor
+        {{-- 3. SEMESTER NAVIGATION --}}
+        <div class="sticky top-4 z-40 px-2">
+            <div class="bg-white/95 backdrop-blur-2xl p-2 rounded-[2.5rem] border-2 border-slate-50 shadow-2xl flex items-center gap-1 overflow-x-auto scrollbar-hide max-w-4xl mx-auto ring-1 ring-black/5">
+                 @for ($i = 1; $i <= $maxSemester; $i++)
+                <button type="button" @click="activeTab = {{ $i }}" onclick="setActiveSem({{ $i }})"
+                    class="flex-1 relative min-w-[85px] px-5 py-4 rounded-[1.8rem] text-[10px] font-black tracking-[0.2em] transition-all duration-500 flex items-center justify-center gap-2"
+                    :class="activeTab === {{ $i }} ? 'bg-navy-mnc text-white shadow-xl shadow-navy-mnc/20 translate-y-[-2px]' : 'text-slate-400 hover:text-navy-mnc hover:bg-slate-50'">
+                    <span class="opacity-30 text-[8px]" :class="activeTab === {{ $i }} ? 'text-primary-orange opacity-100' : ''">0{{ $i }}</span>
+                    <span>SEM {{ $i }}</span>
+                    <div x-show="activeTab === {{ $i }}" class="absolute bottom-2 w-1 h-1 bg-primary-orange rounded-full shadow-[0_0_8px_rgba(249,115,22,1)]" x-transition></div>
+                </button>
+                @endfor
+            </div>
         </div>
 
         <!-- 4. CONTENT SECTIONS -->
-        <div class="min-h-[600px]">
-            @for ($semKey = 1; $semKey <= 5; $semKey++)
+        <div class="space-y-10 min-h-[600px]">
+            @for ($semKey = 1; $semKey <= $maxSemester; $semKey++)
             <div x-show="activeTab === {{ $semKey }}" 
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0 translate-y-4"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 class="space-y-6">
+                 x-transition:enter="transition ease-out duration-500"
+                 x-transition:enter-start="opacity-0 translate-y-10 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 class="space-y-8">
 
-            <!-- UPLOAD CARD -->
-                <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] p-5 sm:p-8 border border-gray-100 shadow-lg shadow-gray-200/30 overflow-hidden relative">
-                    <div class="absolute top-0 right-0 p-4 sm:p-6 opacity-5">
-                         <h2 class="text-7xl sm:text-9xl font-black text-gray-900 leading-none tracking-tighter">{{ $semKey }}</h2>
+                <!-- SEMESTER PROOF CARD -->
+                <div class="bg-white rounded-[3rem] p-8 md:p-12 border-2 border-slate-50 shadow-sm overflow-hidden relative group">
+                    <div class="absolute top-0 right-0 p-8 opacity-[0.03] select-none pointer-events-none group-hover:scale-110 transition-transform duration-700">
+                         <h2 class="text-[10rem] font-black text-navy-mnc leading-none tracking-tighter">{{ $semKey }}</h2>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 items-stretch sm:items-center relative z-10">
-                        <!-- Upload Area -->
-                        <div class="w-full sm:w-5/12">
-                            <label class="flex flex-col items-center justify-center w-full h-36 sm:h-48 border-2 border-dashed border-gray-200 rounded-2xl sm:rounded-3xl cursor-pointer bg-gray-50/50 hover:bg-blue-50/50 hover:border-blue-300 transition-all duration-300">
-                                <div class="flex flex-col items-center justify-center py-4">
-                                    <div class="w-12 h-12 bg-white rounded-full shadow-md text-blue-500 mb-2 flex items-center justify-center">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+                        <!-- Upload Zone -->
+                        <div class="lg:col-span-12 xl:col-span-5 space-y-6">
+                            <h3 class="text-xl font-black text-navy-mnc tracking-tight flex items-center gap-3">
+                                <span class="w-10 h-10 bg-navy-mnc text-primary-orange rounded-xl flex items-center justify-center shadow-lg shadow-navy-mnc/10">
+                                    <span class="iconify" data-icon="solar:camera-bold"></span>
+                                </span>
+                                Bukti Fisik Rapor
+                            </h3>
+                            <label class="flex flex-col items-center justify-center w-full h-64 border-4 border-dotted border-slate-100 rounded-[2.5rem] cursor-pointer bg-slate-50/50 hover:bg-orange-500/5 hover:border-primary-orange transition-all duration-500 group/upload relative overflow-hidden shadow-inner">
+                                <div class="flex flex-col items-center justify-center py-8 relative z-10">
+                                    <div class="w-16 h-16 bg-white rounded-3xl shadow-xl text-slate-300 mb-5 flex items-center justify-center group-hover/upload:text-primary-orange group-hover/upload:scale-110 group-hover/upload:rotate-6 transition-all border border-slate-50">
+                                        <span class="iconify text-3xl" data-icon="solar:cloud-plus-bold-duotone"></span>
                                     </div>
-                                    <p class="mb-1 text-xs sm:text-sm text-gray-500 font-bold"><span class="text-blue-600">Klik untuk upload</span> rapor</p>
-                                    <p class="text-xs text-gray-400 font-medium text-center px-2">PDF/JPG/WEBP (Max 10MB)<br><span class="text-[9px] text-orange-400 font-bold italic block mt-1">Jika error, pastikan pilih file dari "Penyimpanan Internal" (bukan Google Drive/Photos)</span></p>
+                                    <p class="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover/upload:text-primary-orange">Scan Rapor Semester {{ $semKey }}</p>
+                                    <p class="text-[8px] font-bold text-slate-300 uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-slate-100">PDF / JPG / PNG (Max 10MB)</p>
                                 </div>
                                 <input type="file" name="rapor{{ $semKey }}[]" multiple accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="previewFiles(this, 'preview-{{ $semKey }}', {{ $semKey }})" />
                             </label>
                         </div>
 
-                        <!-- Preview & Instructions -->
-                        <div class="w-full sm:w-7/12 space-y-3">
-                            <div>
-                                <h3 class="text-base sm:text-xl font-black text-dark-navy mb-1">Bukti Fisik Semester {{ $semKey }}</h3>
-                                <p class="text-xs sm:text-sm text-gray-500 leading-relaxed">Wajib mengunggah scan halaman nilai rapor asli. Jika ada lebih dari satu halaman, anda bisa memilih banyak file sekaligus.</p>
+                        <!-- File Status & Preview -->
+                        <div class="lg:col-span-12 xl:col-span-7 space-y-6">
+                            <div class="p-6 bg-orange-500/[0.03] rounded-3xl border border-orange-500/10 backdrop-blur-sm">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-8 h-8 bg-primary-orange/10 text-primary-orange rounded-lg flex items-center justify-center shadow-sm">
+                                        <span class="iconify text-lg" data-icon="solar:info-square-bold-duotone"></span>
+                                    </div>
+                                    <h4 class="text-[10px] font-black text-navy-mnc uppercase tracking-widest">Digital Guide</h4>
+                                </div>
+                                <p class="text-[11px] text-slate-500 font-bold leading-relaxed opacity-80 italic">Pastikan seluruh nilai terlihat jelas & terbaca oleh sistem verifikasi. Anda dapat mengunggah beberapa file secara bersamaan.</p>
                             </div>
 
-                            <div id="preview-{{ $semKey }}" class="flex flex-wrap gap-2">
+                            <div id="preview-{{ $semKey }}" class="flex flex-wrap gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
                                 <!-- Existing Files -->
                                 @php 
                                     $field = 'rapor'.$semKey;
@@ -182,13 +205,15 @@
                                 @endphp
                                 @if($uploadedFiles)
                                     @foreach(is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles] as $idx => $file)
-                                    <div class="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold border border-blue-100 overflow-hidden shadow-sm">
-                                        <a href="{{ asset('storage/' . $file) }}" target="_blank" class="flex items-center gap-2 max-w-[120px] truncate">
-                                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                            <span>File {{ $idx + 1 }}</span>
+                                    <div class="flex items-center gap-4 px-5 py-4 bg-white border-2 border-slate-50 text-navy-mnc rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:shadow-lg hover:border-primary-orange/20 transition-all group/file">
+                                        <a href="{{ asset('storage/' . $file) }}" target="_blank" class="flex items-center gap-3 min-w-0">
+                                            <div class="w-8 h-8 bg-primary-orange/10 text-primary-orange rounded-lg flex items-center justify-center shrink-0">
+                                                <span class="iconify text-base" data-icon="solar:file-check-bold"></span>
+                                            </div>
+                                            <span class="truncate max-w-[120px]">Berkas {{ $idx + 1 }}</span>
                                         </a>
-                                        <button type="button" onclick="confirmDeleteFile('rapor{{ $semKey }}', '{{ $file }}')" class="text-red-400 hover:text-red-600 transition-colors p-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <button type="button" onclick="confirmDeleteFile('rapor{{ $semKey }}', '{{ $file }}')" class="w-8 h-8 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                                            <span class="iconify" data-icon="solar:trash-bin-minimalistic-bold"></span>
                                         </button>
                                     </div>
                                     @endforeach
@@ -198,95 +223,121 @@
                     </div>
                 </div>
 
-                <!-- GRADES INPUT CARD -->
-                <div class="bg-white rounded-[1.5rem] sm:rounded-[2rem] p-5 sm:p-8 md:p-10 border border-gray-100 shadow-lg shadow-gray-200/30">
-                    <div class="flex items-center justify-between mb-5 sm:mb-8">
-                         <h3 class="text-base sm:text-xl font-black text-dark-navy flex items-center gap-3">
-                            <span class="w-3 h-6 sm:h-8 bg-primary-gold rounded-full"></span>
-                            Transkrip Nilai
-                        </h3>
-                        <div class="text-xs font-bold text-gray-400 uppercase tracking-widest bg-gray-50 px-3 py-1 rounded-lg">
-                            Skala 0 - 100
+                <!-- TRANSCRIPT INPUT CARD -->
+                <div class="bg-white rounded-[3rem] p-8 md:p-14 border-2 border-slate-50 shadow-sm relative group/transcript hover:border-primary-orange/10 transition-all duration-500">
+                    <div class="flex flex-col md:flex-row items-center justify-between mb-12 pb-8 border-b-2 border-slate-50 gap-6">
+                        <div class="flex items-center gap-6">
+                            <div class="w-14 h-14 bg-navy-mnc text-primary-orange rounded-[1.5rem] flex items-center justify-center shadow-2xl shadow-navy-mnc/20 transform group-hover/transcript:rotate-3 transition-transform">
+                                <span class="iconify text-3xl" data-icon="solar:pen-new-square-bold-duotone"></span>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-navy-mnc tracking-tight leading-none mb-2">Transkrip Nilai Semester {{ $semKey }}</h3>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] flex items-center gap-2">
+                                     <span class="w-1.5 h-1.5 bg-primary-orange rounded-full"></span>
+                                     Skala Penilaian 0 - 100
+                                </p>
+                            </div>
+                        </div>
+                        <div class="px-6 py-3 bg-slate-50 rounded-2xl border border-slate-100">
+                             <p class="text-[9px] font-black text-navy-mnc uppercase tracking-widest opacity-60">Status: <span class="text-primary-orange">Sync Enabled</span></p>
                         </div>
                     </div>
 
-                    <div class="space-y-3 pb-20">
-                        <!-- CORE SUBJECTS -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         @foreach($matpels as $mp)
-                        <div class="flex items-center gap-3 sm:gap-6 p-3 sm:p-4 rounded-2xl border border-gray-100 hover:shadow-md hover:border-blue-100 transition-all duration-300 bg-white">
-                             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center text-gray-500 font-bold border border-gray-200 flex-shrink-0">
+                        <div class="flex items-center gap-6 p-4 rounded-3xl hover:bg-slate-50 transition-all group/input border-2 border-transparent hover:border-slate-100 shadow-sm hover:shadow-md">
+                            <div class="w-14 h-14 rounded-2xl bg-white border-2 border-slate-50 flex items-center justify-center text-slate-300 font-black transition-all group-hover/input:bg-navy-mnc group-hover/input:text-primary-orange group-hover/input:shadow-lg shrink-0 text-xl">
                                 {{ substr($mp->nama, 0, 1) }}
                             </div>
-                            <div class="flex-grow min-w-0">
-                                <h4 class="font-bold text-gray-800 text-sm sm:text-lg truncate">{{ $mp->nama }}</h4>
-                                <p class="text-xs text-gray-400 font-medium">Wajib</p>
-                            </div>
-                            <div class="w-20 sm:w-32 flex-shrink-0">
-                                @php $score = isset($existingNilai[$mp->id]) ? ($existingNilai[$mp->id]->where('semester', $semKey)->first()->nilai ?? '') : ''; @endphp
-                                <input type="number" step="0.01" name="nilai[{{ $mp->id }}][{{ $semKey }}]" 
-                                    value="{{ $score }}" 
-                                    class="w-full text-center py-2.5 sm:py-3 rounded-xl font-black text-base sm:text-xl text-dark-navy bg-gray-50 border-2 border-transparent focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none placeholder-gray-300 shadow-inner"
-                                    placeholder="0">
+                            <div class="flex-1 min-w-0 space-y-2">
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover/input:text-navy-mnc transition-colors">{{ $mp->nama }}</h4>
+                                <div class="relative">
+                                    @php $score = isset($existingNilai[$mp->id]) ? ($existingNilai[$mp->id]->where('semester', $semKey)->first()->nilai ?? '') : ''; @endphp
+                                    <input type="number" step="0.01" name="nilai[{{ $mp->id }}][{{ $semKey }}]" 
+                                        value="{{ $score }}" 
+                                        class="w-full text-2xl font-black text-navy-mnc bg-transparent border-b-2 border-slate-100 focus:border-primary-orange focus:ring-0 outline-none transition-all py-2 px-1 placeholder:text-slate-100"
+                                        placeholder="0.00">
+                                    <div class="absolute right-0 bottom-3 text-[10px] font-black text-slate-200 uppercase tracking-widest pointer-events-none group-focus-within/input:text-primary-orange transition-colors">PTS</div>
+                                </div>
                             </div>
                         </div>
                         @endforeach
+                    </div>
 
-                        <!-- SUPPORTING SUBJECTS (2 slots per semester) -->
-                        <div id="customContainerSemester{{ $semKey }}" class="space-y-4 pt-4 border-t border-gray-100 mt-6">
-                            <h5 class="text-xs font-black text-orange-500 uppercase tracking-widest mb-4">Mata Pelajaran Pendukung (Semester {{ $semKey }})</h5>
-                            
+                    <!-- SUPPORTING SUBJECTS -->
+                    <div class="mt-16 pt-10 border-t-2 border-slate-50 space-y-8">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-navy-mnc text-primary-orange rounded-xl flex items-center justify-center shadow-lg shadow-navy-mnc/10">
+                                    <span class="iconify text-xl" data-icon="solar:add-circle-bold-duotone"></span>
+                                </div>
+                                <h5 class="text-[11px] font-black text-navy-mnc uppercase tracking-[0.2em]">Mapel Pendukung <span class="text-primary-orange italic">(Minimal 2)</span></h5>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             @for($slotIdx = 1; $slotIdx <= 2; $slotIdx++)
                             @php
                                 $existing = isset($customNilaiBySemester[$semKey]) ? $customNilaiBySemester[$semKey]->values()->get($slotIdx - 1) : null;
                                 $subjName = $existing ? $existing->matpel->nama : '';
                                 $subjNilai = $existing ? $existing->nilai : '';
                             @endphp
-                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 rounded-2xl border-2 border-dashed border-orange-100 bg-orange-50/20 hover:border-orange-300 transition-all duration-300">
-                                <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center text-orange-500 font-bold flex-shrink-0">
-                                    {{ $slotIdx }}
+                            <div class="bg-slate-50/50 p-8 rounded-[2.5rem] border-2 border-slate-50 space-y-6 hover:bg-white hover:border-primary-orange/20 transition-all duration-300 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest border border-slate-100 px-3 py-1 rounded-full">Subject Slot 0{{ $slotIdx }}</span>
+                                    <span class="iconify text-navy-mnc opacity-20" data-icon="solar:notebook-bold" data-width="24"></span>
                                 </div>
-                                <div class="flex-grow w-full">
-                                    <input type="text" name="custom_matpel[{{ $semKey }}][{{ $slotIdx }}][nama]" 
-                                        value="{{ old("custom_matpel.$semKey.$slotIdx.nama", $subjName) }}"
-                                        placeholder="Nama Mapel Pendukung {{ $slotIdx }} (contoh: Ekonomi)" 
-                                        class="w-full bg-white px-4 py-2.5 rounded-xl border border-gray-200 font-bold text-gray-800 text-sm outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all">
-                                </div>
-                                <div class="w-full sm:w-32 flex-shrink-0">
-                                    <input type="number" step="0.01" name="custom_matpel[{{ $semKey }}][{{ $slotIdx }}][nilai]"
-                                        value="{{ old("custom_matpel.$semKey.$slotIdx.nilai", $subjNilai) }}"
-                                        class="w-full text-center py-2.5 rounded-xl font-black text-lg text-dark-navy bg-white border border-gray-200 focus:border-orange-400 focus:ring-4 focus:ring-orange-400/10 transition-all outline-none"
-                                        placeholder="0">
+                                <div class="space-y-4">
+                                    <div class="space-y-2">
+                                        <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Mata Pelajaran</label>
+                                        <input type="text" name="custom_matpel[{{ $semKey }}][{{ $slotIdx }}][nama]" 
+                                            value="{{ old("custom_matpel.$semKey.$slotIdx.nama", $subjName) }}"
+                                            placeholder="Contoh: Seni Budaya" 
+                                            class="w-full bg-white px-6 py-5 rounded-2xl border-2 border-transparent font-black text-navy-mnc text-[12px] uppercase tracking-widest outline-none focus:border-primary-orange/30 focus:ring-4 focus:ring-primary-orange/5 transition-all shadow-sm">
+                                    </div>
+                                    
+                                    <div class="space-y-2">
+                                        <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-1">Nilai Pengetahuan</label>
+                                        <div class="relative">
+                                            <input type="number" step="0.01" name="custom_matpel[{{ $semKey }}][{{ $slotIdx }}][nilai]"
+                                                value="{{ old("custom_matpel.$semKey.$slotIdx.nilai", $subjNilai) }}"
+                                                class="w-full bg-white px-6 py-5 rounded-2xl border-2 border-transparent font-black text-2xl text-navy-mnc outline-none focus:border-primary-orange/30 focus:ring-4 focus:ring-primary-orange/5 transition-all shadow-sm"
+                                                placeholder="0.00">
+                                            <span class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-200 uppercase tracking-widest">Poin</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             @endfor
-                            <p class="text-[10px] text-gray-400 italic mt-2">*Kosongkan jika tidak ada mata pelajaran pendukung di semester ini.</p>
                         </div>
                     </div>
                 </div>
-
             </div>
             @endfor
         </div>
 
-        <!-- 5. FLOATING ACTIONS -->
-        <div x-data class="fixed bottom-4 sm:bottom-6 inset-x-0 px-4 sm:px-0 mx-auto sm:w-max z-40 flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-full border border-gray-200 shadow-2xl shadow-dark-navy/20">
-            <div class="px-6 py-3 text-dark-navy font-bold flex flex-col items-start leading-tight">
-                <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span class="text-sm">Input Nilai Akademik</span>
+        <!-- 5. FLOATING DOCK ACTION -->
+        <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-[92%] sm:w-auto">
+            <div class="bg-navy-mnc/95 p-3 rounded-[2.5rem] shadow-2xl flex items-center gap-8 border border-white/10 backdrop-blur-3xl ring-1 ring-white/10">
+                <div class="hidden md:flex items-center gap-4 px-6 border-r border-white/10">
+                    <div class="w-10 h-10 bg-primary-orange text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary-orange/20">
+                        <span class="iconify text-xl" data-icon="solar:diskette-bold"></span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-white font-black text-[10px] uppercase tracking-widest leading-none">Auto-Sync</span>
+                        <span class="text-primary-orange font-black text-[8px] uppercase tracking-[0.25em] mt-1.5 opacity-80 animate-pulse">Endpoint Secure</span>
+                    </div>
                 </div>
-                <span class="text-[10px] text-orange-600 font-black uppercase mt-1">WAJIB ISI MIN. 2 MAPEL PENDUKUNG</span>
+                <button type="submit" class="w-full sm:w-auto px-12 py-5 bg-primary-orange text-white font-black rounded-2xl hover:bg-white hover:text-navy-mnc transition-all flex items-center justify-center gap-4 transform active:scale-95 shadow-xl shadow-primary-orange/20 group">
+                    <span class="text-[11px] uppercase tracking-[0.3em]">Simpan Transkrip</span>
+                    <span class="iconify text-2xl group-hover:translate-x-1.5 transition-transform" data-icon="solar:arrow-right-bold"></span>
+                </button>
             </div>
-            <div class="w-px h-7 bg-gray-300"></div>
-            <button type="submit" class="flex-1 sm:flex-none pl-3 sm:pl-5 pr-4 sm:pr-6 py-2.5 sm:py-3 bg-dark-navy hover:bg-black text-white font-bold rounded-xl sm:rounded-full transition-all flex items-center justify-center gap-2 sm:gap-3 shadow-lg">
-                <span class="text-sm">Simpan Semua</span>
-                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            </button>
         </div>
 
     </form>
 
-    {{-- Hidden Delete Form (Moved Outside to Fix Nested Forms) --}}
+    {{-- Hidden Delete Form --}}
     <form id="deleteFileForm" action="{{ route('pendaftar.berkas.delete_file') }}" method="POST" class="hidden">
         @csrf
         <input type="hidden" name="field" id="deleteField">
@@ -294,80 +345,46 @@
     </form>
 </div>
 
-<!-- SweetAlert2 CDN -->
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Alpine.js -->
 <script src="//unpkg.com/alpinejs" defer></script>
 
 <script>
-    // Track current active semester
     window.__activeSem = 1;
-    function setActiveSem(i) {
-        window.__activeSem = i;
-    }
+    function setActiveSem(i) { window.__activeSem = i; }
 
     function confirmDeleteFile(field, filePath = null) {
         Swal.fire({
-            title: 'Hapus berkas ini?',
-            text: "Berkas yang dihapus tidak dapat dikembalikan.",
+            title: 'Hapus Berkas?',
+            text: "Data yang dihapus tidak dapat dikembalikan.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
+            confirmButtonColor: '#001f3f',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'YA, HAPUS',
+            cancelButtonText: 'BATAL',
+            customClass: {
+                popup: 'rounded-[2.5rem] border-2 border-slate-50',
+                confirmButton: 'rounded-xl px-10 py-4 font-black text-[10px] uppercase tracking-widest',
+                cancelButton: 'rounded-xl px-10 py-4 font-black text-[10px] uppercase tracking-widest'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 document.getElementById('deleteField').value = field;
                 document.getElementById('deleteFilePath').value = filePath || '';
                 document.getElementById('deleteFileForm').submit();
             }
-        })
+        });
     }
 
     function previewButaWarna(input) {
         const nameEl = document.getElementById('butaWarnaFileName');
         const textEl = document.getElementById('butaWarnaFileText');
-        const boxEl = document.getElementById('butaWarnaBox');
-        const iconEl = document.getElementById('butaWarnaIcon');
-        
         if (input.files && input.files.length > 0) {
-            const file = input.files[0];
-            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
-            const maxSize = 10 * 1024 * 1024; // 10MB
-
-            if (!allowedTypes.includes(file.type)) {
-                Swal.fire({ icon: 'error', title: 'Format File Tidak Sesuai', text: 'Gunakan format PDF, JPG, PNG, atau WEBP.' });
-                input.value = '';
-                return;
-            }
-            if (file.size > maxSize) {
-                Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: 'Ukuran maksimal file adalah 10MB.' });
-                input.value = '';
-                return;
-            }
-
-            const isPdf = file.type === 'application/pdf';
-            const iconHtml = isPdf 
-                ? '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>'
-                : '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>';
-
-            textEl.innerHTML = `<span class="bg-green-600 text-white text-[9px] px-1.5 py-0.5 rounded-[4px] mr-1 animate-pulse uppercase font-black tracking-tight">BARU</span> ${file.name}`;
+            textEl.textContent = input.files[0].name;
             nameEl.classList.remove('hidden');
-            
-            // Highlight box
-            boxEl.classList.remove('border-red-200', 'bg-red-50/50');
-            boxEl.classList.add('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
-            iconEl.classList.remove('bg-red-100', 'text-red-500');
-            iconEl.classList.add('bg-green-100', 'text-green-500', 'animate-bounce');
-            iconEl.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
         } else {
             nameEl.classList.add('hidden');
-            boxEl.classList.add('border-red-200', 'bg-red-50/50');
-            boxEl.classList.remove('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
-            iconEl.classList.add('bg-red-100', 'text-red-500');
-            iconEl.classList.remove('bg-green-100', 'text-green-500', 'animate-bounce');
-            iconEl.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
         }
     }
 
@@ -383,122 +400,52 @@
 
     function previewFiles(input, previewId, sem = null) {
         const previewEl = document.getElementById(previewId);
-        const label = input.closest('label');
-        const labelText = label ? label.querySelector('p span') || label.querySelector('p') : null;
         let html = '';
-        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
-        const maxSize = 10 * 1024 * 1024; // 10MB
-
         if (input.files && input.files.length > 0) {
-            const files = Array.from(input.files);
-            for (let file of files) {
-                if (!allowedTypes.includes(file.type)) {
-                    Swal.fire({ icon: 'error', title: 'Format File Tidak Sesuai', text: `File "${file.name}" bukan PDF/Gambar. Gunakan PDF, JPG, PNG, atau WEBP.` });
-                    input.value = '';
-                    if (labelText) labelText.innerHTML = '<span class="text-blue-600">Klik untuk upload</span> rapor';
-                    if (label) { label.classList.remove('border-green-400', 'bg-green-50/50'); label.classList.add('border-gray-200', 'bg-gray-50/50'); }
-                    return;
-                }
-                if (file.size > maxSize) {
-                    Swal.fire({ icon: 'error', title: 'File Terlalu Besar', text: `File "${file.name}" melebihi 10MB.` });
-                    input.value = '';
-                    if (labelText) labelText.innerHTML = '<span class="text-blue-600">Klik untuk upload</span> rapor';
-                    if (label) { label.classList.remove('border-green-400', 'bg-green-50/50'); label.classList.add('border-gray-200', 'bg-gray-50/50'); }
-                    return;
-                }
-
-                const isPdf = file.type === 'application/pdf';
-                const iconPath = isPdf 
-                    ? 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z'
-                    : 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z';
-
-                html += `<div class="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-xl text-[10px] font-bold border border-green-200 animate-pulse shadow-sm">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPath}"/></svg>
-                    <span class="truncate max-w-[220px]">
-                        <span class="bg-green-600 text-white px-1.5 py-0.5 rounded-[4px] mr-1 text-[8px] uppercase tracking-tighter">BARU</span>
-                        ${file.name}
-                    </span>
+            Array.from(input.files).forEach(file => {
+                html += `<div class="px-4 py-3 bg-navy-mnc text-primary-orange rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/10 animate-pulse shadow-lg">
+                    📎 ${file.name}
                 </div>`;
-            }
-            
-            // Success Feedback
-            const iconWrap = label ? label.querySelector('.bg-white.rounded-full') : null;
-            if (iconWrap) {
-                iconWrap.classList.remove('text-blue-500');
-                iconWrap.classList.add('text-green-500', 'animate-bounce');
-                iconWrap.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
-            }
-            if (labelText) labelText.innerHTML = `<span class="text-green-600 font-black">✅ ${input.files.length} File Terpilih</span>`;
-            if (label) {
-                label.classList.remove('border-gray-200', 'bg-gray-50/50');
-                label.classList.add('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
-            }
-        } else {
-            if (labelText) labelText.innerHTML = '<span class="text-blue-600">Klik untuk upload</span> rapor';
-            if (label) {
-                label.classList.remove('border-green-400', 'bg-green-50/50', 'ring-8', 'ring-green-500/5');
-                label.classList.add('border-gray-200', 'bg-gray-50/50');
-            }
+            });
         }
-        
-        let c = previewEl.querySelector('.new-files-preview');
-        if (!c) {
-            c = document.createElement('div');
-            c.className = 'new-files-preview flex flex-wrap gap-2 w-full mt-2';
-            previewEl.appendChild(c);
+        let container = previewEl.querySelector('.new-files-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'new-files-container flex flex-wrap gap-2 w-full mt-6 pt-6 border-t-2 border-dashed border-slate-100';
+            previewEl.appendChild(container);
         }
-        c.innerHTML = html;
+        container.innerHTML = html;
     }
 
-
-    // Form submit validation
     const mainForm = document.getElementById('mainNilaiForm');
     if (mainForm) {
         mainForm.addEventListener('submit', function(e) {
-        const prodi = document.getElementById('prodiSelect').value;
-        if (!prodi) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'warning',
-                title: 'Program Studi Belum Dipilih',
-                text: 'Silakan pilih Program Studi terlebih dahulu sebelum menyimpan.',
-                confirmButtonColor: '#0B1221',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        // Check if at least 2 mata pelajaran pendukung are added across all semesters
-        let totalCustomFilled = 0;
-        document.querySelectorAll('input[name^="custom_matpel"][name$="[nama]"]').forEach(input => {
-            const name = input.value.trim();
-            const nilaiInput = document.querySelector(`input[name="${input.name.replace('[nama]', '[nilai]')}"]`);
-            const nilai = nilaiInput ? nilaiInput.value.trim() : '';
-            if (name !== '' && nilai !== '') {
-                totalCustomFilled++;
+            const prodi = document.getElementById('prodiSelect').value;
+            if (!prodi) {
+                e.preventDefault();
+                Swal.fire({ icon: 'error', title: 'Pilih Program Studi', text: 'Silakan pilih Program Studi tujuan Anda.', confirmButtonColor: '#f97316', customClass: { popup: 'rounded-[2rem]' } });
+                return;
             }
-        });
-        
-        if (totalCustomFilled < 2) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'warning',
-                title: 'Mata Pelajaran Pendukung Wajib!',
-                html: 'Anda harus mengisi minimal <strong>2 Mata Pelajaran Pendukung</strong> (Nama & Nilai) di antara semua semester.',
-                confirmButtonColor: '#0B1221',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
 
-        // Show loading state
-        Swal.fire({
-            title: 'Menyimpan...',
-            text: 'Mohon tunggu sebentar.',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => Swal.showLoading()
-        });
+            let filledCount = 0;
+            document.querySelectorAll('input[name^="custom_matpel"][name$="[nama]"]').forEach(input => {
+                const scoreInput = document.querySelector(`input[name="${input.name.replace('[nama]', '[nilai]')}"]`);
+                if (input.value.trim() !== '' && scoreInput && scoreInput.value.trim() !== '') filledCount++;
+            });
+
+            if (filledCount < 2) {
+                e.preventDefault();
+                Swal.fire({ icon: 'warning', title: 'Lengkapi Mapel', text: 'Wajib mengisi minimal 2 Mata Pelajaran Pendukung.', confirmButtonColor: '#f97316', customClass: { popup: 'rounded-[2rem]' } });
+                return;
+            }
+
+            Swal.fire({ 
+                title: 'Menyimpan Transkrip...', 
+                html: 'Mohon tunggu, sinkronisasi data sedang berjalan.',
+                allowOutsideClick: false, 
+                didOpen: () => Swal.showLoading(), 
+                customClass: { popup: 'rounded-[2rem]' } 
+            });
         });
     }
 </script>
@@ -506,12 +453,10 @@
 <style>
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in-down { animation: fadeInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .animate-fade-in { animation: fadeIn 0.3s ease-out; }
-    @keyframes bounceShort { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-    .animate-bounce-short { animation: bounceShort 0.5s ease-in-out infinite; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
 </style>
 @endsection
-

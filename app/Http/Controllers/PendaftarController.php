@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\RateLimiter;
 
 class PendaftarController extends Controller
 {
@@ -13,45 +18,12 @@ class PendaftarController extends Controller
     public function index()
     {
         $peserta = Auth::user()->peserta;
-        $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
-
-        // --- Calculate Progress ---
-        $totalPoints = 0;
-        $earnedPoints = 0;
-
-        // 1. Biodata Points (40%)
-        $biodataFields = ['nama', 'nisn', 'no_whatsapp', 'tgl_lahir', 'jenis_kelamin', 'provinsi', 'kabupaten', 'nama_sekolah', 'tahun_lulus'];
-        $totalPoints += count($biodataFields);
-        foreach ($biodataFields as $field) {
-            if (!empty($peserta->$field))
-                $earnedPoints++;
+        if (!$peserta) {
+            Auth::logout();
+            return redirect('/login')->with('error', 'Data profil pendaftar tidak ditemukan. Silakan hubungi admin.');
         }
-
-        // 2. Berkas Points (40%)
-        $tahunLulus = (int) ($peserta->tahun_lulus ?? 2026);
-        $berkasFields = ['foto', 'rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'ijazah', 'personal_statement', 'study_plan'];
         
-        if ($tahunLulus >= 2026) {
-            $berkasFields[] = 'surat_rekomendasi_sekolah';
-        }
-
-        $totalPoints += count($berkasFields);
-        if ($berkas) {
-            foreach ($berkasFields as $field) {
-                if (!empty($berkas->$field))
-                    $earnedPoints++;
-            }
-        }
-
-        // 3. Twibbon & Sosmed Points (20%)
-        $sosmedFields = ['link_twibbon']; // link_ig and link_tiktok are optional in calculation or make them bonus? Let's make twibbon mandatory for progress.
-        $totalPoints += count($sosmedFields);
-        foreach ($sosmedFields as $field) {
-            if (!empty($peserta->$field))
-                $earnedPoints++;
-        }
-
-        $progress = ($totalPoints > 0) ? round(($earnedPoints / $totalPoints) * 100) : 0;
+        $progress = $peserta->progress;
 
         // --- Fetch Real Activity Logs ---
         $logs = \App\Models\RiwayatAktivitas::where('pelaku_id', auth()->id())
@@ -99,6 +71,7 @@ class PendaftarController extends Controller
             ->distinct('matpel_id')
             ->count('matpel_id');
         $hasSupportingSubject = $supportingCount >= 2;
+        $berkas = $peserta->berkas;
 
         return view('pendaftar.dashboard', compact('peserta', 'berkas', 'progress', 'history', 'hasSupportingSubject'));
     }
@@ -161,9 +134,18 @@ class PendaftarController extends Controller
     public function berkas()
     {
         $peserta = Auth::user()->peserta;
+        if (!$peserta) {
+            Auth::logout();
+            return redirect('/login')->with('error', 'Data profil pendaftar tidak ditemukan.');
+        }
+
         $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
         $sertifikats = \App\Models\Sertifikat::where('peserta_id', $peserta->id)->get();
-        return view('pendaftar.berkas', compact('peserta', 'berkas', 'sertifikats'));
+        
+        $tahunLulus = (int) ($peserta->tahun_lulus ?? 2026);
+        $maxSemester = ($tahunLulus < 2026) ? 6 : 5;
+
+        return view('pendaftar.berkas', compact('peserta', 'berkas', 'sertifikats', 'maxSemester'));
     }
 
     public function storeBerkas(Request $request)
@@ -192,9 +174,6 @@ class PendaftarController extends Controller
 
         $peserta = Auth::user()->peserta;
         $berkas = \App\Models\Berkas::firstOrNew(['peserta_id' => $peserta->id]);
-
-        // Field yang di-submit oleh form (dikirim sebagai hidden input "upload_field")
-        // Jika tidak ada (backward-compat), proses semua.
         $uploadField = $request->input('upload_field');
         $raporFields = ['rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'rapor6'];
         $singleFields = [
@@ -308,6 +287,10 @@ class PendaftarController extends Controller
     public function twibbon()
     {
         $peserta = Auth::user()->peserta;
+        if (!$peserta) {
+            Auth::logout();
+            return redirect('/login')->with('error', 'Data profil pendaftar tidak ditemukan.');
+        }
         return view('pendaftar.twibbon', compact('peserta'));
     }
 
@@ -334,7 +317,14 @@ class PendaftarController extends Controller
     public function nilai()
     {
         $peserta = Auth::user()->peserta;
-        
+        if (!$peserta) {
+            Auth::logout();
+            return redirect('/login')->with('error', 'Data profil pendaftar tidak ditemukan.');
+        }
+
+        $tahunLulus = (int) ($peserta->tahun_lulus ?? 2026);
+        $maxSemester = ($tahunLulus < 2026) ? 6 : 5;
+
         // Ensure core subjects exist before querying them
         $coreSubjects = ['Bahasa Indonesia', 'Matematika Wajib', 'Bahasa Inggris'];
         foreach ($coreSubjects as $subjectName) {
@@ -355,7 +345,7 @@ class PendaftarController extends Controller
 
         $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
 
-        return view('pendaftar.nilai', compact('peserta', 'matpels', 'existingNilai', 'customNilaiBySemester', 'berkas'));
+        return view('pendaftar.nilai', compact('peserta', 'matpels', 'berkas', 'existingNilai', 'customNilaiBySemester', 'maxSemester'));
     }
 
     public function storeNilai(Request $request)
@@ -569,5 +559,124 @@ class PendaftarController extends Controller
         $this->logAktivitas('Penghapusan Sertifikat', 'Sertifikat', $id, "Menghapus sertifikat prestasi: $sertifikat->nama.");
 
         return back()->with('success', 'Sertifikat berhasil dihapus.');
+    }
+
+    /**
+     * Tampilkan halaman ganti email
+     */
+    public function showChangeEmail()
+    {
+        $peserta = Auth::user()->peserta;
+        return view('pendaftar.change_email', compact('peserta'));
+    }
+
+    /**
+     * Request ganti email (Kirim OTP ke email baru)
+     */
+    public function requestEmailChange(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_email' => 'required|email|unique:akun,email',
+        ], [
+            'new_email.unique' => 'Email baru sudah terdaftar di sistem. Gunakan email lain.',
+        ]);
+
+        // --- Device-based Rate Limiting (Anti-Spam) ---
+        $throttleKey = 'otp-limit-' . sha1($request->ip() . $request->userAgent());
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', 'Terlalu banyak permintaan OTP dari perangkat Anda. Silakan coba lagi dalam ' . ceil($seconds / 60) . ' menit.');
+        }
+        RateLimiter::hit($throttleKey, 3600); // Ban for 1 hour
+
+        $user = Auth::user();
+
+        // 1. Verifikasi Password Saat Ini
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->with('error', 'Password saat ini tidak cocok.');
+        }
+
+        // 2. Generate OTP
+        $otpCode = rand(100000, 999999);
+        $email = $request->new_email;
+
+        // 3. Simpan OTP & New Email ke Session/DB
+        DB::table('otps')->updateOrInsert(
+            ['email' => $email],
+            [
+                'otp' => $otpCode,
+                'expires_at' => Carbon::now()->addMinutes(15)
+            ]
+        );
+
+        // Simpan email baru di session untuk tahap verifikasi
+        session(['pending_new_email' => $email]);
+
+        // 4. Kirim Mail
+        try {
+            Mail::send('emails.email_change_otp', ['otp' => $otpCode, 'user' => $user], function($message) use($email){
+                $message->to($email);
+                $message->subject('Kode Verifikasi Ubah Email MNCU Future Leader Scholarship');
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal kirim OTP Ganti Email: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengirim kode verifikasi ke email baru. Mohon coba lagi.');
+        }
+
+        return redirect()->route('pendaftar.email.verify')->with('success', 'Kode verifikasi telah dikirim ke email baru Anda.');
+    }
+
+    /**
+     * Tampilkan halaman input OTP ganti email
+     */
+    public function showVerifyEmailChange()
+    {
+        $newEmail = session('pending_new_email');
+        if (!$newEmail) {
+            return redirect()->route('pendaftar.email.change')->with('error', 'Sesi kedaluwarsa. Silakan ulangi permintaan.');
+        }
+        return view('auth.verify_email_change_otp', compact('newEmail'));
+    }
+
+    /**
+     * Eksekusi ganti email setelah OTP valid
+     */
+    public function verifyEmailChange(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $newEmail = session('pending_new_email');
+        if (!$newEmail) {
+            return redirect()->route('pendaftar.email.change')->with('error', 'Sesi kedaluwarsa.');
+        }
+
+        $otpRecord = DB::table('otps')
+            ->where('email', $newEmail)
+            ->where('otp', $request->otp)
+            ->where('expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$otpRecord) {
+            return back()->with('error', 'Kode OTP salah atau sudah kedaluwarsa.');
+        }
+
+        // Jalankan Update Email
+        $user = Auth::user();
+        $oldEmail = $user->email;
+        
+        DB::transaction(function() use ($user, $newEmail) {
+            $user->update(['email' => $newEmail]);
+            // Bersihkan OTP
+            DB::table('otps')->where('email', $newEmail)->delete();
+        });
+
+        session()->forget('pending_new_email');
+        
+        $this->logAktivitas('Ganti Email', 'Akun', $user->id, "Mengubah email dari $oldEmail menjadi $newEmail.");
+
+        return redirect()->route('pendaftar.dashboard')->with('success', 'Email berhasil diperbarui menjadi ' . $newEmail);
     }
 }

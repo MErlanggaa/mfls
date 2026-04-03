@@ -19,8 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-    if (app()->environment('production')) {
-        URL::forceScheme('https');
+        if (app()->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
+        // Register Google Sheets Sync Observers
+        \App\Models\Akun::observe(\App\Observers\GoogleSheetObserver::class);
+        \App\Models\Peserta::observe(\App\Observers\GoogleSheetObserver::class);
+        \App\Models\Nilai::observe(\App\Observers\GoogleSheetObserver::class);
+        \App\Models\Berkas::observe(\App\Observers\GoogleSheetObserver::class);
+        \App\Models\Daftar::observe(\App\Observers\GoogleSheetObserver::class);
     }
-}
 }

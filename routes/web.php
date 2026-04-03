@@ -53,6 +53,17 @@ Route::get('/register', [AuthController::class , 'showRegister'])->name('registe
 Route::post('/register', [AuthController::class , 'register']);
 Route::post('/logout', [AuthController::class , 'logout'])->name('logout');
 
+// OTP Verification Routes
+Route::get('/verify-otp', [AuthController::class, 'showVerifyOtp'])->name('verify.otp');
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify.otp.post');
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('resend.otp');
+
+// Password Reset Routes
+Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
 // Internal / Staff Routes    
 Route::get('/internal/login', [AuthController::class , 'showInternalLogin'])->name('internal.login');
 Route::post('/internal/login', [AuthController::class , 'internalLogin']);
@@ -78,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
                 );
 
                 // Seleksi Beasiswa (Email Restricted)
-                Route::middleware(['role:email:dion@gmail.com|info@beasiswamncu.com'])->group(function () {
+                Route::middleware(['role:akademik,email:dion@gmail.com|info@beasiswamncu.com'])->group(function () {
                     Route::get('/admin/beasiswa', [App\Http\Controllers\AdminController::class , 'indexBeasiswa'])->name('admin.beasiswa.index');
                     Route::get('/admin/beasiswa/{id}', [App\Http\Controllers\AdminController::class , 'showBeasiswa'])->name('admin.beasiswa.show');
                     Route::post('/admin/beasiswa/{id}/update', [App\Http\Controllers\AdminController::class , 'updateBeasiswa'])->name('admin.beasiswa.update');
@@ -113,6 +124,10 @@ Route::middleware(['auth'])->group(function () {
                 );
 
                 Route::get('/admin/export', [App\Http\Controllers\AdminController::class , 'exportExcel'])->name('admin.export');
+                
+                // Certificate Generation Route
+                Route::get('/admin/pendaftar/{id}/certificate', [App\Http\Controllers\AdminController::class, 'generateCertificate'])->name('admin.pendaftar.certificate');
+                Route::post('/admin/pendaftar/{id}/send-certificate', [App\Http\Controllers\AdminController::class, 'sendCertificateEmail'])->name('admin.pendaftar.send_certificate');
             }
             );
 
@@ -132,6 +147,12 @@ Route::middleware(['auth'])->group(function () {
                     // File Deletion Routes
                     Route::post('/berkas/delete-file', [PendaftarController::class, 'deleteFile'])->name('pendaftar.berkas.delete_file');
                     Route::post('/berkas/delete-sertifikat/{id}', [PendaftarController::class, 'destroySertifikat'])->name('pendaftar.sertifikat.destroy');
+
+                    // Email Change Routes
+                    Route::get('/change-email', [PendaftarController::class, 'showChangeEmail'])->name('pendaftar.email.change');
+                    Route::post('/change-email/request', [PendaftarController::class, 'requestEmailChange'])->name('pendaftar.email.request');
+                    Route::get('/change-email/verify', [PendaftarController::class, 'showVerifyEmailChange'])->name('pendaftar.email.verify');
+                    Route::post('/change-email/verify', [PendaftarController::class, 'verifyEmailChange'])->name('pendaftar.email.verify.post');
                 }
                 );
             }

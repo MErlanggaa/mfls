@@ -1,7 +1,7 @@
 @extends('pendaftar.layout')
 
 @section('content')
-<div class="max-w-4xl mx-auto pb-20">
+<div class="max-w-5xl mx-auto space-y-10 pb-20">
     {{-- Hidden Delete Form --}}
     <form id="deleteFileForm" action="{{ route('pendaftar.berkas.delete_file') }}" method="POST" class="hidden">
         @csrf
@@ -11,632 +11,460 @@
     <form id="deleteSertifikatForm" action="" method="POST" class="hidden">
         @csrf
     </form>
-    <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-5 sm:p-10 border-b border-gray-50 flex items-center justify-between bg-gradient-to-r from-gray-50 to-white">
-            <div>
-                <h1 class="text-xl sm:text-3xl font-black text-gray-900 mb-1 sm:mb-2">Upload Berkas</h1>
-                <p class="text-xs sm:text-sm text-gray-500 font-medium">Unggah dokumen pendaftaran satu per satu</p>
+
+    <!-- Header Section -->
+    <div class="relative overflow-hidden bg-[#001f3f] p-8 md:p-12 rounded-[2.5rem] lg:rounded-[3.5rem] shadow-xl">
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl md:text-4xl font-black text-white mb-2 tracking-tight">Pusat <span class="text-orange-500 underline decoration-orange-500/30 underline-offset-8">Dokumen</span></h1>
+                <p class="text-[10px] md:text-xs text-orange-200/60 font-bold max-w-lg leading-relaxed uppercase tracking-[0.2em]">Lengkapi seluruh berkas persyaratan beasiswa Anda dengan aman.</p>
             </div>
-            <div class="w-12 h-12 sm:w-16 sm:h-16 bg-primary-gold/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-primary-gold flex-shrink-0">
-                <svg class="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <div class="hidden md:flex w-20 h-20 bg-white/10 rounded-[2rem] items-center justify-center text-orange-400 border border-white/10 backdrop-blur-sm">
+                <span class="iconify text-4xl" data-icon="solar:cloud-upload-bold-duotone"></span>
             </div>
         </div>
+    </div>
 
-        <div class="p-4 sm:p-10 space-y-6 sm:space-y-10">
-
-            {{-- Flash Messages --}}
-            @if(session('success'))
-                <div class="p-4 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-3">
-                    <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                    <p class="text-sm text-green-700 font-semibold">{{ session('success') }}</p>
+    {{-- Info Akademik --}}
+    <div class="bg-white rounded-[2rem] border-2 border-[#001f3f]/5 p-6 md:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div class="w-12 h-12 bg-[#001f3f] text-orange-400 rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+            <span class="iconify text-2xl" data-icon="solar:info-circle-bold"></span>
+        </div>
+        <div class="flex-1 space-y-3">
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-lg">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Tahun Lulus</p>
+                    <p class="text-xs font-black text-[#001f3f]">{{ $peserta->daftar->tahun_lulus ?? '2026' }}</p>
                 </div>
-            @endif
-            @if($errors->any())
-                <div class="p-4 bg-red-50 border border-red-200 rounded-2xl">
-                    <p class="text-sm text-red-700 font-semibold mb-1">Terjadi kesalahan:</p>
-                    <ul class="list-disc pl-5 text-xs text-red-600">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            {{-- Info Akademik --}}
-            <div class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100 flex items-start gap-4">
-                <div class="mt-1 min-w-[32px] w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-blue-900 mb-1">Info Status Akademik</h4>
-                    <p class="text-sm text-blue-800">
-                        Tahun Kelulusan Anda terbaca: <strong>{{ $peserta->daftar->tahun_lulus ?? 'Belum Diisi' }}</strong>
-                    </p>
-                    @php $tahunLulus = (int) ($peserta->daftar->tahun_lulus ?? 2026); @endphp
-                    @if($tahunLulus < 2026)
-                        <div class="mt-2">
-                            <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full border border-purple-200">✅ Kategori: ALUMNI</span>
-                            <p class="text-xs text-purple-600 mt-2 font-medium">Wajib mengunggah Rapor Semester 1 sampai 6.</p>
-                        </div>
-                    @else
-                        <div class="mt-2">
-                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">🎓 Kategori: SISWA KELAS 12 / GAP YEAR 2026</span>
-                            <p class="text-xs text-blue-600 mt-2 font-medium">Wajib mengunggah Rapor Semester 1 sampai 5.</p>
-                        </div>
-                    @endif
-                    <p class="text-[10px] text-gray-400 mt-3 italic border-t border-blue-100 pt-2">
-                        *Jika tahun lulus salah, silakan perbaiki di menu <strong>Biodata Diri</strong>.
-                    </p>
-                </div>
+                @php $tahunLulus = (int) ($peserta->daftar->tahun_lulus ?? 2026); @endphp
+                <span class="px-3 py-1.5 {{ $tahunLulus < 2026 ? 'bg-slate-100 text-slate-600' : 'bg-orange-500 text-white' }} text-[10px] font-black rounded-lg border border-transparent uppercase tracking-widest shadow-sm">
+                   {{ $tahunLulus < 2026 ? '✓ ALUMNI' : '🎓 SISWA KELAS 12' }}
+                </span>
             </div>
+            <p class="text-[10px] text-slate-400 font-bold italic leading-tight">
+                *Kebutuhan Rapor otomatis menyesuaikan kategori kelulusan Anda.
+            </p>
+        </div>
+    </div>
 
-            {{-- ============================================================ --}}
-            {{-- DOKUMEN UTAMA — setiap berkas punya form sendiri               --}}
-            {{-- ============================================================ --}}
-            <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-primary-gold/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-primary-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
-                    Dokumen Utama
-                </h3>
+    {{-- Main Documents Grid --}}
+    <div class="space-y-8">
+        <div class="flex items-center gap-3 border-b-2 border-slate-50 pb-4">
+            <div class="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <span class="iconify" data-icon="solar:document-bold-duotone" data-width="20"></span>
+            </div>
+            <h3 class="text-xl font-extrabold text-[#001f3f] tracking-tight">Dokumen Utama</h3>
+        </div>
 
-                @php
-                    $inputFiles = [
-                        ['name' => 'foto',    'label' => 'Pas Foto 4x6',      'desc' => 'Latar belakang merah, JPG/PNG',         'multiple' => false, 'optional' => false],
-                        ['name' => 'rapor1',  'label' => 'Rapor Semester 1',   'desc' => 'Scan PDF/JPG (Bisa > 1 file)',          'multiple' => true,  'optional' => false],
-                        ['name' => 'rapor2',  'label' => 'Rapor Semester 2',   'desc' => 'Scan PDF/JPG (Bisa > 1 file)',          'multiple' => true,  'optional' => false],
-                        ['name' => 'rapor3',  'label' => 'Rapor Semester 3',   'desc' => 'Scan PDF/JPG (Bisa > 1 file)',          'multiple' => true,  'optional' => false],
-                        ['name' => 'rapor4',  'label' => 'Rapor Semester 4',   'desc' => 'Scan PDF/JPG (Bisa > 1 file)',          'multiple' => true,  'optional' => false],
-                        ['name' => 'rapor5',  'label' => 'Rapor Semester 5',   'desc' => 'Scan PDF/JPG (Bisa > 1 file)',          'multiple' => true,  'optional' => false],
-                    ];
+        @php
+            $inputFiles = [
+                ['name' => 'foto',    'label' => 'Pas Foto 4x6',      'desc' => 'Latar merah, JPG/PNG format.', 'icon' => 'solar:user-circle-bold-duotone'],
+            ];
+            for ($i = 1; $i <= $maxSemester; $i++) {
+                $inputFiles[] = ['name' => 'rapor'.$i,  'label' => 'Rapor Semester '.$i, 'desc' => 'Hasil Scan Berwarna.', 'multiple' => true, 'icon' => 'solar:checklist-bold-duotone'];
+            }
+            if ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') {
+                $inputFiles[] = ['name' => 'surat_buta_warna', 'label' => 'Bebas Buta Warna', 'desc' => 'Hasil Medis (Wajib DKV).', 'icon' => 'solar:eye-scan-bold-duotone'];
+            }
+            if ($tahunLulus < 2026) {
+                $inputFiles[] = ['name' => 'ijazah', 'label' => 'Ijazah Asli', 'desc' => 'Scan Ijazah asli.', 'icon' => 'solar:diploma-bold-duotone'];
+            } else {
+                $inputFiles[] = ['name' => 'ijazah', 'label' => 'SKL / Kartu Pelajar', 'desc' => 'Data identitas siswa.', 'icon' => 'solar:card-id-bold-duotone'];
+            }
+        @endphp
 
-                    if ($tahunLulus < 2026) {
-                        $inputFiles[] = ['name' => 'rapor6', 'label' => 'Rapor Semester 6', 'desc' => 'Wajib bagi lulusan sebelum 2026', 'multiple' => true, 'optional' => false];
-                    }
-
-                    if ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') {
-                        $inputFiles[] = ['name' => 'surat_buta_warna', 'label' => 'Surat Keterangan Tidak Buta Warna', 'desc' => 'Wajib untuk Program Studi DKV', 'multiple' => false, 'optional' => false];
-                    }
-
-                    $inputFiles[] = ['name' => 'ijazah', 'label' => 'Ijazah / SKL', 'desc' => 'Jika sudah ada (Opsional)', 'multiple' => false, 'optional' => true];
-                @endphp
-
-                @foreach($inputFiles as $file)
-                @php
-                    $fieldName  = $file['name'];
-                    $isMultiple = $file['multiple'];
-                    $isUploaded = $berkas && $berkas->{$fieldName};
-                    if ($isUploaded) {
-                        $decoded  = json_decode($berkas->{$fieldName}, true);
-                        $fileCount = is_array($decoded) ? count($decoded) : 1;
-                    }
-                @endphp
-                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data"
-                      class="mb-3" onsubmit="return validateSingleForm(this)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 pb-6">
+            @foreach($inputFiles as $file)
+            @php
+                $fieldName  = $file['name'];
+                $isMultiple = $file['multiple'] ?? false;
+                $isUploaded = $berkas && $berkas->{$fieldName};
+                if ($isUploaded) {
+                    $decoded  = json_decode($berkas->{$fieldName}, true);
+                }
+            @endphp
+            <div class="bg-white p-6 rounded-[2rem] border-2 border-slate-50 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-100 transition-all duration-500">
+                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateSingleForm(this)">
                     @csrf
                     <input type="hidden" name="upload_field" value="{{ $fieldName }}">
-
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 bg-gray-50 rounded-2xl sm:rounded-[2rem] border border-gray-100 hover:border-primary-gold/50 transition-all {{ $file['optional'] ? 'bg-blue-50/30' : '' }}">
-                        {{-- Info berkas --}}
-                        <div class="flex items-center gap-3 sm:gap-6 min-w-0">
-                            <div class="w-11 h-11 sm:w-14 sm:h-14 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center text-{{ $isUploaded ? 'green-500' : 'gray-400' }} transition-colors shadow-sm flex-shrink-0">
-                                <svg class="w-5 h-5 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <h4 class="font-bold text-sm sm:text-base text-gray-900">{{ $file['label'] }}</h4>
-                                    @if($file['optional'])
-                                        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">Opsional</span>
-                                    @else
-                                        <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">Wajib</span>
-                                    @endif
-                                </div>
-                                <p class="text-xs text-gray-500 font-medium">{{ $file['desc'] }}</p>
-                                @if(str_starts_with($file['name'], 'rapor') || $file['name'] == 'ijazah' || $file['name'] == 'foto')
-                                    <p class="text-[9px] text-orange-400 font-bold italic mt-0.5 mb-1 leading-tight">Jika terjadi error saat upload, pastikan Anda memilih file dari "Penyimpanan Internal" HP, bukan dari sinkronisasi Google Drive/Photos.</p>
-                                @endif
-                                @if($isUploaded)
-                                    <div class="flex items-center gap-2 mt-1">
-                                        @if(!$isMultiple)
-                                            <div class="flex items-center gap-3 px-3 py-1.5 bg-white border border-gray-100 rounded-xl shadow-sm w-fit">
-                                                <p class="text-[10px] text-green-600 font-black flex items-center gap-1">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                                    Terunggah
-                                                </p>
-                                                <div class="h-3 w-px bg-gray-200"></div>
-                                                <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" 
-                                                   class="text-[10px] text-blue-600 font-bold hover:underline">
-                                                    Buka File
-                                                </a>
-                                                <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" 
-                                                        class="text-[10px] text-red-500 hover:text-red-700 font-bold">
-                                                    Hapus
-                                                </button>
-                                            </div>
-                                        @else
-                                            <p class="text-xs text-green-600 font-bold">✓ {{ $fileCount }} File terunggah</p>
-                                        @endif
-                                    </div>
-                                @else
-                                    <p class="text-xs {{ $file['optional'] ? 'text-blue-500' : 'text-red-400' }} font-medium mt-1">
-                                        {{ $file['optional'] ? 'Belum diunggah (Tidak wajib)' : 'Belum diunggah' }}
-                                    </p>
-                                @endif
-                                <p id="preview-{{ $fieldName }}" class="text-xs text-primary-gold font-bold mt-1 hidden"></p>
-
-                                {{-- Multi-file list (if rapor) --}}
-                                @if($isUploaded && $isMultiple)
-                                    <div class="flex flex-wrap gap-2 mt-2">
-                                        @php $paths = is_array($decoded) ? $decoded : [$decoded]; @endphp
-                                        @foreach($paths as $idx => $p)
-                                            <div class="flex items-center gap-2 px-2 py-1 bg-white border border-gray-200 rounded-lg shadow-sm">
-                                                <a href="{{ Storage::url($p) }}" target="_blank" class="text-[10px] text-blue-600 font-bold hover:underline truncate max-w-[100px]">File {{ $idx+1 }}</a>
-                                                <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}', '{{ $p }}')" class="text-red-400 hover:text-red-600">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                </button>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
+                    
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="w-12 h-12 {{ $isUploaded ? 'bg-[#001f3f] text-orange-400' : 'bg-slate-50 text-slate-300' }} rounded-xl flex items-center justify-center transition-all shadow-md">
+                            <span class="iconify text-2xl" data-icon="{{ $file['icon'] }}"></span>
                         </div>
-
-                        {{-- Tombol pilih & simpan --}}
-                        <div class="flex items-center gap-2 sm:flex-shrink-0">
-                            <input type="file"
-                                   name="{{ $fieldName }}{{ $isMultiple ? '[]' : '' }}"
-                                   class="hidden"
-                                   id="file-{{ $fieldName }}"
-                                   {{ $isMultiple ? 'multiple' : '' }}
-                                   onchange="onFileSelected(this, '{{ $fieldName }}')">
-                            <label for="file-{{ $fieldName }}"
-                                   class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                {{ $isUploaded ? 'Pilih Ulang' : 'Pilih File' }}
-                            </label>
-                            <button type="submit"
-                                    id="btn-save-{{ $fieldName }}"
-                                    class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
-                                💾 Simpan
-                            </button>
+                        <div class="flex-1">
+                            <h4 class="font-black text-[#001f3f] text-xs uppercase tracking-widest leading-none mb-1">{{ $file['label'] }}</h4>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest opacity-80">{{ $file['desc'] }}</p>
                         </div>
+                        @if($isUploaded)
+                            <span class="iconify text-orange-500" data-icon="solar:verified-check-bold" data-width="24"></span>
+                        @endif
                     </div>
-                </form>
-                @endforeach
-            </div>
 
-            {{-- ============================================================ --}}
-            {{-- BUKTI FOLLOW MEDIA SOSIAL                                      --}}
-            {{-- ============================================================ --}}
-            <div>
-                <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-pink-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                    </div>
-                    Bukti Follow Media Sosial
-                </h3>
-
-                @php
-                    $sosmedFollows = [
-                        ['name' => 'bukti_follow_ig_beasiswamncu',    'label' => 'Follow IG @beasiswamncu',      'desc' => 'Screenshot bukti follow Instagram @beasiswamncu'],
-                        ['name' => 'bukti_follow_ig_mncu',           'label' => 'Follow IG @mncuniversity',     'desc' => 'Screenshot bukti follow Instagram @mncuniversity'],
-                        ['name' => 'bukti_follow_tiktok_beasiswamncu','label' => 'Follow TikTok @beasiswamncu',  'desc' => 'Screenshot bukti follow TikTok @beasiswamncu'],
-                        ['name' => 'bukti_follow_tiktok_mncu',        'label' => 'Follow TikTok @mncuniversity', 'desc' => 'Screenshot bukti follow TikTok @mncuniversity'],
-                    ];
-                @endphp
-
-                @foreach($sosmedFollows as $sosmed)
-                @php
-                    $fieldName  = $sosmed['name'];
-                    $isUploaded = $berkas && $berkas->{$fieldName};
-                @endphp
-                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data"
-                      class="mb-3" onsubmit="return validateSingleForm(this)">
-                    @csrf
-                    <input type="hidden" name="upload_field" value="{{ $fieldName }}">
-
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 bg-gray-50 rounded-2xl sm:rounded-[2rem] border border-gray-100 hover:border-primary-gold/50 transition-all">
-                        <div class="flex items-center gap-3 sm:gap-6 min-w-0">
-                            <div class="w-11 h-11 sm:w-14 sm:h-14 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center text-{{ $isUploaded ? 'green-500' : 'gray-400' }} transition-colors shadow-sm flex-shrink-0">
-                                <svg class="w-5 h-5 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            </div>
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <h4 class="font-bold text-sm sm:text-base text-gray-900">{{ $sosmed['label'] }}</h4>
-                                    <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">Wajib</span>
-                                </div>
-                                <p class="text-xs text-gray-500 font-medium">{{ $sosmed['desc'] }}</p>
-                                @if($isUploaded)
-                                    <div class="flex items-center gap-3 mt-0.5">
-                                        <p class="text-xs text-green-600 font-bold">✓ Uploaded</p>
-                                        <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" class="text-[10px] text-blue-600 hover:underline">Lihat Bukti →</a>
-                                        <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" 
-                                                class="text-[10px] text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
-                                            Hapus
+                    <div class="bg-slate-100/50 rounded-xl p-3 mb-4 border border-slate-100 min-h-[50px] flex flex-col justify-center">
+                        @if($isUploaded)
+                            <div class="flex flex-wrap gap-2">
+                                @if(!$isMultiple)
+                                    <div class="flex items-center justify-between w-full h-8 px-3 bg-white border border-slate-200 rounded-lg">
+                                        <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" class="text-[9px] font-black text-[#001f3f] hover:text-orange-500 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="iconify" data-icon="solar:eye-bold"></span> VIEW
+                                        </a>
+                                        <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" class="text-[9px] font-black text-red-500 hover:text-red-700 uppercase tracking-widest">
+                                            SKIP/DEL
                                         </button>
                                     </div>
                                 @else
-                                    <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
+                                    @php $paths = isset($decoded) ? (is_array($decoded) ? $decoded : [$decoded]) : []; @endphp
+                                    @foreach($paths as $idx => $p)
+                                        <div class="flex items-center gap-2 px-2 py-1 bg-white border border-slate-200 rounded-lg group/file max-w-full">
+                                            <a href="{{ Storage::url($p) }}" target="_blank" class="text-[9px] font-black text-slate-700 truncate max-w-[60px]">FILE {{ $idx+1 }}</a>
+                                            <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}', '{{ $p }}')" class="text-red-400 hover:text-red-600">
+                                                <span class="iconify" data-icon="solar:close-circle-bold"></span>
+                                            </button>
+                                        </div>
+                                    @endforeach
                                 @endif
-                                <p class="text-xs text-primary-gold font-bold mt-1 hidden" id="preview-{{ $fieldName }}"></p>
                             </div>
-                        </div>
-
-                        <div class="flex items-center gap-2 sm:flex-shrink-0">
-                            <input type="file"
-                                   name="{{ $fieldName }}"
-                                   class="hidden"
-                                   id="file-{{ $fieldName }}"
-                                   accept="image/*"
-                                   onchange="onFileSelected(this, '{{ $fieldName }}')">
-                            <label for="file-{{ $fieldName }}"
-                                   class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                {{ $isUploaded ? 'Pilih Ulang' : 'Pilih File' }}
-                            </label>
-                            <button type="submit"
-                                    id="btn-save-{{ $fieldName }}"
-                                    class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
-                                💾 Simpan
-                            </button>
-                        </div>
-                    </div>
-                </form>
-                @endforeach
-            </div>
-
-            {{-- ============================================================ --}}
-            {{-- SERTIFIKAT PRESTASI — form sendiri                            --}}
-            {{-- ============================================================ --}}
-            <div>
-                <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    Sertifikat Prestasi
-                </h3>
-
-                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data"
-                      onsubmit="return validateSingleForm(this)">
-                    @csrf
-                    <input type="hidden" name="upload_field" value="sertifikat">
-                    <div class="p-4 sm:p-6 bg-blue-50/50 rounded-2xl sm:rounded-[2rem] border border-blue-100">
-                        <p class="text-xs sm:text-sm text-gray-600 mb-3">Unggah sertifikat prestasi Anda. Anda dapat memilih banyak file sekaligus (gunakan CTRL+Klik).</p>
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                            <input type="file" name="sertifikat[]" multiple id="file-sertifikat"
-                                   class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                   onchange="onFileSelected(this, 'sertifikat')"/>
-                            <button type="submit" id="btn-save-sertifikat"
-                                    class="hidden w-full sm:w-auto bg-primary-gold text-dark-navy text-xs font-bold px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all">
-                                💾 Simpan Sertifikat
-                            </button>
-                        </div>
-
-                        @if($sertifikats->count() > 0)
-                        <div class="mt-4">
-                            <h5 class="font-bold text-sm text-gray-800 mb-2">Sertifikat Terunggah:</h5>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                @foreach($sertifikats as $s)
-                                    <div class="flex items-center justify-between p-3 bg-white border border-blue-100 rounded-xl shadow-sm">
-                                        <div class="min-w-0">
-                                            <p class="text-xs font-bold text-gray-800 truncate">{{ $s->nama }}</p>
-                                            <p class="text-[10px] text-gray-500">{{ $s->tahun }}</p>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <a href="{{ Storage::url($s->file) }}" target="_blank" class="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                            </a>
-                                            <button type="button" onclick="confirmDeleteSertifikat({{ $s->id }}, '{{ $s->nama }}')" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
+                        @else
+                            <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest italic text-center">Belum ada file</p>
                         @endif
+                        <p id="preview-{{ $fieldName }}" class="text-[9px] font-black text-orange-600 mt-2 hidden truncate bg-white p-2 rounded-lg border border-dashed border-orange-500/30"></p>
                     </div>
-                </form>
-            </div>
 
-            {{-- ============================================================ --}}
-            {{-- PERSONAL STATEMENT                                             --}}
-            {{-- ============================================================ --}}
-            <div>
-                <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
-                    Personal Statement
-                </h3>
-
-                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data"
-                      onsubmit="return validateSingleForm(this)">
-                    @csrf
-                    <input type="hidden" name="upload_field" value="personal_statement">
-                    <div class="p-4 sm:p-6 bg-green-50/50 rounded-2xl sm:rounded-[2rem] border border-green-100">
-                        {{-- Desc + Download --}}
-                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-                            <div class="flex-1">
-                                <p class="text-xs sm:text-sm text-gray-600 mb-2">
-                                    <strong class="text-gray-900">Personal Statement</strong> adalah esai singkat tentang diri Anda, motivasi, dan rencana masa depan.
-                                    Silakan download template, isi, dan upload kembali dalam format PDF.
-                                </p>
-                                <div class="flex items-center gap-3">
-                                    <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
-                                    <span class="text-xs text-gray-500">Format: PDF | Max: 10MB</span>
-                                </div>
-                            </div>
-                            <a href="{{ asset('icon/Personal Statement MFLS 2026.pdf') }}" download
-                               class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md flex-shrink-0">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Download Template
-                            </a>
-                        </div>
-                        {{-- Upload Row --}}
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 bg-white rounded-xl sm:rounded-2xl border border-green-200">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-xl flex items-center justify-center text-{{ $berkas && $berkas->personal_statement ? 'green-600' : 'gray-400' }} flex-shrink-0">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm sm:text-base text-gray-900">Upload Personal Statement (PDF)</h4>
-                                    @if($berkas && $berkas->personal_statement)
-                                        <div class="flex items-center gap-3 mt-0.5">
-                                            <p class="text-xs text-green-600 font-bold">✓ File terunggah</p>
-                                            <a href="{{ Storage::url($berkas->personal_statement) }}" target="_blank" class="text-xs text-blue-600 hover:underline font-bold">Lihat File</a>
-                                            <button type="button" onclick="confirmDeleteFile('personal_statement')" 
-                                                    class="text-xs text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    @else
-                                        <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <input type="file" name="personal_statement" class="hidden" id="file-personal_statement" accept=".pdf,.doc,.docx"
-                                       onchange="onFileSelected(this, 'personal_statement')">
-                                <label for="file-personal_statement" id="label-personal_statement" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                    <span class="label-text">{{ $berkas && $berkas->personal_statement ? 'Pilih Ulang' : 'Pilih File' }}</span>
-                                </label>
-                                <button type="submit" id="btn-save-personal_statement"
-                                        class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
-                                    💾 Simpan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            {{-- ============================================================ --}}
-            {{-- STUDY PLAN                                                     --}}
-            {{-- ============================================================ --}}
-            <div>
-                <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                    </div>
-                    Study Plan
-                </h3>
-
-                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data"
-                      onsubmit="return validateSingleForm(this)">
-                    @csrf
-                    <input type="hidden" name="upload_field" value="study_plan">
-                    <div class="p-4 sm:p-6 bg-blue-50/50 rounded-2xl sm:rounded-[2rem] border border-blue-100">
-                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-                            <div class="flex-1">
-                                <p class="text-xs sm:text-sm text-gray-600 mb-2">
-                                    <strong class="text-gray-900">Study Plan</strong> adalah rencana studi Anda selama menempuh pendidikan di universitas.
-                                    Silakan download template, isi, dan upload kembali dalam format PDF.
-                                </p>
-                                <div class="flex items-center gap-3">
-                                    <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
-                                    <span class="text-xs text-gray-500">Format: PDF | Max: 10MB</span>
-                                </div>
-                            </div>
-                            <a href="{{ asset('icon/Study Plan MFLS 2026_2.pdf') }}" download
-                               class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md flex-shrink-0">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Download Template
-                            </a>
-                        </div>
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 bg-white rounded-xl sm:rounded-2xl border border-blue-200">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl flex items-center justify-center text-{{ $berkas && $berkas->study_plan ? 'blue-600' : 'gray-400' }} flex-shrink-0">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm sm:text-base text-gray-900">Upload Study Plan (PDF)</h4>
-                                    @if($berkas && $berkas->study_plan)
-                                        <div class="flex items-center gap-3 mt-0.5">
-                                            <p class="text-xs text-green-600 font-bold">✓ File terunggah</p>
-                                            <a href="{{ Storage::url($berkas->study_plan) }}" target="_blank" class="text-xs text-blue-600 hover:underline font-bold">Lihat File</a>
-                                            <button type="button" onclick="confirmDeleteFile('study_plan')" 
-                                                    class="text-xs text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    @else
-                                        <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <input type="file" name="study_plan" class="hidden" id="file-study_plan" accept=".pdf,.doc,.docx"
-                                       onchange="onFileSelected(this, 'study_plan')">
-                                <label for="file-study_plan" id="label-study_plan" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                    <span class="label-text">{{ $berkas && $berkas->study_plan ? 'Pilih Ulang' : 'Pilih File' }}</span>
-                                </label>
-                                <button type="submit" id="btn-save-study_plan"
-                                        class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
-                                    💾 Simpan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            {{-- ============================================================ --}}
-            {{-- SURAT REKOMENDASI SEKOLAH                                      --}}
-            {{-- ============================================================ --}}
-            @if($tahunLulus >= 2026)
-            <div>
-                <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-orange-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    </div>
-                    Surat Rekomendasi Sekolah
-                </h3>
-
-                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data"
-                      onsubmit="return validateSingleForm(this)">
-                    @csrf
-                    <input type="hidden" name="upload_field" value="surat_rekomendasi_sekolah">
-                    <div class="p-4 sm:p-6 bg-orange-50/50 rounded-2xl sm:rounded-[2rem] border border-orange-100">
-                        {{-- Desc + Download --}}
-                        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
-                            <div class="flex-1">
-                                <p class="text-xs sm:text-sm text-gray-600 mb-2">
-                                    <strong class="text-gray-900">Surat Rekomendasi Sekolah</strong> adalah surat pernyataan dukungan dari pihak sekolah.
-                                    Silakan download template, isi, and upload kembali dalam format PDF.
-                                </p>
-                                <div class="flex items-center gap-3">
-                                    <span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">📝 Wajib</span>
-                                    <span class="text-xs text-gray-500">Format: PDF | Max: 10MB</span>
-                                </div>
-                            </div>
-                            <a href="{{ asset('icon/Surat Rekomendasi MFLS_2.pdf') }}" download
-                               class="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-md flex-shrink-0">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Download Template
-                            </a>
-                        </div>
-                        {{-- Upload Row --}}
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 bg-white rounded-xl sm:rounded-2xl border border-orange-200">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-xl flex items-center justify-center text-{{ $berkas && $berkas->surat_rekomendasi_sekolah ? 'orange-600' : 'gray-400' }} flex-shrink-0">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-sm sm:text-base text-gray-900">Upload Surat Rekomendasi (PDF)</h4>
-                                    @if($berkas && $berkas->surat_rekomendasi_sekolah)
-                                        <div class="flex items-center gap-3 mt-0.5">
-                                            <p class="text-xs text-green-600 font-bold">✓ File terunggah</p>
-                                            <a href="{{ Storage::url($berkas->surat_rekomendasi_sekolah) }}" target="_blank" class="text-xs text-blue-600 hover:underline font-bold">Lihat File</a>
-                                            <button type="button" onclick="confirmDeleteFile('surat_rekomendasi_sekolah')" 
-                                                    class="text-xs text-red-500 hover:text-red-700 font-bold underline decoration-red-200">
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    @else
-                                        <p class="text-xs text-red-400 font-medium mt-0.5">Belum diunggah</p>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <input type="file" name="surat_rekomendasi_sekolah" class="hidden" id="file-surat_rekomendasi_sekolah" accept=".pdf,.doc,.docx"
-                                       onchange="onFileSelected(this, 'surat_rekomendasi_sekolah')">
-                                <label for="file-surat_rekomendasi_sekolah" id="label-surat_rekomendasi_sekolah" class="flex-1 sm:flex-none cursor-pointer bg-dark-navy text-white text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-gray-700 transition-all text-center">
-                                    <span class="label-text">{{ $berkas && $berkas->surat_rekomendasi_sekolah ? 'Pilih Ulang' : 'Pilih File' }}</span>
-                                </label>
-                                <button type="submit" id="btn-save-surat_rekomendasi_sekolah"
-                                        class="hidden flex-1 sm:flex-none bg-primary-gold text-dark-navy text-xs font-bold px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl hover:bg-primary-gold/80 transition-all text-center">
-                                    💾 Simpan
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            @endif
-
-            {{-- ============================================================ --}}
-            {{-- LINK VIDEO MOTIVASI — form sendiri                             --}}
-            {{-- ============================================================ --}}
-            <div>
-                <h3 class="text-base sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
-                    <div class="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                    </div>
-                    Link Video - Peserta Wajib Membuat Video Motivasi
-                </h3>
-
-                <form action="{{ route('pendaftar.berkas.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="upload_field" value="motivasi_video">
-                    <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-purple-200 space-y-4">
-                        
-                        <!-- Instagram Link -->
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Link Video Motivation - Instagram Reels</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <span class="iconify text-gray-400 w-5 h-5" data-icon="solar:videocamera-record-bold"></span>
-                                </div>
-                                <input type="url" name="motivasi_video"
-                                       value="{{ old('motivasi_video', $berkas->motivasi_video ?? '') }}"
-                                       placeholder="https://instagram.com/reel/..."
-                                       class="w-full pl-12 pr-3 py-3 sm:py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500/20 outline-none transition-all text-sm">
-                            </div>
-                            @if($berkas && $berkas->motivasi_video)
-                                <a href="{{ $berkas->motivasi_video }}" target="_blank" class="text-[10px] text-blue-600 hover:underline mt-1 inline-block break-all">
-                                    {{ Str::limit($berkas->motivasi_video, 50) }} →
-                                </a>
-                            @endif
-                        </div>
-
-                        <!-- TikTok Link -->
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Link Video Motivation - TikTok</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                    <span class="iconify text-gray-400 w-5 h-5" data-icon="solar:videocamera-record-bold"></span>
-                                </div>
-                                <input type="url" name="motivasi_video_tiktok"
-                                       value="{{ old('motivasi_video_tiktok', $berkas->motivasi_video_tiktok ?? '') }}"
-                                       placeholder="https://tiktok.com/@user/video/..."
-                                       class="w-full pl-12 pr-3 py-3 sm:py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-purple-500/10 focus:border-purple-500/20 outline-none transition-all text-sm">
-                            </div>
-                            @if($berkas && $berkas->motivasi_video_tiktok)
-                                <a href="{{ $berkas->motivasi_video_tiktok }}" target="_blank" class="text-[10px] text-blue-600 hover:underline mt-1 inline-block break-all">
-                                    {{ Str::limit($berkas->motivasi_video_tiktok, 50) }} →
-                                </a>
-                            @endif
-                        </div>
-
-                        <p class="text-xs text-gray-500">💡 Pastikan video bisa diakses publik agar panitia dapat melakukan penilaian.</p>
-                        
-                        <button type="submit"
-                                class="w-full sm:w-auto bg-primary-gold text-dark-navy text-sm font-bold px-8 py-3 rounded-xl hover:bg-primary-gold/80 transition-all">
-                            💾 Simpan Link Video
+                    <div class="flex items-center gap-2">
+                        <input type="file" name="{{ $fieldName }}{{ $isMultiple ? '[]' : '' }}" class="hidden" id="file-{{ $fieldName }}" {{ $isMultiple ? 'multiple' : '' }} onchange="onFileSelected(this, '{{ $fieldName }}')">
+                        <label for="file-{{ $fieldName }}" class="flex-1 cursor-pointer bg-[#001f3f] text-white text-[10px] font-black uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-black transition-all text-center border border-white/5">
+                            {{ $isUploaded ? 'Replace' : 'Upload' }}
+                        </label>
+                        <button type="submit" id="btn-save-{{ $fieldName }}" class="hidden flex-1 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-3 rounded-xl hover:shadow-lg transition-all shadow-orange-500/20">
+                           SIMPAN
                         </button>
                     </div>
                 </form>
-
+            </div>
+            @endforeach
         </div>
+    </div>
+
+    <!-- Social Media Proof -->
+    <div class="space-y-8 mt-12">
+        <div class="flex items-center gap-3 border-b-2 border-slate-50 pb-4">
+            <div class="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <span class="iconify" data-icon="solar:link-bold-duotone" data-width="20"></span>
+            </div>
+            <h3 class="text-xl font-extrabold text-[#001f3f] tracking-tight">Social Media Proof</h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            @php
+                $sosmedFollows = [
+                    ['name' => 'bukti_follow_ig_beasiswamncu',    'label' => 'IG @beasiswamncu',      'icon' => 'solar:camera-bold'],
+                    ['name' => 'bukti_follow_ig_mncu',           'label' => 'IG @mncuniversity',     'icon' => 'solar:camera-bold'],
+                    ['name' => 'bukti_follow_tiktok_beasiswamncu','label' => 'TikTok @beasiswamncu',  'icon' => 'solar:videocamera-record-bold'],
+                    ['name' => 'bukti_follow_tiktok_mncu',        'label' => 'TikTok @mncuniversity', 'icon' => 'solar:videocamera-record-bold'],
+                ];
+            @endphp
+
+            @foreach($sosmedFollows as $sosmed)
+            @php
+                $fieldName  = $sosmed['name'];
+                $isUploaded = $berkas && $berkas->{$fieldName};
+            @endphp
+            <div class="bg-white p-5 rounded-[1.5rem] border-2 border-slate-50 flex flex-col justify-between group hover:border-orange-500/30 transition-all">
+                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateSingleForm(this)">
+                    @csrf
+                    <input type="hidden" name="upload_field" value="{{ $fieldName }}">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 {{ $isUploaded ? 'bg-[#001f3f] text-orange-400' : 'bg-slate-50 text-slate-300' }} rounded-xl flex items-center justify-center border border-current/5 shadow-sm">
+                            <span class="iconify text-xl" data-icon="{{ $sosmed['icon'] }}"></span>
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="text-[10px] font-black text-slate-800 uppercase tracking-tight truncate">{{ $sosmed['label'] }}</h4>
+                            @if($isUploaded)
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ Storage::url($berkas->{$fieldName}) }}" target="_blank" class="text-[8px] font-black text-orange-600 uppercase hover:text-orange-700">View</a>
+                                    <button type="button" onclick="confirmDeleteFile('{{ $fieldName }}')" class="text-[8px] font-black text-red-500 uppercase">Del</button>
+                                </div>
+                            @else
+                                <p class="text-[8px] font-bold text-slate-200 italic uppercase leading-none mt-0.5">Missing</p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="file" name="{{ $fieldName }}" class="hidden" id="file-{{ $fieldName }}" accept="image/*" onchange="onFileSelected(this, '{{ $fieldName }}')">
+                        <label for="file-{{ $fieldName }}" class="flex-1 h-9 bg-[#001f3f] text-white rounded-lg flex items-center justify-center cursor-pointer hover:bg-black transition-all text-[9px] font-black uppercase tracking-widest px-2">
+                            {{ $isUploaded ? 'Replace' : 'Upload' }}
+                        </label>
+                        <button type="submit" id="btn-save-{{ $fieldName }}" class="hidden w-9 h-9 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-sm">
+                            <span class="iconify text-xl" data-icon="solar:diskette-bold"></span>
+                        </button>
+                    </div>
+                    <p id="preview-{{ $fieldName }}" class="text-[8px] font-black text-orange-600 mt-2 truncate hidden italic text-center"></p>
+                </form>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Achievement Certificates --}}
+    <div class="space-y-8 mt-12">
+        <div class="flex items-center gap-3 border-b-2 border-slate-50 pb-4">
+            <div class="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <span class="iconify" data-icon="solar:medal-star-bold-duotone" data-width="20"></span>
+            </div>
+            <h3 class="text-xl font-extrabold text-[#001f3f] tracking-tight">Sertifikat Prestasi</h3>
+        </div>
+
+        <div class="bg-white p-6 md:p-10 rounded-[2.5rem] border-2 border-slate-50 shadow-sm">
+            <p class="text-[10px] font-bold text-slate-400 leading-relaxed mb-8 uppercase tracking-widest opacity-80 text-center">Unggah sertifikat prestasi terbaik Anda sebagai nilai tambah profil Anda.</p>
+            
+            <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateSingleForm(this)">
+                @csrf
+                <input type="hidden" name="upload_field" value="sertifikat">
+                <div class="relative mb-10">
+                    <input type="file" name="sertifikat[]" multiple id="file-sertifikat" class="hidden" onchange="onFileSelected(this, 'sertifikat')"/>
+                    <label for="file-sertifikat" class="flex flex-col items-center justify-center w-full py-10 border-4 border-dotted border-slate-100 rounded-[2rem] bg-slate-50/50 cursor-pointer hover:border-orange-500 hover:bg-orange-500/5 transition-all">
+                        <span class="iconify text-5xl text-slate-300 mb-3" data-icon="solar:cloud-plus-bold-duotone"></span>
+                        <span class="text-[11px] font-black text-slate-500 uppercase tracking-widest">Pilih Banyak Sertifikat (PDF/JPG)</span>
+                    </label>
+                    <p id="preview-sertifikat" class="text-[10px] font-black text-orange-600 mt-4 text-center hidden bg-orange-50 py-2 rounded-xl"></p>
+                    <button type="submit" id="btn-save-sertifikat" class="hidden w-full mt-6 bg-orange-500 text-white text-[11px] font-black py-5 rounded-2xl shadow-xl shadow-orange-500/20 uppercase tracking-widest">💾 Simpan Semua Sertifikat</button>
+                </div>
+            </form>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                @forelse($sertifikats as $s)
+                    <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/50 rounded-2xl hover:bg-white hover:border-orange-500/30 transition-all">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <div class="w-10 h-10 bg-[#001f3f] text-orange-400 rounded-xl flex items-center justify-center shrink-0 shadow-md">
+                                <span class="iconify text-xl" data-icon="solar:medal-ribbon-bold-duotone"></span>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[10px] font-black text-[#001f3f] truncate uppercase">{{ $s->nama }}</p>
+                                <p class="text-[9px] font-black text-orange-500 uppercase tracking-widest">{{ $s->tahun }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ Storage::url($s->file) }}" target="_blank" class="w-9 h-9 bg-white border border-slate-200 text-[#001f3f] rounded-lg flex items-center justify-center shadow-sm hover:text-orange-500">
+                                <span class="iconify" data-icon="solar:eye-linear"></span>
+                            </a>
+                            <button type="button" onclick="confirmDeleteSertifikat({{ $s->id }}, '{{ $s->nama }}')" class="w-9 h-9 bg-white border border-slate-200 text-red-500 rounded-lg flex items-center justify-center shadow-sm hover:text-red-700">
+                                <span class="iconify" data-icon="solar:trash-bin-trash-linear"></span>
+                            </button>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full text-center py-12 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-100">
+                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Belum ada prestasi yang diunggah</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    {{-- Essays & Academic Plans --}}
+    <div class="space-y-8 mt-12">
+        <div class="flex items-center gap-3 border-b-2 border-slate-50 pb-4">
+            <div class="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <span class="iconify" data-icon="solar:pen-new-square-bold-duotone" data-width="20"></span>
+            </div>
+            <h3 class="text-xl font-extrabold text-[#001f3f] tracking-tight">Essays & Academic Plans</h3>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            @php
+                $essays = [
+                    [
+                        'name' => 'personal_statement',
+                        'label' => 'Personal Statement',
+                        'desc' => 'Visi masa depan & alasan kelayakan.',
+                        'template' => 'Personal Statement MFLS 2026.pdf',
+                        'guide' => 'Tuliskan siapa diri Anda, apa motivasi terbesar Anda mengikuti beasiswa ini, dan bagaimana beasiswa ini akan merubah masa depan Anda dan keluarga.'
+                    ],
+                    [
+                        'name' => 'study_plan',
+                        'label' => 'Study Plan',
+                        'desc' => 'Rencana studi akademik 4 tahun.',
+                        'template' => 'Study Plan MFLS 2026_2.pdf',
+                        'guide' => 'Jelaskan target IPK Anda setiap semester, mata kuliah apa yang paling ingin Anda dalami, dan kegiatan organisasi apa yang akan Anda ikuti untuk mendukung perkuliahan.'
+                    ]
+                ];
+                if($tahunLulus >= 2026) {
+                    $essays[] = [
+                        'name' => 'surat_rekomendasi_sekolah',
+                        'label' => 'Rekomendasi Sekolah',
+                        'desc' => 'Dukungan resmi dari sekolah.',
+                        'template' => 'Surat Rekomendasi MFLS_2.pdf',
+                        'guide' => 'Mintalah surat ini kepada Wali Kelas, Guru BK, atau Kepala Sekolah yang mengenal baik prestasi dan karakter Anda di sekolah.'
+                    ];
+                }
+            @endphp
+
+            @foreach($essays as $essay)
+            @php $isUploaded = $berkas && $berkas->{$essay['name']}; @endphp
+            <div class="bg-white p-6 md:p-8 rounded-[2rem] border-2 border-slate-50 flex flex-col justify-between group hover:border-orange-500/30 transition-all shadow-sm">
+                <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateSingleForm(this)">
+                    @csrf
+                    <input type="hidden" name="upload_field" value="{{ $essay['name'] }}">
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="w-12 h-12 {{ $isUploaded ? 'bg-[#001f3f] text-orange-400' : 'bg-slate-50 text-slate-300' }} rounded-xl flex items-center justify-center border border-current/5 shrink-0 shadow-md">
+                            <span class="iconify text-2xl" data-icon="solar:document-add-bold-duotone"></span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-[12px] font-black text-[#001f3f] uppercase tracking-widest mb-1">{{ $essay['label'] }}</h4>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">{{ $essay['desc'] }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 p-4 bg-orange-500/[0.03] rounded-2xl border border-orange-500/10">
+                        <div class="flex items-center gap-2 mb-3 text-orange-600">
+                            <span class="iconify text-lg" data-icon="solar:magic-stick-3-bold-duotone"></span>
+                            <span class="text-[9px] font-black uppercase tracking-widest">Digital Mentor Tips</span>
+                        </div>
+                        <ul class="space-y-2">
+                            @if($essay['name'] == 'personal_statement')
+                                <li class="text-[9px] font-bold text-slate-600 leading-tight">• Deskripsikan bakat unik & visi perubahan Anda.</li>
+                                <li class="text-[9px] font-bold text-slate-500 italic leading-tight">Hint: Ceritakan latar belakang keluarga, ekonomi, atau tantangan hidup yang memotivasi Anda untuk kuliah.</li>
+                            @elseif($essay['name'] == 'study_plan')
+                                <li class="text-[9px] font-bold text-slate-600 leading-tight">• Rencanakan target IPK & kontribusi di kampus.</li>
+                                <li class="text-[9px] font-bold text-slate-500 italic leading-tight">Hint: {{ $essay['guide'] }}</li>
+                            @elseif($essay['name'] == 'surat_rekomendasi_sekolah')
+                                <li class="text-[9px] font-bold text-slate-600 leading-tight">• Pastikan ada TTD & Cap Sekolah basah.</li>
+                                <li class="text-[9px] font-bold text-slate-500 italic leading-tight">Hint: {{ $essay['guide'] }}</li>
+                            @endif
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 mb-6">
+                        <a href="{{ asset('icon/'.$essay['template']) }}" download class="flex-1 min-w-[120px] py-3 bg-[#001f3f] text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-xl text-center hover:bg-black transition-all shadow-md">
+                             Template
+                        </a>
+                        <div class="px-3 py-3 bg-white border-2 border-slate-100 text-[#001f3f] text-[9px] font-black uppercase tracking-widest rounded-xl">
+                            PDF
+                        </div>
+                    </div>
+
+                    <div class="mt-auto space-y-4">
+                        @if($isUploaded)
+                            <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                                <a href="{{ Storage::url($berkas->{$essay['name']}) }}" target="_blank" class="text-[9px] font-black text-[#001f3f] hover:text-orange-600 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="iconify" data-icon="solar:eye-bold-duotone"></span> PREVIEW
+                                </a>
+                                <button type="button" onclick="confirmDeleteFile('{{ $essay['name'] }}')" class="text-[9px] font-black text-red-500 uppercase tracking-widest hover:text-red-700">DELETE</button>
+                            </div>
+                        @else
+                            <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest italic text-center mb-2">Unggah file PDF Anda</p>
+                        @endif
+                        <div class="flex items-center gap-2">
+                            <input type="file" name="{{ $essay['name'] }}" class="hidden" id="file-{{ $essay['name'] }}" accept=".pdf" onchange="onFileSelected(this, '{{ $essay['name'] }}')">
+                            <label for="file-{{ $essay['name'] }}" class="flex-1 cursor-pointer bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest px-4 py-4 rounded-xl hover:bg-orange-600 transition-all text-center shadow-lg shadow-orange-500/20">
+                                {{ $isUploaded ? 'Replace File' : 'Browse PDF' }}
+                            </label>
+                            <button type="submit" id="btn-save-{{ $essay['name'] }}" class="hidden flex-1 bg-[#001f3f] text-white text-[10px] font-black uppercase tracking-widest px-4 py-4 rounded-xl">
+                                SAVE
+                            </button>
+                        </div>
+                        <p id="preview-{{ $essay['name'] }}" class="text-[9px] font-black text-orange-600 text-center hidden truncate italic mt-2 bg-orange-50 py-2 rounded-lg"></p>
+                    </div>
+                </form>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Motivational Video --}}
+    <div class="space-y-8 mt-12 pb-24">
+        <div class="flex items-center justify-between border-b-2 border-slate-50 pb-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
+                    <span class="iconify" data-icon="solar:play-bold-duotone" data-width="20"></span>
+                </div>
+                <h3 class="text-xl font-extrabold text-[#001f3f] tracking-tight">Motivational Video</h3>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] border-2 border-slate-50 overflow-hidden shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-3">
+                <div class="p-8 md:p-12 bg-[#001f3f] text-white flex flex-col justify-center border-r-2 border-white/10">
+                    <h4 class="text-2xl font-black leading-tight mb-4 uppercase tracking-tighter">Video <span class="text-orange-400 italic">Guide</span></h4>
+                    <p class="text-[11px] text-orange-100/60 font-bold uppercase tracking-[0.2em] leading-relaxed">Tunjukkan pesona dan semangat kepemimpinan Anda secara visual.</p>
+                </div>
+                <div class="p-8 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-10 bg-slate-50/50">
+                    <div class="space-y-4">
+                        <h5 class="text-[11px] font-black text-[#001f3f] uppercase tracking-widest border-b border-[#001f3f]/10 pb-2">Script Point</h5>
+                        <ul class="space-y-3">
+                            <li class="text-[10px] font-bold text-slate-600 leading-tight">1. Sapaan & Nama Origin.</li>
+                            <li class="text-[10px] font-bold text-slate-600 leading-tight">2. Alasan kuat memilih MNCU.</li>
+                            <li class="text-[10px] font-bold text-slate-600 leading-tight">3. Kontribusi setelah lulus.</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4">
+                        <h5 class="text-[11px] font-black text-[#001f3f] uppercase tracking-widest border-b border-[#001f3f]/10 pb-2">Technical</h5>
+                        <ul class="space-y-3">
+                            <li class="text-[10px] font-bold text-slate-600 leading-tight">• Cahaya dari arah depan.</li>
+                            <li class="text-[10px] font-bold text-slate-600 leading-tight">• Suara jernih (tanpa noise).</li>
+                            <li class="text-[10px] font-bold text-slate-600 leading-tight">• Rasio 16:9 atau 9:16.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form action="{{ route('pendaftar.berkas.store') }}" method="POST">
+            @csrf
+            <input type="hidden" name="upload_field" value="motivasi_video">
+            <div class="bg-[#001f3f] p-8 md:p-14 rounded-[3rem] shadow-2xl shadow-[#001f3f]/20 relative overflow-hidden">
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
+                    <div class="lg:col-span-2 space-y-10">
+                        <div>
+                            <p class="text-[10px] font-black text-orange-400 uppercase tracking-[0.4em] mb-4">🔗 Instagram Video Link</p>
+                            <input type="url" name="motivasi_video" value="{{ old('motivasi_video', $berkas->motivasi_video ?? '') }}" placeholder="https://instagram.com/reel/..."
+                                   class="w-full px-8 py-6 bg-white/5 border-2 border-white/10 rounded-2xl text-sm text-white focus:ring-2 focus:ring-orange-500 outline-none transition-all font-bold placeholder:text-white/20">
+                            @if($berkas && $berkas->motivasi_video)
+                                <a href="{{ $berkas->motivasi_video }}" target="_blank" class="text-[10px] font-black text-orange-400 uppercase tracking-widest mt-4 inline-flex items-center gap-2 hover:text-white transition-colors">
+                                    <span class="iconify" data-icon="solar:play-stream-bold-duotone"></span> View on Instagram
+                                </a>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-orange-400 uppercase tracking-[0.4em] mb-4">🔗 TikTok Video Link</p>
+                            <input type="url" name="motivasi_video_tiktok" value="{{ old('motivasi_video_tiktok', $berkas->motivasi_video_tiktok ?? '') }}" placeholder="https://tiktok.com/@user/video/..."
+                                   class="w-full px-8 py-6 bg-white/5 border-2 border-white/10 rounded-2xl text-sm text-white focus:ring-2 focus:ring-orange-500 outline-none transition-all font-bold placeholder:text-white/20">
+                             @if($berkas && $berkas->motivasi_video_tiktok)
+                                <a href="{{ $berkas->motivasi_video_tiktok }}" target="_blank" class="text-[10px] font-black text-orange-400 uppercase tracking-widest mt-4 inline-flex items-center gap-2 hover:text-white transition-colors">
+                                    <span class="iconify" data-icon="solar:videocamera-record-bold-duotone"></span> View on TikTok
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center text-center p-8 bg-white/5 rounded-[2.5rem] border border-white/10 backdrop-blur-md">
+                         <div class="w-24 h-24 bg-orange-500 text-white rounded-3xl flex items-center justify-center mb-8 shadow-xl shadow-orange-500/30">
+                            <span class="iconify text-5xl" data-icon="solar:magic-stick-2-bold-duotone"></span>
+                        </div>
+                        <p class="text-[11px] font-bold text-white/40 uppercase tracking-[0.3em] mb-10 italic">"Inspire Your Future"</p>
+                        <button type="submit" class="w-full bg-orange-500 text-white text-[11px] font-black uppercase tracking-[0.3em] py-6 rounded-2xl hover:bg-white hover:text-[#001f3f] transition-all shadow-xl shadow-orange-500/20 active:scale-95">
+                            Submit Campaign
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-/**
- * Konfirmasi hapus berkas
- */
 function confirmDeleteFile(field, filePath = null) {
     Swal.fire({
-        title: 'Hapus berkas ini?',
-        text: "Berkas yang dihapus tidak dapat dikembalikan.",
+        title: 'Hapus Berkas?',
+        text: "Pastikan Anda memiliki cadangan file ini.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#001f3f',
+        confirmButtonText: 'YA, HAPUS',
+        cancelButtonText: 'BATAL',
+        customClass: { popup: 'rounded-[2rem]' }
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('deleteField').value = field;
@@ -646,19 +474,17 @@ function confirmDeleteFile(field, filePath = null) {
     })
 }
 
-/**
- * Konfirmasi hapus sertifikat
- */
 function confirmDeleteSertifikat(id, nama) {
     Swal.fire({
-        title: 'Hapus sertifikat?',
-        text: "Hapus sertifikat: " + nama,
+        title: 'Hapus Sertifikat?',
+        text: nama,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#001f3f',
+        confirmButtonText: 'YA, HAPUS',
+        cancelButtonText: 'BATAL',
+        customClass: { popup: 'rounded-[2rem]' }
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.getElementById('deleteSertifikatForm');
@@ -668,38 +494,29 @@ function confirmDeleteSertifikat(id, nama) {
     })
 }
 
-/**
- * Dipanggil saat file dipilih. Tampilkan tombol Simpan dan nama file.
- */
 function onFileSelected(input, fieldName) {
     const btn = document.getElementById('btn-save-' + fieldName);
     const preview = document.getElementById('preview-' + fieldName);
-    // Find the label associated with this file input
     const label = document.querySelector('label[for="file-' + fieldName + '"]');
     
     if (input.files.length > 0) {
-        // Tampilkan tombol simpan
         if (btn) btn.classList.remove('hidden');
-        
-        // Update label text for feedback
         if (label) {
-            label.textContent = '✅ ' + input.files.length + ' File Terpilih';
-            label.classList.remove('bg-dark-navy');
-            label.classList.add('bg-green-600');
+            label.innerHTML = `✓ ${input.files.length} FILE TERPILIH`;
+            label.classList.remove('bg-[#001f3f]', 'bg-orange-500');
+            label.classList.add('bg-green-600', 'animate-pulse');
         }
-
-        // Tampilkan nama file
         if (preview) {
             const names = Array.from(input.files).map(f => f.name).join(', ');
-            preview.textContent = '📎 ' + names;
+            preview.textContent = 'Selected: ' + (names.length > 40 ? names.substring(0, 40) + '...' : names);
             preview.classList.remove('hidden');
         }
     } else {
         if (btn) btn.classList.add('hidden');
         if (label) {
-            label.textContent = 'Pilih File';
-            label.classList.add('bg-dark-navy');
-            label.classList.remove('bg-green-600');
+            label.innerHTML = 'BROWSE FILE';
+            label.classList.add('bg-[#001f3f]');
+            label.classList.remove('bg-green-600', 'animate-pulse');
         }
         if (preview) {
             preview.textContent = '';
@@ -708,45 +525,31 @@ function onFileSelected(input, fieldName) {
     }
 }
 
-/**
- * Validasi ukuran file sebelum submit. Max 10MB per file.
- */
 function validateSingleForm(form) {
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    const maxSize = 10 * 1024 * 1024; 
     const fileInputs = form.querySelectorAll('input[type="file"]');
-    
     for (let input of fileInputs) {
         for (let file of input.files) {
             if (file.size > maxSize) {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        title: 'File Terlalu Besar!',
-                        html: `File <strong>"${file.name}"</strong> melebihi batas maksimal <strong>10MB</strong>.<br><br>Silakan kompres atau kurangi ukuran file terlebih dahulu.`,
-                        icon: 'error',
-                        confirmButtonColor: '#ef4444',
-                        confirmButtonText: 'OK, Mengerti'
-                    });
-                } else {
-                    alert(`File "${file.name}" melebihi batas 10MB.`);
-                }
+                Swal.fire({
+                    title: 'File Terlalu Besar!',
+                    html: `File <strong>"${file.name}"</strong> melebihi 10MB.`,
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                    confirmButtonText: 'MENGERTI',
+                    customClass: { popup: 'rounded-[2rem]' }
+                });
                 return false;
             }
         }
     }
-
-    // Show loading alert if valid
-    if (typeof Swal !== 'undefined') {
-        Swal.fire({
-            title: 'Sedang Mengunggah...',
-            text: 'Mohon tunggu sebentar, file Anda sedang diproses.',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-    }
-
+    Swal.fire({
+        title: 'Sedang Mengunggah...',
+        text: 'Mohon tunggu sebentar.',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); },
+        customClass: { popup: 'rounded-[2rem]' }
+    });
     return true;
 }
 </script>

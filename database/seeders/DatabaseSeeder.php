@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         // Create Pendaftar Dummy Account
         $user = \App\Models\Akun::create([
             'nama' => 'Budi Santoso',
-            'email' => 'pendaftar@example.com',
+            'email' => 'm.eralngga@gmail.com',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
             'role' => 'pendaftar',
         ]);
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
         $ujianWawancara = \App\Models\Ujian::create(['nama' => 'Wawancara Kebangsaan']);
 
         // Seed Matpel & Nilai Random
-        $matpels = ['Matematika Wajib', 'Bahasa Indonesia', 'Bahasa Inggris'];
+        $matpels = ['Matematika Wajib', 'Bahasa Indonesia', 'Bahasa Inggris', 'asdad', 'Bahasa Inggrisas'];
 
         foreach ($matpels as $namaMatpel) {
             $mp = \App\Models\Matpel::create(['nama' => $namaMatpel]);

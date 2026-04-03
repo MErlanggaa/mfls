@@ -6,6 +6,11 @@ use App\Models\Akun;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AuthController extends Controller
 {
@@ -42,8 +47,16 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            $user = Auth::user();
+
+            // Periksa apakah email sudah diverifikasi
+            if (!$user->email_verified_at && $user->role === 'pendaftar') {
+                Auth::logout();
+                return redirect()->route('verify.otp', ['email' => $user->email])->with('error', 'Email Anda belum diverifikasi. Silakan masukkan kode OTP.');
+            }
+
             // Periksa role user
-            if (Auth::user()->role !== 'pendaftar') {
+            if ($user->role !== 'pendaftar') {
                 Auth::logout();
                 return back()->with('loginError', 'Area ini khusus pendaftar. Gunakan Login Internal.');
             }
@@ -127,6 +140,14 @@ class AuthController extends Controller
             'g-recaptcha-response.required' => 'Wajib mencentang reCAPTCHA.',
         ]);
 
+        // --- Device-based Rate Limiting (Anti-Spam) ---
+        $throttleKey = 'otp-limit-' . sha1($request->ip() . $request->userAgent());
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', 'Terlalu banyak permintaan dari perangkat Anda. Silakan coba lagi dalam ' . ceil($seconds / 60) . ' menit.')->withInput();
+        }
+        RateLimiter::hit($throttleKey, 3600); // Ban for 1 hour
+
         // Verify Google reCAPTCHA
         $secretKey = env('RECAPTCHA_SECRET_KEY');
         $response = $request->input('g-recaptcha-response');
@@ -137,45 +158,240 @@ class AuthController extends Controller
             return back()->withErrors(['g-recaptcha-response' => 'Verifikasi robot gagal, silakan coba lagi.'])->withInput();
         }
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
-            // 1. Create Akun
-            $user = Akun::create([
-                'nama' => $request->nama,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => 'pendaftar', // Use 'pendaftar' matching DB enum
-            ]);
+        $email = $request->email;
+        $nama = $request->nama;
 
-            // 2. Create Peserta
-            $peserta = \App\Models\Peserta::create([
-                'akun_id' => $user->id,
-                'nama' => $request->nama,
-                'no_whatsapp' => $request->no_whatsapp,
-                'tgl_lahir' => $request->tgl_lahir,
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'tahun_lulus' => $request->tahun_lulus,
-                'provinsi' => $request->provinsi,
-                'kabupaten' => $request->kabupaten,
-                'nama_sekolah' => $request->nama_sekolah,
-                'no_guru_bk' => $request->no_guru_bk,
-                'nisn' => $request->nisn,
-            ]);
+        // 4. Store Registration Data in Session (Expires with session)
+        session(['registration_payload' => $request->all()]);
 
-            // 3. Create Daftar (Initial Registration Data)
-            \App\Models\Daftar::create([
-                'peserta_id' => $peserta->id,
-                'no_wa' => $request->no_whatsapp,
-                'jenis_kelamin' => $request->jenis_kelamin,
-                'tahun_lulus' => $request->tahun_lulus,
-                'ttl' => $request->tgl_lahir, // Using date for now
-                'provinsi' => $request->provinsi,
-                'kabupaten' => $request->kabupaten,
-                'asal_sekolah' => $request->nama_sekolah,
-                'kode_referral' => $request->kode_referral,
-            ]);
-        });
+        // 5. Generate & Send OTP
+        $otpCode = rand(100000, 999999);
+        \App\Models\Otp::updateOrCreate(
+            ['email' => $email],
+            [
+                'otp' => $otpCode,
+                'expires_at' => now()->addMinutes(15) // Matching session typical window
+            ]
+        );
 
-        return redirect('/login')->with('success', 'Registrasi berhasil! Silakan login untuk melanjutkan.');
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\OtpMail($nama, $otpCode));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal mengirim OTP: ' . $e->getMessage());
+        }
+
+        return redirect()->route('verify.otp', ['email' => $email])->with('success', 'Registrasi berhasil! Silakan masukkan kode OTP yang telah dikirim ke email Anda.');
+    }
+
+    public function showVerifyOtp(Request $request)
+    {
+        $email = $request->email;
+        if (!$email) return redirect('/login');
+        return view('auth.verify_otp', compact('email'));
+    }
+
+    public function verifyOtp(Request $request, \App\Services\CertificateService $certificateService)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $otpRecord = \App\Models\Otp::where('email', $request->email)
+            ->where('otp', $request->otp)
+            ->where('expires_at', '>', now())
+            ->first();
+
+        if (!$otpRecord) {
+            return back()->withErrors(['otp' => 'Kode OTP tidak valid atau sudah kedaluwarsa.'])->withInput();
+        }
+
+        // Retrieve registration data from session
+        $payload = session('registration_payload');
+        
+        if (!$payload || $payload['email'] !== $request->email) {
+            return redirect('/register')->with('error', 'Data registrasi tidak ditemukan atau sudah kedaluwarsa. Silakan daftar ulang.');
+        }
+
+        // Create User & Related Records in a Transaction
+        try {
+            $user = \Illuminate\Support\Facades\DB::transaction(function () use ($payload) {
+                // 1. Create Akun
+                $user = Akun::create([
+                    'nama' => $payload['nama'],
+                    'email' => $payload['email'],
+                    'password' => \Illuminate\Support\Facades\Hash::make($payload['password']),
+                    'role' => 'pendaftar',
+                    'email_verified_at' => now(), // Directly verified
+                ]);
+
+                // 2. Create Peserta
+                $peserta = \App\Models\Peserta::create([
+                    'akun_id' => $user->id,
+                    'nama' => $payload['nama'],
+                    'no_whatsapp' => $payload['no_whatsapp'],
+                    'tgl_lahir' => $payload['tgl_lahir'],
+                    'jenis_kelamin' => $payload['jenis_kelamin'],
+                    'tahun_lulus' => $payload['tahun_lulus'],
+                    'provinsi' => $payload['provinsi'],
+                    'kabupaten' => $payload['kabupaten'],
+                    'nama_sekolah' => $payload['nama_sekolah'],
+                    'no_guru_bk' => $payload['no_guru_bk'] ?? null,
+                    'nisn' => $payload['nisn'],
+                ]);
+
+                // 3. Create Daftar
+                \App\Models\Daftar::create([
+                    'peserta_id' => $peserta->id,
+                    'no_wa' => $payload['no_whatsapp'],
+                    'jenis_kelamin' => $payload['jenis_kelamin'],
+                    'tahun_lulus' => $payload['tahun_lulus'],
+                    'ttl' => $payload['tgl_lahir'],
+                    'provinsi' => $payload['provinsi'],
+                    'kabupaten' => $payload['kabupaten'],
+                    'asal_sekolah' => $payload['nama_sekolah'],
+                    'kode_referral' => $payload['kode_referral'] ?? null,
+                ]);
+
+                return $user;
+            });
+
+            $otpRecord->delete(); // Cleanup
+            session()->forget('registration_payload'); // Cleanup session
+
+            // Send Certificate automatically
+            $certificateService->sendEmail($user->id);
+
+            // Auto Login
+            Auth::login($user);
+
+            return redirect('/pendaftar/dashboard')->with('success', 'Email berhasil diverifikasi! Selamat datang di dashboard MNCU Future Leader Scholarship.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Registration Error: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat membuat akun. Silakan coba lagi.');
+        }
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $email = $request->email;
+        
+        // --- Device-based Rate Limiting (Anti-Spam) ---
+        $throttleKey = 'otp-limit-' . sha1($request->ip() . $request->userAgent());
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', 'Terlalu banyak permintaan dari perangkat Anda. Silakan coba lagi dalam ' . ceil($seconds / 60) . ' menit.');
+        }
+        RateLimiter::hit($throttleKey, 3600); // Ban for 1 hour
+
+        $otpCode = rand(100000, 999999);
+        \App\Models\Otp::updateOrCreate(
+            ['email' => $email],
+            [
+                'otp' => $otpCode,
+                'expires_at' => now()->addMinutes(10)
+            ]
+        );
+
+        try {
+            $payload = session('registration_payload');
+            
+            if (!$payload) {
+                return redirect('/register')->with('error', 'Sesi pendaftaran telah kedaluwarsa. Silakan isi kembali data pendaftaran Anda.');
+            }
+
+            $nama = $payload['nama'];
+            
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\OtpMail($nama, $otpCode));
+            return back()->with('success', 'Kode OTP baru telah dikirim ke email Anda.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Resend OTP Error: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengirim email. Silakan coba lagi nanti.');
+        }
+    }
+
+    public function showForgotPassword()
+    {
+        return view('auth.forgot_password');
+    }
+
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+        $email = $request->email;
+
+        // --- Device-based Rate Limiting (Anti-Spam) ---
+        $throttleKey = 'otp-limit-' . sha1($request->ip() . $request->userAgent());
+        if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', 'Terlalu banyak permintaan dari perangkat Anda. Silakan coba lagi dalam ' . ceil($seconds / 60) . ' menit.');
+        }
+        RateLimiter::hit($throttleKey, 3600); // Ban for 1 hour
+
+        $user = Akun::where('email', $email)->first();
+        if (!$user) {
+            return back()->with('error', 'Email tidak terdaftar dalam sistem kami.');
+        }
+
+        // Generate Token
+        $token = Str::random(64);
+
+        // Save to password_reset_tokens
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $email],
+            [
+                'token' => $token,
+                'created_at' => Carbon::now()
+            ]
+        );
+
+        // Send Mail
+        try {
+            Mail::send('emails.reset_password', ['token' => $token, 'user' => $user], function($message) use($email){
+                $message->to($email);
+                $message->subject('Reset Password MNCU Future Leader Scholarship');
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal kirim Reset Link: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengirim email reset. Mohon coba lagi nanti.');
+        }
+
+        return back()->with('success', 'Kami telah mengirimkan link reset password ke email Anda.');
+    }
+
+    public function showResetPassword(Request $request, $token)
+    {
+        $email = $request->email;
+        return view('auth.reset_password', ['token' => $token, 'email' => $email]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:akun,email',
+            'token' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $resetData = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('token', $request->token)
+            ->first();
+
+        if (!$resetData) {
+            return back()->with('error', 'Token tidak valid atau sudah kedaluwarsa.');
+        }
+
+        // Update Password
+        $user = Akun::where('email', $request->email)->first();
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        // Delete Token
+        DB::table('password_reset_tokens')->where(['email' => $request->email])->delete();
+
+        return redirect()->route('login')->with('success', 'Password Anda berhasil diperbarui! Silakan login kembali.');
     }
 
     public function logout(Request $request)

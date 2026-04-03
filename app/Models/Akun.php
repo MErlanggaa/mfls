@@ -17,6 +17,7 @@ class Akun extends Authenticatable
     protected $fillable = [
         'nama',
         'email',
+        'email_verified_at',
         'password',
         'role',
     ];

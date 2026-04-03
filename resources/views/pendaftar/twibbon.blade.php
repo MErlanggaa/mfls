@@ -1,163 +1,180 @@
 @extends('pendaftar.layout')
 
 @section('content')
-<div class="max-w-5xl mx-auto">
-    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-10 border-b border-gray-50 flex items-center justify-between bg-gradient-to-r from-primary-gold/10 to-white">
-            <div>
-                <h1 class="text-3xl font-black text-gray-900 mb-2">🎨 Twibon Generator</h1>
-                <p class="text-gray-500 font-medium">Buat twibon kamu dan bagikan ke social media!</p>
+<div class="max-w-6xl mx-auto space-y-10 pb-32">
+    {{-- 1. PREMIUM HEADER --}}
+    <div class="relative overflow-hidden bg-slate-900 rounded-[3.5rem] p-10 md:p-16 text-white shadow-2xl border border-white/5">
+        <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-gold/5 rounded-full blur-[120px] -mr-40 -mt-40"></div>
+        
+        <div class="relative z-10">
+            <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl mb-8 backdrop-blur-md">
+                <span class="iconify text-primary-gold text-lg" data-icon="solar:camera-add-bold-duotone"></span>
+                <span class="text-[9px] font-black uppercase tracking-[0.3em] text-primary-gold">Official Identity Kit</span>
             </div>
-            <div class="w-16 h-16 bg-primary-gold/20 rounded-2xl flex items-center justify-center text-primary-gold">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </div>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-tight">Twibbon <span class="text-primary-gold italic">Studio</span></h1>
+            <p class="text-slate-400 text-sm md:text-base font-medium max-w-2xl leading-relaxed mb-8">
+                Tunjukkan kebanggaanmu sebagai calon penerima beasiswa MFLS. Kreasikan twibbon resmi dan bagikan semangatmu di media sosial.
+            </p>
         </div>
+    </div>
 
-        <div class="p-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <!-- Left: Upload & Controls -->
+    {{-- 2. MAIN CREATIVE STUDIO --}}
+    <div class="bg-white rounded-[3.5rem] p-8 md:p-12 border border-slate-100 shadow-sm overflow-hidden relative group">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <!-- Left: Upload & Controls -->
+            <div class="space-y-10">
                 <div class="space-y-6">
-                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-[2rem] border border-blue-100">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                            Upload Foto Kamu
-                        </h3>
-                        
-                        <div class="mb-4">
-                            <label for="photoUpload" class="cursor-pointer block">
-                                <div class="border-2 border-dashed border-blue-300 rounded-2xl p-8 text-center hover:border-blue-500 hover:bg-blue-50/50 transition-all">
-                                    <svg class="w-12 h-12 mx-auto text-blue-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                    <p class="text-sm font-bold text-gray-700">Klik untuk upload foto</p>
-                                    <p class="text-xs text-gray-500 mt-1">JPG, PNG (Max 5MB)</p>
+                    <div>
+                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Studio Adjustments</h3>
+                        <label class="block text-2xl font-black text-slate-800 tracking-tight leading-tight">Personalize Your Identity</label>
+                    </div>
+
+                    <div class="relative group/upload">
+                        <input type="file" id="photoUpload" accept="image/*" class="hidden">
+                        <label for="photoUpload" class="flex flex-col items-center justify-center w-full h-56 border-2 border-dashed border-slate-100 rounded-[2.5rem] cursor-pointer bg-slate-50/50 hover:bg-primary-gold/5 hover:border-primary-gold transition-all duration-500">
+                            <div class="flex flex-col items-center justify-center p-8">
+                                <div class="w-16 h-16 bg-white rounded-2xl shadow-xl text-slate-300 mb-4 flex items-center justify-center group-hover/upload:text-primary-gold group-hover/upload:scale-110 transition-all">
+                                    <span class="iconify text-3xl" data-icon="solar:camera-bold-duotone"></span>
                                 </div>
-                            </label>
-                            <input type="file" id="photoUpload" accept="image/*" class="hidden">
+                                <p class="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover/upload:text-primary-gold text-center">Pilih Foto Terbaikmu</p>
+                                <p class="text-[9px] font-bold text-slate-300 uppercase tracking-widest text-center">Square Image Recommended</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-8">
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ukuran / Scale</label>
+                                <span id="scaleValue" class="text-[10px] font-black text-primary-gold">100%</span>
+                            </div>
+                            <input type="range" id="scaleSlider" min="10" max="300" value="100" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary-gold">
                         </div>
 
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">Ukuran Foto</label>
-                                <input type="range" id="scaleSlider" min="10" max="300" value="100" class="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer">
-                                <div class="flex justify-between text-xs text-gray-500 mt-1">
-                                    <span>Kecil</span>
-                                    <span id="scaleValue">100%</span>
-                                    <span>Besar</span>
-                                </div>
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Rotasi / Degree</label>
+                                <span id="rotateValue" class="text-[10px] font-black text-slate-800">0°</span>
                             </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">Rotasi Foto</label>
-                                <input type="range" id="rotateSlider" min="0" max="360" value="0" class="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer">
-                                <div class="flex justify-between text-xs text-gray-500 mt-1">
-                                    <span>0°</span>
-                                    <span id="rotateValue">0°</span>
-                                    <span>360°</span>
-                                </div>
-                            </div>
-
-                            <div class="bg-white/50 p-4 rounded-xl border border-blue-200">
-                                <p class="text-xs text-gray-600 mb-2">💡 <strong>Tips:</strong></p>
-                                <ul class="text-xs text-gray-600 space-y-1 ml-4 list-disc">
-                                    <li>Drag foto untuk menggeser posisi</li>
-                                    <li>Gunakan slider untuk zoom in/out</li>
-                                    <li>Pastikan wajah terlihat jelas</li>
-                                </ul>
-                            </div>
+                            <input type="range" id="rotateSlider" min="0" max="360" value="0" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-800">
                         </div>
                     </div>
 
-                    <button id="downloadBtn" class="w-full bg-gradient-to-r from-primary-gold to-amber-400 hover:from-amber-400 hover:to-primary-gold text-dark-navy font-bold py-4 rounded-2xl transition-all hover:scale-[1.02] shadow-lg shadow-primary-gold/30 flex items-center justify-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        Download Twibon
+                    <button id="downloadBtn" class="w-full px-10 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-primary-gold hover:text-slate-900 transition-all flex items-center justify-center gap-4 transform active:scale-95 shadow-xl group">
+                        <span class="text-[10px] uppercase tracking-[0.3em]">Download Result</span>
+                        <span class="iconify text-xl group-hover:translate-y-1 transition-transform" data-icon="solar:download-square-bold"></span>
                     </button>
                 </div>
+            </div>
 
-                <!-- Right: Preview Canvas -->
-                <div class="space-y-4">
-                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        Preview Twibon
-                    </h3>
-                    
-                    <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-[2rem] border border-gray-200">
-                        <div class="relative mx-auto" style="max-width: 500px;">
-                            <canvas id="twibonCanvas" width="1080" height="1080" class="w-full h-auto rounded-2xl shadow-2xl border-4 border-white"></canvas>
-                            <div id="dragHint" class="absolute inset-0 bg-black/50 rounded-2xl flex items-center justify-center text-white text-sm font-bold opacity-0 transition-opacity pointer-events-none">
-                                📸 Upload foto untuk mulai
+            <!-- Right: Preview Canvas -->
+            <div class="space-y-8">
+                <div class="flex items-center justify-between">
+                     <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Live Preview</h3>
+                     <div class="flex items-center gap-2">
+                         <span class="w-2 h-2 rounded-full bg-primary-gold animate-pulse"></span>
+                         <span class="text-[8px] font-black text-primary-gold uppercase tracking-widest">Studio Ready</span>
+                     </div>
+                </div>
+                
+                <div class="relative group/canvas">
+                    <div class="absolute -inset-4 bg-primary-gold/5 rounded-[3.5rem] blur-2xl opacity-50"></div>
+                    <div class="relative bg-white p-3 rounded-[2.5rem] border border-slate-100 shadow-2xl mx-auto overflow-hidden" style="max-width: 500px;">
+                        <canvas id="twibonCanvas" width="1080" height="1080" class="w-full h-auto rounded-2xl cursor-grab active:cursor-grabbing"></canvas>
+                        <div id="dragHint" class="absolute inset-3 bg-slate-900/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center text-white opacity-0 transition-opacity pointer-events-none z-20">
+                            <span class="iconify text-5xl text-primary-gold mb-4 animate-bounce" data-icon="solar:camera-rotate-bold-duotone"></span>
+                            <span class="text-[9px] font-black uppercase tracking-widest">Upload foto untuk kustomisasi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-[2.5rem] border border-white/5 flex items-center gap-5">
+                    <div class="w-12 h-12 bg-white/5 text-primary-gold rounded-xl flex items-center justify-center shrink-0 border border-white/10">
+                        <span class="iconify text-2xl" data-icon="solar:stars-bold-duotone"></span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 font-medium leading-relaxed">
+                        <strong class="text-white block mb-1 uppercase tracking-widest">Tips Studio:</strong>
+                        Gunakan foto square (1:1) untuk hasil terbaik. Anda dapat menggeser (drag) foto di dalam kanvas untuk posisi yang pas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- 3. SOCIAL CHANNEL SUBMISSION --}}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Caption Helper -->
+        <div class="lg:col-span-5 bg-white rounded-[3.5rem] p-10 border border-slate-100 shadow-sm space-y-8">
+            <div>
+                <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Marketing Kit</h3>
+                <label class="block text-2xl font-black text-slate-800 tracking-tight leading-tight">Official Caption</label>
+            </div>
+
+            <div class="bg-slate-900 rounded-[2.5rem] p-8 relative overflow-hidden group/caption">
+                <div class="absolute top-0 right-0 p-6 opacity-5">
+                    <span class="iconify text-5xl text-white" data-icon="solar:chat-round-check-bold"></span>
+                </div>
+                
+                <div class="relative z-10">
+                    <div id="captionText" class="text-[10px] text-slate-400 font-medium leading-relaxed space-y-4 max-h-[250px] overflow-y-auto pr-4 custom-scrollbar">
+                        <p class="text-primary-gold font-black uppercase tracking-wider">I'M READY FOR MFLS 📢‼️</p>
+                        <p>Behind this twibbon, there's a dream, a hope, and a step forward towards the future. ✨</p>
+                        <p>Halo, future leader friends 👋🏻 Perkenalkan saya {{ Auth::user()->nama }} berasal dari {{ $peserta->nama_sekolah ?? '[Asal sekolah]' }} dengan ini siap memulai perjalanan kepemimpinan dalam program MFLS MNC University. 🚀</p>
+                        <p>🗣 The future needs leaders. Starting the journey with MFLS MNC University. #ShapingFutureLeader #MNCUFutureLeaderScholarship</p>
+                    </div>
+
+                    <button onclick="copyCaption(this)" class="w-full mt-8 py-4 bg-white text-slate-900 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-primary-gold transition-all flex items-center justify-center gap-3 active:scale-95">
+                        <span class="iconify text-lg" data-icon="solar:copy-bold"></span>
+                        <span>Copy Caption</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submission Form -->
+        <div class="lg:col-span-7 bg-white rounded-[3.5rem] p-10 border border-slate-100 shadow-sm">
+            <form action="{{ route('pendaftar.twibbon.store') }}" method="POST" class="space-y-8">
+                @csrf
+                <div>
+                    <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Verification</h3>
+                    <label class="block text-2xl font-black text-slate-800 tracking-tight leading-tight">Post Verification</label>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="space-y-4">
+                        <div class="group/field">
+                            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Instagram Post Link</label>
+                            <div class="relative">
+                                <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/field:text-primary-gold transition-colors">
+                                    <span class="iconify" data-icon="solar:link-bold-duotone"></span>
+                                </div>
+                                <input type="url" name="link_twibbon" value="{{ old('link_twibbon', $peserta->link_twibbon) }}" placeholder="https://instagram.com/p/..." class="w-full bg-slate-50 px-12 py-4 rounded-xl border border-slate-100 focus:border-primary-gold focus:bg-white outline-none font-bold text-slate-700 transition-all" required>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="group/field">
+                                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Profile Instagram</label>
+                                <input type="url" name="link_ig" value="{{ old('link_ig', $peserta->link_ig) }}" placeholder="Link Profil" class="w-full bg-slate-50 px-5 py-4 rounded-xl border border-slate-100 focus:border-slate-300 focus:bg-white outline-none font-bold text-slate-700 transition-all">
+                            </div>
+                            <div class="group/field">
+                                <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Profile TikTok</label>
+                                <input type="url" name="link_tiktok" value="{{ old('link_tiktok', $peserta->link_tiktok) }}" placeholder="Link Profil" class="w-full bg-slate-50 px-5 py-4 rounded-xl border border-slate-100 focus:border-slate-300 focus:bg-white outline-none font-bold text-slate-700 transition-all">
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                        <p class="text-xs text-gray-600 text-center">
-                            <strong class="text-blue-600">Share ke Instagram/WhatsApp</strong> dengan hashtag <strong>#MFLSBeasiswa2026</strong>
-                        </p>
-                    </div>
+                    <button type="submit" class="w-full py-5 bg-slate-900 text-white font-black rounded-xl hover:bg-primary-gold hover:text-slate-900 transition-all flex items-center justify-center gap-4 transform active:scale-95 shadow-xl">
+                        <span class="text-[10px] uppercase tracking-[0.3em]">Save Media Connections</span>
+                        <span class="iconify text-xl" data-icon="solar:check-circle-bold"></span>
+                    </button>
                 </div>
-            </div>
-        </div>
-        <!-- Social Media Submission Section -->
-        <div class="mt-10 pt-10 border-t border-gray-100">
-            <h3 class="text-xl font-black text-gray-900 mb-6 flex items-center gap-3">
-                <div class="w-10 h-10 bg-pink-500/10 rounded-xl flex items-center justify-center text-pink-500">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
-                </div>
-                Upload Link Twibbon & Sosmed
-            </h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Caption Copy -->
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                    <h4 class="font-bold text-gray-800 mb-3">📋 Caption Twibbon</h4>
-                    <div class="bg-white p-4 rounded-xl border border-gray-200 text-xs text-gray-600 font-mono leading-relaxed relative group" id="captionText">
-I'M READY FOR MFLS 📢‼️<br><br>
-behind this twibbon<br>
-there's a dream,<br>
-a hope,<br>
-and a step forward ✨<br><br>
-Halo, future leader friends 👋🏻<br>
-perkenalkan saya {{ Auth::user()->nama }} berasal dari {{ $peserta->nama_sekolah ?? '[Asal sekolah]' }} dengan ini siap memulai perjalanan kepemimpinan dalam program MFLS. Bukan sekedar mengikuti program, tetapi mempersiapkan diri untuk memimpin dan membawa dampak. 🚀<br><br>
-📬 [Motivasi mengikuti MFLS]<br><br>
-🗣 The future needs leaders. Starting the journey with MFLS MNC University<br><br>
-mention @mncuniversity @beasiswamncu @3 teman<br><br>
-#mncuniversity #ShapingFutureLeader #MNCUFutureLeaderScholarship
-                        
-                        <button onclick="copyCaption()" class="absolute top-2 right-2 bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-lg transition-colors" title="Copy Caption">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                        </button>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-2 text-center">Klik ikon copy untuk menyalin caption</p>
-                </div>
-
-                <!-- Submission Form -->
-                <form action="{{ route('pendaftar.twibbon.store') }}" method="POST">
-                    @csrf
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Link Postingan Twibbon (Required)</label>
-                            <input type="url" name="link_twibbon" value="{{ old('link_twibbon', $peserta->link_twibbon) }}" placeholder="https://instagram.com/p/..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-gold focus:border-transparent outline-none transition-all" required>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Link Profil Instagram</label>
-                            <input type="url" name="link_ig" value="{{ old('link_ig', $peserta->link_ig) }}" placeholder="https://instagram.com/username" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-gold focus:border-transparent outline-none transition-all">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Link Profil TikTok</label>
-                            <input type="url" name="link_tiktok" value="{{ old('link_tiktok', $peserta->link_tiktok) }}" placeholder="https://tiktok.com/@username" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-gold focus:border-transparent outline-none transition-all">
-                        </div>
-
-                        <button type="submit" class="w-full bg-dark-navy text-white font-bold py-3.5 rounded-xl hover:bg-primary-gold hover:text-dark-navy transition-all shadow-lg shadow-dark-navy/20">
-                            Simpan Link Sosmed
-                        </button>
-                    </div>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('twibonCanvas');
@@ -174,19 +191,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let twibonFrame = new Image();
     let photoScale = 1;
     let photoRotation = 0;
-    let photoX = 540; // Center X of 1080
-    let photoY = 540; // Center Y of 1080
+    let photoX = 540; 
+    let photoY = 540; 
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
 
-    // Load twibon frame
     twibonFrame.src = '{{ asset("icon/twiibon.png") }}';
     twibonFrame.onload = function() {
         drawCanvas();
     };
 
-    // Upload photo
     photoUpload.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -194,11 +209,19 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.onload = function(event) {
                 userPhoto = new Image();
                 userPhoto.onload = function() {
-                    // Center photo initially
                     photoX = canvas.width / 2;
                     photoY = canvas.height / 2;
                     dragHint.classList.add('opacity-0');
                     drawCanvas();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Ready to Edit!',
+                        text: 'Silakan atur posisi dan ukuran foto Anda.',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        confirmButtonColor: '#0f172a',
+                        customClass: { popup: 'rounded-[2rem]' }
+                    });
                 };
                 userPhoto.src = event.target.result;
             };
@@ -206,21 +229,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Scale slider
     scaleSlider.addEventListener('input', function() {
         photoScale = this.value / 100;
         scaleValue.textContent = this.value + '%';
         drawCanvas();
     });
 
-    // Rotate slider
     rotateSlider.addEventListener('input', function() {
         photoRotation = (this.value * Math.PI) / 180;
         rotateValue.textContent = this.value + '°';
         drawCanvas();
     });
 
-    // Mouse drag events
     canvas.addEventListener('mousedown', function(e) {
         if (!userPhoto) return;
         isDragging = true;
@@ -229,7 +249,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const scaleY = canvas.height / rect.height;
         dragStartX = (e.clientX - rect.left) * scaleX - photoX;
         dragStartY = (e.clientY - rect.top) * scaleY - photoY;
-        canvas.style.cursor = 'grabbing';
     });
 
     canvas.addEventListener('mousemove', function(e) {
@@ -242,50 +261,10 @@ document.addEventListener('DOMContentLoaded', function() {
         drawCanvas();
     });
 
-    canvas.addEventListener('mouseup', function() {
-        isDragging = false;
-        canvas.style.cursor = userPhoto ? 'grab' : 'default';
-    });
+    window.addEventListener('mouseup', () => isDragging = false);
 
-    canvas.addEventListener('mouseleave', function() {
-        isDragging = false;
-        canvas.style.cursor = 'default';
-    });
-
-    // Touch events for mobile
-    canvas.addEventListener('touchstart', function(e) {
-        if (!userPhoto) return;
-        e.preventDefault();
-        isDragging = true;
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches[0];
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        dragStartX = (touch.clientX - rect.left) * scaleX - photoX;
-        dragStartY = (touch.clientY - rect.top) * scaleY - photoY;
-    });
-
-    canvas.addEventListener('touchmove', function(e) {
-        if (!isDragging || !userPhoto) return;
-        e.preventDefault();
-        const rect = canvas.getBoundingClientRect();
-        const touch = e.touches[0];
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        photoX = (touch.clientX - rect.left) * scaleX - dragStartX;
-        photoY = (touch.clientY - rect.top) * scaleY - dragStartY;
-        drawCanvas();
-    });
-
-    canvas.addEventListener('touchend', function() {
-        isDragging = false;
-    });
-
-    // Draw canvas
     function drawCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw user photo (background layer)
         if (userPhoto) {
             ctx.save();
             ctx.translate(photoX, photoY);
@@ -295,82 +274,47 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.drawImage(userPhoto, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight);
             ctx.restore();
         } else {
-            // Show hint
             dragHint.classList.remove('opacity-0');
         }
-        
-        // Draw twibon frame (foreground layer)
         if (twibonFrame.complete) {
             ctx.drawImage(twibonFrame, 0, 0, canvas.width, canvas.height);
         }
     }
 
-    // Download button
     downloadBtn.addEventListener('click', function() {
         if (!userPhoto) {
-            alert('Silakan upload foto terlebih dahulu!');
+            Swal.fire({ icon: 'warning', title: 'Belum Ada Foto', text: 'Silakan upload foto terlebih dahulu!', customClass: { popup: 'rounded-[1.5rem]' } });
             return;
         }
-        
         const link = document.createElement('a');
-        link.download = 'twibon-mfls-' + Date.now() + '.png';
+        link.download = 'twibbon-mfls-' + Date.now() + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
 
-    // Initial draw
     drawCanvas();
 });
 
-function copyCaption() {
-    const captionElement = document.getElementById('captionText');
-    const button = captionElement.querySelector('button');
-    const tempElement = captionElement.cloneNode(true);
-
-    // Remove button from clone
-    const btnInClone = tempElement.querySelector('button');
-    if (btnInClone) btnInClone.remove();
-
-    // Work with raw innerHTML
-    let html = tempElement.innerHTML;
-
-    // Step 1: Mark double <br> (paragraph break) FIRST
-    html = html.replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '%%PARA%%');
-    // Step 2: Mark single <br> (line break)
-    html = html.replace(/<br\s*\/?>/gi, '%%LINE%%');
-    // Step 3: Collapse ALL whitespace (incl. HTML source newlines from indentation)
-    html = html.replace(/\s+/g, ' ');
-    // Step 4: Strip remaining HTML tags
-    html = html.replace(/<[^>]*>/g, '');
-    // Step 5: Decode HTML entities
-    html = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
-    // Step 6: Restore breaks from placeholders
-    html = html.replace(/%%PARA%%/g, '\n\n').replace(/%%LINE%%/g, '\n');
-    // Step 7: Clean up spaces around newlines
-    html = html.split('\n').map(l => l.trim()).join('\n');
-
-    const textToCopy = html.trim();
+function copyCaption(button) {
+    const captionEl = document.getElementById('captionText');
+    const paragraphs = Array.from(captionEl.querySelectorAll('p'));
+    const textToCopy = paragraphs.map(p => p.innerText.trim()).join('\n\n');
 
     navigator.clipboard.writeText(textToCopy).then(() => {
-        // Show temporary success feedback
-        const originalIcon = button.innerHTML;
-        button.innerHTML = '<span class="text-green-500 font-bold text-xs">Copied!</span>';
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<span class="iconify text-lg text-primary-gold" data-icon="solar:check-read-bold"></span><span class="text-primary-gold">Caption Copied!</span>';
+        button.classList.add('bg-slate-900', 'border-primary-gold/20');
         setTimeout(() => {
-            button.innerHTML = originalIcon;
+            button.innerHTML = originalContent;
+            button.classList.remove('bg-slate-900', 'border-primary-gold/20');
         }, 2000);
-    }).catch(err => {
-        console.error('Gagal menyalin text: ', err);
-        alert('Gagal menyalin. Silakan copy secara manual.');
     });
 }
 </script>
 
 <style>
-#twibonCanvas {
-    cursor: grab;
-}
-#twibonCanvas:active {
-    cursor: grabbing;
-}
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 </style>
 @endsection

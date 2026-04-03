@@ -263,9 +263,9 @@
                         @endif
                     </td>
                     <td class="px-4 md:px-8 py-5 text-right">
-                         <div class="flex flex-wrap items-center justify-end gap-2 transition-opacity md:opacity-0 md:group-hover:opacity-100">
+                         <div class="flex items-center justify-end gap-2 transition-opacity md:opacity-0 md:group-hover:opacity-100">
                              @if(auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
-                             <button type="button" onclick="confirmResetPassword({{ $akun->id }}, '{{ $akun->nama }}')" class="w-8 h-8 flex items-center justify-center bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-500 hover:text-white transition-all shadow-sm" title="Reset Password">
+                             <button type="button" onclick="confirmResetPassword({{ $akun->id }}, '{{ $akun->nama }}')" class="w-9 h-9 flex items-center justify-center bg-yellow-50 text-yellow-600 rounded-xl hover:bg-yellow-500 hover:text-white transition-all shadow-sm border border-yellow-100" title="Reset Password">
                                 <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span>
                              </button>
                              <form action="{{ route('admin.pendaftar.destroy', $akun->id) }}" method="POST"
@@ -273,15 +273,21 @@
                                    class="inline-block">
                                  @csrf
                                  @method('DELETE')
-                                 <button type="submit" class="w-8 h-8 flex items-center justify-center bg-red-50 text-red-600 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm" title="Hapus Akun Peserta">
+                                 <button type="submit" class="w-9 h-9 flex items-center justify-center bg-red-50 text-red-600 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100" title="Hapus Akun Peserta">
                                      <span class="iconify" data-icon="solar:trash-bin-trash-bold"></span>
                                  </button>
                              </form>
                              @endif
-                             <a href="{{ route('admin.pendaftar.download_zip', $akun->id) }}" class="w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-600 rounded-lg hover:bg-orange-600 hover:text-white transition-all shadow-sm" title="Download ZIP">
+                             <a href="{{ route('admin.pendaftar.download_zip', $akun->id) }}" class="w-9 h-9 flex items-center justify-center bg-slate-50 text-slate-600 rounded-xl hover:bg-slate-800 hover:text-white transition-all shadow-sm border border-slate-100" title="Download ZIP">
                                 <span class="iconify" data-icon="solar:folder-with-files-bold"></span>
                             </a>
-                            <a href="{{ route('admin.pendaftar.show', $akun->id) }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                            <form action="{{ route('admin.pendaftar.send_certificate', $akun->id) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" onclick="return confirm('Kirim sertifikat ke email {{ $akun->email }}?')" class="w-9 h-9 flex items-center justify-center bg-orange-50 text-orange-600 rounded-xl hover:bg-orange-500 hover:text-white transition-all shadow-sm border border-orange-100" title="Kirim Sertifikat via Email">
+                                    <span class="iconify text-lg" data-icon="solar:letter-send-bold"></span>
+                                </button>
+                            </form>
+                            <a href="{{ route('admin.pendaftar.show', $akun->id) }}" class="h-9 px-4 bg-blue-600 text-white rounded-xl text-[10px] font-black hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/20 flex items-center gap-2 border border-blue-500">
                                 <span>VERIFIKASI</span>
                                 <span class="iconify" data-icon="solar:pen-new-square-bold"></span>
                             </a>

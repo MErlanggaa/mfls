@@ -113,7 +113,7 @@
                     Dashboard
                 </a>
 
-                @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia') && in_array(auth()->user()->email, ['dion@gmail.com', 'info@beasiswamncu.com']))
+                @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik') && (in_array(auth()->user()->role, ['akademik']) || in_array(auth()->user()->email, ['dion@gmail.com', 'info@beasiswamncu.com'])))
                 <a href="{{ route('admin.beasiswa.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.beasiswa.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -124,7 +124,7 @@
 
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Data</div>
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik')
                 <a href="{{ route('admin.pendaftar.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.pendaftar.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -142,7 +142,7 @@
                 </a>
                 @endif
 
-                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor')
+                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor' || auth()->user()->role === 'akademik')
                 <a href="{{ route('admin.penilaian.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.penilaian.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
