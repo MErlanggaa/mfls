@@ -64,7 +64,15 @@
 <body>
     <div class="background-container">
         @php
+            // Jalur 1: Standar Laravel
             $bgPath = public_path('images/sertifikat_batch2.jpg');
+
+            // Jalur 2: Jalur Absolut Hostinger (Berdasarkan log Anda)
+            if (!file_exists($bgPath)) {
+                $bgPath = '/home/u595896399/domains/beasiswamncu.com/public_html/images/sertifikat_batch2.jpg';
+            }
+
+            // Jalur 3: Fallback ke public_html relatif
             if (!file_exists($bgPath)) {
                 $bgPath = base_path('../public_html/images/sertifikat_batch2.jpg');
             }
