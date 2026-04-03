@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         // Register Google Sheets Sync Observers
         \App\Models\Akun::observe(\App\Observers\GoogleSheetObserver::class);
         \App\Models\Peserta::observe(\App\Observers\GoogleSheetObserver::class);
+        \App\Models\Nilai::observe(\App\Observers\NilaiObserver::class);
         \App\Models\Nilai::observe(\App\Observers\GoogleSheetObserver::class);
         \App\Models\Berkas::observe(\App\Observers\GoogleSheetObserver::class);
         \App\Models\Daftar::observe(\App\Observers\GoogleSheetObserver::class);

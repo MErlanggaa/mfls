@@ -12,7 +12,7 @@ class GoogleSheetObserver
     public function saved(): void
     {
         if (app()->runningInConsole()) return;
-        (new \App\Services\GoogleSheetService())->syncAll();
+        \App\Jobs\SyncGoogleSheetJob::dispatch();
     }
 
     /**
@@ -21,7 +21,7 @@ class GoogleSheetObserver
     public function deleted(): void
     {
         if (app()->runningInConsole()) return;
-        (new \App\Services\GoogleSheetService())->syncAll();
+        \App\Jobs\SyncGoogleSheetJob::dispatch();
     }
 
     /**
@@ -30,7 +30,7 @@ class GoogleSheetObserver
     public function restored(): void
     {
         if (app()->runningInConsole()) return;
-        (new \App\Services\GoogleSheetService())->syncAll();
+        \App\Jobs\SyncGoogleSheetJob::dispatch();
     }
 
     /**
@@ -39,6 +39,6 @@ class GoogleSheetObserver
     public function forceDeleted(): void
     {
         if (app()->runningInConsole()) return;
-        (new \App\Services\GoogleSheetService())->syncAll();
+        \App\Jobs\SyncGoogleSheetJob::dispatch();
     }
 }

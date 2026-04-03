@@ -188,24 +188,6 @@ class AdminController extends Controller
 
         $pendaftars = $query->get();
 
-        // Auto-sync rata-rata nilai per semester dan keseluruhan
-        // (Keep the sync logic but maybe limit it or optimize if needed)
-        foreach ($pendaftars as $akun) {
-            if ($akun->peserta && $akun->peserta->daftar) {
-                $daftar = $akun->peserta->daftar;
-                $nilais = $akun->peserta->nilais;
-
-                $updateData = [];
-                for ($sem = 1; $sem <= 6; $sem++) {
-                    $avgSem = $nilais->where('semester', $sem)->avg('nilai') ?? 0;
-                    $updateData["avg_semester_{$sem}"] = round($avgSem, 2);
-                }
-
-                $realAvg = $nilais->avg('nilai') ?? 0;
-                $updateData['rata_rata_nilai'] = round($realAvg, 2);
-                $daftar->update($updateData);
-            }
-        }
 
         // Urutkan berdasarkan nilai rata-rata dari tertinggi ke terendah
         $pendaftars = $pendaftars->sortByDesc(function ($akun) {
