@@ -11,9 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Custom public path for Hostinger
-        if (app()->environment('production')) {
-            $this->app->usePublicPath(realpath(base_path('../public_html')));
+        // Custom public path for Hostinger (parallel public_html folder)
+        $publicHtmlPath = realpath(base_path('../public_html'));
+        if ($publicHtmlPath && is_dir($publicHtmlPath)) {
+            $this->app->usePublicPath($publicHtmlPath);
         }
     }
 
