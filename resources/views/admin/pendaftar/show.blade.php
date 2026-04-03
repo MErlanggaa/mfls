@@ -53,8 +53,11 @@
                             <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Email</label>
                             <div class="text-xs font-bold text-slate-700 break-all">{{ $user->email }}</div>
                             @if(auth()->user()->role === 'admin')
-                            <button type="button" onclick="confirmResetPassword({{ $user->id }}, '{{ $user->nama }}')" class="mt-1 px-2 py-0.5 bg-yellow-50 text-yellow-600 rounded-md text-[9px] font-black hover:bg-yellow-500 hover:text-white transition-all border border-yellow-100 inline-flex items-center gap-1">
+                             <button type="button" onclick="confirmResetPassword({{ $user->id }}, '{{ $user->nama }}')" class="mt-1 px-2 py-0.5 bg-yellow-50 text-yellow-600 rounded-md text-[9px] font-black hover:bg-yellow-500 hover:text-white transition-all border border-yellow-100 inline-flex items-center gap-1">
                                 <span class="iconify" data-icon="solar:key-minimalistic-bold-duotone"></span> RESET PW
+                            </button>
+                            <button type="button" onclick="confirmChangeEmail({{ $user->id }}, '{{ $user->nama }}', '{{ $user->email }}')" class="mt-1 px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-black hover:bg-blue-600 hover:text-white transition-all border border-blue-100 inline-flex items-center gap-1">
+                                <span class="iconify" data-icon="solar:letter-bold-duotone"></span> GANTI EMAIL
                             </button>
                             @endif
                         </div>
@@ -477,13 +480,44 @@ function openUploadModal(field, label) {
 }
 </script>
 @if(auth()->user()->role === 'admin')
-<form id="resetPasswordForm" method="POST" style="display:none;">
-    @csrf
-    @method('PUT')
     <input type="hidden" name="password" id="resetPasswordInput">
 </form>
 
+<form id="changeEmailForm" method="POST" style="display:none;">
+    @csrf
+    <input type="hidden" name="email" id="changeEmailInput">
+</form>
+
 <script>
+function confirmChangeEmail(userId, name, currentEmail) {
+    Swal.fire({
+        title: 'Ganti Email Pendaftar',
+        text: `Masukkan email baru untuk ${name} (Email saat ini: ${currentEmail}):`,
+        input: 'email',
+        inputPlaceholder: 'Email baru',
+        showCancelButton: true,
+        confirmButtonText: 'Update Email',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#3b82f6',
+        showLoaderOnConfirm: true,
+        preConfirm: (newEmail) => {
+            if (!newEmail) {
+                Swal.showValidationMessage('Email tidak boleh kosong');
+                return false;
+            }
+            return newEmail;
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('changeEmailForm');
+            form.action = `/admin/pendaftar/${userId}/update-email`;
+            document.getElementById('changeEmailInput').value = result.value;
+            form.submit();
+        }
+    });
+}
+
 function confirmResetPassword(userId, name) {
     Swal.fire({
         title: 'Konfirmasi Reset',

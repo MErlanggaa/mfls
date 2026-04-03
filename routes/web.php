@@ -84,6 +84,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::post('/{id}/upload-berkas', [App\Http\Controllers\AdminController::class , 'uploadBerkas'])->name('upload_berkas');
                     Route::post('/{id}/delete-berkas', [App\Http\Controllers\AdminController::class , 'deleteBerkas'])->name('delete_berkas');
                     Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class , 'storePenilaianMentor'])->name('mentor_nilai');
+                    Route::post('/{id}/update-email', [App\Http\Controllers\AdminController::class , 'updateEmailPendaftar'])->name('update_email');
                     Route::delete('/{id}', [App\Http\Controllers\AdminController::class , 'destroyPendaftar'])->name('destroy');
                 }
                 );

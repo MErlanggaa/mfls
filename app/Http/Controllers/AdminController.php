@@ -628,6 +628,59 @@ class AdminController extends Controller
         return back()->with('success', 'Password user ' . $user->nama . ' berhasil direset!');
     }
 
+    public function updateEmailPendaftar(Request $request, $id)
+    {
+        $authUser = auth()->user();
+        if ($authUser->role !== 'admin' && !in_array($authUser->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com'])) {
+            return abort(403);
+        }
+
+        $request->validate([
+            'email' => 'required|email|unique:akun,email,' . $id
+        ]);
+
+        $akun = Akun::findOrFail($id);
+        
+        // Pastikan hanya pendaftar yang bisa diubah emailnya melalui rute ini
+        if ($akun->role !== 'pendaftar') {
+            return back()->with('error', 'Hanya email pendaftar yang dapat diubah melalui fitur ini.');
+        }
+
+        $oldEmail = $akun->email;
+        $akun->email = $request->email;
+        $akun->save();
+
+        // --- Kirim Notifikasi Email (Security & Info) ---
+        try {
+            $nama = $akun->nama;
+            $newEmail = $request->email;
+            
+            // Kirim ke email BARU
+            \Illuminate\Support\Facades\Mail::send('emails.admin_changed_email', 
+                ['nama' => $nama, 'oldEmail' => $oldEmail, 'newEmail' => $newEmail], 
+                function($message) use($newEmail) {
+                    $message->to($newEmail);
+                    $message->subject('Pembaruan Alamat Email Akun - MNCU Future Leader Scholarship');
+                }
+            );
+
+            // Kirim ke email LAMA (sebagai notifikasi keamanan)
+            \Illuminate\Support\Facades\Mail::send('emails.admin_changed_email', 
+                ['nama' => $nama, 'oldEmail' => $oldEmail, 'newEmail' => $newEmail], 
+                function($message) use($oldEmail) {
+                    $message->to($oldEmail);
+                    $message->subject('Pemberitahuan Perubahan Email Akun - MNCU Future Leader Scholarship');
+                }
+            );
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Gagal kirim notifikasi ganti email admin: " . $e->getMessage());
+        }
+
+        $this->logAktivitas('Ganti Email Pendaftar', 'Akun', $id, "Mengubah email pendaftar {$akun->nama} dari [{$oldEmail}] menjadi [{$request->email}]");
+
+        return back()->with('success', 'Email pendaftar berhasil diperbarui! Notifikasi telah dikirim ke pendaftar.');
+    }
+
     public function detailPendaftar($id)
     {
         $user = Akun::with(['peserta.daftar', 'peserta.berkas', 'peserta.nilais.matpel'])->findOrFail($id);
