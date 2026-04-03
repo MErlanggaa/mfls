@@ -14,7 +14,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ $message->embed(public_path('icon/logoo.png')) }}" alt="MNCU Logo">
+            @if(file_exists(public_path('icon/logoo.png')))
+                <img src="{{ $message->embed(public_path('icon/logoo.png')) }}" alt="MNCU Logo">
+            @endif
         </div>
         <div class="content">
             <h1 style="color: #001f3f; font-size: 24px; margin-top: 0;">Atur Ulang Kata Sandi</h1>

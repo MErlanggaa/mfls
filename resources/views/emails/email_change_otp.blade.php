@@ -14,7 +14,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ $message->embed(public_path('icon/logoo.png')) }}" alt="MNCU Logo">
+            @if(file_exists(public_path('icon/logoo.png')))
+                <img src="{{ $message->embed(public_path('icon/logoo.png')) }}" alt="MNCU Logo">
+            @endif
         </div>
         <div class="content">
             <h2 style="color: #001f3f; margin-top: 0;">Verifikasi Ganti Email</h2>

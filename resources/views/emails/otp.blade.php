@@ -16,7 +16,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ $message->embed(public_path('icon/logoo.png')) }}" alt="MNCU Logo">
+            @if(file_exists(public_path('icon/logoo.png')))
+                <img src="{{ $message->embed(public_path('icon/logoo.png')) }}" alt="MNCU Logo">
+            @endif
         </div>
         <div class="content">
             <h1>Verifikasi Akun MNCU Future Leader Scholarship</h1>

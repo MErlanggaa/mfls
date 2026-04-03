@@ -19,8 +19,10 @@ class GoogleSheetService
         $this->spreadsheetId = config('services.google_sheet.id') ?? env('GOOGLE_SHEET_ID');
         $credentialsPath = storage_path('app/google/service_account.json');
 
-        if (!$this->spreadsheetId || !file_exists($credentialsPath)) {
-            \Illuminate\Support\Facades\Log::warning('Google Sheets configuration missing or invalid. Path: '.$credentialsPath);
+        if (!$this->spreadsheetId || !file_exists($credentialsPath) || !is_readable($credentialsPath)) {
+            if (config('app.debug')) {
+                \Illuminate\Support\Facades\Log::warning('Google Sheets configuration missing or invalid. Path: '.$credentialsPath);
+            }
             return;
         }
 
