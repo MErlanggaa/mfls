@@ -63,7 +63,9 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="{{ public_path('images/sertifikat_batch2.jpg') }}" alt="background">
+        @if(file_exists(public_path('images/sertifikat_batch2.jpg')))
+            <img src="{{ public_path('images/sertifikat_batch2.jpg') }}" alt="background">
+        @endif
     </div>
     <div class="content">
         <div class="name-container" style="top: 44%;">
