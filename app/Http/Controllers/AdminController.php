@@ -688,6 +688,24 @@ class AdminController extends Controller
         }
     }
 
+    public function bulkSendCertificate(Request $request)
+    {
+        $ids = $request->input('selected_ids');
+
+        if (!$ids || !is_array($ids)) {
+            return back()->with('error', 'Pilih minimal satu pendaftar.');
+        }
+
+        foreach ($ids as $id) {
+            \App\Jobs\SendCertificateJob::dispatch($id);
+        }
+
+        $count = count($ids);
+        $this->logAktivitas('Kirim Sertifikat Massal', 'Bulk', null, "Mengirim $count sertifikat melalui antrean background.");
+
+        return back()->with('success', "$count sertifikat sedang diproses di latar belakang.");
+    }
+
     public function uploadBerkas(Request $request, $id)
     {
         $user = auth()->user();

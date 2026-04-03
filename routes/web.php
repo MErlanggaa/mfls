@@ -129,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
                 // Certificate Generation Route
                 Route::get('/admin/pendaftar/{id}/certificate', [App\Http\Controllers\AdminController::class, 'generateCertificate'])->name('admin.pendaftar.certificate');
                 Route::post('/admin/pendaftar/{id}/send-certificate', [App\Http\Controllers\AdminController::class, 'sendCertificateEmail'])->name('admin.pendaftar.send_certificate');
+                Route::post('/admin/pendaftar/bulk-send-certificate', [App\Http\Controllers\AdminController::class, 'bulkSendCertificate'])->name('admin.pendaftar.bulk_send_certificate');
             }
             );
 

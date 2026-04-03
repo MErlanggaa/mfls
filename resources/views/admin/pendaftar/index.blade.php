@@ -55,6 +55,12 @@
                     </select> -->
                 </form>
             </div>
+            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+            <button type="button" onclick="bulkSendCertificates()" class="px-6 py-3 bg-orange-600 text-white rounded-xl text-xs font-black shadow-lg shadow-orange-200 hover:bg-orange-700 transition-all uppercase tracking-widest flex items-center gap-2">
+                <span class="iconify text-lg" data-icon="solar:letter-send-bold"></span>
+                Kirim Sertifikat Massal
+            </button>
+            @endif
             <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all uppercase tracking-widest flex items-center gap-2">
                 <span class="iconify text-lg" data-icon="solar:file-download-bold"></span>
                 Export
@@ -74,6 +80,11 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-widest border-b border-slate-50">
+                    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+                    <th class="px-6 py-6 text-center">
+                        <input type="checkbox" id="selectAll" class="w-4 h-4 rounded text-orange-600 focus:ring-orange-500 border-slate-300">
+                    </th>
+                    @endif
                     <th class="px-8 py-6">Kandidat</th>
                     <th class="px-4 py-6 text-center">S1</th>
                     <th class="px-4 py-6 text-center">S2</th>
@@ -121,6 +132,11 @@
                     $percentage = $percentage > 100 ? 100 : $percentage;
                 @endphp
                 <tr class="group hover:bg-slate-50/50 transition-colors">
+                    @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+                    <td class="px-6 py-5 text-center">
+                        <input type="checkbox" name="selected_ids[]" value="{{ $akun->id }}" class="row-checkbox w-4 h-4 rounded text-orange-600 focus:ring-orange-500 border-slate-300">
+                    </td>
+                    @endif
                     <td class="px-4 md:px-8 py-5">
                         <div class="flex items-center gap-4">
                             <div class="relative w-12 h-12 rounded-2xl overflow-hidden shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
@@ -305,6 +321,59 @@
     </div>
     @endif
 </div>
+{{-- Form untuk Kirim Sertifikat Massal (Bisa diakses Admin & Panitia) --}}
+@if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+<form id="bulkSendForm" action="{{ route('admin.pendaftar.bulk_send_certificate') }}" method="POST" style="display:none;">
+    @csrf
+</form>
+
+<script>
+document.getElementById('selectAll').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
+
+function bulkSendCertificates() {
+    const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
+    
+    if (selectedIds.length === 0) {
+        Swal.fire({
+            title: 'Peringatan',
+            text: 'Silakan pilih minimal satu pendaftar.',
+            icon: 'warning',
+            confirmButtonColor: '#f97316'
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Konfirmasi Bulk Send',
+        text: `Kirim sertifikat ke ${selectedIds.length} pendaftar terpilih?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#f97316',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Kirim Semua',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('bulkSendForm');
+            form.querySelectorAll('input[name="selected_ids[]"]').forEach(el => el.remove());
+            selectedIds.forEach(id => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selected_ids[]';
+                input.value = id;
+                form.appendChild(input);
+            });
+            form.submit();
+        }
+    });
+}
+</script>
+@endif
+
+{{-- Form untuk Reset Password (Khusus Admin) --}}
 @if(auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
 <form id="resetPasswordForm" method="POST" style="display:none;">
     @csrf

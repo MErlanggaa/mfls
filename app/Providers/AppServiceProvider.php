@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Custom public path for Hostinger
+        if (app()->environment('production')) {
+            $this->app->usePublicPath(realpath(base_path('../public_html')));
+        }
     }
 
     /**
