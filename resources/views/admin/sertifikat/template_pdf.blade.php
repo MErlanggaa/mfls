@@ -67,7 +67,7 @@
             // Jalur 1: Standar Laravel
             $bgPath = public_path('images/sertifikat_batch2.jpg');
 
-            // Jalur 2: Jalur Absolut Hostinger (Berdasarkan log Anda)
+            // Jalur 2: Jalur Absolut Hostinger
             if (!file_exists($bgPath)) {
                 $bgPath = '/home/u595896399/domains/beasiswamncu.com/public_html/images/sertifikat_batch2.jpg';
             }
@@ -76,9 +76,17 @@
             if (!file_exists($bgPath)) {
                 $bgPath = base_path('../public_html/images/sertifikat_batch2.jpg');
             }
+
+            // Konversi ke Base64 (Cara Paling Ampuh)
+            $bgBase64 = '';
+            if (file_exists($bgPath)) {
+                $type = pathinfo($bgPath, PATHINFO_EXTENSION);
+                $data = file_get_contents($bgPath);
+                $bgBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            }
         @endphp
-        @if(file_exists($bgPath))
-            <img src="{{ $bgPath }}" alt="background">
+        @if($bgBase64)
+            <img src="{{ $bgBase64 }}" alt="background">
         @endif
     </div>
     <div class="content">
