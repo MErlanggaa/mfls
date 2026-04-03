@@ -63,8 +63,14 @@
 </head>
 <body>
     <div class="background-container">
-        @if(file_exists(public_path('images/sertifikat_batch2.jpg')))
-            <img src="{{ public_path('images/sertifikat_batch2.jpg') }}" alt="background">
+        @php
+            $bgPath = public_path('images/sertifikat_batch2.jpg');
+            if (!file_exists($bgPath)) {
+                $bgPath = base_path('../public_html/images/sertifikat_batch2.jpg');
+            }
+        @endphp
+        @if(file_exists($bgPath))
+            <img src="{{ $bgPath }}" alt="background">
         @endif
     </div>
     <div class="content">
