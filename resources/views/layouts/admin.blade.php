@@ -205,7 +205,7 @@
                             {{ auth()->user()->nama ?? auth()->user()->name ?? '-' }}
                         </p>
                         <p class="text-[10px] text-slate-400 truncate leading-tight">
-                            {{ auth()->user()->email }}
+                            {{ auth()->user()->email ?? '-' }}
                         </p>
                     </div>
                     <span class="iconify text-slate-300 text-lg flex-shrink-0" data-icon="solar:user-circle-bold"></span>

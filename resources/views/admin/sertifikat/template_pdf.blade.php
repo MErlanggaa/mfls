@@ -71,22 +71,33 @@
             if (!file_exists($bgPath)) {
                 $bgPath = '/home/u595896399/domains/beasiswamncu.com/public_html/images/sertifikat_batch2.jpg';
             }
-
-            // Jalur 3: Fallback ke public_html relatif
-            if (!file_exists($bgPath)) {
-                $bgPath = base_path('../public_html/images/sertifikat_batch2.jpg');
+            // Robust path helper for Hostinger (public vs public_html)
+            $imagePath = 'images/sertifikat_batch2.jpg';
+            $possiblePaths = [
+                public_path($imagePath),
+                base_path('public_html/' . $imagePath),
+                base_path('public/' . $imagePath),
+            ];
+            
+            $finalPath = null;
+            foreach($possiblePaths as $path) {
+                if(file_exists($path)) {
+                    $finalPath = $path;
+                    break;
+                }
             }
 
-            // Konversi ke Base64 (Cara Paling Ampuh)
-            $bgBase64 = '';
-            if (file_exists($bgPath)) {
-                $type = pathinfo($bgPath, PATHINFO_EXTENSION);
-                $data = file_get_contents($bgPath);
-                $bgBase64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            if($finalPath) {
+                $type = pathinfo($finalPath, PATHINFO_EXTENSION);
+                $data = file_get_contents($finalPath);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            } else {
+                $base64 = ''; // Fallback to empty if not found
             }
         @endphp
-        @if($bgBase64)
-            <img src="{{ $bgBase64 }}" alt="background">
+        
+        @if($base64)
+            <img src="{{ $base64 }}" alt="Background">
         @endif
     </div>
     <div class="content">

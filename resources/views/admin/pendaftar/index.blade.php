@@ -132,7 +132,7 @@
                             </div>
                             <div>
                                 <div class="font-bold text-slate-900 text-sm">{{ $akun->nama }}</div>
-                                <div class="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">{{ $peserta->nama_sekolah ?? '-' }}</div>
+                                <div class="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-wide">{{ $peserta->nama_sekolah ?? $peserta?->nama_sekolah ?? '-' }}</div>
                             </div>
                         </div>
                     </td>

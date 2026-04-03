@@ -244,7 +244,7 @@
                         @foreach($allMentorPenilaian as $penilaian)
                             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
                                 <div class="flex justify-between items-center mb-3">
-                                    <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">{{ $penilaian->mentor->nama }}</span>
+                                    <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">{{ $penilaian->mentor->nama ?? 'Unknown Mentor' }}</span>
                                     <span class="text-xl font-black text-slate-900">{{ number_format($penilaian->nilai, 2) }}</span>
                                 </div>
                                 <p class="text-[11px] text-slate-500 font-semibold italic border-l-2 border-slate-100 pl-3">"{{ $penilaian->catatan ?? 'Tidak ada catatan.' }}"</p>
@@ -273,7 +273,7 @@
                         @foreach($allAkademikPenilaian as $penilaian)
                             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
                                 <div class="flex justify-between items-center mb-3">
-                                    <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">{{ $penilaian->penilai->nama }}</span>
+                                    <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">{{ $penilaian->penilai->nama ?? 'Unknown Evaluator' }}</span>
                                     <span class="text-xl font-black text-slate-900">{{ number_format($penilaian->total_akhir, 2) }}</span>
                                 </div>
                                 <div class="flex gap-2 mb-3">
