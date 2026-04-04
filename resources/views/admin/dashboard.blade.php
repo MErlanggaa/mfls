@@ -57,7 +57,7 @@
                         <span class="iconify text-2xl" data-icon="solar:folder-check-bold"></span>
                     </div>
                 </div>
-                <div class="text-4xl font-black mb-1">{{ \App\Models\Berkas::count() }}</div>
+                <div class="text-4xl font-black mb-1">{{ $totalLengkap }}</div>
                 <div class="text-sm font-bold opacity-90">Dokumen Lengkap</div>
             </div>
         </div>

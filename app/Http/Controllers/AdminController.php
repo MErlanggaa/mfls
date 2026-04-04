@@ -82,6 +82,10 @@ class AdminController extends Controller
             ->distinct('ip_address')
             ->count('ip_address');
 
+        // Tambahan: Hitung Pendaftar dengan Dokument Lengkap (Progres 100%)
+        $pendaftars = \App\Models\Akun::where('role', 'pendaftar')->with('peserta')->get();
+        $totalLengkap = $pendaftars->filter(fn($akun) => ($akun->peserta->progress ?? 0) == 100)->count();
+
         return view('admin.dashboard', compact(
             'riwayats', 
             'totalPendaftar', 
@@ -93,7 +97,8 @@ class AdminController extends Controller
             'viewsGrowth',
             'dailyViewsTrend',
             'topPages',
-            'uniqueVisitorsToday'
+            'uniqueVisitorsToday',
+            'totalLengkap'
         ));
     }
 
