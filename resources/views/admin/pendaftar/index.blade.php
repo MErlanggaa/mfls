@@ -335,6 +335,7 @@
     </div>
 </div>
 
+@push('scripts')
 <script>
 document.getElementById('selectAll').addEventListener('change', function() {
     const checkboxes = document.querySelectorAll('.row-checkbox');
@@ -378,6 +379,7 @@ function bulkSendCertificates() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({ selected_ids: selectedIds })
@@ -385,6 +387,7 @@ function bulkSendCertificates() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    console.log('Batch started:', data.batch_id);
                     startPolling(data.batch_id);
                 } else {
                     Swal.fire('Error', data.error || 'Gagal memulai proses', 'error');
@@ -392,7 +395,8 @@ function bulkSendCertificates() {
                 }
             })
             .catch(error => {
-                Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+                console.error('Fetch error:', error);
+                Swal.fire('Error', 'Terjadi kesalahan sistem saat memulai proses', 'error');
                 document.getElementById('progressModal').classList.add('hidden');
             });
         }
@@ -400,10 +404,15 @@ function bulkSendCertificates() {
 }
 
 function startPolling(batchId) {
+    if (progressInterval) clearInterval(progressInterval);
+    
     progressInterval = setInterval(() => {
-        fetch(`{{ route("admin.pendaftar.bulk_send_progress") }}?batch_id=${batchId}`)
+        fetch(`{{ route("admin.pendaftar.bulk_send_progress") }}?batch_id=${batchId}`, {
+            headers: { 'Accept': 'application/json' }
+        })
             .then(response => response.json())
             .then(data => {
+                console.log('Progress update:', data);
                 document.getElementById('progressBar').style.width = data.percentage + '%';
                 document.getElementById('progressText').innerText = data.percentage + '%';
                 document.getElementById('progressCount').innerText = `${data.current} / ${data.total}`;
@@ -414,19 +423,22 @@ function startPolling(batchId) {
                         document.getElementById('progressModal').classList.add('hidden');
                         Swal.fire({
                             title: 'Berhasil!',
-                            text: 'Semua sertifikat telah berhasil dikirim ke antrean.',
+                            text: 'Semua sertifikat telah berhasil dikirim.',
                             icon: 'success',
                             confirmButtonColor: '#f97316'
                         }).then(() => {
                             window.location.reload();
                         });
-                    }, 1000);
+                    }, 1500);
                 }
             })
-            .catch(err => console.error('Polling error:', err));
+            .catch(err => {
+                console.error('Polling error:', err);
+            });
     }, 2000);
 }
 </script>
+@endpush
 @endif
 
 {{-- Form untuk Reset Password (Khusus Admin) --}}
