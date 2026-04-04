@@ -1065,20 +1065,8 @@ class AdminController extends Controller
 
         // Logic Email Notifikasi
         if ($request->status == 'lulus') {
-
-            // Ganti link ini dengan link React App Anda yang sebenarnya
-            // Link Ujian Baru
-            $linkUjian = "https://ujian.beasiswamncu.com/?token=" . base64_encode($akun->email);
-
-            try {
-                \Illuminate\Support\Facades\Mail::to($akun->email)->send(
-                    new \App\Mail\UjianLinkMail($akun->nama, $linkUjian)
-                );
-            }
-            catch (\Exception $e) {
-                // Log error email tapi jangan hentikan proses
-                \Illuminate\Support\Facades\Log::error("Gagal kirim email ujian: " . $e->getMessage());
-            }
+            // Notifikasi dilewatkan via Banner Dashboard & WhatsApp Group Komunitas
+            // (Email dihentikan untuk menghemat kuota limit 500/hari)
         }
 
         return back()->with('success', 'Status kelulusan berhasil diperbarui!');

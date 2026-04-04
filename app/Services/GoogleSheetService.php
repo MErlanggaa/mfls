@@ -47,7 +47,7 @@ class GoogleSheetService
         // Header (52 Columns)
         $rows[] = [
             'STT / KETERANGAN', 'PROGRES (%)', 
-            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Prodi Minat', 'Kode Referral',
+            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Provinsi', 'Kabupaten', 'Prodi Minat', 'Kode Referral',
             'S1 - B.Indo', 'S1 - B.Inggris', 'S1 - Mat.Wajib', 'S1 - Mapel 4', 'S1 - Mapel 5', 'Rata Rata S1',
             'S2 - B.Indo', 'S2 - B.Inggris', 'S2 - Mat.Wajib', 'S2 - Mapel 4', 'S2 - Mapel 5', 'Rata Rata S2',
             'S3 - B.Indo', 'S3 - B.Inggris', 'S3 - Mat.Wajib', 'S3 - Mapel 4', 'S3 - Mapel 5', 'Rata Rata S3',
@@ -85,6 +85,8 @@ class GoogleSheetService
                 $peserta->no_whatsapp ?? '-',
                 $this->cleanDeletedEmail($peserta->nisn),
                 $peserta->nama_sekolah ?? '-',
+                $peserta->provinsi ?? '-',
+                $peserta->kabupaten ?? '-',
                 $peserta->pilihan_prodi ?? '-',
                 $daftar->kode_referral ?? '-',
             ];
