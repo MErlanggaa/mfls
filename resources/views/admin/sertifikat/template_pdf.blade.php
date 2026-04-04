@@ -101,7 +101,7 @@
         @endif
     </div>
     <div class="content">
-        <div class="name-container" style="top: 45%; height: 18%;">
+        <div class="name-container" style="top: 41.5%; height: 12%;">
             <div class="name">{{ $nama }}</div>
         </div>
     </div>
