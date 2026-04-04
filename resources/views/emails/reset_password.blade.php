@@ -16,6 +16,9 @@
         <div class="header">
             @if(file_exists(public_path('icon/logoo.png')))
                 <img src="{{ $message->embed(public_path('icon/logoo.png')) }}" alt="MNCU Logo">
+            @else
+                <!-- Fallback to default asset if not available -->
+                <img src="{{ $message->embed(public_path('icon/loog.png')) }}" alt="MNCU Logo">
             @endif
         </div>
         <div class="content">

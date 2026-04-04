@@ -46,15 +46,16 @@ class GoogleSheetService
         $rows = [];
         // Header (52 Columns)
         $rows[] = [
+            'STT / KETERANGAN', 'PROGRES (%)', 
             'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Prodi Minat', 'Kode Referral',
-            'S1 - B.Indo', 'S1 - B.Inggris', 'S1 - Mat.Wajib', 'S1 - asdad', 'S1 - B.Inggrisas', 'Rata Rata S1',
-            'S2 - B.Indo', 'S2 - B.Inggris', 'S2 - Mat.Wajib', 'S2 - asdad', 'S2 - B.Inggrisas', 'Rata Rata S2',
-            'S3 - B.Indo', 'S3 - B.Inggris', 'S3 - Mat.Wajib', 'S3 - asdad', 'S3 - B.Inggrisas', 'Rata Rata S3',
-            'S4 - B.Indo', 'S4 - B.Inggris', 'S4 - Mat.Wajib', 'S4 - asdad', 'S4 - B.Inggrisas', 'Rata Rata S4',
-            'S5 - B.Indo', 'S5 - B.Inggris', 'S5 - Mat.Wajib', 'S5 - asdad', 'S5 - B.Inggrisas', 'Rata Rata S5',
+            'S1 - B.Indo', 'S1 - B.Inggris', 'S1 - Mat.Wajib', 'S1 - Mapel 4', 'S1 - Mapel 5', 'Rata Rata S1',
+            'S2 - B.Indo', 'S2 - B.Inggris', 'S2 - Mat.Wajib', 'S2 - Mapel 4', 'S2 - Mapel 5', 'Rata Rata S2',
+            'S3 - B.Indo', 'S3 - B.Inggris', 'S3 - Mat.Wajib', 'S3 - Mapel 4', 'S3 - Mapel 5', 'Rata Rata S3',
+            'S4 - B.Indo', 'S4 - B.Inggris', 'S4 - Mat.Wajib', 'S4 - Mapel 4', 'S4 - Mapel 5', 'Rata Rata S4',
+            'S5 - B.Indo', 'S5 - B.Inggris', 'S5 - Mat.Wajib', 'S5 - Mapel 4', 'S5 - Mapel 5', 'Rata Rata S5',
             'TOTAL NILAI S1-S5', 'RATA RATA AKADEMIK (TOT/25)',
             'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)',
-            'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK', 'PROGRES (%)', 'STATUS'
+            'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK'
         ];
 
         foreach ($pendaftars as $user) {
@@ -66,7 +67,19 @@ class GoogleSheetService
             $berkas = $peserta->berkas;
             $nilais = $peserta->nilais;
 
+            // New Progress & Detailed Status Logic (Move to FRONT)
+            $progress = $peserta->progress;
+            if (!$user->email_verified_at) {
+                $status = 'BELUM VERIFIKASI (OTP)';
+            } elseif ($progress < 100) {
+                $status = 'BELUM LENGKAP (' . $progress . '%)';
+            } else {
+                $status = '100% BERKAS LENGKAP';
+            }
+
             $row = [
+                $status,
+                $progress . '%',
                 $user->nama,
                 $this->cleanDeletedEmail($user->email),
                 $peserta->no_whatsapp ?? '-',
@@ -87,7 +100,7 @@ class GoogleSheetService
                 $sAsdad = $semNilais->where('matpel_id', 4)->first()->nilai ?? 0;
                 $sBIng2 = $semNilais->where('matpel_id', 5)->first()->nilai ?? 0;
 
-                $totalS = $sBIndo + $sBIng + $sMat + $sAsdad + $sBIng2;
+                $totalS = (float)$sBIndo + (float)$sBIng + (float)$sMat + (float)$sAsdad + (float)$sBIng2;
                 $avgS = $totalS / 5;
                 $grandTotal += $totalS;
 
@@ -118,19 +131,6 @@ class GoogleSheetService
             $row[] = $peserta->link_twibbon ?? '-';
             $row[] = $peserta->link_ig ?? '-';
             $row[] = $peserta->link_tiktok ?? '-';
-
-            // New Progress & Detailed Status Logic
-            $progress = $peserta->progress;
-            $row[] = $progress . '%'; // New PROGRESS Column
-
-            if (!$user->email_verified_at) {
-                $status = 'BELUM VERIFIKASI (OTP)';
-            } elseif ($progress < 100) {
-                $status = 'BELUM LENGKAP (' . $progress . '%)';
-            } else {
-                $status = 'SUDAH LENGKAP';
-            }
-            $row[] = $status;
 
             $rows[] = $row;
         }

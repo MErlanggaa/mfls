@@ -1062,7 +1062,8 @@ class AdminController extends Controller
         if ($request->status == 'lulus') {
 
             // Ganti link ini dengan link React App Anda yang sebenarnya
-            $linkUjian = "https://ujian-react.mfls.com/start?token=" . base64_encode($akun->email);
+            // Link Ujian Baru
+            $linkUjian = "https://ujian.beasiswamncu.com/?token=" . base64_encode($akun->email);
 
             try {
                 \Illuminate\Support\Facades\Mail::to($akun->email)->send(

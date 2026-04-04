@@ -2,6 +2,25 @@
 
 @section('content')
 <div class="space-y-8">
+    <!-- Notification Section -->
+    @if(($peserta->daftar->status ?? '') == 'lulus')
+    <div class="relative overflow-hidden bg-emerald-600 p-8 rounded-[2.5rem] shadow-xl shadow-emerald-200 mb-8 border border-white/10 group">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0 border border-white/20 shadow-lg">
+                <span class="iconify text-4xl text-white" data-icon="solar:verified-check-bold-duotone"></span>
+            </div>
+            <div class="text-center md:text-left flex-1">
+                <h3 class="text-white font-black text-xl md:text-2xl tracking-tight leading-none mb-1">Selamat! Anda Lolos Seleksi Berkas</h3>
+                <p class="text-emerald-50/80 text-sm font-medium">Dokumen Anda telah diverifikasi oleh tim panitia. Silakan tunggu informasi jadwal ujian/wawancara melalui email atau grup WhatsApp resmi.</p>
+            </div>
+            <div class="shrink-0 flex items-center gap-3">
+                <span class="px-6 py-3 bg-white text-emerald-600 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg">Tahap Berikutnya</span>
+            </div>
+        </div>
+    </div>
+    @endif
+
     @if(!$hasSupportingSubject)
     <!-- Missing Supporting Subject Warning -->
     <div class="relative overflow-hidden bg-navy-mnc p-6 rounded-[2rem] border border-primary-orange/30 shadow-xl mb-8">

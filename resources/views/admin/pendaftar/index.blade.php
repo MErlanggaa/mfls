@@ -15,23 +15,23 @@
     <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm relative overflow-hidden group hover:border-emerald-200 transition-colors">
         <div class="absolute right-0 top-0 w-20 h-20 bg-emerald-50 rounded-full blur-2xl -mr-5 -mt-5"></div>
         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-            <span class="iconify text-emerald-500" data-icon="solar:check-circle-bold"></span> Sudah Diverifikasi
+            <span class="iconify text-emerald-500" data-icon="solar:check-circle-bold"></span> Dokumen Lengkap
         </h3>
         <p class="text-4xl font-black text-slate-800 mt-2">
-            {{ $pendaftars->filter(fn($p) => ($p->peserta->daftar->status ?? 'menunggu') != 'menunggu')->count() }}
+            {{ $pendaftars->filter(fn($p) => ($p->peserta->progress ?? 0) == 100)->count() }}
         </p>
-        <p class="text-xs font-bold text-emerald-600 mt-4">Dokumen Lengkap</p>
+        <p class="text-xs font-bold text-emerald-600 mt-4">Sudah 100%</p>
     </div>
 
     <div class="bg-white rounded-[2rem] p-6 border border-slate-100 shadow-sm relative overflow-hidden group hover:border-blue-200 transition-colors">
         <div class="absolute right-0 top-0 w-20 h-20 bg-blue-50 rounded-full blur-2xl -mr-5 -mt-5"></div>
         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-            <span class="iconify text-blue-500" data-icon="solar:clock-circle-bold"></span> Perlu Tindakan
+            <span class="iconify text-blue-500" data-icon="solar:clock-circle-bold"></span> Belum Lengkap
         </h3>
         <p class="text-4xl font-black text-slate-800 mt-2">
-            {{ $pendaftars->filter(fn($p) => ($p->peserta->daftar->status ?? 'menunggu') == 'menunggu')->count() }}
+            {{ $pendaftars->filter(fn($p) => ($p->peserta->progress ?? 0) < 100)->count() }}
         </p>
-        <p class="text-xs font-bold text-blue-600 mt-4">Menunggu Review</p>
+        <p class="text-xs font-bold text-blue-600 mt-4">Di Bawah 100%</p>
     </div>
 </div>
 
@@ -110,26 +110,8 @@
                     $berkas = $peserta->berkas;
                     $sertifikats = $peserta->sertifikats;
                     
-                    // Hitung kelengkapan (Termasuk buta warna jika DKV)
-                    $isDKV = ($peserta->pilihan_prodi ?? '') == 'Desain Komunikasi Visual';
-                    
-                    // Check logic
-                    $filesCheck = ['foto', 'rapor1', 'rapor2', 'rapor3', 'rapor4', 'rapor5', 'ijazah', 'motivasi_video', 'personal_statement'];
-                    if($isDKV) {
-                        $filesCheck[] = 'surat_buta_warna';
-                    }
-                    
-                    $uploaded = 0;
-                    $totalRequired = count($filesCheck);
-                    
-                    if($berkas) {
-                        foreach($filesCheck as $f) {
-                            if(!empty($berkas->$f)) $uploaded++;
-                        }
-                    }
-                    
-                    $percentage = $totalRequired > 0 ? round(($uploaded / $totalRequired) * 100) : 0;
-                    $percentage = $percentage > 100 ? 100 : $percentage;
+                    $isDKV = ($peserta->pilihan_prodi ?? '') == 'Desain Komunikasi Visual (DKV)';
+                    $percentage = $peserta->progress;
                 @endphp
                 <tr class="group hover:bg-slate-50/50 transition-colors">
                     @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
