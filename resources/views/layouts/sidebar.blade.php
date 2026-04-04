@@ -35,6 +35,7 @@
 
     <!-- User Profile Glassmorphism -->
     <div class="p-6">
+        @auth
         <form action="/logout" method="POST" class="m-0">
             @csrf
             <div class="relative group">
@@ -58,5 +59,14 @@
                 </div>
             </div>
         </form>
+        @else
+        <a href="{{ route('login') }}" class="relative group block">
+            <div class="absolute -inset-1 bg-gradient-to-r from-primary-orange/20 to-transparent rounded-[2.5rem] blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
+            <div class="relative bg-white/5 backdrop-blur-xl p-4 rounded-[2rem] border border-white/10 flex items-center justify-center gap-3 transition-colors group-hover:bg-white/10">
+                <span class="text-[11px] font-black text-white uppercase tracking-tighter">Masuk ke Portal</span>
+                <span class="iconify text-primary-orange" data-icon="solar:arrow-right-bold"></span>
+            </div>
+        </a>
+        @endauth
     </div>
 </aside>

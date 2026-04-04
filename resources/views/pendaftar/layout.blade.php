@@ -108,7 +108,7 @@
                 
                 <div class="flex flex-col ml-3 lg:ml-0">
                     <h2 class="text-sm lg:text-xl font-extrabold text-slate-900 tracking-tight leading-none flex items-center gap-2">
-                        Selamat Datang, {{ explode(' ', Auth::user()->nama ?? 'Pendaftar')[0] }} <span class="text-orange-500 underline decoration-orange-500/30 underline-offset-4">{{ explode(' ', Auth::user()->nama ?? '')[1] ?? '' }}</span>
+                        Selamat Datang, {{ explode(' ', optional(Auth::user())->nama ?? 'Future Leader')[0] }} <span class="text-orange-500 underline decoration-orange-500/30 underline-offset-4">{{ explode(' ', optional(Auth::user())->nama ?? '')[1] ?? '' }}</span>
                     </h2>
                     <p class="text-[9px] lg:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 opacity-80 flex items-center gap-2">
                         <span class="iconify text-orange-500" data-icon="solar:verified-check-bold"></span>
