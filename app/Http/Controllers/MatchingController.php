@@ -104,49 +104,14 @@ class MatchingController extends Controller
 
     private function gemini($top1, $top2, $percent1, $percent2)
     {
-        $apiKey = env('GEMINI_API_KEY');
-        if (!$apiKey) {
-            return "Sistem kami mendeteksi Anda cocok di prodi $top1 dan $top2. Namun fungsi AI Analisis dari Arion sedang tidak tersedia karena API Key belum diatur.";
-        }
+        // Static recommendation based on top results
+        $message = "Halo Future Leader! Kenalin, aku **Arion**, maskot cerdas dari MNC University. 👋\n\n";
+        $message .= "Berdasarkan hasil tes minat dan bakatmu, kamu menunjukkan potensi yang sangat luar biasa di bidang **$top1** dengan tingkat kecocokan mencapai **$percent1%**! Sebagai alternatif yang juga sangat kuat, prodi **$top2** ($percent2%) juga sangat pas dengan karaktermu.\n\n";
+        
+        $message .= "Kamu adalah tipe orang yang memiliki passion besar dan dedikasi tinggi. Di MNC University, kami akan membantumu mengasah bakat tersebut menjadi keahlian profesional yang siap bersaing di industri global.\n\n";
+        
+        $message .= "Yuk, jangan ragu lagi! Segera tentukan pilihanmu dan jadilah bagian dari generasi pemimpin masa depan bersama kami. Sukses selalu untuk perjalanan karirmu!";
 
-        $prompt = "
-        Tugasmu adalah bertindak sebagai 'Arion', maskot AI yang cerdas, ramah, dan memotivasi dari MNC University.
-        Hasil kuis minat bakat calon mahasiswa:
-        1. $top1 ($percent1%)
-        2. $top2 ($percent2%)
-
-        Tolong jelaskan secara singkat:
-        - Gunakan sudut pandang Arion, nyapa dengan gaya bahasa santai, memotivasi, dan khas anak muda Indonesia.
-        - Maksimal 120 kata.
-        - Sebutkan kenapa jurusan tersebut cocok dengan kepribadiannya berdasarkan hasil tesnya.
-        - Berikan saran karir singkat.
-        - Gunakan paragraf yang enak dibaca.
-        ";
-
-        try {
-            $res = Http::timeout(10)->post(
-                "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$apiKey",
-                [
-                    "contents" => [
-                        [
-                            "parts" => [
-                                ["text" => $prompt]
-                            ]
-                        ]
-                    ]
-                ]
-            );
-
-            if ($res->successful()) {
-                return $res['candidates'][0]['content']['parts'][0]['text'] ?? "Halo dari Arion! Berdasarkan hasilmu, kamu memiliki kecocokan yang kuat pada prodi **$top1** dan **$top2**.";
-            }
-
-            // Jika API error
-            // \Log::error('Gemini API Error: ' . $res->body());
-            return "Halo Future Leader! Aku Arion. Berdasarkan hasil tes minatmu, kamu sangat cocok berada di prodi **$top1** ($percent1%) atau **$top2** ($percent2%). Persiapkan dirimu untuk karir yang cemerlang di bidang ini!";
-
-        } catch (\Exception $e) {
-            return "Halo calon jenius! Aku Arion, maskot MNC University. Berdasarkan tes, kamu cocok banget di prodi **$top1** atau alternatifnya **$top2**. Sukses selalu!";
-        }
+        return $message;
     }
 }
