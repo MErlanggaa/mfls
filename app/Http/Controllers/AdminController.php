@@ -8,6 +8,8 @@ use App\Models\Nilai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -698,17 +700,56 @@ class AdminController extends Controller
         $ids = $request->input('selected_ids');
 
         if (!$ids || !is_array($ids)) {
-            return back()->with('error', 'Pilih minimal satu pendaftar.');
+            return response()->json(['error' => 'Pilih minimal satu pendaftar.'], 400);
         }
+
+        $batchId = (string) Str::uuid();
+        $total = count($ids);
+
+        // Store progress in Cache (expires in 1 hour)
+        Cache::put("cert_batch_{$batchId}_total", $total, 3600);
+        Cache::put("cert_batch_{$batchId}_current", 0, 3600);
+        Cache::put("cert_batch_{$batchId}_status", 'processing', 3600);
 
         foreach ($ids as $id) {
-            \App\Jobs\SendCertificateJob::dispatch($id);
+            \App\Jobs\SendCertificateJob::dispatch($id, $batchId);
         }
 
-        $count = count($ids);
-        $this->logAktivitas('Kirim Sertifikat Massal', 'Bulk', null, "Mengirim $count sertifikat melalui antrean background.");
+        $this->logAktivitas('Kirim Sertifikat Massal', 'Bulk', null, "Memulai pengiriman $total sertifikat (Batch: $batchId).");
 
-        return back()->with('success', "$count sertifikat sedang diproses di latar belakang.");
+        return response()->json([
+            'success' => true,
+            'batch_id' => $batchId,
+            'total' => $total,
+            'message' => 'Proses pengiriman sertifikat dimulai.'
+        ]);
+    }
+
+    public function getBulkProgress(Request $request)
+    {
+        $batchId = $request->query('batch_id');
+        if (!$batchId) {
+            return response()->json(['error' => 'Batch ID required'], 400);
+        }
+
+        $total = Cache::get("cert_batch_{$batchId}_total", 0);
+        $current = Cache::get("cert_batch_{$batchId}_current", 0);
+        
+        $percentage = $total > 0 ? round(($current / $total) * 100) : 0;
+        
+        $status = 'processing';
+        if ($current >= $total && $total > 0) {
+            $status = 'completed';
+            Cache::put("cert_batch_{$batchId}_status", 'completed', 3600);
+        }
+
+        return response()->json([
+            'batch_id' => $batchId,
+            'total' => $total,
+            'current' => $current,
+            'percentage' => $percentage,
+            'status' => $status
+        ]);
     }
 
     public function uploadBerkas(Request $request, $id)

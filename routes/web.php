@@ -130,6 +130,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/admin/pendaftar/{id}/certificate', [App\Http\Controllers\AdminController::class, 'generateCertificate'])->name('admin.pendaftar.certificate');
                 Route::post('/admin/pendaftar/{id}/send-certificate', [App\Http\Controllers\AdminController::class, 'sendCertificateEmail'])->name('admin.pendaftar.send_certificate');
                 Route::post('/admin/pendaftar/bulk-send-certificate', [App\Http\Controllers\AdminController::class, 'bulkSendCertificate'])->name('admin.pendaftar.bulk_send_certificate');
+                Route::get('/admin/pendaftar/bulk-send/progress', [App\Http\Controllers\AdminController::class, 'getBulkProgress'])->name('admin.pendaftar.bulk_send_progress');
             }
             );
 

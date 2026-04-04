@@ -303,17 +303,45 @@
     </div>
     @endif
 </div>
-{{-- Form untuk Kirim Sertifikat Massal (Bisa diakses Admin & Panitia) --}}
 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
-<form id="bulkSendForm" action="{{ route('admin.pendaftar.bulk_send_certificate') }}" method="POST" style="display:none;">
-    @csrf
-</form>
+<!-- Modal Progress -->
+<div id="progressModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden border border-slate-100">
+        <div class="p-8 text-center">
+            <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-bounce">
+                <span class="iconify text-3xl" data-icon="solar:letter-send-bold"></span>
+            </div>
+            <h3 class="text-xl font-black text-slate-800 mb-2">Mengirim Sertifikat...</h3>
+            <p class="text-slate-500 text-sm font-medium mb-8">Mohon tunggu, sedang memproses antrean email.</p>
+            
+            <div class="relative pt-1">
+                <div class="flex mb-2 items-center justify-between">
+                    <div>
+                        <span class="text-xs font-black inline-block py-1 px-2 uppercase rounded-full text-orange-600 bg-orange-100" id="progressText">
+                            0%
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-black inline-block text-orange-600" id="progressCount">
+                            0 / 0
+                        </span>
+                    </div>
+                </div>
+                <div class="overflow-hidden h-3 mb-4 text-xs flex rounded-full bg-slate-100">
+                    <div id="progressBar" style="width:0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-orange-500 transition-all duration-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 document.getElementById('selectAll').addEventListener('change', function() {
     const checkboxes = document.querySelectorAll('.row-checkbox');
     checkboxes.forEach(cb => cb.checked = this.checked);
 });
+
+let progressInterval;
 
 function bulkSendCertificates() {
     const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
@@ -339,18 +367,64 @@ function bulkSendCertificates() {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            const form = document.getElementById('bulkSendForm');
-            form.querySelectorAll('input[name="selected_ids[]"]').forEach(el => el.remove());
-            selectedIds.forEach(id => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'selected_ids[]';
-                input.value = id;
-                form.appendChild(input);
+            // Show Progress Modal
+            document.getElementById('progressModal').classList.remove('hidden');
+            document.getElementById('progressCount').innerText = `0 / ${selectedIds.length}`;
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').innerText = '0%';
+
+            // Send via AJAX
+            fetch('{{ route("admin.pendaftar.bulk_send_certificate") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ selected_ids: selectedIds })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    startPolling(data.batch_id);
+                } else {
+                    Swal.fire('Error', data.error || 'Gagal memulai proses', 'error');
+                    document.getElementById('progressModal').classList.add('hidden');
+                }
+            })
+            .catch(error => {
+                Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+                document.getElementById('progressModal').classList.add('hidden');
             });
-            form.submit();
         }
     });
+}
+
+function startPolling(batchId) {
+    progressInterval = setInterval(() => {
+        fetch(`{{ route("admin.pendaftar.bulk_send_progress") }}?batch_id=${batchId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('progressBar').style.width = data.percentage + '%';
+                document.getElementById('progressText').innerText = data.percentage + '%';
+                document.getElementById('progressCount').innerText = `${data.current} / ${data.total}`;
+
+                if (data.status === 'completed' || data.current >= data.total) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        document.getElementById('progressModal').classList.add('hidden');
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Semua sertifikat telah berhasil dikirim ke antrean.',
+                            icon: 'success',
+                            confirmButtonColor: '#f97316'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }, 1000);
+                }
+            })
+            .catch(err => console.error('Polling error:', err));
+    }, 2000);
 }
 </script>
 @endif
