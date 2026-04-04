@@ -47,6 +47,98 @@
         </div>
     </div>
 
+    {{-- 2. PROGRAM STUDI SELECTION --}}
+    <div class="bg-white rounded-[2.5rem] p-8 md:p-12 border-2 border-slate-50 shadow-sm relative overflow-hidden group">
+        <div class="absolute top-0 right-0 w-[300px] h-[300px] bg-primary-orange/5 rounded-full blur-[100px] -mr-40 -mt-40"></div>
+        
+        <div class="relative z-10">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 bg-navy-mnc text-primary-orange rounded-xl flex items-center justify-center shadow-lg shadow-navy-mnc/10">
+                    <span class="iconify text-2xl" data-icon="solar:square-academic-cap-bold-duotone"></span>
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-navy-mnc tracking-tight leading-none mb-1">Pilihan Program Studi</h3>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Pilih 2 Program Studi Tujuan Anda</p>
+                </div>
+            </div>
+
+            <form action="{{ route('pendaftar.berkas.store') }}" method="POST" class="space-y-8">
+                @csrf
+                <input type="hidden" name="upload_field" value="program_studi">
+                
+                @php 
+                    $currentProdi = $peserta->pilihan_prodi;
+                    $parts = explode(' | ', $currentProdi);
+                    $pilihan1 = $parts[0] ?? '';
+                    $pilihan2 = $parts[1] ?? '';
+                    $prodis = ['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer'];
+                @endphp
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {{-- Pilihan 1 --}}
+                    <div class="space-y-4">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilihan Utama (1)</label>
+                        <div class="relative group/select">
+                            <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/select:text-primary-orange transition-colors z-10 pointer-events-none">
+                                <span class="iconify text-xl" data-icon="solar:ranking-bold-duotone"></span>
+                            </div>
+                            <select name="pilihan_prodi1" id="prodi1" onchange="checkProdiSelection()" required
+                                class="w-full bg-slate-50 text-navy-mnc font-black text-sm rounded-2xl border-2 border-transparent focus:border-primary-orange/30 focus:bg-white focus:ring-4 focus:ring-primary-orange/5 pl-14 pr-12 py-5 appearance-none transition-all cursor-pointer shadow-sm">
+                                <option value="">-- Pilih Pilihan 1 --</option>
+                                @foreach($prodis as $prodi)
+                                    <option value="{{ $prodi }}" {{ $pilihan1 == $prodi ? 'selected' : '' }}>{{ $prodi }}</option>
+                                @endforeach
+                            </select>
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <span class="iconify text-xl" data-icon="solar:alt-arrow-down-bold-duotone"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Pilihan 2 --}}
+                    <div class="space-y-4">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Pilihan Alternatif (2)</label>
+                        <div class="relative group/select">
+                            <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/select:text-primary-orange transition-colors z-10 pointer-events-none">
+                                <span class="iconify text-xl" data-icon="solar:medal-star-bold-duotone"></span>
+                            </div>
+                            <select name="pilihan_prodi2" id="prodi2" onchange="checkProdiSelection()" required
+                                class="w-full bg-slate-50 text-navy-mnc font-black text-sm rounded-2xl border-2 border-transparent focus:border-primary-orange/30 focus:bg-white focus:ring-4 focus:ring-primary-orange/5 pl-14 pr-12 py-5 appearance-none transition-all cursor-pointer shadow-sm">
+                                <option value="">-- Pilih Pilihan 2 --</option>
+                                @foreach($prodis as $prodi)
+                                    <option value="{{ $prodi }}" {{ $pilihan2 == $prodi ? 'selected' : '' }}>{{ $prodi }}</option>
+                                @endforeach
+                            </select>
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <span class="iconify text-xl" data-icon="solar:alt-arrow-down-bold-duotone"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end pt-4">
+                    <button type="submit" class="px-10 py-5 bg-navy-mnc text-white font-black rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-4 transform active:scale-95 shadow-xl shadow-navy-mnc/20 group text-[11px] uppercase tracking-[0.2em]">
+                        Simpan Pilihan Prodi
+                        <span class="iconify text-xl text-primary-orange group-hover:translate-x-1.5 transition-transform" data-icon="solar:diskette-bold"></span>
+                    </button>
+                </div>
+            </form>
+
+            {{-- DKV Special Alert --}}
+            <div id="butaWarnaAlert" class="mt-8 {{ (str_contains($currentProdi, 'DKV')) ? '' : 'hidden' }}">
+                <div class="bg-orange-50 border-2 border-orange-200 rounded-3xl p-6 flex items-start gap-4 animate-fade-in shadow-sm">
+                    <div class="w-10 h-10 bg-orange-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-orange-500/20">
+                        <span class="iconify text-xl" data-icon="solar:eye-scan-bold-duotone"></span>
+                    </div>
+                    <div>
+                        <h4 class="text-orange-900 font-black text-[10px] uppercase tracking-widest mb-1">Peringatan: Persyaratan Khusus DKV</h4>
+                        <p class="text-orange-700/70 text-[9px] font-bold leading-relaxed uppercase tracking-widest">Karena Anda memilih DKV, Anda wajib mengunggah <span class="text-orange-600 font-black underline">Surat Keterangan Tidak Buta Warna</span> pada bagian Dokumen Utama di bawah.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if($peserta->pilihan_prodi)
     {{-- Main Documents Grid --}}
     <div class="space-y-8">
         <div class="flex items-center gap-3 border-b-2 border-slate-50 pb-4">
@@ -63,7 +155,7 @@
             for ($i = 1; $i <= $maxSemester; $i++) {
                 $inputFiles[] = ['name' => 'rapor'.$i,  'label' => 'Rapor Semester '.$i, 'desc' => 'Hasil Scan Berwarna.', 'multiple' => true, 'icon' => 'solar:checklist-bold-duotone'];
             }
-            if ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') {
+            if (str_contains($peserta->pilihan_prodi, 'Desain Komunikasi Visual (DKV)')) {
                 $inputFiles[] = ['name' => 'surat_buta_warna', 'label' => 'Bebas Buta Warna', 'desc' => 'Hasil Medis (Wajib DKV).', 'icon' => 'solar:eye-scan-bold-duotone'];
             }
             if ($tahunLulus < 2026) {
@@ -450,6 +542,24 @@
             </div>
         </form>
     </div>
+    @else
+    {{-- Locked State --}}
+    <div class="mt-12 py-20 bg-slate-50 rounded-[3rem] border-4 border-dotted border-slate-200 flex flex-col items-center justify-center text-center px-6">
+        <div class="w-24 h-24 bg-white rounded-3xl flex items-center justify-center text-slate-300 shadow-sm mb-8 border-2 border-slate-100">
+            <span class="iconify text-5xl" data-icon="solar:lock-bold-duotone"></span>
+        </div>
+        <h3 class="text-2xl font-black text-slate-800 tracking-tight mb-4 uppercase">Bagian Dokumen Terkunci</h3>
+        <p class="text-slate-400 text-sm font-bold max-w-md leading-relaxed uppercase tracking-widest">
+            Silakan <span class="text-orange-500 font-black">Pilih 2 Program Studi</span> di atas dan klik 
+            <span class="text-navy-mnc font-black">"Simpan Pilihan Prodi"</span> 
+            untuk membuka akses pengunggahan berkas persyaratan.
+        </p>
+        <div class="mt-10 flex flex-col items-center gap-4">
+            <span class="iconify text-4xl text-slate-200 animate-bounce" data-icon="solar:arrow-up-bold-duotone"></span>
+            <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Cek bagian pemilihan prodi di atas</p>
+        </div>
+    </div>
+    @endif
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -522,6 +632,30 @@ function onFileSelected(input, fieldName) {
             preview.textContent = '';
             preview.classList.add('hidden');
         }
+    }
+}
+
+function checkProdiSelection() {
+    const p1 = document.getElementById('prodi1').value;
+    const p2 = document.getElementById('prodi2').value;
+    const alertBox = document.getElementById('butaWarnaAlert');
+    
+    if (p1.includes('DKV') || p2.includes('DKV')) {
+        alertBox.classList.remove('hidden');
+    } else {
+        alertBox.classList.add('hidden');
+    }
+
+    // Prevent same choice
+    if (p1 && p2 && p1 === p2) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Pilihan Sama',
+            text: 'Silakan pilih Program Studi yang berbeda untuk pilihan 1 dan 2.',
+            confirmButtonColor: '#001f3f',
+            customClass: { popup: 'rounded-[1.5rem]' }
+        });
+        document.getElementById('prodi2').value = '';
     }
 }
 

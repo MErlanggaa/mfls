@@ -1197,7 +1197,7 @@ class AdminController extends Controller
 
         // 2. Definisikan Column Headers
         $columns = [
-            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Prodi Minat',
+            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)',
             'Kode Referral'
         ];
 
@@ -1247,7 +1247,14 @@ class AdminController extends Controller
                     $peserta->no_whatsapp ?: ($daftar->no_wa ?: '-'),
                     $peserta->nisn ?? '-',
                     $daftar->asal_sekolah ?? '-',
-                    $peserta->pilihan_prodi ?? '-',
+                    explode(' | ', $peserta->pilihan_prodi ?? '')[0] ?? '-',
+                    explode(' | ', $peserta->pilihan_prodi ?? '')[1] ?? '-',
+                    (function($kab) {
+                        $kab = strtolower($kab ?? '');
+                        $cities = ['jakarta', 'bogor', 'depok', 'tangerang', 'bekasi'];
+                        foreach ($cities as $c) if (str_contains($kab, $c)) return "JABODETABEK";
+                        return "DI LUAR JABODETABEK";
+                    })($peserta->kabupaten),
                     $daftar->kode_referral ?? '-',
                 ];
 

@@ -9,9 +9,9 @@
     <title>{{ config('app.name', 'MFLS') }}</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="shortcut icon" type="image/jpeg" href="{{ asset('icon/loog.jpeg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('icon/loog.jpeg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('icon/logoo.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('icon/logoo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icon/logoo.png') }}">
 
     <!-- Open Graph / Facebook / WhatsApp / Instagram -->
     <meta property="og:type" content="website">
@@ -19,7 +19,7 @@
     <meta property="og:title" content="{{ config('app.name', 'MFLS') }} - Program Beasiswa">
     <meta property="og:description"
         content="Membangun generasi emas bangsa melalui program beasiswa unggulan dan pembinaan karakter yang berkelanjutan.">
-    <meta property="og:image" content="{{ asset('icon/loog.jpeg') }}">
+    <meta property="og:image" content="{{ asset('icon/logoo.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="{{ config('app.name', 'MFLS') }}">

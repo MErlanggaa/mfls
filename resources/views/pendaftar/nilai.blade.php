@@ -62,77 +62,7 @@
     <form action="{{ route('pendaftar.nilai.store') }}" method="POST" enctype="multipart/form-data" id="mainNilaiForm" class="space-y-8">
         @csrf
 
-        {{-- 2. PRODI SELECTION --}}
-        <div class="bg-white rounded-[3rem] p-8 md:p-12 border-2 border-slate-50 shadow-sm relative overflow-hidden group">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                <div class="space-y-5">
-                    <div>
-                        <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3">Target Academic Program</h3>
-                        <label class="block text-2xl font-black text-navy-mnc tracking-tight leading-tight">Program Studi Pilihan</label>
-                    </div>
-                    <div class="relative group/select">
-                        <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/select:text-primary-orange transition-colors z-10 pointer-events-none">
-                            <span class="iconify text-2xl" data-icon="solar:square-academic-cap-bold-duotone"></span>
-                        </div>
-                        <select name="pilihan_prodi" id="prodiSelect" onchange="checkProdi()" 
-                            class="w-full bg-slate-50 text-navy-mnc font-black text-base rounded-2xl border-2 border-transparent focus:border-primary-orange/30 focus:bg-white focus:ring-4 focus:ring-primary-orange/5 pl-14 pr-12 py-5 appearance-none transition-all cursor-pointer shadow-sm">
-                            <option value="">-- Pilih Program Studi --</option>
-                            @php $prodis = ['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer']; @endphp
-                            @foreach($prodis as $prodi)
-                                <option value="{{ $prodi }}" {{ ($peserta->pilihan_prodi == $prodi) ? 'selected' : '' }}>{{ $prodi }}</option>
-                            @endforeach
-                        </select>
-                        <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                            <span class="iconify text-xl" data-icon="solar:alt-arrow-down-bold-duotone"></span>
-                        </div>
-                    </div>
-                </div>
 
-                {{-- DKV Special Alert --}}
-                <div id="butaWarnaSection" class="{{ ($peserta->pilihan_prodi == 'Desain Komunikasi Visual (DKV)') ? '' : 'hidden' }}">
-                    <div id="butaWarnaBox" class="bg-navy-mnc rounded-[2.5rem] p-8 border border-white/5 relative overflow-hidden transition-all duration-500 shadow-2xl">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-primary-orange/5 rounded-full blur-2xl -mr-16 -mt-16 transition-colors duration-700"></div>
-                        
-                        <div class="relative z-10 space-y-5">
-                            <div class="flex items-center gap-4">
-                                <div id="butaWarnaIcon" class="w-12 h-12 bg-white/5 text-primary-orange rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
-                                    <span class="iconify text-2xl" data-icon="solar:eye-scan-bold-duotone"></span>
-                                </div>
-                                <div class="min-w-0">
-                                    <h4 class="text-white font-black text-xs uppercase tracking-widest truncate">Persyaratan Khusus</h4>
-                                    <p class="text-[9px] text-orange-200/40 font-bold uppercase tracking-widest mt-1">Surat Tidak Buta Warna</p>
-                                </div>
-                            </div>
-
-                            <div class="space-y-3">
-                                <div id="butaWarnaFileName" class="hidden px-4 py-3 bg-white/10 border border-white/10 rounded-xl max-w-full">
-                                    <p class="text-[8px] font-black text-primary-orange uppercase tracking-[0.2em] flex items-center gap-2">
-                                        <span class="iconify" data-icon="solar:check-circle-bold"></span> 
-                                        <span id="butaWarnaFileText" class="truncate">File Terpilih</span>
-                                    </p>
-                                </div>
-
-                                @if($berkas && $berkas->surat_buta_warna)
-                                    <div class="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl backdrop-blur-md">
-                                        <a href="{{ Storage::url($berkas->surat_buta_warna) }}" target="_blank" class="text-[8px] font-black text-primary-orange uppercase tracking-widest flex items-center gap-2 hover:underline">
-                                            <span class="iconify" data-icon="solar:file-check-bold"></span> Buka File
-                                        </a>
-                                        <button type="button" onclick="confirmDeleteFile('surat_buta_warna')" class="text-[8px] font-black text-red-400 uppercase tracking-widest hover:text-red-300 transition-colors">Hapus</button>
-                                    </div>
-                                @endif
-
-                                <div class="flex items-center gap-3">
-                                    <input type="file" name="surat_buta_warna" id="input-buta-warna" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.webp" onchange="previewButaWarna(this)">
-                                    <label for="input-buta-warna" class="flex-1 cursor-pointer px-6 py-5 bg-primary-orange text-white rounded-xl text-[10px] font-black uppercase tracking-[0.25em] text-center hover:bg-white hover:text-navy-mnc transition-all shadow-xl shadow-primary-orange/20 active:scale-95 border border-transparent">
-                                        Pilih Dokumen
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         {{-- 3. SEMESTER NAVIGATION --}}
         <div class="sticky top-4 z-40 px-2">
@@ -377,26 +307,7 @@
         });
     }
 
-    function previewButaWarna(input) {
-        const nameEl = document.getElementById('butaWarnaFileName');
-        const textEl = document.getElementById('butaWarnaFileText');
-        if (input.files && input.files.length > 0) {
-            textEl.textContent = input.files[0].name;
-            nameEl.classList.remove('hidden');
-        } else {
-            nameEl.classList.add('hidden');
-        }
-    }
 
-    function checkProdi() {
-        const val = document.getElementById('prodiSelect').value;
-        const section = document.getElementById('butaWarnaSection');
-        if (val.includes('DKV') || val.includes('Desain')) {
-            section.classList.remove('hidden');
-        } else {
-            section.classList.add('hidden');
-        }
-    }
 
     function previewFiles(input, previewId, sem = null) {
         const previewEl = document.getElementById(previewId);

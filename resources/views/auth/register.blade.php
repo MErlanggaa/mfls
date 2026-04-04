@@ -4,8 +4,8 @@
 
 @section('content')
 <div class="mb-10 text-center lg:text-left">
-    <h1 class="text-3xl font-black text-gray-900 mb-3">Mulai Perjalananmu!</h1>
-    <p class="text-gray-500 font-medium">Buat akun untuk memulai pendaftaran beasiswa MFLS 2026.</p>
+    <h1 class="text-3xl font-black text-gray-900 mb-3">Pendaftaran MFLS 2026</h1>
+    <p class="text-gray-500 font-medium">Buat akun untuk memulai pendaftaran MNCU Future Leader Scholarship 2026.</p>
 </div>
 
 <form action="/register" method="POST" class="space-y-8">
@@ -124,8 +124,22 @@
                 @error('no_guru_bk') <p class="text-red-500 text-[10px] mt-1 font-bold italic">{{ $message }}</p> @enderror
             </div>
             <div class="col-span-full">
-                <label for="nama_sekolah" class="block text-xs font-bold text-gray-700 mb-2">Kode Referal (Opsional)</label>
-                <input type="text" id="kode_referral" name="kode_referral" value="{{ old('kode_referral') }}" class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium" placeholder="Masukkan kode referral jika ada">
+                <label for="sumber_informasi" class="block text-xs font-bold text-gray-700 mb-2">Dari mana Anda mengetahui MNCU Future Leader Scholarship? <span class="text-red-500">*</span></label>
+                <div class="relative group/select">
+                    <div class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/select:text-primary-gold transition-colors z-10 pointer-events-none">
+                        <span class="iconify" data-icon="solar:info-circle-bold-duotone"></span>
+                    </div>
+                    <select id="kode_referral" name="kode_referral" required class="w-full px-5 py-4 pl-14 bg-gray-50 border {{ $errors->has('kode_referral') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-sm">
+                        <option value="">Pilih Sumber Informasi</option>
+                        @php $sources = ['TV', 'Radio', 'Website', 'Instagram', 'Facebook', 'Tiktok', 'Teman', 'Keluarga', 'Guru/Kepala Sekolah', 'Presentasi Di Sekolah', 'Pameran Pendidikan', 'Media Cetak/Brosur', 'Lainnya']; @endphp
+                        @foreach($sources as $src)
+                            <option value="{{ $src }}" {{ old('kode_referral') == $src ? 'selected' : '' }}>{{ $src }}</option>
+                        @endforeach
+                    </select>
+                    <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                        <span class="iconify" data-icon="solar:alt-arrow-down-bold-duotone"></span>
+                    </div>
+                </div>
                 @error('kode_referral') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             

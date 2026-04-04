@@ -115,8 +115,8 @@
                 </div>
             </div>
 
-            <div class="prose prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-p:text-slate-600 prose-p:leading-relaxed text-sm md:text-base markdown-report">
-                {!! Str::markdown($ai) !!}
+            <div class="prose prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-p:text-slate-600 prose-p:leading-relaxed text-sm md:text-base markdown-report space-y-4">
+                {!! nl2br(e($ai)) !!}
             </div>
 
             <div class="mt-16 p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 flex items-start gap-6">

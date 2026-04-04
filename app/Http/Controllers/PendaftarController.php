@@ -182,6 +182,29 @@ class PendaftarController extends Controller
             'surat_buta_warna'
         ];
 
+        // --- Handle Program Studi Selection (Dual Choice) ---
+        if ($uploadField === 'program_studi') {
+            $p1 = $request->input('pilihan_prodi1');
+            $p2 = $request->input('pilihan_prodi2');
+            
+            if ($p1 && $p2) {
+                if ($p1 === $p2) {
+                    return back()->with('error', 'Pilihan 1 dan Pilihan 2 tidak boleh sama.');
+                }
+                $peserta->update(['pilihan_prodi' => $p1 . ' | ' . $p2]);
+                $this->logAktivitas('Pembaruan Program Studi', 'Peserta', $peserta->id, "Mengubah pilihan program studi menjadi: $p1 dan $p2.");
+                
+                if (!str_contains($p1, 'DKV') && !str_contains($p2, 'DKV')) {
+                    if ($berkas->surat_buta_warna) {
+                        if (Storage::disk('public')->exists($berkas->surat_buta_warna)) {
+                            Storage::disk('public')->delete($berkas->surat_buta_warna);
+                        }
+                        $berkas->surat_buta_warna = null;
+                    }
+                }
+            }
+        }
+
         // --- Handle Link Video Motivasi ---
         if (!$uploadField || $uploadField === 'motivasi_video') {
             if ($request->filled('motivasi_video')) {
@@ -194,7 +217,6 @@ class PendaftarController extends Controller
 
         // --- Handle Single File Fields ---
         foreach ($singleFields as $field) {
-            // Hanya proses jika tidak ada filter field ATAU field ini yang dipilih
             if ((!$uploadField || $uploadField === $field) && $request->hasFile($field)) {
                 $path = $request->file($field)->store('berkas/' . $peserta->id, 'public');
                 $berkas->$field = $path;
@@ -351,7 +373,6 @@ class PendaftarController extends Controller
     public function storeNilai(Request $request)
     {
         $request->validate([
-            'pilihan_prodi' => 'required',
             'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'rapor1.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'rapor2.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
@@ -361,22 +382,6 @@ class PendaftarController extends Controller
         ]);
 
         $peserta = Auth::user()->peserta;
-        $oldProdi = $peserta->pilihan_prodi;
-        $newProdi = $request->pilihan_prodi;
-        
-        $peserta->update(['pilihan_prodi' => $newProdi]);
-
-        // Logic: If prodi changed from DKV to non-DKV, delete the certificate
-        if ($oldProdi == 'Desain Komunikasi Visual (DKV)' && $newProdi != 'Desain Komunikasi Visual (DKV)') {
-            $berkas = \App\Models\Berkas::where('peserta_id', $peserta->id)->first();
-            if ($berkas && $berkas->surat_buta_warna) {
-                if (Storage::disk('public')->exists($berkas->surat_buta_warna)) {
-                    Storage::disk('public')->delete($berkas->surat_buta_warna);
-                }
-                $berkas->surat_buta_warna = null;
-                $berkas->save();
-            }
-        }
 
         // Server-side validation for mandatory supporting subjects
         // Validasi: harus ada minimal 2 matpel pendukung yang diisi (nama & nilai) di seluruh semester
@@ -478,7 +483,7 @@ class PendaftarController extends Controller
             if ($request->hasFile('rapor' . $i))
                 $uploadedRapor[] = "Scan Rerata S$i";
 
-        $msg = "Input nilai akademik semester 1-5" . (count($uploadedRapor) > 0 ? " dan unggah berkas " . implode(', ', $uploadedRapor) : "") . ". Pilihan Prodi: {$request->pilihan_prodi}.";
+        $msg = "Input nilai akademik semester 1-5" . (count($uploadedRapor) > 0 ? " dan unggah berkas " . implode(', ', $uploadedRapor) : "") . ".";
 
         $this->logAktivitas('Pengisian Nilai Rapor', 'Nilai', $peserta->id, $msg);
 
