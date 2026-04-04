@@ -92,19 +92,29 @@
 </head>
 <body class="font-jakarta antialiased bg-gray-50/50">
     <div class="flex min-h-screen">
+        @if(!isset($hideSidebar) || !$hideSidebar)
         <!-- Sidebar - Hidden on mobile, visible on desktop -->
         <div class="hidden lg:block">
             @include('layouts.sidebar')
         </div>
+        @endif
 
         <!-- Main Content -->
         <main class="flex-grow flex flex-col min-w-0 w-full">
             <!-- Top Header -->
             <header class="h-20 lg:h-24 bg-white/90 backdrop-blur-md border-b border-gray-100 px-5 lg:px-12 flex items-center justify-between sticky top-0 z-40">
+                @if(!isset($hideSidebar) || !$hideSidebar)
                 <!-- Mobile Menu Button -->
                 <button id="mobile-sidebar-toggle" class="lg:hidden p-2 rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-100 transition-all active:scale-90 border border-slate-200">
                     <span class="iconify text-xl" data-icon="solar:hamburger-menu-linear"></span>
                 </button>
+                @else
+                <!-- Logo for public view if sidebar is hidden -->
+                <a href="/" class="flex items-center gap-2">
+                    <img src="{{ asset('icon/loog.png') }}" alt="Logo" class="h-8 w-auto">
+                    <span class="text-xs font-black text-navy-mnc uppercase tracking-widest hidden sm:block">MFLS Portal</span>
+                </a>
+                @endif
                 
                 <div class="flex flex-col ml-3 lg:ml-0">
                     <h2 class="text-sm lg:text-xl font-extrabold text-slate-900 tracking-tight leading-none flex items-center gap-2">
@@ -128,12 +138,14 @@
         </main>
     </div>
 
+    @if(!isset($hideSidebar) || !$hideSidebar)
     <!-- Mobile Sidebar Overlay -->
     <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden hidden">
         <div id="mobile-sidebar" class="fixed inset-y-0 left-0 w-72 bg-white transform -translate-x-full transition-transform duration-300 ease-in-out">
             @include('layouts.sidebar')
         </div>
     </div>
+    @endif
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
