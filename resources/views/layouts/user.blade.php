@@ -112,10 +112,17 @@
                             </svg>
                         </button>
 
+                        @auth
+                        <a href="{{ route('pendaftar.dashboard') }}"
+                            class="bg-primary-yellow hover:bg-primary-yellow-hover text-dark-navy px-8 py-3 rounded-full text-sm font-bold shadow-md shadow-primary-yellow/10 transition-all hover:scale-105 active:scale-95">
+                            Kembali ke Dashboard
+                        </a>
+                        @else
                         <a href="/login"
                             class="bg-primary-yellow hover:bg-primary-yellow-hover text-dark-navy px-8 py-3 rounded-full text-sm font-bold shadow-md shadow-primary-yellow/10 transition-all hover:scale-105 active:scale-95">
                             Login
                         </a>
+                        @endauth
                     </div>
 
                 </div>

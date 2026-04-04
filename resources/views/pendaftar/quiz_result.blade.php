@@ -6,15 +6,23 @@
     <div class="relative overflow-hidden bg-slate-900 rounded-[3.5rem] p-10 md:p-16 text-white shadow-2xl border border-white/5 text-center">
         <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-gold/5 rounded-full blur-[120px] -mr-40 -mt-40"></div>
         
-        <div class="relative z-10">
-            <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl mb-8 backdrop-blur-md">
-                <span class="iconify text-primary-gold text-2xl" data-icon="solar:verified-check-bold"></span>
-                <span class="text-[9px] font-black uppercase tracking-[0.3em] text-primary-gold">Analysis Complete</span>
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-10">
+            <!-- Arion Mascot -->
+            <div class="shrink-0 relative group">
+                <div class="absolute -inset-4 bg-primary-gold/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                <img src="{{ asset('icon/scholarr.png') }}" alt="Arion Mascot" class="w-40 h-40 md:w-56 md:h-56 object-contain relative z-10 drop-shadow-[0_20px_50px_rgba(212,175,55,0.3)] transform hover:scale-110 transition-transform duration-700">
             </div>
-            <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-tight">Potensi <span class="text-primary-gold italic">Akademik Anda</span></h1>
-            <p class="text-slate-400 text-sm md:text-base font-medium max-w-2xl mx-auto leading-relaxed">
-                Berdasarkan hasil analisis minat dan bakat, berikut adalah Program Studi yang memiliki tingkat kecocokan tertinggi dengan profil Anda.
-            </p>
+
+            <div class="text-center md:text-left flex-1 items-center md:items-start flex flex-col">
+                <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl mb-8 backdrop-blur-md">
+                    <span class="iconify text-primary-gold text-2xl" data-icon="solar:verified-check-bold"></span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-primary-gold">Analysis Complete</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-tight">Potensi <span class="text-primary-gold italic">Akademik Anda</span></h1>
+                <p class="text-slate-400 text-sm md:text-base font-medium max-w-2xl leading-relaxed">
+                    Berdasarkan hasil analisis minat dan bakat, berikut adalah Program Studi yang memiliki tingkat kecocokan tertinggi dengan profil Anda.
+                </p>
+            </div>
         </div>
     </div>
 

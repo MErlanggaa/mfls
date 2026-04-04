@@ -6,15 +6,23 @@
     <div class="relative overflow-hidden bg-slate-900 rounded-[3.5rem] p-10 md:p-16 text-white shadow-2xl border border-white/5">
         <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-gold/5 rounded-full blur-[120px] -mr-40 -mt-40"></div>
         
-        <div class="relative z-10 text-center">
-            <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl mb-8 backdrop-blur-md">
-                <span class="iconify text-primary-gold text-lg" data-icon="solar:star-bold-duotone"></span>
-                <span class="text-[9px] font-black uppercase tracking-[0.3em] text-primary-gold">Interest Assessment</span>
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-10">
+            <!-- Arion Mascot -->
+            <div class="shrink-0 relative group">
+                <div class="absolute -inset-4 bg-primary-gold/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                <img src="{{ asset('icon/scholarr.png') }}" alt="Arion Mascot" class="w-32 h-32 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-[0_20px_50px_rgba(212,175,55,0.2)] transform hover:scale-110 transition-transform duration-700">
             </div>
-            <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-tight">Analisis <span class="text-primary-gold italic text-gradient-gold">Minat & Bakat</span></h1>
-            <p class="text-slate-400 text-sm md:text-base font-medium max-w-2xl mx-auto leading-relaxed">
-                Kami akan menganalisis pola minat dan kepribadianmu melalui {{ count($questions) }} pertanyaan singkat untuk merekomendasikan Program Studi yang paling sesuai dengan potensi dirimu.
-            </p>
+
+            <div class="text-center md:text-left flex-1 items-center md:items-start flex flex-col">
+                <div class="inline-flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl mb-8 backdrop-blur-md">
+                    <span class="iconify text-primary-gold text-lg" data-icon="solar:star-bold-duotone"></span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-primary-gold">Interest Assessment</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-tight">Analisis <span class="text-primary-gold italic text-gradient-gold">Minat & Bakat</span></h1>
+                <p class="text-slate-400 text-sm md:text-base font-medium max-w-2xl leading-relaxed">
+                    Kami akan menganalisis pola minat dan kepribadianmu melalui {{ count($questions) }} pertanyaan singkat untuk merekomendasikan Program Studi yang paling sesuai dengan potensi dirimu.
+                </p>
+            </div>
         </div>
     </div>
 

@@ -42,10 +42,7 @@ class MatchingController extends Controller
 
     public function showQuiz()
     {
-        return view('pendaftar.quiz', [
-            'questions' => $this->questions,
-            'hideSidebar' => true
-        ]);
+        return view('pendaftar.quiz', ['questions' => $this->questions]);
     }
 
     public function submit(Request $request)
@@ -102,7 +99,7 @@ class MatchingController extends Controller
             'percent1',
             'percent2',
             'ai'
-        ))->with('hideSidebar', true);
+        ));
     }
 
     private function gemini($top1, $top2, $percent1, $percent2)
