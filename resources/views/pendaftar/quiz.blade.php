@@ -1,4 +1,4 @@
-@extends('pendaftar.layout')
+@extends('layouts.quiz')
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-10 pb-32">

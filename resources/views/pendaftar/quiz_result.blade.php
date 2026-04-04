@@ -1,4 +1,4 @@
-@extends('pendaftar.layout')
+@extends('layouts.quiz')
 
 @section('content')
 <div class="max-w-5xl mx-auto space-y-10 pb-32">
@@ -133,10 +133,17 @@
 
     {{-- 4. MASTER CALL-TO-ACTION --}}
     <div class="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10 pb-20">
-        <a href="{{ route('pendaftar.berkas.index') }}" class="w-full sm:w-auto px-16 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-primary-gold hover:text-slate-900 transition-all shadow-xl flex items-center justify-center gap-4 group">
+        @auth
+        <a href="{{ route('pendaftar.berkas') }}" class="w-full sm:w-auto px-16 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-primary-gold hover:text-slate-900 transition-all shadow-xl flex items-center justify-center gap-4 group">
             <span class="text-[10px] uppercase tracking-[0.34em]">Lengkapi Berkas Sekarang</span>
             <span class="iconify text-2xl group-hover:translate-x-1 transition-transform" data-icon="solar:arrow-right-bold"></span>
         </a>
+        @else
+        <a href="{{ route('register') }}" class="w-full sm:w-auto px-16 py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-primary-gold hover:text-slate-900 transition-all shadow-xl flex items-center justify-center gap-4 group">
+            <span class="text-[10px] uppercase tracking-[0.34em]">Daftar Beasiswa Sekarang</span>
+            <span class="iconify text-2xl group-hover:translate-x-1 transition-transform" data-icon="solar:arrow-right-bold"></span>
+        </a>
+        @endauth
         <a href="{{ route('quiz.show') }}" class="w-full sm:w-auto px-10 py-5 bg-white text-slate-400 font-black rounded-xl border border-slate-100 hover:border-slate-300 hover:text-slate-800 transition-all flex items-center justify-center gap-3 group">
             <span class="iconify text-xl group-hover:rotate-180 transition-transform duration-700" data-icon="solar:restart-bold text-slate-300"></span>
             <span class="text-[9px] uppercase tracking-[0.2em]">Ulangi Analisis</span>
