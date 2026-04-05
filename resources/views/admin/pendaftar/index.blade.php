@@ -345,42 +345,41 @@ document.getElementById('selectAll').addEventListener('change', function() {
 let progressInterval;
 
 function bulkSendCertificates() {
-    const selectedIds = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => cb.value);
-    
+    const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
     if (selectedIds.length === 0) {
         Swal.fire({
-            title: 'Peringatan',
-            text: 'Silakan pilih minimal satu pendaftar.',
             icon: 'warning',
-            confirmButtonColor: '#f97316'
+            title: 'Perhatian',
+            text: 'Silakan pilih setidaknya satu pendaftar.'
         });
         return;
     }
 
     Swal.fire({
-        title: 'Konfirmasi Bulk Send',
-        text: `Kirim sertifikat ke ${selectedIds.length} pendaftar terpilih?`,
+        title: 'Konfirmasi',
+        text: `Apakah Anda yakin ingin mengirim sertifikat ke ${selectedIds.length} pendaftar terpilih?`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#f97316',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Ya, Kirim Semua',
+        confirmButtonText: 'Ya, Kirim!',
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Show Progress Modal
+            // Show Modal
             document.getElementById('progressModal').classList.remove('hidden');
-            document.getElementById('progressCount').innerText = `0 / ${selectedIds.length}`;
+            
+            // Reset Progress UI
             document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressCount').innerText = `0 / ${selectedIds.length}`;
             document.getElementById('progressText').innerText = '0%';
 
-            // Send via AJAX
-            fetch('{{ route("admin.pendaftar.bulk_send_certificate") }}', {
+            fetch("{{ route('admin.pendaftar.bulk_send_certificate') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({ selected_ids: selectedIds })
             })
@@ -388,16 +387,17 @@ function bulkSendCertificates() {
             .then(data => {
                 if (data.success) {
                     console.log('Batch started:', data.batch_id);
+                    localStorage.setItem('activeCertBatchId', data.batch_id);
                     startPolling(data.batch_id);
                 } else {
-                    Swal.fire('Error', data.error || 'Gagal memulai proses', 'error');
                     document.getElementById('progressModal').classList.add('hidden');
+                    Swal.fire('Error', data.message || 'Gagal memulai pengiriman.', 'error');
                 }
             })
             .catch(error => {
-                console.error('Fetch error:', error);
-                Swal.fire('Error', 'Terjadi kesalahan sistem saat memulai proses', 'error');
+                console.error('Error:', error);
                 document.getElementById('progressModal').classList.add('hidden');
+                Swal.fire('Error', 'Terjadi kesalahan sistem.', 'error');
             });
         }
     });
@@ -407,36 +407,57 @@ function startPolling(batchId) {
     if (progressInterval) clearInterval(progressInterval);
     
     progressInterval = setInterval(() => {
-        fetch(`{{ route("admin.pendaftar.bulk_send_progress") }}?batch_id=${batchId}`, {
+        fetch(`{{ route('admin.pendaftar.bulk_send_progress') }}?batch_id=${batchId}`, {
             headers: { 'Accept': 'application/json' }
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Progress update:', data);
-                document.getElementById('progressBar').style.width = data.percentage + '%';
-                document.getElementById('progressText').innerText = data.percentage + '%';
-                document.getElementById('progressCount').innerText = `${data.current} / ${data.total}`;
+        .then(response => {
+            if (response.status === 404) {
+                clearInterval(progressInterval);
+                localStorage.removeItem('activeCertBatchId');
+                document.getElementById('progressModal').classList.add('hidden');
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
 
-                if (data.status === 'completed' || data.current >= data.total) {
-                    clearInterval(progressInterval);
-                    setTimeout(() => {
-                        document.getElementById('progressModal').classList.add('hidden');
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: 'Semua sertifikat telah berhasil dikirim.',
-                            icon: 'success',
-                            confirmButtonColor: '#f97316'
-                        }).then(() => {
-                            window.location.reload();
-                        });
-                    }, 1500);
-                }
-            })
-            .catch(err => {
-                console.error('Polling error:', err);
-            });
+            console.log('Progress update:', data);
+            
+            const percentage = data.percentage;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.getElementById('progressCount').innerText = `${data.current} / ${data.total}`;
+            document.getElementById('progressText').innerText = `${percentage}%`;
+
+            if (data.status === 'completed' || data.current >= data.total) {
+                clearInterval(progressInterval);
+                localStorage.removeItem('activeCertBatchId');
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Selesai',
+                        text: 'Semua sertifikat telah berhasil dikirim ke antrean.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                }, 1000);
+            }
+        })
+        .catch(error => {
+            console.error('Polling error:', error);
+        });
     }, 2000);
 }
+
+// Auto-resume on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedBatchId = localStorage.getItem('activeCertBatchId');
+    if (savedBatchId) {
+        document.getElementById('progressModal').classList.remove('hidden');
+        startPolling(savedBatchId);
+    }
+});
 </script>
 @endpush
 @endif

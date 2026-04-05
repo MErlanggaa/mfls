@@ -728,8 +728,8 @@ class AdminController extends Controller
     public function getBulkProgress(Request $request)
     {
         $batchId = $request->query('batch_id');
-        if (!$batchId) {
-            return response()->json(['error' => 'Batch ID required'], 400);
+        if (!$batchId || !Cache::has("cert_batch_{$batchId}_total")) {
+            return response()->json(['status' => 'not_found'], 404);
         }
 
         $total = Cache::get("cert_batch_{$batchId}_total", 0);
