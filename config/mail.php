@@ -43,7 +43,7 @@ return [
             'port' => env('MAIL_PORT', 2525),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
+            'password' => env('HOSTINGER_PW'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
@@ -72,6 +72,20 @@ return [
 
         'array' => [
             'transport' => 'array',
+        ],
+
+        'gmail' => [
+            'transport' => 'smtp',
+            'host' => env('GMAIL_MAIL_HOST', 'smtp.gmail.com'),
+            'port' => env('GMAIL_MAIL_PORT', 465),
+            'encryption' => env('GMAIL_MAIL_ENCRYPTION', 'ssl'),
+            'username' => env('GMAIL_MAIL_USERNAME'),
+            'password' => env('GMAIL_PW'),
+            'timeout' => null,
+            'from' => [
+                'address' => env('GMAIL_MAIL_FROM_ADDRESS', 'beasiswamncuniversity@gmail.com'),
+                'name' => env('GMAIL_MAIL_FROM_NAME', 'MNCU Future Leaders Scholarship'),
+            ],
         ],
 
         'failover' => [

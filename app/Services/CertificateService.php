@@ -32,7 +32,7 @@ class CertificateService
 
         try {
             $pdfContent = $this->generatePdf($id)->output();
-            Mail::to($user->email)->send(new \App\Mail\CertificateMail($user->nama, $pdfContent));
+            Mail::mailer('gmail')->to($user->email)->send(new \App\Mail\CertificateMail($user->nama, $pdfContent));
 
             // Mark as sent
             $user->is_sertifikat_sent = true;
