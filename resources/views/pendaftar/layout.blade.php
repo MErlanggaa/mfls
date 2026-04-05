@@ -112,7 +112,7 @@
                 <!-- Logo for public view if sidebar is hidden -->
                 <a href="/" class="flex items-center gap-2">
                     <img src="{{ asset('icon/loog.png') }}" alt="Logo" class="h-8 w-auto">
-                    <span class="text-xs font-black text-navy-mnc uppercase tracking-widest hidden sm:block">MFLS Portal</span>
+                    <span class="text-[10px] font-black text-navy-mnc uppercase tracking-widest hidden sm:block">MNCU Future Leader Scholarship Portal</span>
                 </a>
                 @endif
                 
@@ -122,7 +122,7 @@
                     </h2>
                     <p class="text-[9px] lg:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 opacity-80 flex items-center gap-2">
                         <span class="iconify text-orange-500" data-icon="solar:verified-check-bold"></span>
-                        Calon Penerima Beasiswa MFLS 2026
+                        Calon Penerima MNCU Future Leader Scholarship 2026
                     </p>
                 </div>
 

@@ -31,7 +31,7 @@ class CertificateMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "Sertifikat Partisipasi MFLS - {$this->nama}",
+            subject: "Sertifikat Partisipasi MNCU Future Leader Scholarship - {$this->nama}",
         );
     }
 

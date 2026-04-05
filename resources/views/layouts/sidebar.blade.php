@@ -5,7 +5,7 @@
     
     <div class="p-10">
         <a href="/" class="flex items-center justify-center p-4 bg-white/5 rounded-3xl backdrop-blur-md border border-white/10 hover:border-primary-orange/50 transition-all duration-500 group">
-            <img src="{{ asset('icon/loog.png') }}" alt="Logo MFLS" class="h-14 w-auto transform group-hover:scale-110 transition-transform duration-500">
+    <img src="{{ asset('icon/loog.png') }}" alt="MNCU Future Leader Scholarship Logo" class="h-14 w-auto transform group-hover:scale-110 transition-transform duration-500">
         </a>
     </div>
 

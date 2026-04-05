@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-10 text-center lg:text-left">
     <h1 class="text-3xl font-black text-gray-900 mb-3">Pendaftaran Belum Dibuka!</h1>
-    <p class="text-gray-500 font-medium">Mohon maaf, pendaftaran beasiswa MFLS 2026 belum dibuka saat ini.</p>
+    <p class="text-gray-500 font-medium">Mohon maaf, pendaftaran beasiswa MNCU Future Leader Scholarship 2026 belum dibuka saat ini.</p>
 </div>
 
 <div class="bg-gray-50 border border-gray-100 rounded-[2rem] p-8 md:p-12 text-center shadow-lg shadow-gray-200/50">

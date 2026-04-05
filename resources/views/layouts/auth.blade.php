@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="text-white/50 text-sm">
-                    &copy; 2026 MNCU Future Leaders Scholarship
+                    &copy; 2026 MNCU Future Leader Scholarship
                 </div>
             </div>
         </div>

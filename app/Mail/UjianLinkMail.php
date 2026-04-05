@@ -25,7 +25,7 @@ class UjianLinkMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Undangan Ujian Online MFLS 2026',
+            subject: 'Undangan Ujian Online MNCU Future Leader Scholarship 2026',
         );
     }
 

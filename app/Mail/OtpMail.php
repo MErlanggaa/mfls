@@ -30,7 +30,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Kode OTP Verifikasi Pendaftaran MFLS',
+            subject: 'Kode OTP Verifikasi Pendaftaran MNCU Future Leader Scholarship',
         );
     }
 

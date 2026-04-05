@@ -60,8 +60,8 @@
             <a href="#" class="flex items-center gap-2.5">
                 <img src="{{ asset('icon/loog.png') }}" class="w-9 h-9 rounded-xl object-cover shadow-md shadow-orange-400/20" alt="Logo MFLS">
                 <div>
-                    <span class="block font-black text-base text-slate-800 leading-tight">MFLS <span class="text-orange-500">Admin</span></span>
-                    <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Management Panel</span>
+                    <span class="block font-black text-base text-slate-800 leading-tight">MNCU <span class="text-orange-500">Future Leader Scholarship</span></span>
+                    <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Admin Panel</span>
                 </div>
             </a>
             <button id="sidebarToggle"
@@ -93,8 +93,8 @@
                         class="w-12 h-12 rounded-xl object-cover shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform"
                         alt="Logo MFLS">
                     <div>
-                        <span class="block font-black tracking-tight text-xl text-slate-800">MFLS <span class="text-orange-500">Admin</span></span>
-                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Management Panel</span>
+                        <span class="block font-black tracking-tight text-lg text-slate-800 leading-tight">MNCU <span class="text-orange-500">Future Leader</span></span>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-tight">Scholarship Admin</span>
                     </div>
                 </a>
             </div>

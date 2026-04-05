@@ -74,7 +74,7 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <a href="/" class="flex items-center gap-2">
-                            <img src="{{ asset('icon/logoo.png') }}" alt="Logo MFLS"
+                            <img src="{{ asset('icon/logoo.png') }}" alt="MNCU Future Leader Scholarship Logo"
                                 style="height: 80px !important; width: auto !important;"
                                 class="object-contain shrink-0">
                         </a>
@@ -165,7 +165,7 @@
                     <!-- Brand Info -->
                     <div class="col-span-1 md:col-span-1 flex flex-col items-center md:items-start">
                         <a href="/" class="flex items-center justify-center md:justify-start gap-2 mb-8">
-                            <img src="{{ asset('icon/logoo.png') }}" alt="Logo MFLS"
+                            <img src="{{ asset('icon/logoo.png') }}" alt="MNCU Future Leader Scholarship Logo"
                                 style="height: 80px !important; width: auto !important; max-width: 100% !important; filter: brightness(0) invert(1);"
                                 class="object-contain">
                         </a>

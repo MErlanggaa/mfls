@@ -57,7 +57,7 @@ class PendaftarController extends Controller
         if (count($history) == 0) {
             $history[] = [
                 'title' => 'Selamat Datang!',
-                'desc' => 'Akun Anda berhasil terdaftar di sistem MFLS.',
+                'desc' => 'Akun Anda berhasil terdaftar di sistem MNCU Future Leader Scholarship.',
                 'date' => auth()->user()->created_at->format('d M Y'),
                 'icon' => 'user',
                 'status' => 'completed'

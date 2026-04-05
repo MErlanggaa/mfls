@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="mb-10 text-center lg:text-left">
-    <h1 class="text-3xl font-black text-gray-900 mb-3">Pendaftaran MFLS 2026</h1>
+    <h1 class="text-3xl font-black text-gray-900 mb-3">Pendaftaran MNCU Future Leader Scholarship 2026</h1>
     <p class="text-gray-500 font-medium">Buat akun untuk memulai pendaftaran MNCU Future Leader Scholarship 2026.</p>
 </div>
 

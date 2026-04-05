@@ -13,7 +13,7 @@
             </div>
             <h1 class="text-4xl md:text-5xl font-black tracking-tight mb-6 leading-tight">Twibbon <span class="text-primary-gold italic">Studio</span></h1>
             <p class="text-slate-400 text-sm md:text-base font-medium max-w-2xl leading-relaxed mb-8">
-                Tunjukkan kebanggaanmu sebagai calon penerima beasiswa MFLS. Kreasikan twibbon resmi dan bagikan semangatmu di media sosial.
+                Tunjukkan kebanggaanmu sebagai calon penerima beasiswa MNCU Future Leader Scholarship. Kreasikan twibbon resmi dan bagikan semangatmu di media sosial.
             </p>
         </div>
     </div>
@@ -117,10 +117,10 @@
                 
                 <div class="relative z-10">
                     <div id="captionText" class="text-[10px] text-slate-400 font-medium leading-relaxed space-y-4 max-h-[250px] overflow-y-auto pr-4 custom-scrollbar">
-                        <p class="text-primary-gold font-black uppercase tracking-wider">I'M READY FOR MFLS 📢‼️</p>
+                        <p class="text-primary-gold font-black uppercase tracking-wider">I'M READY FOR MNCU FUTURE LEADER SCHOLARSHIP 📢‼️</p>
                         <p>Behind this twibbon, there's a dream, a hope, and a step forward towards the future. ✨</p>
-                        <p>Halo, future leader friends 👋🏻 Perkenalkan saya {{ Auth::user()->nama }} berasal dari {{ $peserta->nama_sekolah ?? '[Asal sekolah]' }} dengan ini siap memulai perjalanan kepemimpinan dalam program MFLS MNC University. 🚀</p>
-                        <p>🗣 The future needs leaders. Starting the journey with MFLS MNC University. #ShapingFutureLeader #MNCUFutureLeaderScholarship</p>
+                        <p>Halo, future leader friends 👋🏻 Perkenalkan saya {{ Auth::user()->nama }} berasal dari {{ $peserta->nama_sekolah ?? '[Asal sekolah]' }} dengan ini siap memulai perjalanan kepemimpinan dalam program MNCU Future Leader Scholarship. 🚀</p>
+                        <p>🗣 The future needs leaders. Starting the journey with MNCU Future Leader Scholarship. #ShapingFutureLeader #MNCUFutureLeaderScholarship</p>
                     </div>
 
                     <button onclick="copyCaption(this)" class="w-full mt-8 py-4 bg-white text-slate-900 rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-primary-gold transition-all flex items-center justify-center gap-3 active:scale-95">

@@ -71,7 +71,7 @@
             <!-- Question 1 -->
             <div class="space-y-4">
                 <label class="block text-lg font-bold text-gray-900">
-                    1. Darimanakah kamu mendapatkan informasi mengenai program MFLS 2026?
+                    1. Darimanakah kamu mendapatkan informasi mengenai program MNCU Future Leader Scholarship 2026?
                 </label>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     @php

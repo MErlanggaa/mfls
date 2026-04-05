@@ -539,7 +539,7 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16 fade-in">
             <h3 class="section-label text-primary-yellow font-caveat font-semibold mb-2">Berita &amp; Informasi</h3>
-            <h2 class="section-title font-black text-dark-navy">Kabar Terbaru MFLS</h2>
+            <h2 class="section-title font-black text-dark-navy">Kabar Terbaru MNCU Future Leader Scholarship</h2>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
