@@ -61,14 +61,12 @@ class GoogleSheetService
         foreach ($pendaftars as $user) {
             /** @var \App\Models\Akun $user */
             $peserta = $user->peserta;
-            if (!$peserta) continue;
-
-            $daftar = $peserta->daftar;
-            $berkas = $peserta->berkas;
-            $nilais = $peserta->nilais;
+            $daftar = $peserta?->daftar;
+            $berkas = $peserta?->berkas;
+            $nilais = $peserta?->nilais ?? collect();
 
             // New Progress & Detailed Status Logic (Move to FRONT)
-            $progress = $peserta->progress;
+            $progress = $peserta?->progress ?? 0;
             if (!$user->email_verified_at) {
                 $status = 'BELUM VERIFIKASI (OTP)';
             } elseif ($progress < 100) {
@@ -83,7 +81,7 @@ class GoogleSheetService
                 $user->nama,
                 $this->cleanDeletedEmail($user->email),
                 $peserta->no_whatsapp ?? '-',
-                $this->cleanDeletedEmail($peserta->nisn),
+                $this->cleanDeletedEmail($peserta->nisn ?? '-'),
                 $peserta->nama_sekolah ?? '-',
                 $peserta->provinsi ?? '-',
                 $peserta->kabupaten ?? '-',
@@ -94,7 +92,7 @@ class GoogleSheetService
                     $cities = ['jakarta', 'bogor', 'depok', 'tangerang', 'bekasi'];
                     foreach ($cities as $c) if (str_contains($kab, $c)) return "JABODETABEK";
                     return "DI LUAR JABODETABEK";
-                })($peserta->kabupaten),
+                })($peserta->kabupaten ?? null),
                 $daftar->kode_referral ?? '-',
             ];
 
