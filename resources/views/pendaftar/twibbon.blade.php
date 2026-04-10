@@ -42,7 +42,24 @@
                         </label>
                     </div>
 
+                    <div class="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ukuran / Scale</label>
+                                    <span id="scaleValue" class="text-[10px] font-black text-primary-gold">100%</span>
+                                </div>
+                                <input type="range" id="scaleSlider" min="10" max="300" value="100" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary-gold">
+                            </div>
+
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Rotasi / Degree</label>
+                                    <span id="rotateValue" class="text-[10px] font-black text-slate-800">0°</span>
+                                </div>
+                                <input type="range" id="rotateSlider" min="0" max="360" value="0" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-800">
+                            </div>
+
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between">
                                     <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Posisi X</label>
