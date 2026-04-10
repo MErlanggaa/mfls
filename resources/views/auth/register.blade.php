@@ -129,16 +129,27 @@
                     <div class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/select:text-primary-gold transition-colors z-10 pointer-events-none">
                         <span class="iconify" data-icon="solar:info-circle-bold-duotone"></span>
                     </div>
-                    <select id="kode_referral" name="kode_referral" required class="w-full px-5 py-4 pl-14 bg-gray-50 border {{ $errors->has('kode_referral') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-sm">
+                    <select id="sumber_informasi" name="sumber_informasi" required class="w-full px-5 py-4 pl-14 bg-gray-50 border {{ $errors->has('sumber_informasi') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all text-sm font-medium appearance-none cursor-pointer shadow-sm">
                         <option value="">Pilih Sumber Informasi</option>
                         @php $sources = ['TV', 'Radio', 'Website', 'Instagram', 'Facebook', 'Tiktok', 'Teman', 'Keluarga', 'Guru/Kepala Sekolah', 'Presentasi Di Sekolah', 'Pameran Pendidikan', 'Media Cetak/Brosur', 'Lainnya']; @endphp
                         @foreach($sources as $src)
-                            <option value="{{ $src }}" {{ old('kode_referral') == $src ? 'selected' : '' }}>{{ $src }}</option>
+                            <option value="{{ $src }}" {{ old('sumber_informasi') == $src ? 'selected' : '' }}>{{ $src }}</option>
                         @endforeach
                     </select>
                     <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                         <span class="iconify" data-icon="solar:alt-arrow-down-bold-duotone"></span>
                     </div>
+                </div>
+                @error('sumber_informasi') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="col-span-full">
+                <label for="kode_referral" class="block text-xs font-bold text-gray-700 mb-2">Kode Referral (Opsional)</label>
+                <div class="relative group/field">
+                    <div class="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within/field:text-primary-gold transition-colors z-10 pointer-events-none">
+                        <span class="iconify" data-icon="solar:ticket-bold-duotone"></span>
+                    </div>
+                    <input type="text" id="kode_referral" name="kode_referral" value="{{ old('kode_referral') }}" class="w-full px-5 py-4 pl-14 bg-gray-50 border {{ $errors->has('kode_referral') ? 'border-red-500' : 'border-gray-100' }} rounded-2xl focus:ring-4 focus:ring-primary-gold/10 outline-none transition-all placeholder:text-gray-400 font-medium text-sm" placeholder="Masukkan kode referral jika ada">
                 </div>
                 @error('kode_referral') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>

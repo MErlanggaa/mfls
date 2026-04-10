@@ -47,7 +47,7 @@ class GoogleSheetService
         // Header (52 Columns)
         $rows[] = [
             'STT / KETERANGAN', 'PROGRES (%)', 
-            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Provinsi', 'Kabupaten', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)', 'Kode Referral',
+            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Provinsi', 'Kabupaten', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)', 'Sumber Informasi', 'Kode Referral',
             'S1 - B.Indo', 'S1 - B.Inggris', 'S1 - Mat.Wajib', 'S1 - Mapel 4', 'S1 - Mapel 5', 'Rata Rata S1',
             'S2 - B.Indo', 'S2 - B.Inggris', 'S2 - Mat.Wajib', 'S2 - Mapel 4', 'S2 - Mapel 5', 'Rata Rata S2',
             'S3 - B.Indo', 'S3 - B.Inggris', 'S3 - Mat.Wajib', 'S3 - Mapel 4', 'S3 - Mapel 5', 'Rata Rata S3',
@@ -93,6 +93,7 @@ class GoogleSheetService
                     foreach ($cities as $c) if (str_contains($kab, $c)) return "JABODETABEK";
                     return "DI LUAR JABODETABEK";
                 })($peserta->kabupaten ?? null),
+                $daftar->sumber_informasi ?? '-',
                 $daftar->kode_referral ?? '-',
             ];
 

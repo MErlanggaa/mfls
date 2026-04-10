@@ -131,12 +131,14 @@ class AuthController extends Controller
             'kabupaten' => 'required|string',
             'nama_sekolah' => 'required|string',
             'no_guru_bk' => 'nullable|string|max:30',
+            'sumber_informasi' => 'required|string|max:100',
             'kode_referral' => 'nullable|string|max:50',
             'g-recaptcha-response' => 'required',
         ], [
             'email.unique' => 'Email ini sudah terdaftar. Gunakan email lain atau silakan login.',
             'nisn.unique' => 'NISN ini sudah terdaftar dalam sistem. Hubungi admin jika ini kesalahan.',
             'no_whatsapp.unique' => 'Nomor WhatsApp ini sudah digunakan oleh pendaftar lain.',
+            'sumber_informasi.required' => 'Wajib memilih sumber informasi.',
             'g-recaptcha-response.required' => 'Wajib mencentang reCAPTCHA.',
         ]);
 
@@ -250,6 +252,7 @@ class AuthController extends Controller
                     'provinsi' => $payload['provinsi'],
                     'kabupaten' => $payload['kabupaten'],
                     'asal_sekolah' => $payload['nama_sekolah'],
+                    'sumber_informasi' => $payload['sumber_informasi'] ?? null,
                     'kode_referral' => $payload['kode_referral'] ?? null,
                 ]);
 

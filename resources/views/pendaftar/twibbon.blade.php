@@ -42,21 +42,22 @@
                         </label>
                     </div>
 
-                    <div class="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-8">
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between">
-                                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ukuran / Scale</label>
-                                <span id="scaleValue" class="text-[10px] font-black text-primary-gold">100%</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Posisi X</label>
+                                    <span id="xValue" class="text-[10px] font-black text-slate-800">540</span>
+                                </div>
+                                <input type="range" id="xSlider" min="0" max="1080" value="540" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-800">
                             </div>
-                            <input type="range" id="scaleSlider" min="10" max="300" value="100" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary-gold">
-                        </div>
 
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between">
-                                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Rotasi / Degree</label>
-                                <span id="rotateValue" class="text-[10px] font-black text-slate-800">0°</span>
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Posisi Y</label>
+                                    <span id="yValue" class="text-[10px] font-black text-slate-800">540</span>
+                                </div>
+                                <input type="range" id="ySlider" min="0" max="1080" value="540" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-800">
                             </div>
-                            <input type="range" id="rotateSlider" min="0" max="360" value="0" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-800">
                         </div>
                     </div>
 
@@ -184,6 +185,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const scaleValue = document.getElementById('scaleValue');
     const rotateSlider = document.getElementById('rotateSlider');
     const rotateValue = document.getElementById('rotateValue');
+    const xSlider = document.getElementById('xSlider');
+    const xValue = document.getElementById('xValue');
+    const ySlider = document.getElementById('ySlider');
+    const yValue = document.getElementById('yValue');
     const downloadBtn = document.getElementById('downloadBtn');
     const dragHint = document.getElementById('dragHint');
 
@@ -241,6 +246,18 @@ document.addEventListener('DOMContentLoaded', function() {
         drawCanvas();
     });
 
+    xSlider.addEventListener('input', function() {
+        photoX = parseInt(this.value);
+        xValue.textContent = this.value;
+        drawCanvas();
+    });
+
+    ySlider.addEventListener('input', function() {
+        photoY = parseInt(this.value);
+        yValue.textContent = this.value;
+        drawCanvas();
+    });
+
     canvas.addEventListener('mousedown', function(e) {
         if (!userPhoto) return;
         isDragging = true;
@@ -258,6 +275,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const scaleY = canvas.height / rect.height;
         photoX = (e.clientX - rect.left) * scaleX - dragStartX;
         photoY = (e.clientY - rect.top) * scaleY - dragStartY;
+        
+        // Update sliders to match drag position
+        xSlider.value = photoX;
+        xValue.textContent = Math.round(photoX);
+        ySlider.value = photoY;
+        yValue.textContent = Math.round(photoY);
+
         drawCanvas();
     });
 
