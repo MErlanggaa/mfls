@@ -41,6 +41,7 @@
 
     <!-- Tailwind CDN -->
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <style type="text/tailwindcss">
         @theme {
             --color-primary-blue: #023681;
