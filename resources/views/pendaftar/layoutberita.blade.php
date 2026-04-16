@@ -43,10 +43,11 @@
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <style type="text/tailwindcss">
         @theme {
-            --color-primary-orange: #f97316;
-            --color-primary-orange-hover: #ea580c;
-            --color-navy-mnc: #001f3f;
-            --color-premium-dark: #001f3f;
+            --color-primary-blue: #023681;
+            --color-primary-blue-hover: #012659;
+            --color-primary-yellow: #fcdb2f;
+            --color-primary-yellow-hover: #e3c51a;
+            --color-dark-navy: #023681;
             --font-jakarta: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
         }
         @layer base {
@@ -61,7 +62,7 @@
                 @apply bg-transparent;
             }
             ::-webkit-scrollbar-thumb {
-                @apply bg-gray-200 rounded-full hover:bg-primary-orange transition-colors;
+                @apply bg-gray-200 rounded-full hover:bg-primary-yellow transition-colors;
             }
             html {
                 scroll-behavior: smooth;
@@ -74,8 +75,8 @@
             .premium-shadow {
                 @apply shadow-[0_20px_50px_rgba(0,0,0,0.05)];
             }
-            .text-shadow-orange {
-                text-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+            .text-shadow-yellow {
+                text-shadow: 0 0 10px rgba(252, 219, 47, 0.3);
             }
             .animate-float {
                 animation: float 6s ease-in-out infinite;
@@ -96,11 +97,9 @@
 </head>
 
 <body class="font-jakarta antialiased bg-gray-50/50">
-    <div class="flex min-h-screen">
-
+    <div class="min-h-screen">
+        @yield('content')
     </div>
-
-
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -111,7 +110,6 @@
             border: 1px solid #f3f4f6 !important;
         }
     </style>
-
 </body>
 
 </html>
