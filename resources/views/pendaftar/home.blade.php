@@ -1274,7 +1274,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- Live Notification Popup -->
-<div id="live-toast" class="fixed top-24 right-4 sm:top-28 sm:right-6 z-50 bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl p-4 sm:p-5 border border-primary-yellow/20 flex items-center gap-4 transform translate-x-[200%] transition-transform duration-700 max-w-xs sm:max-w-sm">
+<!-- <div id="live-toast" class="fixed top-24 right-4 sm:top-28 sm:right-6 z-50 bg-white/95 backdrop-blur-md shadow-2xl rounded-2xl p-4 sm:p-5 border border-primary-yellow/20 flex items-center gap-4 transform translate-x-[200%] transition-transform duration-700 max-w-xs sm:max-w-sm">
     <div class="relative w-12 h-12 rounded-full bg-gradient-to-br from-primary-yellow to-orange-400 flex items-center justify-center shrink-0 shadow-lg shadow-primary-yellow/30">
         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
         <div class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></div>
@@ -1289,8 +1289,8 @@ document.addEventListener('DOMContentLoaded', function() {
     <button onclick="document.getElementById('live-toast').style.display='none'" class="absolute pl-2 top-3 right-3 text-gray-400 hover:text-red-500 transition-colors">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
-</div>
-
+</div> -->
+<!-- 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const totalPendaftar = {{ $totalPendaftar ?? 0 }};
@@ -1338,7 +1338,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 500);
 });
-</script>
+</script> -->
 
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
