@@ -123,7 +123,16 @@ class PendaftarController extends Controller
         ]));
 
         if ($peserta->daftar) {
-            $peserta->daftar->update(['kode_referral' => $request->kode_referral]);
+            $peserta->daftar->update([
+                'kode_referral' => $request->kode_referral,
+                'tahun_lulus' => $request->tahun_lulus,
+                'ttl' => $request->tgl_lahir,
+                'provinsi' => $request->provinsi,
+                'kabupaten' => $request->kabupaten,
+                'asal_sekolah' => $request->nama_sekolah,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'no_wa' => $request->no_whatsapp,
+            ]);
         }
 
         $this->logAktivitas('Update Biodata', 'Peserta', $peserta->id, 'Memperbarui data profil dan biodata diri.');

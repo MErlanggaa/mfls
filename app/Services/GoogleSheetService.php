@@ -80,21 +80,21 @@ class GoogleSheetService
                 $progress . '%',
                 $user->nama,
                 $this->cleanDeletedEmail($user->email),
-                $peserta->no_whatsapp ?? '-',
-                $this->cleanDeletedEmail($peserta->nisn ?? '-'),
-                $peserta->nama_sekolah ?? '-',
-                $peserta->provinsi ?? '-',
-                $peserta->kabupaten ?? '-',
-                explode(' | ', $peserta->pilihan_prodi ?? '')[0] ?? '-',
-                explode(' | ', $peserta->pilihan_prodi ?? '')[1] ?? '-',
+                $peserta?->no_whatsapp ?? '-',
+                $this->cleanDeletedEmail($peserta?->nisn ?? '-'),
+                $peserta?->nama_sekolah ?? '-',
+                $peserta?->provinsi ?? '-',
+                $peserta?->kabupaten ?? '-',
+                explode(' | ', $peserta?->pilihan_prodi ?? '')[0] ?? '-',
+                explode(' | ', $peserta?->pilihan_prodi ?? '')[1] ?? '-',
                 (function($kab) {
                     $kab = strtolower($kab ?? '');
                     $cities = ['jakarta', 'bogor', 'depok', 'tangerang', 'bekasi'];
                     foreach ($cities as $c) if (str_contains($kab, $c)) return "JABODETABEK";
                     return "DI LUAR JABODETABEK";
-                })($peserta->kabupaten ?? null),
-                $daftar->sumber_informasi ?? '-',
-                $daftar->kode_referral ?? '-',
+                })($peserta?->kabupaten ?? null),
+                $daftar?->sumber_informasi ?? '-',
+                $daftar?->kode_referral ?? '-',
             ];
 
             // Mapping Nilai S1 - S5

@@ -199,8 +199,11 @@ class AuthController extends Controller
             'otp' => 'required|string|size:6',
         ]);
 
-        $otpRecord = \App\Models\Otp::where('email', $request->email)
-            ->where('otp', $request->otp)
+        $inputEmail = strtolower(trim($request->email));
+        $inputOtp = trim($request->otp);
+
+        $otpRecord = \App\Models\Otp::where('email', $inputEmail)
+            ->where('otp', $inputOtp)
             ->where('expires_at', '>', now())
             ->first();
 
@@ -211,7 +214,7 @@ class AuthController extends Controller
         // Retrieve registration data from session
         $payload = session('registration_payload');
         
-        if (!$payload || $payload['email'] !== $request->email) {
+        if (!$payload || strtolower(trim($payload['email'])) !== $inputEmail) {
             return redirect('/register')->with('error', 'Data registrasi tidak ditemukan atau sudah kedaluwarsa. Silakan daftar ulang.');
         }
 

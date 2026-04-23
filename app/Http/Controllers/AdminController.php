@@ -1273,30 +1273,27 @@ class AdminController extends Controller
             fputcsv($file, $columns);
 
             foreach ($pendaftars as $user) {
-                if (!$user->peserta)
-                    continue;
-
                 $peserta = $user->peserta;
-                $daftar = $peserta->daftar;
-                $berkas = $peserta->berkas;
-                $nilais = $peserta->nilais;
+                $daftar = $peserta?->daftar;
+                $berkas = $peserta?->berkas;
+                $nilais = $peserta?->nilais ?? collect();
 
                 // A. Data Identitas
                 $row = [
                     $user->nama,
                     $user->email,
-                    $peserta->no_whatsapp ?: ($daftar->no_wa ?: '-'),
-                    $peserta->nisn ?? '-',
-                    $daftar->asal_sekolah ?? '-',
-                    explode(' | ', $peserta->pilihan_prodi ?? '')[0] ?? '-',
-                    explode(' | ', $peserta->pilihan_prodi ?? '')[1] ?? '-',
+                    $peserta?->no_whatsapp ?: ($daftar?->no_wa ?: '-'),
+                    $peserta?->nisn ?? '-',
+                    $daftar?->asal_sekolah ?? '-',
+                    explode(' | ', $peserta?->pilihan_prodi ?? '')[0] ?? '-',
+                    explode(' | ', $peserta?->pilihan_prodi ?? '')[1] ?? '-',
                     (function($kab) {
                         $kab = strtolower($kab ?? '');
                         $cities = ['jakarta', 'bogor', 'depok', 'tangerang', 'bekasi'];
                         foreach ($cities as $c) if (str_contains($kab, $c)) return "JABODETABEK";
                         return "DI LUAR JABODETABEK";
-                    })($peserta->kabupaten),
-                    $daftar->kode_referral ?? '-',
+                    })($peserta?->kabupaten ?? null),
+                    $daftar?->kode_referral ?? '-',
                 ];
 
                 // B. Data Akademik Rinci (S1-S5)
