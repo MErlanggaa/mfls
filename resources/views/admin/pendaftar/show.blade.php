@@ -171,6 +171,10 @@
                     if ($tahunLulus >= 2026) {
                         $berkasItems['surat_rekomendasi_sekolah'] = 'Surat Rekomendasi';
                     }
+
+                    if (str_contains($user->peserta->pilihan_prodi ?? '', 'DKV')) {
+                        $berkasItems['portfolio'] = 'Portofolio';
+                    }
                 @endphp
                 @foreach($berkasItems as $key => $label)
                 @php 
@@ -209,9 +213,13 @@
                     @if(count($files) > 0)
                         <div class="flex flex-wrap gap-2">
                         @foreach($files as $idx => $path)
+                            @php 
+                                $isExternal = str_starts_with($path, 'http');
+                                $fullUrl = $isExternal ? $path : asset('storage/' . $path);
+                            @endphp
                             <div class="flex items-center gap-1">
-                                <a href="{{ asset('storage/' . $path) }}" target="_blank" class="px-3 py-2 bg-white text-emerald-600 rounded-xl border border-emerald-100 shadow-sm hover:scale-105 transition-all text-[10px] font-black flex items-center gap-1">
-                                    <span class="iconify" data-icon="solar:document-bold"></span> FILE {{ $idx + 1 }}
+                                <a href="{{ $fullUrl }}" target="_blank" class="px-3 py-2 bg-white text-emerald-600 rounded-xl border border-emerald-100 shadow-sm hover:scale-105 transition-all text-[10px] font-black flex items-center gap-1">
+                                    <span class="iconify" data-icon="{{ $isExternal ? 'solar:link-bold' : 'solar:document-bold' }}"></span> {{ $isExternal ? 'LINK' : 'FILE ' . ($idx + 1) }}
                                 </a>
                                 @if(str_starts_with($key, 'rapor') && (in_array(auth()->user()->role, ['admin', 'akademik']) || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com'])))
                                 <form action="{{ route('admin.pendaftar.delete_berkas', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin menghapus file ini?')">
@@ -565,4 +573,47 @@ function confirmResetPassword(userId, name) {
 }
 </script>
 @endif
+
+<script>
+function confirmUpdateTahunLulus(userId, name, currentYear) {
+    Swal.fire({
+        title: 'Edit Tahun Lulus',
+        text: `Ubah tahun lulus untuk ${name}:`,
+        input: 'select',
+        inputOptions: {
+            '2021': '2021',
+            '2022': '2022',
+            '2023': '2023',
+            '2024': '2024',
+            '2025': '2025',
+            '2026': '2026'
+        },
+        inputValue: currentYear,
+        showCancelButton: true,
+        confirmButtonText: 'Update Sekarang',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#f97316',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/pendaftar/${userId}/update-tahun-lulus`;
+            
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = '{{ csrf_token() }}';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'tahun_lulus';
+            input.value = result.value;
+            
+            form.appendChild(csrf);
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
 @endsection

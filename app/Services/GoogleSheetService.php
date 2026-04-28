@@ -47,7 +47,7 @@ class GoogleSheetService
         // Header (52 Columns)
         $rows[] = [
             'STT / KETERANGAN', 'PROGRES (%)', 
-            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Provinsi', 'Kabupaten', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)', 'Sumber Informasi', 'Kode Referral',
+            'Nama Lengkap', 'Email', 'Jenis Kelamin', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Provinsi', 'Kabupaten', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)', 'Sumber Informasi', 'Kode Referral',
             'S1 - B.Indo', 'S1 - B.Inggris', 'S1 - Mat.Wajib', 'S1 - Mapel 4', 'S1 - Mapel 5', 'Rata Rata S1',
             'S2 - B.Indo', 'S2 - B.Inggris', 'S2 - Mat.Wajib', 'S2 - Mapel 4', 'S2 - Mapel 5', 'Rata Rata S2',
             'S3 - B.Indo', 'S3 - B.Inggris', 'S3 - Mat.Wajib', 'S3 - Mapel 4', 'S3 - Mapel 5', 'Rata Rata S3',
@@ -67,7 +67,9 @@ class GoogleSheetService
 
             // New Progress & Detailed Status Logic (Move to FRONT)
             $progress = $peserta?->progress ?? 0;
-            if (!$user->email_verified_at) {
+            if (!$peserta) {
+                $status = 'BELUM ISI BIODATA';
+            } elseif (!$user->email_verified_at) {
                 $status = 'BELUM VERIFIKASI (OTP)';
             } elseif ($progress < 100) {
                 $status = 'BELUM LENGKAP (' . $progress . '%)';
@@ -80,6 +82,7 @@ class GoogleSheetService
                 $progress . '%',
                 $user->nama,
                 $this->cleanDeletedEmail($user->email),
+                $peserta?->jenis_kelamin ?? '-',
                 $peserta?->no_whatsapp ?? '-',
                 $this->cleanDeletedEmail($peserta?->nisn ?? '-'),
                 $peserta?->nama_sekolah ?? '-',

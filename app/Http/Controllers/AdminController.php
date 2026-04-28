@@ -31,9 +31,9 @@ class AdminController extends Controller
         $riwayats = \App\Models\RiwayatAktivitas::with('pelaku')->latest()->take(10)->get();
 
         // Stats untuk Dashboard Real-time
-        $totalPendaftar = Akun::where('role', 'pendaftar')->count();
-        $todayPendaftar = Akun::where('role', 'pendaftar')->whereDate('created_at', \Carbon\Carbon::today())->count();
-        $yesterdayPendaftar = Akun::where('role', 'pendaftar')->whereDate('created_at', \Carbon\Carbon::yesterday())->count();
+        $totalPendaftar = Akun::where('role', 'pendaftar')->has('peserta')->count();
+        $todayPendaftar = Akun::where('role', 'pendaftar')->has('peserta')->whereDate('created_at', \Carbon\Carbon::today())->count();
+        $yesterdayPendaftar = Akun::where('role', 'pendaftar')->has('peserta')->whereDate('created_at', \Carbon\Carbon::yesterday())->count();
 
         // Hitung kenaikan (growth)
         $growth = 0;
@@ -46,6 +46,7 @@ class AdminController extends Controller
 
         // Daily trend (last 7 days)
         $dailyTrend = Akun::where('role', 'pendaftar')
+            ->has('peserta')
             ->where('created_at', '>=', \Carbon\Carbon::now()->subDays(6))
             ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as total'))
             ->groupBy('date')
@@ -584,6 +585,28 @@ class AdminController extends Controller
         $user->save();
 
         return back()->with('success', 'Data user berhasil diperbarui!');
+    }
+
+    public function updateTahunLulus(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'admin')
+            return abort(403);
+        
+        $request->validate([
+            'tahun_lulus' => 'required|integer|min:2000|max:2030'
+        ]);
+
+        $akun = Akun::with('peserta.daftar')->findOrFail($id);
+        if ($akun->peserta) {
+            $akun->peserta->update(['tahun_lulus' => $request->tahun_lulus]);
+            if ($akun->peserta->daftar) {
+                $akun->peserta->daftar->update(['tahun_lulus' => $request->tahun_lulus]);
+            }
+        }
+
+        $this->logAktivitas('Update Tahun Lulus Admin', 'Peserta', $akun->peserta->id ?? null, "Admin mengubah tahun lulus {$akun->nama} menjadi {$request->tahun_lulus}");
+
+        return back()->with('success', 'Tahun lulus berhasil diperbarui!');
     }
 
     public function destroyUser($id)
@@ -1238,7 +1261,7 @@ class AdminController extends Controller
 
         // 2. Definisikan Column Headers
         $columns = [
-            'Nama Lengkap', 'Email', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)',
+            'Nama Lengkap', 'Email', 'Jenis Kelamin', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)',
             'Kode Referral'
         ];
 
@@ -1282,6 +1305,7 @@ class AdminController extends Controller
                 $row = [
                     $user->nama,
                     $user->email,
+                    $peserta?->jenis_kelamin ?? '-',
                     $peserta?->no_whatsapp ?: ($daftar?->no_wa ?: '-'),
                     $peserta?->nisn ?? '-',
                     $daftar?->asal_sekolah ?? '-',

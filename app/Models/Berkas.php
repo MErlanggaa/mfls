@@ -32,6 +32,7 @@ class Berkas extends Model
         'bukti_follow_ig_mncu',
         'bukti_follow_tiktok_beasiswamncu',
         'bukti_follow_tiktok_mncu',
+        'portfolio',
     ];
 
     public function peserta()

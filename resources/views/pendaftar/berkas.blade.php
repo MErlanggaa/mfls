@@ -132,7 +132,7 @@
                     </div>
                     <div>
                         <h4 class="text-orange-900 font-black text-[10px] uppercase tracking-widest mb-1">Peringatan: Persyaratan Khusus DKV</h4>
-                        <p class="text-orange-700/70 text-[9px] font-bold leading-relaxed uppercase tracking-widest">Karena Anda memilih DKV, Anda wajib mengunggah <span class="text-orange-600 font-black underline">Surat Keterangan Tidak Buta Warna</span> pada bagian Dokumen Utama di bawah.</p>
+                        <p class="text-orange-700/70 text-[9px] font-bold leading-relaxed uppercase tracking-widest">Karena Anda memilih DKV, Anda wajib mengunggah <span class="text-orange-600 font-black underline">Surat Keterangan Tidak Buta Warna</span> dan <span class="text-orange-600 font-black underline">Portofolio Karya</span> pada bagian di bawah.</p>
                     </div>
                 </div>
             </div>
@@ -297,6 +297,124 @@
             @endforeach
         </div>
     </div>
+
+    {{-- Portfolio for DKV --}}
+    @if(str_contains($peserta->pilihan_prodi, 'Desain Komunikasi Visual (DKV)'))
+    <div class="space-y-8 mt-12">
+        <div class="flex items-center gap-3 border-b-2 border-slate-50 pb-4">
+            <div class="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/20">
+                <span class="iconify" data-icon="solar:palette-bold-duotone" data-width="20"></span>
+            </div>
+            <h3 class="text-xl font-extrabold text-[#001f3f] tracking-tight">Portofolio Karya (DKV)</h3>
+        </div>
+
+        <div class="bg-white p-6 md:p-10 rounded-[2.5rem] border-2 border-slate-50 shadow-sm relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-full -mr-20 -mt-20"></div>
+            
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#001f3f] text-orange-400 rounded-xl flex items-center justify-center shadow-lg">
+                            <span class="iconify text-2xl" data-icon="solar:gallery-bold-duotone"></span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black text-[#001f3f] uppercase tracking-widest">Unggah Portofolio</h4>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-tight mt-1">Gunakan PDF untuk kumpulan karya Anda atau tautan Google Drive.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h5 class="text-[10px] font-black text-[#001f3f] uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <span class="iconify text-orange-500" data-icon="solar:info-circle-bold"></span> Ketentuan Portofolio
+                        </h5>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 shrink-0"></span>
+                                <p class="text-[9px] font-bold text-slate-600 leading-relaxed uppercase tracking-widest">Kumpulan karya desain, gambar, atau ilustrasi terbaik Anda.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 shrink-0"></span>
+                                <p class="text-[9px] font-bold text-slate-600 leading-relaxed uppercase tracking-widest">Jika menggunakan Link GDrive, pastikan akses sudah diatur ke <span class="text-[#001f3f] font-black">"Anyone with the link"</span>.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-1.5 h-1.5 bg-orange-500 rounded-full mt-1 shrink-0"></span>
+                                <p class="text-[9px] font-bold text-slate-600 leading-relaxed uppercase tracking-widest">Format PDF maksimal 10MB.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-center">
+                    <form action="{{ route('pendaftar.berkas.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateSingleForm(this)">
+                        @csrf
+                        <input type="hidden" name="upload_field" value="portfolio">
+                        
+                        @php $isUploaded = $berkas && $berkas->portfolio; @endphp
+                        
+                        <div class="space-y-6">
+                            {{-- Current State --}}
+                            @if($isUploaded)
+                                <div class="p-4 bg-orange-50 border border-orange-200 rounded-2xl flex items-center justify-between gap-4">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <div class="w-10 h-10 bg-white text-orange-500 rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                                            <span class="iconify text-xl" data-icon="{{ str_starts_with($berkas->portfolio, 'http') ? 'solar:link-bold' : 'solar:document-bold' }}"></span>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="text-[9px] font-black text-[#001f3f] uppercase tracking-widest">Portofolio Tersimpan</p>
+                                            <a href="{{ str_starts_with($berkas->portfolio, 'http') ? $berkas->portfolio : Storage::url($berkas->portfolio) }}" target="_blank" class="text-[8px] font-bold text-orange-600 truncate block hover:underline">
+                                                {{ str_starts_with($berkas->portfolio, 'http') ? $berkas->portfolio : 'Buka File Portofolio' }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="confirmDeleteFile('portfolio')" class="text-[9px] font-black text-red-500 uppercase hover:text-red-700 shrink-0">Hapus</button>
+                                </div>
+                            @endif
+
+                            {{-- Input Toggle / Double Input --}}
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 gap-4">
+                                    {{-- File Upload --}}
+                                    <div class="relative">
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Opsi 1: Unggah PDF</p>
+                                        <input type="file" name="portfolio" id="file-portfolio" class="hidden" accept=".pdf" onchange="onFileSelected(this, 'portfolio')">
+                                        <label for="file-portfolio" class="w-full flex items-center justify-center gap-3 py-4 px-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-orange-500 hover:bg-orange-50 transition-all">
+                                            <span class="iconify text-xl text-slate-400" data-icon="solar:upload-bold-duotone"></span>
+                                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Pilih File PDF</span>
+                                        </label>
+                                        <p id="preview-portfolio" class="text-[8px] font-black text-orange-600 mt-2 hidden truncate text-center"></p>
+                                    </div>
+
+                                    <div class="flex items-center gap-4">
+                                        <div class="h-px bg-slate-100 flex-1"></div>
+                                        <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">ATAU</span>
+                                        <div class="h-px bg-slate-100 flex-1"></div>
+                                    </div>
+
+                                    {{-- Link Input --}}
+                                    <div>
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Opsi 2: Link Google Drive</p>
+                                        <div class="relative group">
+                                            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-orange-500 transition-colors">
+                                                <span class="iconify text-lg" data-icon="solar:link-bold-duotone"></span>
+                                            </div>
+                                            <input type="url" name="portfolio" placeholder="https://drive.google.com/..."
+                                                   class="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-transparent focus:border-orange-500/30 focus:bg-white rounded-xl text-[10px] font-bold text-[#001f3f] outline-none transition-all placeholder:text-slate-300">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="btn-save-portfolio" class="w-full py-5 bg-[#001f3f] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-navy-mnc/20 hover:bg-black transition-all flex items-center justify-center gap-3">
+                                    Simpan Portofolio
+                                    <span class="iconify text-xl text-orange-500" data-icon="solar:diskette-bold"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
     {{-- Achievement Certificates --}}
     <div class="space-y-8 mt-12">

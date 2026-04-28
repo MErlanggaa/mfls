@@ -49,7 +49,7 @@
                     'icon' => 'solar:bookmark-opened-bold-duotone',
                     'fields' => [
                         ['name' => 'nama_sekolah', 'label' => 'Asal Sekolah', 'placeholder' => 'Nama Sekolah SMA/SMK/MA', 'type' => 'text', 'value' => $peserta->nama_sekolah, 'icon' => 'solar:square-academic-cap-bold', 'full' => true],
-                        ['name' => 'tahun_lulus', 'label' => 'Tahun Lulus', 'placeholder' => '2025', 'type' => 'number', 'value' => $peserta->tahun_lulus, 'icon' => 'solar:calendar-date-bold'],
+                        ['name' => 'tahun_lulus', 'label' => 'Tahun Lulus', 'type' => 'select', 'value' => $peserta->tahun_lulus, 'icon' => 'solar:calendar-date-bold', 'options' => ['2021', '2022', '2023', '2024', '2025', '2026']],
                         ['name' => 'no_guru_bk', 'label' => 'WA Guru BK', 'placeholder' => '0812xxxx', 'type' => 'text', 'value' => $peserta->no_guru_bk, 'icon' => 'solar:chat-round-call-bold'],
                         ['name' => 'kode_referral', 'label' => 'Kode Referral (Opsional)', 'placeholder' => 'Jika ada', 'type' => 'text', 'value' => $peserta->daftar->kode_referral ?? '', 'icon' => 'solar:tag-bold', 'full' => true]
                     ]
@@ -81,7 +81,7 @@
                             <select name="{{ $field['name'] }}" required class="{{ isset($field['icon']) ? 'pl-14' : 'px-6' }} pr-6 py-5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-primary-orange/30 outline-none transition-all font-bold text-navy-mnc appearance-none w-full shadow-sm">
                                 <option value="">Pilih {{ $field['label'] }}</option>
                                 @foreach($field['options'] as $opt)
-                                    <option value="{{ $opt }}" {{ ($field['value'] == $opt || (substr($field['value'], 0, 1) == substr($opt, 0, 1))) ? 'selected' : '' }}>{{ $opt }}</option>
+                                    <option value="{{ $opt }}" {{ $field['value'] == $opt ? 'selected' : '' }}>{{ $opt }}</option>
                                 @endforeach
                             </select>
                             <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300">

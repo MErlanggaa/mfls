@@ -175,6 +175,7 @@ class PendaftarController extends Controller
             'motivasi_video_tiktok' => 'nullable|url|max:500',
             'sertifikat.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'surat_buta_warna' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'portfolio' => 'nullable|max:10240', // Can be file or string
             'bukti_follow_ig_beasiswamncu' => 'nullable|image|max:10240',
             'bukti_follow_ig_mncu' => 'nullable|image|max:10240',
             'bukti_follow_tiktok_beasiswamncu' => 'nullable|image|max:10240',
@@ -210,6 +211,12 @@ class PendaftarController extends Controller
                         }
                         $berkas->surat_buta_warna = null;
                     }
+                    if ($berkas->portfolio) {
+                        if (Storage::disk('public')->exists($berkas->portfolio)) {
+                            Storage::disk('public')->delete($berkas->portfolio);
+                        }
+                        $berkas->portfolio = null;
+                    }
                 }
             }
         }
@@ -221,6 +228,21 @@ class PendaftarController extends Controller
             }
             if ($request->filled('motivasi_video_tiktok')) {
                 $berkas->motivasi_video_tiktok = $request->motivasi_video_tiktok;
+            }
+        }
+
+        // --- Handle Portfolio (File or Link) ---
+        if (!$uploadField || $uploadField === 'portfolio') {
+            if ($request->hasFile('portfolio')) {
+                $path = $request->file('portfolio')->store('berkas/' . $peserta->id, 'public');
+                $berkas->portfolio = $path;
+                // Only compress if it's an image, but portfolio is usually PDF.
+                // compressImage has check inside usually, or I can skip it for PDFs.
+                if (str_contains($request->file('portfolio')->getMimeType(), 'image')) {
+                    $this->compressImage($path);
+                }
+            } elseif ($request->filled('portfolio')) {
+                $berkas->portfolio = $request->portfolio;
             }
         }
 
@@ -300,6 +322,8 @@ class PendaftarController extends Controller
             $uploaded[] = 'Bukti Follow TikTok MNC University';
         if ($request->hasFile('surat_buta_warna'))
             $uploaded[] = 'Surat Keterangan Tidak Buta Warna';
+        if ($request->hasFile('portfolio') || ($uploadField === 'portfolio' && $request->filled('portfolio')))
+            $uploaded[] = 'Portfolio (DKV)';
         for ($i = 1; $i <= 6; $i++) {
             if ($request->hasFile('rapor' . $i))
                 $uploaded[] = "Scan Rapor S$i";

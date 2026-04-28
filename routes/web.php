@@ -12,7 +12,7 @@ Route::get('/', function () {
     $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
 
     // Live Counter Data
-    $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->count();
+    $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->has('peserta')->count();
 
     // Asumsi ingin menambahkan efek 100 base data agar terlihat ramai di awal
     // $totalPendaftar += 100; // Un-comment jika ingin tambah data dummy
@@ -88,6 +88,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/{id}/delete-berkas', [App\Http\Controllers\AdminController::class, 'deleteBerkas'])->name('delete_berkas');
                 Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class, 'storePenilaianMentor'])->name('mentor_nilai');
                 Route::post('/{id}/update-email', [App\Http\Controllers\AdminController::class, 'updateEmailPendaftar'])->name('update_email');
+                Route::post('/{id}/update-tahun-lulus', [App\Http\Controllers\AdminController::class, 'updateTahunLulus'])->name('update_tahun_lulus');
                 Route::delete('/{id}', [App\Http\Controllers\AdminController::class, 'destroyPendaftar'])->name('destroy');
             }
             );

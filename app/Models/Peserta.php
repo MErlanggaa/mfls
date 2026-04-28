@@ -121,9 +121,10 @@ class Peserta extends Model
             $berkasFields[] = 'surat_rekomendasi_sekolah';
         }
 
-        // Conditional: DKV must upload Color Blindness Certificate
-        if ($this->pilihan_prodi === 'Desain Komunikasi Visual (DKV)') {
+        // Conditional: DKV must upload Color Blindness Certificate & Portfolio
+        if (str_contains($this->pilihan_prodi ?? '', 'Desain Komunikasi Visual')) {
             $berkasFields[] = 'surat_buta_warna';
+            $berkasFields[] = 'portfolio';
         }
 
         $totalPoints += count($berkasFields);
