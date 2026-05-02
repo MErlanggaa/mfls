@@ -398,6 +398,10 @@
                     <div class="text-xl font-black text-white uppercase flex items-center justify-center gap-2">
                         <span class="iconify" data-icon="solar:check-circle-bold"></span> LOLOS BERKAS
                     </div>
+                @elseif($user->peserta->daftar->status == 'diajukan_palugada')
+                    <div class="text-xl font-black text-blue-200 animate-pulse uppercase flex items-center justify-center gap-2">
+                        <span class="iconify" data-icon="solar:shield-check-bold"></span> DOUBLE CHECK
+                    </div>
                 @elseif($user->peserta->daftar->status == 'tidak_lulus')
                     <div class="text-xl font-black text-red-200 uppercase flex items-center justify-center gap-2">
                         <span class="iconify" data-icon="solar:close-circle-bold"></span> DITOLAK
@@ -414,7 +418,12 @@
                     @csrf
                     <input type="hidden" name="status" value="lulus">
                     <button type="button" onclick="confirmVerify(this, 'lulus', '{{ $user->nama }}')" class="w-full py-5 bg-white text-emerald-600 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-emerald-50 transition-all flex items-center justify-center gap-2">
-                        <span class="iconify" data-icon="solar:check-circle-bold"></span> Setujui Berkas & Profil
+                        <span class="iconify" data-icon="solar:check-circle-bold"></span> 
+                        @if(auth()->user()->role === 'palugada')
+                            Finalisasi Persetujuan
+                        @else
+                            Setujui Berkas & Profil
+                        @endif
                     </button>
                 </form>
                 <form action="{{ route('admin.pendaftar.verify', $user->id) }}" method="POST">
@@ -441,7 +450,14 @@
 <script>
 function confirmVerify(button, status, name) {
     let title, text, icon, confirmButtonColor;
-    if (status === 'lulus') { title = 'Setujui Administrasi?'; text = `Luluskan berkas dan profil ${name}?`; icon = 'success'; confirmButtonColor = '#10b981'; } 
+    const isPalugada = @json(auth()->user()->role === 'palugada');
+    
+    if (status === 'lulus') { 
+        title = isPalugada ? 'Finalisasi Persetujuan?' : 'Setujui Administrasi?'; 
+        text = isPalugada ? `Berikan persetujuan final untuk ${name}?` : `Luluskan berkas dan profil ${name}? (Akan diverifikasi ulang oleh Palugada)`; 
+        icon = 'success'; 
+        confirmButtonColor = '#10b981'; 
+    } 
     else if (status === 'tidak_lulus') { title = 'Tolak Administrasi?'; text = `Tolak pendaftaran ${name}?`; icon = 'warning'; confirmButtonColor = '#ef4444'; }
     else { title = 'Reset Keputusan?'; text = `Kembalikan ${name} ke status Menunggu?`; icon = 'info'; confirmButtonColor = '#F97316'; }
 

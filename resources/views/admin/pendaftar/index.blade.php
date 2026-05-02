@@ -243,12 +243,26 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="text-[8px] text-slate-400 mt-2 text-center font-bold uppercase tracking-tighter">{{ $percentage }}% DONE</div>
+                        @php
+                            $progColor = $percentage == 100 ? 'text-emerald-600 bg-emerald-50' : ($percentage >= 50 ? 'text-blue-600 bg-blue-50' : 'text-orange-600 bg-orange-50');
+                        @endphp
+                        <div class="mt-2 flex flex-col items-center">
+                            <span class="px-2 py-0.5 {{ $progColor }} rounded-md text-[9px] font-black border border-current/10 mb-1">
+                                {{ $percentage }}%
+                            </span>
+                            <div class="w-16 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full {{ $percentage == 100 ? 'bg-emerald-500' : 'bg-blue-500' }}" style="width: {{ $percentage }}%"></div>
+                            </div>
+                        </div>
                     </td>
                     <td class="px-6 py-5 text-center">
                         @if(($daftar->status ?? 'menunggu') == 'lulus')
                             <span class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wide border border-emerald-100">
                                 <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Lulus
+                            </span>
+                        @elseif(($daftar->status ?? 'menunggu') == 'diajukan_palugada')
+                            <span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-wide border border-blue-100">
+                                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span> Double Check
                             </span>
                         @elseif(($daftar->status ?? 'menunggu') == 'tidak_lulus')
                             <span class="inline-flex items-center gap-1 px-3 py-1 bg-red-50 text-red-600 rounded-full text-[10px] font-black uppercase tracking-wide border border-red-100">

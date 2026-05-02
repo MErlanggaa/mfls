@@ -107,7 +107,7 @@ class AdminController extends Controller
 
     public function storePenilaianMentor(Request $request, $id)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada') {
             return back()->with('loginError', 'Hanya Mentor yang dapat memberikan penilaian.');
         }
 
@@ -196,15 +196,46 @@ class AdminController extends Controller
 
         $pendaftars = $query->get();
 
+        // Urutkan berdasarkan Progress (100% di atas) lalu Nilai Rata-rata
+        $pendaftars = $pendaftars->sort(function ($a, $b) {
+            $progA = $a->peserta->progress ?? 0;
+            $progB = $b->peserta->progress ?? 0;
 
-        // Urutkan berdasarkan nilai rata-rata dari tertinggi ke terendah
-        $pendaftars = $pendaftars->sortByDesc(function ($akun) {
-            return $akun->peserta && $akun->peserta->daftar
-            ? $akun->peserta->daftar->rata_rata_nilai
-            : 0;
+            if ($progA == $progB) {
+                $nilaiA = $a->peserta && $a->peserta->daftar ? $a->peserta->daftar->rata_rata_nilai : 0;
+                $nilaiB = $b->peserta && $b->peserta->daftar ? $b->peserta->daftar->rata_rata_nilai : 0;
+                return $nilaiB <=> $nilaiA; // Nilai tinggi di atas
+            }
+
+            return $progB <=> $progA; // Progress tinggi di atas
         });
 
         return view('admin.pendaftar.index', compact('pendaftars'));
+    }
+
+    public function indexPalugada(Request $request)
+    {
+        if (auth()->user()->role !== 'palugada' && auth()->user()->role !== 'admin') {
+            return abort(403);
+        }
+
+        $query = Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar', function ($q) {
+                $q->where('status', 'diajukan_palugada');
+            })
+            ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $pendaftars = $query->latest()->get();
+
+        return view('admin.palugada.index', compact('pendaftars'));
     }
 
     // --- SISTEM DATABASE TERPUSAT: BEASISWA ---
@@ -301,7 +332,7 @@ class AdminController extends Controller
 
     public function indexHasilUjian()
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
             return abort(403);
 
         $hasilUjians = \App\Models\JawabanUjian::with(['peserta.akun', 'ujian'])
@@ -314,7 +345,7 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: PENILAIAN MENTOR ---
     public function indexPenilaian(Request $request)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik')
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
             return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
@@ -329,7 +360,7 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: PENILAIAN AKADEMIK ---
     public function indexPenilaianAkademik(Request $request)
     {
-        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor')
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor' && auth()->user()->role !== 'palugada')
             return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
@@ -387,7 +418,7 @@ class AdminController extends Controller
 
     public function showPenilaian($id, Request $request)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik')
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
             return abort(403);
 
         $type = $request->get('type', 'mentor'); // Default to mentor if not specified
@@ -398,7 +429,7 @@ class AdminController extends Controller
 
     public function storePenilaianAkademik(Request $request, $id)
     {
-        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor') {
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor' && auth()->user()->role !== 'palugada') {
             return back()->with('loginError', 'Hanya bagian Akademik dan Mentor yang dapat memberikan penilaian ini.');
         }
 
@@ -457,7 +488,7 @@ class AdminController extends Controller
     // --- PENGATURAN: MANAJEMEN USER ---
     public function indexUser()
     {
-        if (auth()->user()->role !== 'admin')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada')
             return abort(403);
         $users = Akun::where('role', '!=', 'pendaftar')->withCount('peserta')->get();
         return view('admin.user.index', compact('users'));
@@ -466,7 +497,7 @@ class AdminController extends Controller
     public function destroyPendaftar($id)
     {
         $user = auth()->user();
-        if ($user->role !== 'admin' && !in_array($user->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+        if ($user->role !== 'admin' && $user->role !== 'palugada' && !in_array($user->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
             return abort(403);
 
         $akun = Akun::with('peserta.berkas')->findOrFail($id);
@@ -543,7 +574,7 @@ class AdminController extends Controller
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:akun,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:admin,panitia,akademik,mentor'
+            'role' => 'required|in:admin,panitia,akademik,mentor,palugada'
         ]);
 
         Akun::create([
@@ -565,7 +596,7 @@ class AdminController extends Controller
         $rules = [
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:akun,email,' . $id,
-            'role' => 'required|in:admin,panitia,akademik,mentor'
+            'role' => 'required|in:admin,panitia,akademik,mentor,palugada'
         ];
 
         if ($request->password) {
@@ -589,7 +620,7 @@ class AdminController extends Controller
 
     public function updateTahunLulus(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada')
             return abort(403);
         
         $request->validate([
@@ -611,7 +642,7 @@ class AdminController extends Controller
 
     public function destroyUser($id)
     {
-        if (auth()->user()->role !== 'admin')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada')
             return abort(403);
         $user = Akun::findOrFail($id);
 
@@ -626,7 +657,7 @@ class AdminController extends Controller
     public function resetPassword(Request $request, $id)
     {
         $authUser = auth()->user();
-        if ($authUser->role !== 'admin' && !in_array($authUser->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+        if ($authUser->role !== 'admin' && $authUser->role !== 'palugada' && !in_array($authUser->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
             return abort(403);
         $user = Akun::findOrFail($id);
 
@@ -643,7 +674,7 @@ class AdminController extends Controller
     public function updateEmailPendaftar(Request $request, $id)
     {
         $authUser = auth()->user();
-        if ($authUser->role !== 'admin' && !in_array($authUser->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com'])) {
+        if ($authUser->role !== 'admin' && $authUser->role !== 'palugada' && !in_array($authUser->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com'])) {
             return abort(403);
         }
 
@@ -778,7 +809,7 @@ class AdminController extends Controller
     public function uploadBerkas(Request $request, $id)
     {
         $user = auth()->user();
-        if ($user->role !== 'admin' && !in_array($user->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+        if ($user->role !== 'admin' && $user->role !== 'palugada' && !in_array($user->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
             return abort(403);
 
         $request->validate([
@@ -1116,25 +1147,37 @@ class AdminController extends Controller
             return back()->with('error', 'Mentor tidak memiliki izin verifikasi kelulusan.');
         }
 
+        $request->validate([
+            'status' => 'required|in:lulus,tidak_lulus,menunggu,diajukan_palugada'
+        ]);
+
         $daftar = Daftar::where('peserta_id', function ($query) use ($id) {
             $query->select('id')->from('peserta')->where('akun_id', $id);
         })->firstOrFail();
 
+        $statusToSet = $request->status;
+        $currentUserRole = auth()->user()->role;
+
+        // Workflow Palugada: Admin/Panitia approve -> diajukan_palugada
+        if ($statusToSet === 'lulus' && $currentUserRole !== 'palugada') {
+            $statusToSet = 'diajukan_palugada';
+        }
+
         $daftar->update([
-            'status' => $request->status
+            'status' => $statusToSet
         ]);
 
         $akun = Akun::with('peserta')->findOrFail($id);
-        $this->logAktivitas('Verifikasi Status', 'Peserta', $akun->peserta->id, "Mengubah status {$akun->nama} menjadi " . strtoupper($request->status));
+        $this->logAktivitas('Verifikasi Status', 'Peserta', $akun->peserta->id, "Mengubah status {$akun->nama} menjadi " . strtoupper($statusToSet));
 
-        // Logic Email Notifikasi
-        if ($request->status == 'lulus') {
-            // Notifikasi dilewatkan via Banner Dashboard & WhatsApp Group Komunitas
-            // (Email dihentikan untuk menghemat kuota limit 500/hari)
+        $msg = 'Status verifikasi berhasil diperbarui!';
+        if ($statusToSet === 'diajukan_palugada') {
+            $msg = 'Status diajukan ke Role Palugada untuk verifikasi ulang (Double Check).';
         }
 
-        return back()->with('success', 'Status kelulusan berhasil diperbarui!');
+        return back()->with('success', $msg);
     }
+
 
     public function updateNilaiDummy(Request $request, $id)
     {

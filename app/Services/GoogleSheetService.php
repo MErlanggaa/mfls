@@ -41,7 +41,17 @@ class GoogleSheetService
 
         $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
             ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas'])
-            ->get();
+            ->get()
+            ->sort(function ($a, $b) {
+                $progA = $a->peserta->progress ?? 0;
+                $progB = $b->peserta->progress ?? 0;
+                if ($progA == $progB) {
+                    $nilaiA = $a->peserta && $a->peserta->daftar ? $a->peserta->daftar->rata_rata_nilai : 0;
+                    $nilaiB = $b->peserta && $b->peserta->daftar ? $b->peserta->daftar->rata_rata_nilai : 0;
+                    return $nilaiB <=> $nilaiA;
+                }
+                return $progB <=> $progA;
+            });
 
         $rows = [];
         // Header (52 Columns)

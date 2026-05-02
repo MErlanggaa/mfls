@@ -6,18 +6,39 @@ use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Route;
 
+// // Route::get('/', function () {
+//     $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
+
+//     // Live Counter Data
+//     $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->has('peserta')->count();
+
+//     // Asumsi ingin menambahkan efek 100 base data agar terlihat ramai di awal
+//     // $totalPendaftar += 100; // Un-comment jika ingin tambah data dummy
+
+//     // Dapatkan data agregat pendaftar berdasarkan kabupaten/kota
+//     $locationStats = \App\Models\Peserta::select('kabupaten', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+//         ->whereNotNull('kabupaten')
+//         ->groupBy('kabupaten')
+//         ->orderByDesc('total')
+//         ->take(5)
+//         ->get()
+//         ->map(function ($p) {
+//             return [
+//                 'total' => $p->total,
+//                 'lokasi' => $p->kabupaten,
+//             ];
+//         });
+
+//     return view('pendaftar.home', compact('beritas', 'totalPendaftar', 'locationStats'));
+// });
+
 
 // Guest Routes
 Route::get('/', function () {
+    return redirect()->route('maintance');
+    /* Original Logic:
     $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
-
-    // Live Counter Data
     $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->has('peserta')->count();
-
-    // Asumsi ingin menambahkan efek 100 base data agar terlihat ramai di awal
-    // $totalPendaftar += 100; // Un-comment jika ingin tambah data dummy
-
-    // Dapatkan data agregat pendaftar berdasarkan kabupaten/kota
     $locationStats = \App\Models\Peserta::select('kabupaten', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
         ->whereNotNull('kabupaten')
         ->groupBy('kabupaten')
@@ -30,8 +51,8 @@ Route::get('/', function () {
                 'lokasi' => $p->kabupaten,
             ];
         });
-
     return view('pendaftar.home', compact('beritas', 'totalPendaftar', 'locationStats'));
+    */
 });
 
 // Pengumuman Route (Public)
@@ -47,11 +68,11 @@ Route::get('/berita/{slug}', function ($slug) {
     return view('pendaftar.berita_show', compact('berita'));
 })->name('berita.show');
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+// Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+// Route::post('/login', [AuthController::class, 'login']);
 Route::get('/maintance', [AuthController::class, 'maintance'])->name('maintance');
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+// Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+// Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // OTP Verification Routes
@@ -72,7 +93,7 @@ Route::post('/internal/login', [AuthController::class, 'internalLogin']);
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
     // === ROLE: Admin, Panitia, Akademik, Mentor ===
-    Route::middleware(['role:admin,panitia,akademik,mentor'])->group(
+    Route::middleware(['role:admin,panitia,akademik,mentor,palugada'])->group(
         function () {
             // Admin / Staff Dashboard
             Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -93,8 +114,11 @@ Route::middleware(['auth'])->group(function () {
             }
             );
 
+            // Dedicated Palugada Verification (Double Check)
+            Route::get('/admin/palugada/verifikasi', [App\Http\Controllers\AdminController::class, 'indexPalugada'])->name('admin.palugada.index');
+
             // Seleksi Beasiswa (Email Restricted)
-            Route::middleware(['role:akademik,email:dion@gmail.com|info@beasiswamncu.com'])->group(
+            Route::middleware(['role:admin,akademik,palugada,email:dion@gmail.com|info@beasiswamncu.com'])->group(
                 function () {
                 Route::get('/admin/beasiswa', [App\Http\Controllers\AdminController::class, 'indexBeasiswa'])->name('admin.beasiswa.index');
                 Route::get('/admin/beasiswa/{id}', [App\Http\Controllers\AdminController::class, 'showBeasiswa'])->name('admin.beasiswa.show');
@@ -124,7 +148,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/admin/soal/import', [App\Http\Controllers\AdminController::class, 'importSoal'])->name('admin.soal.import');
 
             // Manajemen Berita
-            Route::middleware(['role:admin,panitia'])->group(
+            Route::middleware(['role:admin,panitia,palugada'])->group(
                 function () {
                 Route::resource('admin/berita', \App\Http\Controllers\BeritaController::class, ['as' => 'admin']);
             }

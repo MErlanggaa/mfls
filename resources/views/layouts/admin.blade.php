@@ -113,7 +113,7 @@
                     Dashboard
                 </a>
 
-                @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik') && (in_array(auth()->user()->role, ['akademik']) || in_array(auth()->user()->email, ['dion@gmail.com', 'info@beasiswamncu.com'])))
+                @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada') && (in_array(auth()->user()->role, ['akademik', 'palugada']) || in_array(auth()->user()->email, ['dion@gmail.com', 'info@beasiswamncu.com'])))
                 <a href="{{ route('admin.beasiswa.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.beasiswa.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -124,16 +124,24 @@
 
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Data</div>
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
+                @if(auth()->user()->role === 'palugada')
+                <a href="{{ route('admin.palugada.index') }}" onclick="closeSidebar()"
+                    class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
+                    {{ request()->routeIs('admin.palugada.index') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.palugada.index') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:shield-check-bold"></span>
+                    Verifikasi Final (Palugada)
+                </a>
+                @endif
                 <a href="{{ route('admin.pendaftar.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.pendaftar.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
-                    <span class="iconify text-xl {{ request()->routeIs('admin.pendaftar.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:shield-check-bold"></span>
-                    Seleksi Administrasi
+                    <span class="iconify text-xl {{ request()->routeIs('admin.pendaftar.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:users-group-rounded-bold"></span>
+                    Seleksi Administrasi (Semua)
                 </a>
                 @endif
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.hasil_ujian.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.hasil_ujian.*') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -142,7 +150,7 @@
                 </a>
                 @endif
 
-                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor' || auth()->user()->role === 'akademik')
+                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.penilaian.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.penilaian.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -157,7 +165,7 @@
                 </a>
                 @endif
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.soal.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.soal.index') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -166,9 +174,9 @@
                 </a>
                 @endif
 
-                @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dion@gmail.com', 'adminis@mfls.com', 'info@beasiswamncu.com'])))
+                @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'palugada' || in_array(auth()->user()->email, ['dion@gmail.com', 'adminis@mfls.com', 'info@beasiswamncu.com'])))
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Control</div>
-                @if(auth()->user()->role === 'admin')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.user.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.user.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -177,7 +185,7 @@
                 </a>
                 @endif
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dion@gmail.com', 'dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'palugada' || in_array(auth()->user()->email, ['dion@gmail.com', 'dept.adminis@mfls.com', 'info@beasiswamncu.com']))
                 <a href="{{ route('admin.berita.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.berita.*') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">

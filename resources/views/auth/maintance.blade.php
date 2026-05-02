@@ -1,34 +1,172 @@
-@extends('layouts.auth')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('title', 'Daftar Akun')
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistem Sedang Diperbarui - MFLS</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('icon/loog.png') }}">
 
-@section('content')
-<div class="mb-10 text-center lg:text-left">
-    <h1 class="text-3xl font-black text-gray-900 mb-3">Pendaftaran Belum Dibuka!</h1>
-    <p class="text-gray-500 font-medium">Mohon maaf, pendaftaran beasiswa MNCU Future Leader Scholarship 2026 belum dibuka saat ini.</p>
-</div>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&family=Syncopate:wght@700&display=swap"
+        rel="stylesheet">
 
-<div class="bg-gray-50 border border-gray-100 rounded-[2rem] p-8 md:p-12 text-center shadow-lg shadow-gray-200/50">
-    <div class="w-24 h-24 bg-primary-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
-        <svg class="w-12 h-12 text-primary-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
+    <!-- Scripts -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
+    <style>
+        :root {
+            /* Brand Colors from Logo */
+            --mfls-orange: #FF5C00;
+            --mfls-blue: #1E40AF;
+            --mfls-dark: #0D0D0D;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--mfls-dark);
+            color: #ffffff;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .syncopate {
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        /* Engineering Grid Background */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+        }
+
+        .giant-bg-text {
+            position: absolute;
+            font-size: 15vw;
+            font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05);
+            line-height: 0.8;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .main-card {
+            background-color: #151515;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge {
+            background-color: var(--mfls-orange);
+            color: #000;
+            padding: 4px 12px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 4px;
+        }
+
+        .marquee-footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--mfls-orange);
+            color: #000;
+            padding: 12px 0;
+            font-weight: 900;
+            text-transform: uppercase;
+            overflow: hidden;
+            white-space: nowrap;
+            z-index: 50;
+        }
+
+        .marquee-inner {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .logo-box {
+            background-color: #fff;
+            border-radius: 1.25rem;
+            padding: 1rem;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6">
+
+    <div class="grid-bg"></div>
+
+    <!-- Giant Typography Layer -->
+    <div class="giant-bg-text syncopate" style="top: 10%; left: -5%;">UNDER</div>
+    <div class="giant-bg-text syncopate" style="bottom: 15%; right: -5%;">MAINTENANCE</div>
+
+    <div class="main-card p-8 md:p-16 max-w-4xl w-full relative">
+        <div class="flex flex-col md:flex-row items-center gap-10">
+            <!-- Logo Section -->
+            <div class="logo-box flex-shrink-0">
+                <img src="{{ asset('icon/loog.png') }}" class="w-24 h-24 object-contain" alt="Logo">
+            </div>
+
+            <!-- Content Section -->
+            <div class="text-center md:text-left space-y-4">
+                <!-- <div class="inline-block badge">System Status</div> -->
+
+                <h1 class="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none">
+                    UNDER<br>
+                    <span class="text-[--mfls-orange]"> Maintenance.</span>
+                </h1>
+
+                <p class="text-slate-400 text-lg md:text-xl font-bold leading-tight max-w-lg">
+                    Sistem sedang dalam perbaikan karena banyaknya pendaftar yang mengakses. Mohon tunggu sebentar ya!
+                </p>
+            </div>
+        </div>
+
+        <div class="mt-12 flex flex-wrap justify-center md:justify-start gap-4">
+            <a href="https://wa.me/6285880059189"
+                class="px-6 py-3 bg-white text-black font-black text-xs uppercase tracking-widest rounded hover:bg-[--mfls-orange] transition-colors">
+                Tanya Panitia
+            </a>
+            <a href="https://instagram.com/beasiswamncu"
+                class="px-6 py-3 border border-white/20 text-white font-black text-xs uppercase tracking-widest rounded hover:bg-white/10 transition-colors">
+                Instagram
+            </a>
+        </div>
     </div>
-    
-    <h2 class="text-2xl md:text-3xl font-black text-dark-navy mb-4">Harap Bersabar</h2>
-    <p class="text-gray-600 mb-8 leading-relaxed max-w-md mx-auto">
-        Pantau terus informasi terbaru melalui saluran WhatsApp dan Instagram resmi kami agar tidak ketinggalan jadwal pendaftarannya.
-    </p>
 
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/" class="px-8 py-4 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full font-bold transition-all w-full sm:w-auto">
-            Kembali ke Beranda
-        </a>
-        <a href="https://www.instagram.com/beasiswamncu/" target="_blank" class="px-8 py-4 bg-primary-gold hover:bg-primary-gold-hover text-white rounded-full font-bold shadow-lg hover:shadow-xl transition-all w-full sm:w-auto flex items-center justify-center gap-2">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        </a>
+    <!-- The Serious Marquee -->
+    <div class="marquee-footer">
+        <div class="marquee-inner">
+            SISTEM SEDANG DALAM PERBAIKAN KARENA BANYAKNYA AKSES &nbsp; • &nbsp;
+            SISTEM SEDANG DALAM PERBAIKAN KARENA BANYAKNYA AKSES &nbsp; • &nbsp;
+            SISTEM SEDANG DALAM PERBAIKAN KARENA BANYAKNYA AKSES &nbsp; • &nbsp;
+            SISTEM SEDANG DALAM PERBAIKAN KARENA BANYAKNYA AKSES &nbsp; • &nbsp;
+            SISTEM SEDANG DALAM PERBAIKAN KARENA BANYAKNYA AKSES &nbsp; • &nbsp;
+        </div>
     </div>
-</div>
 
+</body>
 
-@endsection
+</html>

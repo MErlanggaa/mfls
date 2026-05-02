@@ -24,6 +24,13 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
+        \App\Models\Akun::create([
+            'nama' => 'Palugada Admin',
+            'email' => 'palugada@beasiswamncu.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role' => 'palugada',
+        ]);
+
         // Create Pendaftar Dummy Account
         $user = \App\Models\Akun::create([
             'nama' => 'Budi Santoso',
