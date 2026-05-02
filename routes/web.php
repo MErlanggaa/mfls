@@ -56,7 +56,7 @@ Route::get('/', function () {
 });
 
 // Pengumuman Route (Public)
-Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
+// Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
 
 // Rekomendasi Prodi (Quiz Matching)
 Route::get('/rekomendasi-prodi', [\App\Http\Controllers\MatchingController::class, 'showQuiz'])->name('quiz.show');

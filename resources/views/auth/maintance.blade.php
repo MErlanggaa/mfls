@@ -51,7 +51,7 @@
             position: absolute;
             font-size: 15vw;
             font-weight: 900;
-            color: transparent;
+            h color: transparent;
             -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05);
             line-height: 0.8;
             pointer-events: none;
