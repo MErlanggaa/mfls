@@ -35,24 +35,23 @@ use Illuminate\Support\Facades\Route;
 
 // Guest Routes
 Route::get('/', function () {
-    return redirect()->route('maintance');
-    /* Original Logic:
+    // Original Logic:
     $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
-    $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->has('peserta')->count();
-    $locationStats = \App\Models\Peserta::select('kabupaten', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
-        ->whereNotNull('kabupaten')
-        ->groupBy('kabupaten')
-        ->orderByDesc('total')
-        ->take(5)
-        ->get()
-        ->map(function ($p) {
-            return [
-                'total' => $p->total,
-                'lokasi' => $p->kabupaten,
-            ];
-        });
-    return view('pendaftar.home', compact('beritas', 'totalPendaftar', 'locationStats'));
-    */
+    // $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->has('peserta')->count();
+    // $locationStats = \App\Models\Peserta::select('kabupaten', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+    //     ->whereNotNull('kabupaten')
+    //     ->groupBy('kabupaten')
+    //     ->orderByDesc('total')
+    //     ->take(5)
+    //     ->get()
+    //     ->map(function ($p) {
+    //         return [
+    //             'total' => $p->total,
+    //             'lokasi' => $p->kabupaten,
+    //         ];
+    //     });
+    return view('pendaftar.home', compact('beritas'));
+
 });
 
 // Pengumuman Route (Public)
@@ -68,11 +67,11 @@ Route::get('/berita/{slug}', function ($slug) {
     return view('pendaftar.berita_show', compact('berita'));
 })->name('berita.show');
 
-// Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-// Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 Route::get('/maintance', [AuthController::class, 'maintance'])->name('maintance');
-// Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-// Route::post('/register', [AuthController::class, 'register']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // OTP Verification Routes
