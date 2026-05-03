@@ -96,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
         function () {
             // Admin / Staff Dashboard
             Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
+            Route::get('/admin/activity-log', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('admin.activity_log.index');
 
             // Unified Seleksi Administrasi (Profil, Raport, Berkas)
             Route::prefix('admin/pendaftar')->name('admin.pendaftar.')->group(

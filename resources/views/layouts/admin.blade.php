@@ -183,6 +183,12 @@
                     <span class="iconify text-xl {{ request()->routeIs('admin.user.index') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:settings-bold"></span>
                     Manajemen User
                 </a>
+                <a href="{{ route('admin.activity_log.index') }}" onclick="closeSidebar()"
+                    class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
+                    {{ request()->routeIs('admin.activity_log.*') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.activity_log.*') ? 'text-slate-800' : 'text-slate-400' }}" data-icon="solar:history-bold"></span>
+                    Log Aktivitas
+                </a>
                 @endif
 
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'palugada' || in_array(auth()->user()->email, ['dion@gmail.com', 'dept.adminis@mfls.com', 'info@beasiswamncu.com']))

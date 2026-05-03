@@ -218,7 +218,7 @@
                 @endforeach
             </div>
             
-            <a href="#" class="mt-4 py-3 bg-slate-50 rounded-xl text-center text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-orange-50 hover:text-orange-600 transition-all">
+            <a href="{{ route('admin.activity_log.index') }}" class="mt-4 py-3 bg-slate-50 rounded-xl text-center text-xs font-black uppercase tracking-widest text-slate-400 hover:bg-orange-50 hover:text-orange-600 transition-all">
                 Lihat Semua Log
             </a>
         </div>
