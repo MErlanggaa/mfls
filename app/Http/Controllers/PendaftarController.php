@@ -412,6 +412,7 @@ class PendaftarController extends Controller
             'rapor3.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'rapor4.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
             'rapor5.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'rapor6.*' => 'nullable|mimes:pdf,jpg,jpeg,png,webp|max:10240',
         ]);
 
         $peserta = Auth::user()->peserta;
@@ -449,8 +450,11 @@ class PendaftarController extends Controller
             $this->compressImage($path);
         }
 
-        // Handle Rapor Files Scans (Semester 1-5)
-        for ($i = 1; $i <= 5; $i++) {
+        $tahunLulus = (int) ($peserta->tahun_lulus ?? 2026);
+        $maxSemester = ($tahunLulus < 2026) ? 6 : 5;
+
+        // Handle Rapor Files Scans (Semester 1-6)
+        for ($i = 1; $i <= $maxSemester; $i++) {
             $field = 'rapor' . $i;
             if ($request->hasFile($field)) {
                 $existing = json_decode($berkas->$field, true) ?: [];
@@ -511,8 +515,10 @@ class PendaftarController extends Controller
             }
         }
 
+        $tahunLulus = (int) ($peserta->tahun_lulus ?? 2026);
+        $maxSemester = ($tahunLulus < 2026) ? 6 : 5;
         $uploadedRapor = [];
-        for ($i = 1; $i <= 5; $i++)
+        for ($i = 1; $i <= $maxSemester; $i++)
             if ($request->hasFile('rapor' . $i))
                 $uploadedRapor[] = "Scan Rerata S$i";
 
