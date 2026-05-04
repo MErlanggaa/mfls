@@ -504,6 +504,9 @@ function openUploadModal(field, label) {
 }
 </script>
 @if(auth()->user()->role === 'admin')
+<form id="resetPasswordForm" method="POST" style="display:none;">
+    @csrf
+    @method('PUT')
     <input type="hidden" name="password" id="resetPasswordInput">
 </form>
 
