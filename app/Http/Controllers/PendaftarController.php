@@ -15,16 +15,6 @@ class PendaftarController extends Controller
 {
     use \App\Traits\ImageCompressor;
 
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if ($request->isMethod('post') || $request->isMethod('put') || $request->isMethod('delete')) {
-                return back()->with('error', 'Maaf pendaftaran sudah ditutup, Anda tidak dapat mengubah data lagi.');
-            }
-            return $next($request);
-        });
-    }
-
     public function index()
     {
         $peserta = Auth::user()->peserta;

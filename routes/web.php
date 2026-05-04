@@ -171,23 +171,24 @@ Route::middleware(['auth'])->group(function () {
                 function () {
                     Route::get('/dashboard', [PendaftarController::class, 'index'])->name('pendaftar.dashboard');
                     Route::get('/biodata', [PendaftarController::class, 'biodata'])->name('pendaftar.biodata');
-                    Route::post('/biodata', [PendaftarController::class, 'storeBiodata'])->name('pendaftar.biodata.store');
                     Route::get('/berkas', [PendaftarController::class, 'berkas'])->name('pendaftar.berkas');
-                    Route::post('/berkas', [PendaftarController::class, 'storeBerkas'])->name('pendaftar.berkas.store');
                     Route::get('/twibbon', [PendaftarController::class, 'twibbon'])->name('pendaftar.twibbon');
-                    Route::post('/twibbon', [PendaftarController::class, 'storeTwibbon'])->name('pendaftar.twibbon.store');
                     Route::get('/nilai', [PendaftarController::class, 'nilai'])->name('pendaftar.nilai');
-                    Route::post('/nilai', [PendaftarController::class, 'storeNilai'])->name('pendaftar.nilai.store');
-
-                    // File Deletion Routes
-                    Route::post('/berkas/delete-file', [PendaftarController::class, 'deleteFile'])->name('pendaftar.berkas.delete_file');
-                    Route::post('/berkas/delete-sertifikat/{id}', [PendaftarController::class, 'destroySertifikat'])->name('pendaftar.sertifikat.destroy');
-
-                    // Email Change Routes
                     Route::get('/change-email', [PendaftarController::class, 'showChangeEmail'])->name('pendaftar.email.change');
-                    Route::post('/change-email/request', [PendaftarController::class, 'requestEmailChange'])->name('pendaftar.email.request');
                     Route::get('/change-email/verify', [PendaftarController::class, 'showVerifyEmailChange'])->name('pendaftar.email.verify');
-                    Route::post('/change-email/verify', [PendaftarController::class, 'verifyEmailChange'])->name('pendaftar.email.verify.post');
+
+                    // Semua POST/DELETE diblokir karena pendaftaran sudah ditutup
+                    $closedResponse = function () {
+                        return back()->with('error', 'Maaf, pendaftaran sudah ditutup. Anda tidak dapat mengubah data.');
+                    };
+                    Route::post('/biodata', $closedResponse)->name('pendaftar.biodata.store');
+                    Route::post('/berkas', $closedResponse)->name('pendaftar.berkas.store');
+                    Route::post('/twibbon', $closedResponse)->name('pendaftar.twibbon.store');
+                    Route::post('/nilai', $closedResponse)->name('pendaftar.nilai.store');
+                    Route::post('/berkas/delete-file', $closedResponse)->name('pendaftar.berkas.delete_file');
+                    Route::post('/berkas/delete-sertifikat/{id}', $closedResponse)->name('pendaftar.sertifikat.destroy');
+                    Route::post('/change-email/request', $closedResponse)->name('pendaftar.email.request');
+                    Route::post('/change-email/verify', $closedResponse)->name('pendaftar.email.verify.post');
                 }
             );
         }

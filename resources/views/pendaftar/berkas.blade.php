@@ -25,6 +25,19 @@
         </div>
     </div>
 
+    {{-- BANNER PENUTUPAN PENDAFTARAN --}}
+    <div class="relative overflow-hidden bg-red-600 p-6 rounded-[2rem] border border-red-400/20 shadow-xl">
+        <div class="flex items-center gap-5">
+            <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center shrink-0 border border-white/30">
+                <span class="iconify text-3xl text-white" data-icon="solar:lock-bold-duotone"></span>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-white font-black text-base uppercase tracking-widest leading-none mb-1">Pendaftaran Telah Ditutup</h3>
+                <p class="text-red-100 text-xs font-semibold leading-relaxed">Maaf, periode pengisian dan upload berkas pendaftaran <strong>telah ditutup</strong>. Anda tidak dapat mengubah atau mengunggah berkas lagi. Tunggu informasi lebih lanjut mengenai tahapan seleksi selanjutnya.</p>
+            </div>
+        </div>
+    </div>
+
     {{-- Info Akademik --}}
     <div class="bg-white rounded-[2rem] border-2 border-[#001f3f]/5 p-6 md:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6">
         <div class="w-12 h-12 bg-[#001f3f] text-orange-400 rounded-xl flex items-center justify-center shrink-0 shadow-lg">
@@ -804,5 +817,75 @@ function validateSingleForm(form) {
     });
     return true;
 }
+
+// ===== PENUTUPAN PENDAFTARAN =====
+// Override semua fungsi hapus agar tidak bisa dieksekusi
+function confirmDeleteFile() {
+    Swal.fire({
+        title: 'Tidak Dapat Dihapus',
+        text: 'Maaf, periode pendaftaran telah ditutup. Berkas tidak dapat dihapus atau diubah.',
+        icon: 'warning',
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Mengerti',
+        customClass: { popup: 'rounded-[2rem]' }
+    });
+    return false;
+}
+function confirmDeleteSertifikat() {
+    Swal.fire({
+        title: 'Tidak Dapat Dihapus',
+        text: 'Maaf, periode pendaftaran telah ditutup. Sertifikat tidak dapat dihapus.',
+        icon: 'warning',
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Mengerti',
+        customClass: { popup: 'rounded-[2rem]' }
+    });
+    return false;
+}
+function validateSingleForm() {
+    Swal.fire({
+        title: 'Pendaftaran Ditutup',
+        text: 'Maaf, periode upload berkas telah ditutup. Anda tidak dapat mengunggah berkas baru.',
+        icon: 'error',
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Mengerti',
+        customClass: { popup: 'rounded-[2rem]' }
+    });
+    return false;
+}
+
+// Disable semua upload label & input file
+document.addEventListener('DOMContentLoaded', function () {
+    // Disable semua label upload
+    document.querySelectorAll('label[for^="file-"]').forEach(label => {
+        label.style.pointerEvents = 'none';
+        label.style.opacity = '0.4';
+        label.style.cursor = 'not-allowed';
+    });
+    // Disable semua file input
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.disabled = true;
+    });
+    // Disable semua submit button
+    document.querySelectorAll('button[type="submit"]').forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = '0.4';
+        btn.style.cursor = 'not-allowed';
+        btn.style.pointerEvents = 'none';
+    });
+    // Disable semua tombol hapus (onclick)
+    document.querySelectorAll('button[onclick^="confirmDelete"]').forEach(btn => {
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.4';
+        btn.style.cursor = 'not-allowed';
+        btn.title = 'Pendaftaran sudah ditutup';
+    });
+    // Disable select prodi
+    document.querySelectorAll('select[name^="pilihan_prodi"]').forEach(sel => {
+        sel.disabled = true;
+        sel.style.opacity = '0.6';
+        sel.style.cursor = 'not-allowed';
+    });
+});
 </script>
 @endsection
