@@ -113,11 +113,13 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        return view('auth.register');
+        return redirect('/')->with('error', 'Maaf pendaftaran sudah di tutup.');
     }
 
     public function register(Request $request)
     {
+        return redirect('/')->with('error', 'Maaf pendaftaran sudah di tutup.');
+        
         $request->validate([
             'nama' => 'required|string|max:255',
             'nisn' => 'required|string|max:20|unique:peserta,nisn',

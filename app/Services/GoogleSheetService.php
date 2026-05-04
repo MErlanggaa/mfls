@@ -163,6 +163,48 @@ class GoogleSheetService
         $this->service->spreadsheets_values->update($this->spreadsheetId, 'Sheet1!A1', $body, $params);
 
         $this->applyFormatting($pendaftars);
+        $this->syncSecondSheet();
+    }
+
+    /**
+     * Sync pendaftars to the second sheet (GID: 433979925)
+     * Sorted by registration date (created_at)
+     */
+    protected function syncSecondSheet()
+    {
+        if (!$this->service) return;
+
+        $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $rows = [];
+        $rows[] = ['No', 'Nama Lengkap', 'Email', 'Tanggal Buat Akun'];
+
+        foreach ($pendaftars as $index => $user) {
+            $rows[] = [
+                $index + 1,
+                $user->nama,
+                $this->cleanDeletedEmail($user->email),
+                $user->created_at->format('d-m-Y H:i:s')
+            ];
+        }
+
+        $body = new ValueRange(['values' => $rows]);
+        $params = ['valueInputOption' => 'RAW'];
+
+        // Find sheet title for GID 433979925
+        $spreadsheet = $this->service->spreadsheets->get($this->spreadsheetId);
+        $sheetTitle = 'Sheet2'; // Fallback
+        foreach ($spreadsheet->getSheets() as $sheet) {
+            if ($sheet->getProperties()->getSheetId() == 433979925) {
+                $sheetTitle = $sheet->getProperties()->getTitle();
+                break;
+            }
+        }
+
+        $this->service->spreadsheets_values->clear($this->spreadsheetId, $sheetTitle . '!A1:D5000', new \Google\Service\Sheets\ClearValuesRequest());
+        $this->service->spreadsheets_values->update($this->spreadsheetId, $sheetTitle . '!A1', $body, $params);
     }
 
     protected function cleanDeletedEmail($val)

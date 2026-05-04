@@ -42,37 +42,54 @@
             <h2 class="text-2xl font-black text-slate-800">Data Seleksi Administrasi</h2>
             <p class="text-slate-500 text-sm font-medium mt-1">Kelola dan verifikasi berkas pendaftar.</p>
         </div>
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2">
-                <form action="" method="GET" id="sortForm" class="flex items-center gap-2">
-                    @if(request('search'))
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                    @endif
-                    <!-- <select name="sort" onchange="this.form.submit()" class="pl-4 pr-10 py-3 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-xs font-black uppercase tracking-widest outline-none transition-all cursor-pointer">
-                        <option value="">Sortir: Default</option>
-                        <option value="nilai_high" {{ request('sort') == 'nilai_high' ? 'selected' : '' }}>Nilai Tertinggi</option>
-                        <option value="nilai_low" {{ request('sort') == 'nilai_low' ? 'selected' : '' }}>Nilai Terendah</option>
-                    </select> -->
-                </form>
-            </div>
-            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
-            <button type="button" onclick="bulkSendCertificates()" class="px-6 py-3 bg-orange-600 text-white rounded-xl text-xs font-black shadow-lg shadow-orange-200 hover:bg-orange-700 transition-all uppercase tracking-widest flex items-center gap-2">
-                <span class="iconify text-lg" data-icon="solar:letter-send-bold"></span>
-                Kirim Sertifikat Massal
-            </button>
-            @endif
-            <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all uppercase tracking-widest flex items-center gap-2">
-                <span class="iconify text-lg" data-icon="solar:file-download-bold"></span>
-                Export
-            </a>
-            <form method="GET" class="relative w-full md:w-auto">
+        <div class="flex flex-wrap items-center gap-4">
+            <form method="GET" class="flex flex-wrap items-center gap-3">
                 @if(request('sort'))
                     <input type="hidden" name="sort" value="{{ request('sort') }}">
                 @endif
-                <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" data-icon="solar:magnifer-linear"></span>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama / Sekolah..." 
-                    class="pl-12 pr-6 py-3 w-full md:w-64 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-sm font-bold transition-all outline-none text-slate-600">
+                
+                <div class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+                    <div class="flex items-center gap-2 px-3">
+                        <span class="iconify text-slate-400" data-icon="solar:calendar-linear"></span>
+                        <input type="date" name="from_date" value="{{ request('from_date') }}" 
+                            class="bg-transparent border-none text-xs font-bold outline-none text-slate-600 focus:ring-0 p-0">
+                    </div>
+                    <div class="h-4 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-2 px-3">
+                        <input type="date" name="to_date" value="{{ request('to_date') }}" 
+                            class="bg-transparent border-none text-xs font-bold outline-none text-slate-600 focus:ring-0 p-0">
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" data-icon="solar:magnifer-linear"></span>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama / Sekolah..." 
+                        class="pl-12 pr-6 py-3 w-full md:w-64 bg-slate-50 border-transparent focus:bg-white focus:border-orange-200 focus:ring-4 focus:ring-orange-500/10 rounded-xl text-sm font-bold transition-all outline-none text-slate-600">
+                </div>
+
+                <button type="submit" class="p-3 bg-slate-800 text-white rounded-xl hover:bg-slate-900 transition-all">
+                    <span class="iconify text-xl" data-icon="solar:filter-bold"></span>
+                </button>
+
+                @if(request('search') || request('from_date') || request('to_date'))
+                <a href="{{ route('admin.pendaftar.index') }}" class="p-3 bg-rose-50 text-rose-500 rounded-xl hover:bg-rose-100 transition-all" title="Reset Filter">
+                    <span class="iconify text-xl" data-icon="solar:refresh-bold"></span>
+                </a>
+                @endif
             </form>
+
+            <div class="flex items-center gap-2">
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || in_array(auth()->user()->email, ['dept.adminis@mfls.com', 'info@beasiswamncu.com']))
+                <button type="button" onclick="bulkSendCertificates()" class="px-6 py-3 bg-orange-600 text-white rounded-xl text-xs font-black shadow-lg shadow-orange-200 hover:bg-orange-700 transition-all uppercase tracking-widest flex items-center gap-2">
+                    <span class="iconify text-lg" data-icon="solar:letter-send-bold"></span>
+                    Kirim Sertifikat Massal
+                </button>
+                @endif
+                <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-emerald-600 text-white rounded-xl text-xs font-black shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all uppercase tracking-widest flex items-center gap-2">
+                    <span class="iconify text-lg" data-icon="solar:file-download-bold"></span>
+                    Export
+                </a>
+            </div>
         </div>
     </div>
 

@@ -37,7 +37,7 @@
             <!-- Import Card -->
             <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl">
                 <h3 class="font-bold text-indigo-900 mb-2">Import Soal Massal</h3>
-                <p class="text-xs text-indigo-600 mb-4">Support file .docx (Word) dan .csv. <br>Format Word: No. Soal, A-D, Kunci: X</p>
+                <p class="text-xs text-indigo-600 mb-4">Support file .docx (Word), .pdf, dan .csv. <br>Format Word/PDF: No. Soal, A-D, Kunci: X</p>
                 <form action="{{ route('admin.soal.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
@@ -48,7 +48,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <input type="file" name="file_soal" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 mb-3"/>
+                    <input type="file" name="file_soal" accept=".csv,.txt,.docx,.pdf" required class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 mb-3"/>
                     <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-lg text-sm transition-all shadow-md shadow-indigo-600/20">Upload File</button>
                 </form>
             </div>

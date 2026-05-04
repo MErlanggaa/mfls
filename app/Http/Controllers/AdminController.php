@@ -171,6 +171,14 @@ class AdminController extends Controller
             });
         }
 
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
         if ($request->filled('filter_nilai')) {
             $query->whereHas('peserta.daftar', function ($q) use ($request) {
                 $q->where('rata_rata_nilai', '>=', $request->filter_nilai);
@@ -1046,7 +1054,7 @@ class AdminController extends Controller
             return abort(403);
         $request->validate([
             'ujian_id' => 'required|exists:ujian,id',
-            'file_soal' => 'required|mimes:csv,txt,docx'
+            'file_soal' => 'required|mimes:csv,txt,docx,pdf'
         ]);
 
         $ujianId = $request->ujian_id;
@@ -1055,6 +1063,10 @@ class AdminController extends Controller
 
         if ($ext === 'docx') {
             return $this->importWord($file, $ujianId);
+        }
+
+        if ($ext === 'pdf') {
+            return $this->importPdf($file, $ujianId);
         }
 
         // ... Logic CSV lama ...
@@ -1081,6 +1093,174 @@ class AdminController extends Controller
         return back()->with('success', 'Import soal berhasil!');
     }
 
+    private function importPdf($file, $ujianId)
+    {
+        try {
+            $parser = new \Smalot\PdfParser\Parser();
+            $pdf = $parser->parseFile($file->getRealPath());
+            $text = $pdf->getText();
+
+            // Jika teks tidak mengandung kata 'Kunci' atau 'Jawaban', kemungkinan jawaban ada di format BOLD.
+            // Kita gunakan bantuan Gemini AI untuk mendeteksi soal & kunci jawaban dari PDF tersebut.
+            if (!preg_match('/(Kunci|Jawaban)\s*:/i', $text)) {
+                return $this->importPdfWithAi($file, $ujianId);
+            }
+            
+            // Split by lines
+            $lines = explode("\n", $text);
+            $currentSoal = [];
+            $count = 0;
+
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (empty($line)) continue;
+
+                // Deteksi Soal Baru: (1) PG : Pertanyaan... atau 1. Pertanyaan...
+                if (preg_match('/^(?:\((\d+)\)\s*PG\s*:\s*|\d+\.\s*)(.*)/i', $line, $matches)) {
+                    // Simpan soal sebelumnya jika ada pertanyaan dan kunci
+                    if (isset($currentSoal['pertanyaan']) && isset($currentSoal['kunci_jawaban'])) {
+                        $currentSoal['ujian_id'] = $ujianId;
+                        $currentSoal['bobot'] = 5;
+                        \App\Models\Soal::create($currentSoal);
+                        $count++;
+                    }
+                    
+                    $currentSoal = [];
+                    $currentSoal['pertanyaan'] = $matches[2];
+                }
+                // Deteksi Opsi (a. ..., b. ..., dst - Mendukung a-e)
+                elseif (preg_match('/^([a-e])\.\s*(.*)/i', $line, $matches)) {
+                    $optKey = strtolower($matches[1]);
+                    if ($optKey <= 'd') { // Database kita cuma sampe opsi_d
+                        $currentSoal['opsi_' . $optKey] = $matches[2];
+                    }
+                }
+                // Deteksi Kunci Jawaban (Kunci: A atau Jawaban: A)
+                elseif (preg_match('/^(Kunci|Jawaban)\s*:\s*([A-E])/i', $line, $matches)) {
+                    $currentSoal['kunci_jawaban'] = strtolower($matches[2] === 'e' ? 'd' : $matches[2]); // Fallback e ke d jika perlu
+                }
+                // Jika masih dalam pertanyaan (melanjutkan baris sebelumnya)
+                elseif (isset($currentSoal['pertanyaan']) && !isset($currentSoal['opsi_a'])) {
+                    $currentSoal['pertanyaan'] .= " " . $line;
+                }
+            }
+
+            // Simpan soal terakhir
+            if (isset($currentSoal['pertanyaan']) && isset($currentSoal['kunci_jawaban'])) {
+                $currentSoal['ujian_id'] = $ujianId;
+                $currentSoal['bobot'] = 5;
+                \App\Models\Soal::create($currentSoal);
+                $count++;
+            }
+
+            return back()->with('success', "Import PDF berhasil! Total $count soal ditambahkan.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('PDF Import failed: ' . $e->getMessage());
+            return back()->with('error', 'Gagal membaca file PDF: ' . $e->getMessage());
+        }
+    }
+
+    private function importPdfWithAi($file, $ujianId)
+    {
+        $apiKey = env('GEMINI_API_KEY');
+        if (!$apiKey) {
+            return back()->with('error', 'Gagal mendeteksi kunci jawaban (format BOLD). Silakan tambahkan tulisan "Kunci: A" di file atau masukkan Gemini API Key di .env.');
+        }
+
+        try {
+            $pdfBase64 = base64_encode(file_get_contents($file->getRealPath()));
+            $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=" . $apiKey;
+
+            $prompt = "Tolong ekstrak soal-soal dari PDF ini. Deteksi jawaban yang benar berdasarkan teks yang DI-BOLD (tebal). 
+            Berikan output dalam format JSON array of objects dengan struktur: 
+            [{\"pertanyaan\": \"...\", \"opsi_a\": \"...\", \"opsi_b\": \"...\", \"opsi_c\": \"...\", \"opsi_d\": \"...\", \"kunci_jawaban\": \"a/b/c/d\"}].
+            Pastikan hanya mengembalikan JSON saja tanpa markdown atau penjelasan apapun. Hanya ambil opsi A sampai D.";
+
+            $data = [
+                "contents" => [
+                    [
+                        "parts" => [
+                            ["text" => $prompt],
+                            [
+                                "inline_data" => [
+                                    "mime_type" => "application/pdf",
+                                    "data" => $pdfBase64
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+            $response = curl_exec($ch);
+            $err = curl_error($ch);
+            curl_close($ch);
+
+            if ($err) {
+                throw new \Exception("Curl Error: " . $err);
+            }
+
+            $result = json_decode($response, true);
+            
+            // Log respon mentah untuk debugging jika gagal
+            if (isset($result['error'])) {
+                \Illuminate\Support\Facades\Log::error('Gemini API Error: ' . json_encode($result['error']));
+                throw new \Exception("Gemini API Error: " . ($result['error']['message'] ?? 'Unknown error'));
+            }
+
+            $jsonText = $result['candidates'][0]['content']['parts'][0]['text'] ?? null;
+
+            if (!$jsonText) {
+                \Illuminate\Support\Facades\Log::error('Gemini Raw Response: ' . $response);
+                throw new \Exception("AI tidak memberikan respon teks. Silakan cek Log Laravel.");
+            }
+
+            // Bersihkan markdown jika ada (misal ```json ... ```)
+            $jsonText = preg_replace('/^```json\s*|```\s*$/i', '', trim($jsonText));
+
+            $soals = json_decode($jsonText, true);
+            if (!is_array($soals)) {
+                \Illuminate\Support\Facades\Log::error('AI JSON Decode Failed. Raw Text: ' . $jsonText);
+                throw new \Exception("Format respon AI tidak valid.");
+            }
+
+            \Illuminate\Support\Facades\Log::info('Parsed AI Soals: ' . json_encode($soals));
+
+            $count = 0;
+            foreach ($soals as $s) {
+                // Konversi semua key ke lowercase untuk menghindari masalah case-sensitivity
+                $s = array_change_key_case($s, CASE_LOWER);
+
+                if (isset($s['pertanyaan']) && isset($s['kunci_jawaban'])) {
+                    \App\Models\Soal::create([
+                        'ujian_id' => $ujianId,
+                        'pertanyaan' => $s['pertanyaan'],
+                        'opsi_a' => $s['opsi_a'] ?? '-',
+                        'opsi_b' => $s['opsi_b'] ?? '-',
+                        'opsi_c' => $s['opsi_c'] ?? '-',
+                        'opsi_d' => $s['opsi_d'] ?? '-',
+                        'kunci_jawaban' => strtolower($s['kunci_jawaban']),
+                        'bobot' => 5
+                    ]);
+                    $count++;
+                } else {
+                    \Illuminate\Support\Facades\Log::warning('Soal skipped due to missing keys: ' . json_encode($s));
+                }
+            }
+
+            return back()->with('success', "Import via AI Berhasil! Berhasil mendeteksi $count soal beserta kunci jawabannya (BOLD).");
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('AI PDF Import failed: ' . $e->getMessage());
+            return back()->with('error', 'Gagal menggunakan AI untuk membaca PDF: ' . $e->getMessage());
+        }
+    }
     private function importWord($file, $ujianId)
     {
         $zip = new \ZipArchive;
@@ -1100,6 +1280,7 @@ class AdminController extends Controller
         $paragraphs = $dom->getElementsByTagName('p'); // Paragraph tag in Word XML
 
         $currentSoal = [];
+        $count = 0;
 
         foreach ($paragraphs as $p) {
             $text = $p->textContent;
@@ -1122,6 +1303,7 @@ class AdminController extends Controller
                     $currentSoal['bobot'] = 5;
                     \App\Models\Soal::create($currentSoal);
                     $currentSoal = []; // Reset
+                    $count++;
                 }
             }
             // Deteksi Soal Baru (1. Pertanyaan...)
@@ -1136,7 +1318,7 @@ class AdminController extends Controller
             }
         }
 
-        return back()->with('success', 'Import Word berhasil!');
+        return back()->with('success', "Import Word berhasil! Total $count soal ditambahkan.");
     }
 
 

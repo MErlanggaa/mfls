@@ -39,6 +39,19 @@
     </div>
     @endif
 
+    <!-- Banner Penutupan Pendaftaran -->
+    <div class="relative overflow-hidden bg-red-600 p-6 rounded-[2rem] border border-red-400/30 shadow-xl mb-8">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-white text-red-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg">
+                <span class="iconify text-2xl" data-icon="solar:lock-bold-duotone"></span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <h3 class="text-white font-black text-sm uppercase tracking-tight">Pendaftaran Telah Ditutup</h3>
+                <p class="text-red-100 text-xs font-medium leading-relaxed mt-1">Maaf, periode pengisian data dan berkas pendaftaran telah ditutup. Tunggu informasi lebih lanjut mengenai tahapan seleksi berikutnya.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Welcome Banner Professional -->
     <div class="relative group">
         <div class="relative overflow-hidden bg-navy-mnc p-8 md:p-14 rounded-[3rem] shadow-2xl border border-white/5">

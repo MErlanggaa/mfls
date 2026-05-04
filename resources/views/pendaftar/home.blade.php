@@ -40,9 +40,9 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
-                    <a href="/register" class="bg-primary-yellow hover:bg-primary-yellow-hover text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-sm sm:text-base font-bold shadow-lg hover:shadow-xl transition-all duration-300"> 
-                        <i class="fas fa-rocket me-2"></i>
-                        Daftar Sekarang
+                    <a href="#" class="bg-gray-400 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-sm sm:text-base font-bold shadow-lg cursor-not-allowed transition-all duration-300"> 
+                        <i class="fas fa-lock me-2"></i>
+                        Pendaftaran Ditutup
                     </a>
                     <a href="https://whatsapp.com/channel/0029VbC0L7I6hENrmgrr9D3D" target="_blank" class="flex items-center justify-center gap-2 text-dark-navy text-sm sm:text-base font-semibold hover:text-primary-yellow transition-colors">
                         Gabung Saluran WhatsApp
@@ -253,9 +253,9 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
                 <div class="mt-12 text-center p-8 bg-gradient-to-r from-primary-yellow/10 to-primary-yellow/5 rounded-2xl border border-primary-yellow/20">
                     <h4 class="text-xl font-bold text-dark-navy mb-4">Tertarik dengan Program Studi di Atas?</h4>
                     <p class="text-gray-600 mb-6">Daftar sekarang dan raih kesempatan mendapatkan beasiswa penuh!</p>
-                    <a href="/register" class="inline-flex items-center gap-2 bg-primary-yellow hover:bg-primary-yellow-hover text-dark-navy px-8 py-3 rounded-full font-bold transition-all hover:scale-105">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                        Daftar Beasiswa Sekarang
+                    <a href="#" class="inline-flex items-center gap-2 bg-gray-400 text-white px-8 py-3 rounded-full font-bold shadow-lg cursor-not-allowed transition-all">
+                        <i class="fas fa-lock me-2"></i>
+                        Pendaftaran Ditutup
                     </a>
                 </div>
             </div>
@@ -272,8 +272,8 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         <div class="relative fade-in max-w-4xl mx-auto">
             @php
                 $timeline = [
-                    ['title' => 'Pembukaan Pendaftaran', 'date' => '16 Maret 2026', 'active' => true],
-                    ['title' => 'Penutupan Pendaftaran', 'date' => '04 Mei 2026', 'active' => false],
+                    ['title' => 'Pembukaan Pendaftaran', 'date' => '16 Maret 2026', 'active' => false],
+                    ['title' => 'Penutupan Pendaftaran', 'date' => '04 Mei 2026', 'active' => true],
                     ['title' => 'Mini Project', 'date' => '08 Mei 2026', 'active' => false],
                     ['title' => 'Tes TPA, TBI & Pemetaan Diri', 'date' => '16 Mei 2026', 'active' => false],
                     ['title' => 'Interview', 'date' => '20 Mei 2026', 'active' => false],
@@ -490,9 +490,9 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
         
         <!-- CTA Button -->
         <div class="text-center mt-16 fade-in">
-            <a href="/register" class="inline-flex items-center gap-3 bg-primary-yellow hover:bg-primary-yellow-hover text-dark-navy px-10 py-4 rounded-full text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Saya Memenuhi Syarat, Daftar Sekarang!
+            <a href="#" class="inline-flex items-center gap-3 bg-gray-400 text-white px-10 py-4 rounded-full text-lg font-bold shadow-lg cursor-not-allowed transition-all duration-300">
+                <i class="fas fa-lock me-2"></i>
+                Pendaftaran Ditutup
             </a>
             <p class="text-sm text-gray-500 mt-4">Gratis dan tanpa biaya apapun</p>
         </div>

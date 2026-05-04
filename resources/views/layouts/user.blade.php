@@ -265,6 +265,31 @@
                 }
             });
         </script>
+
+        <!-- SweetAlert2 untuk Notifikasi Error -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                @if(session('error'))
+                    Swal.fire({
+                        title: 'Oops!',
+                        text: '{{ session('error') }}',
+                        icon: 'error',
+                        confirmButtonColor: '#f97316',
+                        confirmButtonText: 'Mengerti'
+                    });
+                @endif
+                @if(session('success'))
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        icon: 'success',
+                        confirmButtonColor: '#f97316',
+                        confirmButtonText: 'Mengerti'
+                    });
+                @endif
+            });
+        </script>
     </div>
 
     <!-- Smooth Scrolling Navigation Script -->

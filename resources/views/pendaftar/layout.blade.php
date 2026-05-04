@@ -233,6 +233,31 @@
                     }
                 });
             @endif
+
+            // PENUTUPAN PENDAFTARAN - Disable semua form di area konten utama
+            const mainInputs = document.querySelectorAll('main form input, main form textarea, main form select');
+            mainInputs.forEach(input => {
+                input.setAttribute('disabled', 'disabled');
+                input.setAttribute('readonly', 'readonly');
+                input.classList.add('bg-gray-100', 'cursor-not-allowed', 'opacity-70');
+                if (input.parentElement && input.parentElement.tagName === 'LABEL') {
+                    input.parentElement.classList.add('pointer-events-none', 'opacity-70', 'cursor-not-allowed');
+                }
+            });
+
+            const mainButtons = document.querySelectorAll('main form button[type="submit"]');
+            mainButtons.forEach(button => {
+                button.setAttribute('disabled', 'disabled');
+                button.classList.add('opacity-50', 'cursor-not-allowed');
+                button.innerHTML = '<span class="iconify" data-icon="solar:lock-bold"></span> Pendaftaran Ditutup';
+            });
+
+            const deleteButtons = document.querySelectorAll('main button[onclick*="Swal"], main a.bg-red-500, main a.bg-red-100, main button.bg-red-500');
+            deleteButtons.forEach(btn => {
+                btn.setAttribute('disabled', 'disabled');
+                btn.style.pointerEvents = 'none';
+                btn.classList.add('opacity-50');
+            });
         });
     </script>
 </body>
