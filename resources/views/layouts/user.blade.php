@@ -273,7 +273,7 @@
                 @if(session('error'))
                     Swal.fire({
                         title: 'Oops!',
-                        text: '{{ session('error') }}',
+                        text: "{{ session('error') }}",
                         icon: 'error',
                         confirmButtonColor: '#f97316',
                         confirmButtonText: 'Mengerti'
@@ -282,7 +282,7 @@
                 @if(session('success'))
                     Swal.fire({
                         title: 'Berhasil!',
-                        text: '{{ session('success') }}',
+                        text: "{{ session('success') }}",
                         icon: 'success',
                         confirmButtonColor: '#f97316',
                         confirmButtonText: 'Mengerti'
