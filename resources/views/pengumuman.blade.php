@@ -99,7 +99,7 @@
                         <img src="{{ asset('icon/logoo.png') }}" class="h-10 mx-auto mb-4 brightness-0 invert" alt="Logo">
                         <h3 class="text-white font-black text-lg md:text-xl leading-tight px-4">{{ $statusText }}</h3>
                         @if($isGagal)
-                            <p class="text-white/80 text-[10px] mt-3 font-medium uppercase tracking-wider">MNC UNIVERSITY FUTURE LEADER SCHOLARSHIP</p>
+                            <p class="text-white/80 text-[10px] mt-3 font-medium uppercase tracking-wider">MNCU FUTURE LEADER SCHOLARSHIP</p>
                         @endif
                     </div>
                 </div>
