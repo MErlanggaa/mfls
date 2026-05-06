@@ -161,7 +161,7 @@
                     <div class="mt-8 pt-6 border-t border-white/10 text-center">
                         <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5">
                             <p class="text-xs text-amber-200 leading-relaxed font-bold">
-                                Berkas Anda telah kami terima dan sedang dalam antrean verifikasi Palugada. Silakan cek kembali secara berkala.
+                                Berkas Anda telah kami terima dan sedang dalam antrean verifikasi. Silakan cek kembali secara berkala.
                             </p>
                         </div>
                     </div>
