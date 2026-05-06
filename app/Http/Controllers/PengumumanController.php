@@ -21,7 +21,7 @@ class PengumumanController extends Controller
             ]);
             
             // Cari peserta berdasarkan NISN dengan relasi daftar
-            $peserta = Peserta::with('daftar')->where('nisn', $request->nisn)->first();
+            $peserta = Peserta::with(['daftar', 'berkas'])->where('nisn', $request->nisn)->first();
             
             // Jika peserta tidak ditemukan, tetap tampilkan form dengan pesan error
             if (!$peserta) {
