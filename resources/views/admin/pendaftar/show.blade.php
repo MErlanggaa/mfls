@@ -417,7 +417,7 @@
                 <form action="{{ route('admin.pendaftar.verify', $user->id) }}" method="POST">
                     @csrf
                     <input type="hidden" name="status" value="lulus">
-                    <button type="button" onclick="confirmVerify(this, 'lulus', '{{ $user->nama }}')" class="w-full py-5 bg-white text-emerald-600 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-emerald-50 transition-all flex items-center justify-center gap-2">
+                    <button type="button" onclick='confirmVerify(this, "lulus", @json($user->nama))' class="w-full py-5 bg-white text-emerald-600 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-emerald-50 transition-all flex items-center justify-center gap-2">
                         <span class="iconify" data-icon="solar:check-circle-bold"></span> 
                         @if(auth()->user()->role === 'palugada')
                             Finalisasi Persetujuan
@@ -429,7 +429,7 @@
                 <form action="{{ route('admin.pendaftar.verify', $user->id) }}" method="POST">
                     @csrf
                     <input type="hidden" name="status" value="tidak_lulus">
-                    <button type="button" onclick="confirmVerify(this, 'tidak_lulus', '{{ $user->nama }}')" class="w-full py-5 bg-white/10 border border-white/20 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-2">
+                    <button type="button" onclick='confirmVerify(this, "tidak_lulus", @json($user->nama))' class="w-full py-5 bg-white/10 border border-white/20 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-red-500/20 transition-all flex items-center justify-center gap-2">
                         <span class="iconify" data-icon="solar:close-circle-bold"></span> Tolak / Diskualifikasi
                     </button>
                 </form>
@@ -437,7 +437,7 @@
                 <form action="{{ route('admin.pendaftar.verify', $user->id) }}" method="POST">
                     @csrf
                     <input type="hidden" name="status" value="menunggu">
-                    <button type="button" onclick="confirmVerify(this, 'menunggu', '{{ $user->nama }}')" class="w-full py-5 bg-white/10 text-white rounded-2xl font-black text-[9px] uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center gap-2">
+                    <button type="button" onclick='confirmVerify(this, "menunggu", @json($user->nama))' class="w-full py-5 bg-white/10 text-white rounded-2xl font-black text-[9px] uppercase tracking-widest hover:bg-white/20 transition-all flex items-center justify-center gap-2">
                         <span class="iconify" data-icon="solar:restart-bold"></span> Batalkan Keputusan
                     </button>
                 </form>

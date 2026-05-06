@@ -1340,8 +1340,9 @@ class AdminController extends Controller
         $statusToSet = $request->status;
         $currentUserRole = auth()->user()->role;
 
-        // Workflow Palugada: Admin/Panitia approve -> diajukan_palugada
-        if ($statusToSet === 'lulus' && $currentUserRole !== 'palugada') {
+        // Workflow Palugada: Admin/Panitia setujui -> diajukan_palugada (untuk double check)
+        // Admin/Panitia tolak -> juga masuk diajukan_palugada (palugada yang finalisasi penolakan)
+        if ($currentUserRole !== 'palugada' && in_array($statusToSet, ['lulus', 'tidak_lulus'])) {
             $statusToSet = 'diajukan_palugada';
         }
 
@@ -1353,8 +1354,23 @@ class AdminController extends Controller
         $this->logAktivitas('Verifikasi Status', 'Peserta', $akun->peserta->id, "Mengubah status {$akun->nama} menjadi " . strtoupper($statusToSet));
 
         $msg = 'Status verifikasi berhasil diperbarui!';
+        
+        // Khusus jika direset ke Menunggu, selalu kembalikan ke halaman ini
+        if ($statusToSet === 'menunggu') {
+            return back()->with('success', 'Keputusan berhasil dibatalkan. Status kembali ke Menunggu.');
+        }
+
         if ($statusToSet === 'diajukan_palugada') {
-            $msg = 'Status diajukan ke Role Palugada untuk verifikasi ulang (Double Check).';
+            $msg = 'Berkas diteruskan ke Palugada untuk verifikasi akhir (Double Check).';
+            // Jika yang melakukan adalah role admin/panitia, arahkan ke daftar palugada untuk melihat antrean
+            if (auth()->user()->role === 'admin' || auth()->user()->role === 'panitia') {
+                return redirect()->route('admin.palugada.index')->with('success', $msg);
+            }
+        }
+
+        // Jika palugada yang memutuskan tidak_lulus, arahkan kembali ke daftar palugada
+        if ($currentUserRole === 'palugada' && $statusToSet === 'tidak_lulus') {
+            return redirect()->route('admin.palugada.index')->with('success', 'Peserta dinyatakan TIDAK LULUS dan pengumuman telah diperbarui.');
         }
 
         return back()->with('success', $msg);
