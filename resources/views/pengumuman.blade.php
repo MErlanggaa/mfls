@@ -157,7 +157,7 @@
                     <div class="grid grid-cols-1 gap-4 text-sm border-t border-white/10 pt-6">
                         <div class="flex flex-col">
                             <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Tanggal Lahir</span>
-                            <span class="font-bold">{{ $peserta->tanggal_lahir ?? '-' }}</span>
+                            <span class="font-bold">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->translatedFormat('d F Y') : '-' }}</span>
                         </div>
                         <div class="flex flex-col">
                             <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Asal Sekolah</span>
