@@ -106,11 +106,11 @@
             @php
                 $status = $peserta->daftar->status ?? 'menunggu';
                 $isLulus = ($status === 'lulus');
-                $isGagal = in_array($status, ['tidak_lulus', 'tidak lulus', 'gugur']);
-                $isProses = !$isLulus && !$isGagal;
+                $isGagal = !$isLulus;
+                $isProses = false;
 
-                $headerColor = $isLulus ? 'bg-snbp-blue' : ($isGagal ? 'bg-snbp-red' : 'bg-amber-500');
-                $statusText = $isLulus ? 'SELAMAT! ANDA DINYATAKAN LULUS SELEKSI ADMINISTRASI' : ($isGagal ? 'ANDA DINYATAKAN TIDAK LULUS SELEKSI ADMINISTRASI' : 'PENDAFTARAN ANDA SEDANG DALAM PROSES VERIFIKASI');
+                $headerColor = $isLulus ? 'bg-snbp-blue' : 'bg-snbp-red';
+                $statusText = $isLulus ? 'SELAMAT! ANDA DINYATAKAN LULUS SELEKSI ADMINISTRASI' : 'ANDA DINYATAKAN TIDAK LULUS SELEKSI ADMINISTRASI';
             @endphp
 
             <div id="announcementCard"
@@ -186,7 +186,7 @@
                         <div class="mt-8 pt-6 border-t border-white/10 text-center">
                             <p class="text-xs text-white/50 leading-relaxed mb-6 px-4">
                                 Jangan patah semangat! Masih ada kesempatan untuk bergabung bersama kami melalui jalur 
-                                <span class="text-white font-bold">Beasiswa Mandiri</span>. Teruslah berusaha untuk masa depan yang gemilang.
+                                <span class="text-white font-bold">Beasiswa Mandiri</span>. Hubungi kami untuk informasi lebih lanjut:
                             </p>
                             
                             <div class="grid grid-cols-1 gap-3 px-2">
@@ -194,16 +194,16 @@
                                     class="flex items-center justify-between px-6 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
                                     <div class="flex items-center gap-3">
                                         <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
-                                        <span class="text-left leading-tight">Beasiswa Mandiri<br><span class="text-[9px] font-medium opacity-70">0811-8122-1792</span></span>
+                                        <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case tracking-wider">0811-8122-1792</span></span>
                                     </div>
                                     <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
                                 </a>
 
                                 <a href="https://wa.me/6281181221791" target="_blank"
-                                    class="flex items-center justify-between px-6 py-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-400 font-bold text-xs transition-all group">
+                                    class="flex items-center justify-between px-6 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
                                     <div class="flex items-center gap-3">
                                         <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
-                                        <span class="text-left leading-tight">Informasi Biaya PMB<br><span class="text-[9px] font-medium opacity-70">0811-8122-1791</span></span>
+                                        <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case tracking-wider">0811-8122-1791</span></span>
                                     </div>
                                     <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
                                 </a>

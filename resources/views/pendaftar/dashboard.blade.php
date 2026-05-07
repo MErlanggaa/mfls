@@ -19,6 +19,22 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="relative overflow-hidden bg-red-600 p-8 rounded-[2.5rem] shadow-xl shadow-red-200 mb-8 border border-white/10 group">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-110 transition-transform duration-700"></div>
+        <div class="relative z-10 flex flex-col md:flex-row items-center gap-6">
+            <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shrink-0 border border-white/20 shadow-lg">
+                <span class="iconify text-4xl text-white" data-icon="solar:close-circle-bold-duotone"></span>
+            </div>
+            <div class="text-center md:text-left flex-1">
+                <h3 class="text-white font-black text-xl md:text-2xl tracking-tight leading-none mb-1">Mohon Maaf, Anda Tidak Lolos Seleksi Berkas</h3>
+                <p class="text-red-50/80 text-sm font-medium">Jangan patah semangat! Masih ada kesempatan melalui jalur Beasiswa Mandiri. Hubungi kami via WA: 0811-8122-1792 atau 0811-8122-1791.</p>
+            </div>
+            <div class="shrink-0 flex items-center gap-3">
+                <a href="https://wa.me/6281181221792" target="_blank" class="px-6 py-3 bg-white text-red-600 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg">Info Beasiswa</a>
+            </div>
+        </div>
+    </div>
     @endif
 
     @if(!$hasSupportingSubject)
@@ -81,9 +97,9 @@
                                 </p>
                             </div>
                         @else
-                            <div class="px-4 py-2 bg-white/5 border border-white/10 rounded-xl">
-                                <p class="text-orange-200/40 font-black flex items-center gap-2 text-[10px] uppercase tracking-widest leading-none">
-                                    <span class="iconify text-primary-orange animate-spin-slow" data-icon="solar:refresh-bold"></span> PENDING VERIF
+                            <div class="px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-xl">
+                                <p class="text-red-400 font-black flex items-center gap-2 text-[10px] uppercase tracking-widest leading-none">
+                                    <span class="iconify" data-icon="solar:close-circle-bold"></span> TIDAK LOLOS
                                 </p>
                             </div>
                         @endif
