@@ -177,12 +177,12 @@
 
                     @if($isLulus)
                         <div class="mt-8 pt-6 border-t border-white/10">
-                            /* <div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+                            {{--<div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
                                 <p class="text-xs text-white/80 leading-relaxed italic text-center">
                                     "Selamat atas pencapaian Anda. Silakan unduh surat keterangan kelulusan resmi di bawah ini
                                     sebagai bukti verifikasi administrasi."
                                 </p>
-                            </div> */
+                            </div> --}}
                             <button onclick="generatePDF()" id="btnDownloadPDF"
                                 class="w-full bg-white text-snbp-black hover:bg-slate-200 py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-3">
                                 <span class="iconify text-xl" data-icon="solar:file-download-bold"></span>
