@@ -76,9 +76,7 @@
         @if(!isset($peserta))
             <div class="w-full max-w-xl bg-white rounded-3xl shadow-2xl p-8 border border-slate-100">
                 <div class="text-center mb-8">
-                    <div class="bg-snbp-blue/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="iconify text-snbp-blue text-4xl" data-icon="solar:user-id-bold-duotone"></span>
-                    </div>
+                    <img src="{{ asset('icon/logoo.png') }}" class="h-24 mx-auto mb-6" alt="Logo">
                     <h2 class="text-2xl font-black text-slate-800">Cek Hasil Seleksi</h2>
                     <p class="text-slate-500 text-sm mt-1">Masukkan NISN Anda untuk melihat status kelulusan</p>
                 </div>
@@ -121,7 +119,7 @@
                 <div class="{{ $headerColor }} p-8 text-center relative overflow-hidden">
                     <div class="absolute inset-0 bg-white/10 -skew-x-12 transform translate-x-1/2"></div>
                     <div class="relative z-10">
-                        <img src="{{ asset('icon/logoo.png') }}" class="h-16 mx-auto mb-4 brightness-0 invert" alt="Logo">
+                        <img src="{{ asset('icon/logoo.png') }}" class="h-28 mx-auto mb-4 brightness-0 invert" alt="Logo">
                         <h3 class="text-white font-black text-lg md:text-xl leading-tight px-4">{{ $statusText }}</h3>
 
                         <p class="text-white/80 text-[10px] mt-3 font-medium uppercase tracking-wider">MNCU FUTURE LEADER
