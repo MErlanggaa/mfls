@@ -176,14 +176,13 @@
                     </div>
 
                     @if($isLulus)
-                        <div class="mt-8 pt-6 border-t border-white/10">
-                            <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
-                                <p class="text-xs text-white/80 leading-relaxed italic text-center">
-                                    "Selamat atas pencapaian luar biasa Anda! Perjuangan Anda baru saja dimulai. Terus
-                                    pantau dashboard dan email Anda untuk informasi mengenai tahapan seleksi selanjutnya.
-                                    Tetap semangat!"
-                                </p>
-                            </div>
+                        <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                            <p class="text-xs text-white/80 leading-relaxed italic text-center">
+                                "Selamat atas pencapaian luar biasa Anda! Perjuangan Anda baru saja dimulai. Terus
+                                pantau dashboard dan email Anda untuk informasi mengenai tahapan seleksi selanjutnya.
+                                Tetap semangat!"
+                            </p>
+
                         </div>
                     @elseif($isGagal)
                         <div class="mt-8 pt-6 border-t border-white/10 text-center">
