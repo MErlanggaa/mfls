@@ -85,9 +85,12 @@
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Nomor Induk Siswa
                             Nasional (NISN)</label>
-                        <input type="text" name="nisn" maxlength="10" placeholder="Contoh: 0049999XXX"
-                            class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-snbp-blue focus:ring-0 transition-all font-bold text-lg text-slate-700 outline-none"
-                            required>
+                        <input type="text" name="nisn" maxlength="20" placeholder="Contoh: 0049999XXX"
+                            class="w-full px-6 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-snbp-blue focus:ring-0 transition-all font-bold text-lg text-slate-700 outline-none @error('nisn') border-red-500 @enderror"
+                            value="{{ old('nisn') }}" required>
+                        @error('nisn')
+                            <p class="text-red-500 text-[10px] font-bold mt-1 ml-1 uppercase tracking-wider">{{ $message }}</p>
+                        @enderror
                     </div>
                     <button type="submit"
                         class="w-full bg-snbp-blue hover:bg-blue-900 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-lg flex items-center justify-center gap-3">
@@ -95,9 +98,13 @@
                     </button>
                 </form>
 
-                @if(session('error'))
-                    <div class="mt-4 p-4 bg-red-50 text-red-600 rounded-xl text-center text-sm font-bold animate-pulse">
-                        {{ session('error') }}
+                @if(session('error') || (request()->has('nisn') && !isset($peserta)))
+                    <div class="mt-4 p-4 bg-red-50 text-red-600 rounded-xl text-center text-sm font-bold border border-red-100">
+                        @if(session('error'))
+                            {{ session('error') }}
+                        @else
+                            Data tidak ditemukan. Pastikan NISN yang Anda masukkan sudah benar.
+                        @endif
                     </div>
                 @endif
             </div>

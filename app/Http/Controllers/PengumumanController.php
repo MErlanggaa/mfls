@@ -14,10 +14,11 @@ class PengumumanController extends Controller
         if ($request->has('nisn') && !empty($request->nisn)) {
             // Validasi NISN
             $request->validate([
-                'nisn' => 'required|digits:10'
+                'nisn' => 'required|string|min:8|max:20'
             ], [
                 'nisn.required' => 'NISN harus diisi',
-                'nisn.digits' => 'NISN harus terdiri dari 10 digit angka'
+                'nisn.min' => 'NISN minimal terdiri dari 8 karakter',
+                'nisn.max' => 'NISN maksimal terdiri dari 20 karakter'
             ]);
             
             // Cari peserta berdasarkan NISN dengan relasi daftar
