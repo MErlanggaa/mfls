@@ -184,13 +184,34 @@
                         </div>
                     @elseif($isGagal)
                         <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                            <p class="text-xs text-white/50 leading-relaxed">
-                                Jangan patah semangat! Masih ada kesempatan lain atau jalur beasiswa mandiri. Teruslah berusaha
-                                untuk masa depan yang gemilang.
+                            <p class="text-xs text-white/50 leading-relaxed mb-6 px-4">
+                                Jangan patah semangat! Masih ada kesempatan untuk bergabung bersama kami melalui jalur 
+                                <span class="text-white font-bold">Beasiswa Mandiri</span>. Teruslah berusaha untuk masa depan yang gemilang.
                             </p>
+                            
+                            <div class="grid grid-cols-1 gap-3 px-2">
+                                <a href="https://wa.me/6281181221792" target="_blank"
+                                    class="flex items-center justify-between px-6 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
+                                    <div class="flex items-center gap-3">
+                                        <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
+                                        <span class="text-left leading-tight">Beasiswa Mandiri<br><span class="text-[9px] font-medium opacity-70">0811-8122-1792</span></span>
+                                    </div>
+                                    <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
+                                </a>
+
+                                <a href="https://wa.me/6281181221791" target="_blank"
+                                    class="flex items-center justify-between px-6 py-4 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 rounded-2xl text-blue-400 font-bold text-xs transition-all group">
+                                    <div class="flex items-center gap-3">
+                                        <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
+                                        <span class="text-left leading-tight">Informasi Biaya PMB<br><span class="text-[9px] font-medium opacity-70">0811-8122-1791</span></span>
+                                    </div>
+                                    <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
+                                </a>
+                            </div>
+
                             <a href="{{ route('pengumuman') }}"
-                                class="inline-flex items-center gap-2 text-white/70 hover:text-white text-xs font-bold mt-6 underline decoration-white/20 underline-offset-4">
-                                <span class="iconify" data-icon="solar:arrow-left-bold"></span> Cek NISN Lain
+                                class="inline-flex items-center gap-2 text-white/30 hover:text-white text-[10px] font-bold mt-8 uppercase tracking-widest transition-all">
+                                <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali Cek NISN
                             </a>
                         </div>
                     @else
