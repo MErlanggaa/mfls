@@ -16,7 +16,7 @@
 
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 
     <style type="text/tailwindcss">
@@ -177,17 +177,13 @@
 
                     @if($isLulus)
                         <div class="mt-8 pt-6 border-t border-white/10">
-                            {{--<div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+                            <div class="bg-white/5 border border-white/10 rounded-2xl p-5">
                                 <p class="text-xs text-white/80 leading-relaxed italic text-center">
-                                    "Selamat atas pencapaian Anda. Silakan unduh surat keterangan kelulusan resmi di bawah ini
-                                    sebagai bukti verifikasi administrasi."
+                                    "Selamat atas pencapaian luar biasa Anda! Perjuangan Anda baru saja dimulai. Terus
+                                    pantau dashboard dan email Anda untuk informasi mengenai tahapan seleksi selanjutnya.
+                                    Tetap semangat!"
                                 </p>
-                            </div> --}}
-                            <button onclick="generatePDF()" id="btnDownloadPDF"
-                                class="w-full bg-white text-snbp-black hover:bg-slate-200 py-4 rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-3">
-                                <span class="iconify text-xl" data-icon="solar:file-download-bold"></span>
-                                <span id="btnDownloadText">UNDUH SURAT KELULUSAN</span>
-                            </button>
+                            </div>
                         </div>
                     @elseif($isGagal)
                         <div class="mt-8 pt-6 border-t border-white/10 text-center">
@@ -320,44 +316,7 @@
                 }
             }
 
-        async function generatePDF() {
-            const btn = document.getElementById('btnDownloadPDF');
-            const btnText = document.getElementById('btnDownloadText');
-            const d = window.PESERTA_DATA;
-            if (!d) return;
 
-            btn.disabled = true;
-            btnText.textContent = "MEMPROSES PDF...";
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF("p", "mm", "a4");
-
-            // Simpel PDF Generator
-            doc.setFont("times", "bold"); doc.setFontSize(16); doc.text("MNC UNIVERSITY", 105, 20, { align: "center" });
-            doc.setFontSize(10); doc.setFont("times", "normal"); doc.text("PENGUMUMAN HASIL SELEKSI ADMINISTRASI BERKAS 2026", 105, 26, { align: "center" });
-            doc.line(20, 30, 190, 30);
-
-            doc.setFontSize(12); doc.text(`Nomor: ${d.noSurat}`, 20, 45);
-            doc.text(`Kepada Yth.`, 20, 55);
-            doc.setFont("times", "bold"); doc.text(d.nama, 20, 60);
-            doc.setFont("times", "normal"); doc.text(`NISN: ${d.nisn}`, 20, 65);
-
-            doc.text("Berdasarkan hasil verifikasi berkas, Anda dinyatakan:", 20, 80);
-            doc.setFont("times", "bold"); doc.setFontSize(14); doc.setTextColor(0, 80, 157);
-            doc.text("LULUS SELEKSI ADMINISTRASI", 105, 90, { align: "center" });
-
-            doc.setTextColor(0, 0, 0); doc.setFontSize(11); doc.setFont("times", "normal");
-            const body = "Selamat! Anda berhak mengikuti tahapan seleksi selanjutnya. Harap selalu memantau email dan dashboard pendaftar Anda untuk jadwal test potensi akademik dan wawancara.";
-            doc.text(doc.splitTextToSize(body, 170), 20, 105);
-
-            doc.text("Jakarta, " + d.tanggal, 140, 150);
-            doc.text("Panitia PMB MNCU", 140, 155);
-            doc.text("(................................)", 140, 180);
-
-            doc.save(`Pengumuman_MFLS_${d.nisn}.pdf`);
-            btn.disabled = false;
-            btnText.textContent = "UNDUH SURAT KELULUSAN";
-        }
     </script>
 </body>
 
