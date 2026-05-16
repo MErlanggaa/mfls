@@ -1,10 +1,27 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="mb-8 flex justify-between items-center">
-    <div>
-        <h2 class="text-2xl font-black text-gray-800">Hasil Pengerjaan Soal</h2>
-        <p class="text-gray-500">Pantau skor ujian (TPA, TBI, dll) dari seluruh pendaftar secara real-time.</p>
+<div class="mb-8 space-y-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+            <h2 class="text-2xl font-black text-gray-800">Hasil Pengerjaan Soal</h2>
+            <p class="text-gray-500 font-medium">Pantau skor ujian (TPA, TBI, dll) secara real-time.</p>
+        </div>
+        
+        <!-- Search Form -->
+        <form action="{{ route('admin.hasil_ujian.index') }}" method="GET" class="w-full md:w-80 relative">
+            <input type="hidden" name="type" value="{{ request('type') }}">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peserta..." class="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-3xl text-sm font-bold shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none">
+            <span class="iconify absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" data-icon="solar:magnifer-linear"></span>
+        </form>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="flex flex-wrap gap-2 p-1.5 bg-gray-100 rounded-[2rem] w-fit">
+        <a href="{{ route('admin.hasil_ujian.index', ['search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ !request('type') ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Semua</a>
+        <a href="{{ route('admin.hasil_ujian.index', ['type' => 'tba', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') == 'tba' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">TBA (Akademik)</a>
+        <a href="{{ route('admin.hasil_ujian.index', ['type' => 'tbi', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') == 'tbi' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">TBI (Inggris)</a>
+        <a href="{{ route('admin.hasil_ujian.index', ['type' => 'pemetaan_diri', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') == 'pemetaan_diri' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Pemetaan Diri</a>
     </div>
 </div>
 

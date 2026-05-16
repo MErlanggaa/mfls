@@ -141,7 +141,9 @@
 
         <!-- 2.5 Hasil Pemetaan Diri (AI Analysis) -->
         @php
-            $pemetaan = $user->peserta->jawabanUjians->where('ujian.nama', 'Pemetaan Diri')->first();
+            $pemetaan = $user->peserta->jawabanUjians->filter(function($j) {
+                return str_contains(strtolower($j->ujian->nama ?? ''), 'pemetaan diri');
+            })->first();
         @endphp
         
         <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 mb-8">
@@ -166,7 +168,7 @@
                         <div class="absolute top-0 right-0 w-32 h-32 bg-primary-orange/20 rounded-full blur-3xl -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700"></div>
                         <div class="relative z-10">
                             <div class="flex items-center gap-3 mb-4">
-                                <span class="px-3 py-1 bg-primary-orange text-white rounded-full text-[9px] font-black uppercase tracking-widest">Kesimpulan AI Arion (Analisis PDF)</span>
+                                <span class="px-3 py-1 bg-primary-orange text-white rounded-full text-[9px] font-black uppercase tracking-widest">Kesimpulan AI Arion (Analisis Kepribadian)</span>
                             </div>
                             <div class="text-sm md:text-base italic leading-relaxed text-orange-50/90">
                                 "{!! nl2br(e($pemetaan->kesimpulan_ai)) !!}"

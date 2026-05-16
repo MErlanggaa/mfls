@@ -8,6 +8,7 @@ use App\Models\JawabanUjian;
 use App\Models\Ujian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\GeminiService;
 
 class SoalController extends Controller
 {
@@ -145,12 +146,42 @@ class SoalController extends Controller
         // Calculate final score out of 100 based on weight
         $finalScore = $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 2) : 0;
 
+        // Handle AI Analysis for Pemetaan Diri
+        $kesimpulanAi = null;
+        if (str_contains(strtolower($ujian->nama), 'pemetaan diri')) {
+            $categoryScores = [];
+            $categoryCounts = [];
+            
+            // Map values: A=1, B=2, C=3, D=4, E=5
+            $valMap = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5];
+            
+            foreach ($soals as $soal) {
+                $userAns = strtolower($submittedAnswers[$soal->id] ?? '');
+                $val = $valMap[$userAns] ?? 0;
+                
+                if ($val > 0) {
+                    $cat = $soal->kategori ?? 'Umum';
+                    $categoryScores[$cat] = ($categoryScores[$cat] ?? 0) + $val;
+                    $categoryCounts[$cat] = ($categoryCounts[$cat] ?? 0) + 1;
+                }
+            }
+            
+            $finalAverages = [];
+            foreach ($categoryScores as $cat => $sum) {
+                $finalAverages[$cat] = round($sum / $categoryCounts[$cat], 2);
+            }
+            
+            $gemini = new GeminiService();
+            $kesimpulanAi = $gemini->analyzePemetaanDiri(json_encode(['scores' => $finalAverages]));
+        }
+
         // Save to jawaban_ujian (Detailed JSON)
         $result = JawabanUjian::create([
             'ujian_id' => $ujianId,
             'peserta_id' => $peserta->id,
             'jawaban' => json_encode($submittedAnswers),
-            'nilai' => $totalScore // Store RAW score (sum of weights) as requested
+            'nilai' => $totalScore,
+            'kesimpulan_ai' => $kesimpulanAi
         ]);
 
         // Save to nilai_ujian (Official Score Summary)

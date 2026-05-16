@@ -314,7 +314,14 @@ class AdminController extends Controller
         $rataRataMentor = $user->peserta->penilaianMentors->avg('nilai') ?? 0;
         $rataRataAkademikFinal = $user->peserta->penilaianAkademiks->avg('total_nilai') ?? 0;
 
-        return view('admin.beasiswa.show', compact('user', 'rataRataAkademik', 'rataRataMentor', 'rataRataAkademikFinal'));
+        // Calculate CBT Score (Exclude Pemetaan Diri)
+        $cbtUjians = $user->peserta->nilaiUjians->filter(function($n) {
+            $nama = strtolower($n->ujian->nama ?? '');
+            return !str_contains($nama, 'pemetaan diri');
+        });
+        $rataRataCbt = $cbtUjians->avg('skor_rata') ?? 0;
+
+        return view('admin.beasiswa.show', compact('user', 'rataRataAkademik', 'rataRataMentor', 'rataRataAkademikFinal', 'rataRataCbt'));
     }
 
     public function updateBeasiswa(Request $request, $id)
@@ -339,14 +346,38 @@ class AdminController extends Controller
         return back()->with('success', 'Keputusan beasiswa berhasil disimpan!');
     }
 
-    public function indexHasilUjian()
+    public function indexHasilUjian(Request $request)
     {
         if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
             return abort(403);
 
-        $hasilUjians = \App\Models\JawabanUjian::with(['peserta.akun', 'ujian'])
-            ->latest()
-            ->get();
+        $query = \App\Models\JawabanUjian::with(['peserta.akun', 'ujian']);
+
+        // Search pendaftar
+        if ($request->filled('search')) {
+            $query->whereHas('peserta.akun', function($q) use ($request) {
+                $q->where('nama', 'LIKE', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter Type (Pemetaan Diri, TBA, TBI)
+        if ($request->filled('type')) {
+            if ($request->type === 'pemetaan_diri') {
+                $query->whereHas('ujian', function($q) {
+                    $q->where('nama', 'LIKE', '%Pemetaan Diri%');
+                });
+            } elseif ($request->type === 'tba') {
+                $query->whereHas('ujian', function($q) {
+                    $q->where('nama', 'LIKE', '%Potensi Akademik%');
+                });
+            } elseif ($request->type === 'tbi') {
+                $query->whereHas('ujian', function($q) {
+                    $q->where('nama', 'LIKE', '%Inggris%');
+                });
+            }
+        }
+
+        $hasilUjians = $query->latest()->get();
 
         return view('admin.hasil_ujian.index', compact('hasilUjians'));
     }

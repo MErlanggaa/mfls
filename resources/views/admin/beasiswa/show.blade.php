@@ -185,10 +185,9 @@
                             <div class="text-[8px] font-black text-orange-400 uppercase mb-1">Wawancara</div>
                             <div class="text-sm font-black text-orange-600">{{ number_format($rataRataAkademikFinal, 2) }}</div>
                         </div>
-                        @php $ujianAvg = $user->peserta->nilaiUjians->avg('skor_rata') ?? 0; @endphp
                         <div class="text-center p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100">
-                            <div class="text-[8px] font-black text-emerald-400 uppercase mb-1">Skor CBT</div>
-                            <div class="text-sm font-black text-emerald-600">{{ number_format($ujianAvg, 2) }}</div>
+                            <div class="text-[8px] font-black text-emerald-400 uppercase mb-1">Skor CBT (TBA/TBI)</div>
+                            <div class="text-sm font-black text-emerald-600">{{ number_format($rataRataCbt, 2) }}</div>
                         </div>
                     </div>
                 </div>
@@ -278,6 +277,32 @@
         </div>
 
         <div class="section-box bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
+            <h3 class="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest flex items-center gap-2">
+                <span class="iconify text-primary-orange" data-icon="solar:magic-stick-3-bold-duotone"></span>
+                Hasil Pemetaan Diri (AI Report)
+            </h3>
+            @php
+                $pemetaan = $user->peserta->jawabanUjians->filter(function($j) {
+                    return str_contains(strtolower($j->ujian->nama ?? ''), 'pemetaan diri');
+                })->first();
+            @endphp
+            @if($pemetaan && $pemetaan->kesimpulan_ai)
+                <div class="p-6 bg-slate-900 rounded-3xl text-white relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-orange-400/10 rounded-full blur-2xl"></div>
+                    <div class="relative z-10">
+                        <div class="text-xs md:text-sm italic leading-relaxed text-slate-300">
+                            "{!! nl2br(e($pemetaan->kesimpulan_ai)) !!}"
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="p-6 bg-slate-50 rounded-3xl border border-dashed border-slate-200 text-center">
+                    <p class="text-xs text-slate-400 font-bold italic uppercase tracking-widest">Belum ada hasil analisis AI</p>
+                </div>
+            @endif
+        </div>
+
+        <div class="section-box bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
             <h3 class="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest">Kesimpulan Evaluasi Mentor</h3>
             <div class="space-y-3">
                 @forelse($user->peserta->penilaianMentors as $eval)
@@ -308,7 +333,7 @@
                 <div class="p-6 bg-white/5 border border-white/10 rounded-[2rem] text-center backdrop-blur-md">
                     <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Skor Akhir</div>
                     @php
-                        $finalScore = ($rataRataAkademik + $rataRataMentor + $rataRataAkademikFinal + $ujianAvg) / 4;
+                        $finalScore = ($rataRataAkademik + $rataRataMentor + $rataRataAkademikFinal + $rataRataCbt) / 4;
                     @endphp
                     <div class="text-5xl font-black text-yellow-400">{{ number_format($finalScore, 2) }}</div>
                 </div>
