@@ -69,7 +69,7 @@ class SoalController extends Controller
         $ujian = Ujian::findOrFail($ujianId);
         $soals = Soal::where('ujian_id', $ujianId)
             ->inRandomOrder()
-            ->get(['id', 'ujian_id', 'pertanyaan', 'gambar', 'opsi_a', 'opsi_a_image', 'opsi_b', 'opsi_b_image', 'opsi_c', 'opsi_c_image', 'opsi_d', 'opsi_d_image', 'bobot'])
+            ->get(['id', 'ujian_id', 'pertanyaan', 'gambar', 'opsi_a', 'opsi_a_image', 'opsi_b', 'opsi_b_image', 'opsi_c', 'opsi_c_image', 'opsi_d', 'opsi_d_image', 'opsi_e', 'opsi_e_image', 'kategori', 'bobot'])
             ->map(function ($soal) {
                 $data = $soal->toArray();
                 $baseUrl = request()->getSchemeAndHttpHost() . '/storage/';
@@ -79,6 +79,7 @@ class SoalController extends Controller
                 $data['opsi_b_image'] = $soal->opsi_b_image ? $baseUrl . $soal->opsi_b_image : null;
                 $data['opsi_c_image'] = $soal->opsi_c_image ? $baseUrl . $soal->opsi_c_image : null;
                 $data['opsi_d_image'] = $soal->opsi_d_image ? $baseUrl . $soal->opsi_d_image : null;
+                $data['opsi_e_image'] = $soal->opsi_e_image ? $baseUrl . $soal->opsi_e_image : null;
                 return $data;
             });
 

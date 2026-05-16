@@ -196,3 +196,12 @@ Route::middleware(['auth'])->group(function () {
         }
     );
 });
+// Temporary Route to run migrations on Server
+Route::get('/debug-migrate', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ["--force" => true]);
+        return "<pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});

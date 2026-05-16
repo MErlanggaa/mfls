@@ -1331,13 +1331,13 @@ class AdminController extends Controller
             if (empty($text))
                 continue;
 
-            // Deteksi Opsi (A., B., C., D.)
-            if (preg_match('/^([A-D])\.\s*(.*)/i', $text, $matches)) {
-                $optKey = strtolower($matches[1]); // a, b, c, d
+            // Deteksi Opsi (A., B., C., D., E.)
+            if (preg_match('/^([A-E])\.\s*(.*)/i', $text, $matches)) {
+                $optKey = strtolower($matches[1]); // a, b, c, d, e
                 $currentSoal['opsi_' . $optKey] = $matches[2];
             }
             // Deteksi Kunci Jawaban (Kunci: A)
-            elseif (preg_match('/^Kunci\s*:\s*([A-D])/i', $text, $matches)) {
+            elseif (preg_match('/^Kunci\s*:\s*([A-E])/i', $text, $matches)) {
                 $currentSoal['kunci_jawaban'] = strtolower($matches[1]);
 
                 // Kunci biasanya baris terakhir per soal, jadi simpan
