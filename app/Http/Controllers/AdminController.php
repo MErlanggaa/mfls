@@ -1127,7 +1127,7 @@ class AdminController extends Controller
                     'opsi_c' => $row[3],
                     'opsi_d' => $row[4],
                     'opsi_e' => $row[5],
-                    'kunci_jawaban' => strtolower($row[6]),
+                    'kunci_jawaban' => !empty($row[6]) ? strtolower($row[6]) : null,
                     'bobot' => (int)$row[7]
                 ]);
             }
