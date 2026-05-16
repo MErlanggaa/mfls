@@ -35,13 +35,14 @@ class GeminiService
             $prompt .= "- **$dimension**: $score / 5.00\n";
         }
 
-        $prompt .= "\n**Petunjuk Analisis:**\n";
-        $prompt .= "1. Berikan interpretasi mendalam tentang karakter calon mahasiswa ini berdasarkan kekuatan (skor tinggi) dan area pengembangan (skor rendah/sedang).\n";
-        $prompt .= "2. Hubungkan hasil ini dengan potensi keberhasilannya di dunia perkuliahan dan karir masa depan.\n";
-        $prompt .= "3. Gunakan gaya bahasa yang sangat inspiratif, profesional, dan menyemangati.\n";
-        $prompt .= "4. Pastikan kesimpulan mencerminkan bahwa ia memiliki kualitas 'Future Leader'.\n";
-        $prompt .= "5. Tuliskan dalam 3 paragraf yang mengalir.\n";
-        $prompt .= "6. Sapa dia sebagai 'Future Leader'.";
+        $prompt .= "\n**Petunjuk Analisis Sangat Mendalam:**\n";
+        $prompt .= "1. Berikan interpretasi SANGAT MENDALAM dan DETAIL tentang karakter calon mahasiswa ini. Jangan hanya umum saja.\n";
+        $prompt .= "2. Analisis setiap dimensi secara spesifik: jelaskan apa artinya skor tersebut bagi karirnya di masa depan.\n";
+        $prompt .= "3. Berikan saran konkret untuk pengembangan dirinya agar ia benar-benar siap menjadi pemimpin masa depan.\n";
+        $prompt .= "4. Hubungkan hasil ini dengan nilai-nilai MNC University (Integritas, Kreativitas, Kepemimpinan).\n";
+        $prompt .= "5. Gunakan gaya bahasa yang sangat inspiratif, elegan, profesional, dan membangkitkan semangat.\n";
+        $prompt .= "6. Tuliskan dalam minimal 4-5 paragraf yang panjang dan berbobot.\n";
+        $prompt .= "7. Sapa dia sebagai 'Future Leader' dengan penuh antusiasme.";
 
         try {
             $response = Http::withHeaders([
@@ -66,8 +67,7 @@ class GeminiService
             }
 
             Log::error('Gemini API Error: ' . $response->body());
-            $errorDetail = $response->json()['error']['message'] ?? 'Unknown Error';
-            return "Maaf, sistem AI sedang bermasalah. Detail: " . $errorDetail;
+            return "Maaf, sistem AI kami sedang sibuk. Silakan coba beberapa saat lagi.";
 
         } catch (\Exception $e) {
             Log::error('Gemini Service Exception: ' . $e->getMessage());
