@@ -66,7 +66,8 @@ class GeminiService
             }
 
             Log::error('Gemini API Error: ' . $response->body());
-            return "Maaf, sistem AI kami sedang sibuk. Silakan coba beberapa saat lagi.";
+            $errorDetail = $response->json()['error']['message'] ?? 'Unknown Error';
+            return "Maaf, sistem AI sedang bermasalah. Detail: " . $errorDetail;
 
         } catch (\Exception $e) {
             Log::error('Gemini Service Exception: ' . $e->getMessage());
