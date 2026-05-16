@@ -100,6 +100,11 @@
                             <input type="text" name="opsi_d" placeholder="Teks Opsi D" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-1">
                             <input type="file" name="opsi_d_image" class="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
                         </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 mb-1">OPSI E (Opsional)</label>
+                            <input type="text" name="opsi_e" placeholder="Teks Opsi E" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-1">
+                            <input type="file" name="opsi_e_image" class="block w-full text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
@@ -110,6 +115,7 @@
                                 <option value="b">B</option>
                                 <option value="c">C</option>
                                 <option value="d">D</option>
+                                <option value="e">E</option>
                             </select>
                         </div>
                         <div>
@@ -152,7 +158,39 @@
     <div class="lg:col-span-2 space-y-4">
         <div class="flex justify-between items-center mb-2">
             <h3 class="font-bold text-gray-800">Daftar Soal ({{ $soals->count() }})</h3>
+            
+            @if($soals->count() > 0)
+            <form action="{{ route('admin.soal.deleteAll') }}" method="POST" id="deleteAllForm">
+                @csrf
+                <input type="hidden" name="ujian_id" value="{{ request('ujian_id') }}">
+                <button type="button" onclick="confirmDeleteAll()" class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-xs font-black border border-red-100 hover:bg-red-600 hover:text-white transition-all uppercase tracking-widest shadow-sm">
+                    <span class="iconify" data-icon="solar:trash-bin-trash-bold"></span> Hapus Semua {{ request('ujian_id') ? 'Kategori Ini' : '' }}
+                </button>
+            </form>
+            @endif
         </div>
+
+<script>
+function confirmDeleteAll() {
+    const isFiltered = "{{ request('ujian_id') }}";
+    const title = isFiltered ? 'Hapus semua soal di kategori ini?' : 'Hapus SELURUH bank soal?';
+    
+    Swal.fire({
+        title: title,
+        text: "Tindakan ini akan menghapus semua soal beserta gambar yang terkait. Data tidak dapat dikembalikan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, Hapus Semua!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('deleteAllForm').submit();
+        }
+    });
+}
+</script>
 
         @forelse($soals as $soal)
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative group">
@@ -237,6 +275,14 @@ function confirmDeleteSoal(button) {
                                 <img src="{{ asset('storage/' . $soal->opsi_d_image) }}" class="mt-2 max-h-24 rounded border border-gray-200 cursor-pointer" onclick="window.open(this.src)">
                             @endif
                         </div>
+                        @if($soal->opsi_e)
+                        <div class="p-2 rounded-lg border {{ $soal->kunci_jawaban == 'e' ? 'bg-green-50 border-green-200 text-green-800 font-bold' : 'border-transparent hover:bg-gray-50' }}">
+                            <span class="mr-2 opacity-50">E.</span> {{ $soal->opsi_e }}
+                            @if($soal->opsi_e_image)
+                                <img src="{{ asset('storage/' . $soal->opsi_e_image) }}" class="mt-2 max-h-24 rounded border border-gray-200 cursor-pointer" onclick="window.open(this.src)">
+                            @endif
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

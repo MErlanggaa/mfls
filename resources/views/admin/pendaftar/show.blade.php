@@ -139,6 +139,52 @@
             </div>
         </div>
 
+        <!-- 2.5 Hasil Pemetaan Diri (AI Analysis) -->
+        @php
+            $pemetaan = $user->peserta->jawabanUjians->where('ujian.nama', 'Pemetaan Diri')->first();
+        @endphp
+        
+        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                <h3 class="text-xl font-black text-slate-800 flex items-center gap-4">
+                    <span class="w-12 h-12 bg-orange-50 text-primary-orange rounded-2xl flex items-center justify-center">
+                        <span class="iconify text-2xl" data-icon="solar:magic-stick-3-bold-duotone"></span>
+                    </span>
+                    Hasil Pemetaan Diri (AI Analysis)
+                </h3>
+                @if($pemetaan && $pemetaan->jawaban)
+                    <a href="{{ Storage::url($pemetaan->jawaban) }}" target="_blank" class="flex items-center gap-3 px-6 py-3 bg-navy-mnc text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary-orange transition-all shadow-lg shadow-navy-mnc/20">
+                        <span class="iconify text-xl" data-icon="solar:document-bold-duotone"></span> Lihat Dokumen PDF
+                    </a>
+                @endif
+            </div>
+
+            @if($pemetaan)
+                <div class="space-y-6">
+                    <!-- AI Conclusion -->
+                    <div class="p-8 bg-navy-mnc rounded-[2rem] text-white relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-primary-orange/20 rounded-full blur-3xl -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="px-3 py-1 bg-primary-orange text-white rounded-full text-[9px] font-black uppercase tracking-widest">Kesimpulan AI Arion (Analisis PDF)</span>
+                            </div>
+                            <div class="text-sm md:text-base italic leading-relaxed text-orange-50/90">
+                                "{!! nl2br(e($pemetaan->kesimpulan_ai)) !!}"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="py-12 text-center bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm text-slate-300">
+                        <span class="iconify text-3xl" data-icon="solar:cloud-upload-bold-duotone"></span>
+                    </div>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Belum Ada Dokumen Terunggah</p>
+                    <p class="text-[10px] text-slate-400 mt-1 uppercase">Peserta belum mengunggah PDF hasil pemetaan diri.</p>
+                </div>
+            @endif
+        </div>
+
         <!-- 3. Berkas Dokumen -->
         <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100">
             <h3 class="text-xl font-black text-slate-800 mb-8 flex items-center gap-4">

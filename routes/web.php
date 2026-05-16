@@ -140,6 +140,7 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/admin/user/{id}', [App\Http\Controllers\AdminController::class, 'destroyUser'])->name('admin.user.destroy');
 
             // Manajemen Soal
+            Route::post('/admin/soal/delete-all', [App\Http\Controllers\AdminController::class, 'deleteAllSoal'])->name('admin.soal.deleteAll');
             Route::get('/admin/soal', [App\Http\Controllers\AdminController::class, 'indexSoal'])->name('admin.soal.index');
             Route::post('/admin/soal', [App\Http\Controllers\AdminController::class, 'storeSoal'])->name('admin.soal.store');
             Route::get('/admin/soal/{id}/edit', [App\Http\Controllers\AdminController::class, 'editSoal'])->name('admin.soal.edit');
@@ -176,6 +177,7 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/nilai', [PendaftarController::class, 'nilai'])->name('pendaftar.nilai');
                     Route::get('/change-email', [PendaftarController::class, 'showChangeEmail'])->name('pendaftar.email.change');
                     Route::get('/change-email/verify', [PendaftarController::class, 'showVerifyEmailChange'])->name('pendaftar.email.verify');
+
 
                     // Semua POST/DELETE diblokir karena pendaftaran sudah ditutup
                     $closedResponse = function () {

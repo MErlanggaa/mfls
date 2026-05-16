@@ -78,6 +78,15 @@
                         <img src="{{ asset('storage/' . $soal->opsi_d_image) }}" class="mt-1 h-20 rounded border border-gray-200">
                     @endif
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1">Opsi E (Opsional)</label>
+                    <input type="text" name="opsi_e" value="{{ $soal->opsi_e }}" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm mb-2">
+                    <input type="file" name="opsi_e_image" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+                    @if($soal->opsi_e_image)
+                        <div class="text-xs text-gray-400 mt-1">Gambar saat ini:</div>
+                        <img src="{{ asset('storage/' . $soal->opsi_e_image) }}" class="mt-1 h-20 rounded border border-gray-200">
+                    @endif
+                </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -88,6 +97,7 @@
                         <option value="b" {{ $soal->kunci_jawaban == 'b' ? 'selected' : '' }}>B</option>
                         <option value="c" {{ $soal->kunci_jawaban == 'c' ? 'selected' : '' }}>C</option>
                         <option value="d" {{ $soal->kunci_jawaban == 'd' ? 'selected' : '' }}>D</option>
+                        <option value="e" {{ $soal->kunci_jawaban == 'e' ? 'selected' : '' }}>E</option>
                     </select>
                 </div>
                 <div>

@@ -734,7 +734,7 @@ class AdminController extends Controller
 
     public function detailPendaftar($id)
     {
-        $user = Akun::with(['peserta.daftar', 'peserta.berkas', 'peserta.nilais.matpel'])->findOrFail($id);
+        $user = Akun::with(['peserta.daftar', 'peserta.berkas', 'peserta.nilais.matpel', 'peserta.jawabanUjians.ujian'])->findOrFail($id);
         return view('admin.pendaftar.show', compact('user'));
     }
 
@@ -934,8 +934,11 @@ class AdminController extends Controller
             'opsi_c_image' => 'nullable|image|max:2048',
             'opsi_d' => 'required',
             'opsi_d_image' => 'nullable|image|max:2048',
-            'kunci_jawaban' => 'required|in:a,b,c,d',
-            'bobot' => 'required|integer'
+            'opsi_e' => 'nullable|string',
+            'opsi_e_image' => 'nullable|image|max:2048',
+            'kunci_jawaban' => 'required|in:a,b,c,d,e',
+            'bobot' => 'required|integer',
+            'kategori' => 'nullable|string'
         ]);
 
         $data = $request->all();
@@ -947,7 +950,7 @@ class AdminController extends Controller
         }
 
         // Handle option images
-        foreach (['a', 'b', 'c', 'd'] as $option) {
+        foreach (['a', 'b', 'c', 'd', 'e'] as $option) {
             $fieldName = "opsi_{$option}_image";
             if ($request->hasFile($fieldName)) {
                 $path = $request->file($fieldName)->store('soal_images', 'public');
@@ -987,8 +990,11 @@ class AdminController extends Controller
             'opsi_c_image' => 'nullable|image|max:2048',
             'opsi_d' => 'required',
             'opsi_d_image' => 'nullable|image|max:2048',
-            'kunci_jawaban' => 'required|in:a,b,c,d',
-            'bobot' => 'required|integer'
+            'opsi_e' => 'nullable|string',
+            'opsi_e_image' => 'nullable|image|max:2048',
+            'kunci_jawaban' => 'required|in:a,b,c,d,e',
+            'bobot' => 'required|integer',
+            'kategori' => 'nullable|string'
         ]);
 
         $soal = \App\Models\Soal::findOrFail($id);
@@ -1005,7 +1011,7 @@ class AdminController extends Controller
         }
 
         // Handle option images
-        foreach (['a', 'b', 'c', 'd'] as $option) {
+        foreach (['a', 'b', 'c', 'd', 'e'] as $option) {
             $fieldName = "opsi_{$option}_image";
             if ($request->hasFile($fieldName)) {
                 // Delete old image if exists
@@ -1035,7 +1041,7 @@ class AdminController extends Controller
         }
 
         // Delete option images
-        foreach (['a', 'b', 'c', 'd'] as $option) {
+        foreach (['a', 'b', 'c', 'd', 'e'] as $option) {
             $fieldName = "opsi_{$option}_image";
             if ($soal->$fieldName) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$fieldName);
@@ -1046,6 +1052,40 @@ class AdminController extends Controller
         $soal->delete();
 
         return back()->with('success', 'Soal berhasil dihapus!');
+    }
+
+    public function deleteAllSoal(Request $request)
+    {
+        if (!in_array(auth()->user()->role, ['admin', 'akademik']))
+            return abort(403);
+        
+        $query = \App\Models\Soal::query();
+
+        // Jika ada filter kategori, hanya hapus yang di kategori tersebut
+        if ($request->filled('ujian_id')) {
+            $query->where('ujian_id', $request->ujian_id);
+            $namaUjian = \App\Models\Ujian::find($request->ujian_id)->nama ?? 'Kategori Terpilih';
+            $logMsg = "Menghapus semua soal di kategori: " . $namaUjian;
+        } else {
+            $logMsg = "Menghapus SELURUH bank soal";
+        }
+
+        $soals = $query->get();
+        $count = $soals->count();
+
+        foreach ($soals as $soal) {
+            // Delete images
+            if ($soal->gambar) \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
+            foreach (['a', 'b', 'c', 'd', 'e'] as $opt) {
+                $f = "opsi_{$opt}_image";
+                if ($soal->$f) \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$f);
+            }
+            $soal->delete();
+        }
+
+        $this->logAktivitas('Hapus Masal Soal', 'Soal', null, $logMsg);
+
+        return back()->with('success', "Berhasil menghapus $count soal!");
     }
 
     public function importSoal(Request $request)
@@ -1074,7 +1114,7 @@ class AdminController extends Controller
         fgetcsv($handle); // Skip header
 
         while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            if (count($row) >= 7) {
+            if (count($row) >= 8) {
                 \App\Models\Soal::create([
                     'ujian_id' => $ujianId,
                     'pertanyaan' => $row[0],
@@ -1083,8 +1123,9 @@ class AdminController extends Controller
                     'opsi_b' => $row[2],
                     'opsi_c' => $row[3],
                     'opsi_d' => $row[4],
-                    'kunci_jawaban' => strtolower($row[5]),
-                    'bobot' => (int)$row[6]
+                    'opsi_e' => $row[5],
+                    'kunci_jawaban' => strtolower($row[6]),
+                    'bobot' => (int)$row[7]
                 ]);
             }
         }
@@ -1131,13 +1172,11 @@ class AdminController extends Controller
                 // Deteksi Opsi (a. ..., b. ..., dst - Mendukung a-e)
                 elseif (preg_match('/^([a-e])\.\s*(.*)/i', $line, $matches)) {
                     $optKey = strtolower($matches[1]);
-                    if ($optKey <= 'd') { // Database kita cuma sampe opsi_d
-                        $currentSoal['opsi_' . $optKey] = $matches[2];
-                    }
+                    $currentSoal['opsi_' . $optKey] = $matches[2];
                 }
                 // Deteksi Kunci Jawaban (Kunci: A atau Jawaban: A)
                 elseif (preg_match('/^(Kunci|Jawaban)\s*:\s*([A-E])/i', $line, $matches)) {
-                    $currentSoal['kunci_jawaban'] = strtolower($matches[2] === 'e' ? 'd' : $matches[2]); // Fallback e ke d jika perlu
+                    $currentSoal['kunci_jawaban'] = strtolower($matches[2]);
                 }
                 // Jika masih dalam pertanyaan (melanjutkan baris sebelumnya)
                 elseif (isset($currentSoal['pertanyaan']) && !isset($currentSoal['opsi_a'])) {
@@ -1173,8 +1212,8 @@ class AdminController extends Controller
 
             $prompt = "Tolong ekstrak soal-soal dari PDF ini. Deteksi jawaban yang benar berdasarkan teks yang DI-BOLD (tebal). 
             Berikan output dalam format JSON array of objects dengan struktur: 
-            [{\"pertanyaan\": \"...\", \"opsi_a\": \"...\", \"opsi_b\": \"...\", \"opsi_c\": \"...\", \"opsi_d\": \"...\", \"kunci_jawaban\": \"a/b/c/d\"}].
-            Pastikan hanya mengembalikan JSON saja tanpa markdown atau penjelasan apapun. Hanya ambil opsi A sampai D.";
+            [{\"pertanyaan\": \"...\", \"opsi_a\": \"...\", \"opsi_b\": \"...\", \"opsi_c\": \"...\", \"opsi_d\": \"...\", \"opsi_e\": \"...\", \"kunci_jawaban\": \"a/b/c/d/e\"}].
+            Pastikan hanya mengembalikan JSON saja tanpa markdown atau penjelasan apapun. Ambil opsi A sampai E.";
 
             $data = [
                 "contents" => [
@@ -1245,6 +1284,7 @@ class AdminController extends Controller
                         'opsi_b' => $s['opsi_b'] ?? '-',
                         'opsi_c' => $s['opsi_c'] ?? '-',
                         'opsi_d' => $s['opsi_d'] ?? '-',
+                        'opsi_e' => $s['opsi_e'] ?? '-',
                         'kunci_jawaban' => strtolower($s['kunci_jawaban']),
                         'bobot' => 5
                     ]);
