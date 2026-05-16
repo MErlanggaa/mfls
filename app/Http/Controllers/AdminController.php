@@ -936,7 +936,7 @@ class AdminController extends Controller
             'opsi_d_image' => 'nullable|image|max:2048',
             'opsi_e' => 'nullable|string',
             'opsi_e_image' => 'nullable|image|max:2048',
-            'kunci_jawaban' => 'required|in:a,b,c,d,e',
+            'kunci_jawaban' => 'nullable|in:a,b,c,d,e',
             'bobot' => 'required|integer',
             'kategori' => 'nullable|string'
         ]);
@@ -992,7 +992,7 @@ class AdminController extends Controller
             'opsi_d_image' => 'nullable|image|max:2048',
             'opsi_e' => 'nullable|string',
             'opsi_e_image' => 'nullable|image|max:2048',
-            'kunci_jawaban' => 'required|in:a,b,c,d,e',
+            'kunci_jawaban' => 'nullable|in:a,b,c,d,e',
             'bobot' => 'required|integer',
             'kategori' => 'nullable|string'
         ]);

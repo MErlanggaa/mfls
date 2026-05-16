@@ -110,7 +110,8 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] font-bold text-gray-400 mb-1">KUNCI JAWABAN</label>
-                            <select name="kunci_jawaban" required class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold">
+                            <select name="kunci_jawaban" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold">
+                                <option value="">Kosongkan (Tes Kepribadian)</option>
                                 <option value="a">A</option>
                                 <option value="b">B</option>
                                 <option value="c">C</option>

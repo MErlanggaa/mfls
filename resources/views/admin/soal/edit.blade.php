@@ -92,7 +92,8 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-500 mb-1">Kunci Jawaban</label>
-                    <select name="kunci_jawaban" required class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold">
+                    <select name="kunci_jawaban" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold">
+                        <option value="" {{ is_null($soal->kunci_jawaban) ? 'selected' : '' }}>Kosongkan (Tes Kepribadian)</option>
                         <option value="a" {{ $soal->kunci_jawaban == 'a' ? 'selected' : '' }}>A</option>
                         <option value="b" {{ $soal->kunci_jawaban == 'b' ? 'selected' : '' }}>B</option>
                         <option value="c" {{ $soal->kunci_jawaban == 'c' ? 'selected' : '' }}>C</option>
