@@ -30,36 +30,35 @@ class GeminiService
         $data = json_decode($jsonData, true);
         $scores = $data['scores'];
         $prompt = "Kamu adalah Arion, asisten AI cerdas dari MNC University. Tugasmu adalah melakukan analisis kepribadian dan potensi (Pemetaan Diri) berdasarkan skor rata-rata (skala 1-5) pada 5 dimensi berikut ini:\n\n";
-        
+
         foreach ($scores as $dimension => $score) {
             $prompt .= "- **$dimension**: $score / 5.00\n";
         }
 
-        $prompt .= "\n**Petunjuk Analisis Sangat Mendalam:**\n";
-        $prompt .= "1. Berikan interpretasi SANGAT MENDALAM dan DETAIL tentang karakter calon mahasiswa ini. Jangan hanya umum saja.\n";
-        $prompt .= "2. Analisis setiap dimensi secara spesifik: jelaskan apa artinya skor tersebut bagi karirnya di masa depan.\n";
-        $prompt .= "3. Berikan saran konkret untuk pengembangan dirinya agar ia benar-benar siap menjadi pemimpin masa depan.\n";
-        $prompt .= "4. Hubungkan hasil ini dengan nilai-nilai MNC University (Integritas, Kreativitas, Kepemimpinan).\n";
-        $prompt .= "5. Gunakan gaya bahasa yang sangat inspiratif, elegan, profesional, dan membangkitkan semangat.\n";
-        $prompt .= "6. Tuliskan dalam minimal 4-5 paragraf yang panjang dan berbobot.\n";
-        $prompt .= "7. Sapa dia sebagai 'Future Leader' dengan penuh antusiasme.";
+        $prompt .= "\n**Petunjuk Analisis Padat & Berbobot:**\n";
+        $prompt .= "1. Berikan interpretasi yang mendalam namun PADAT (To the point).\n";
+        $prompt .= "2. Analisis dimensi utama yang menonjol (kekuatan) dan satu area yang perlu ditingkatkan.\n";
+        $prompt .= "3. Hubungkan dengan potensi karir secara ringkas.\n";
+        $prompt .= "4. Gunakan gaya bahasa inspiratif dan profesional.\n";
+        $prompt .= "5. Tuliskan dalam TEPAT 3 PARAGRAF yang tidak terlalu panjang tapi sangat berbobot.\n";
+        $prompt .= "6. Sapa dia sebagai 'Future Leader'.";
 
         try {
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl . '?key=' . $this->apiKey, [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $prompt]
+                        'contents' => [
+                            [
+                                'parts' => [
+                                    ['text' => $prompt]
+                                ]
+                            ]
+                        ],
+                        'generationConfig' => [
+                            'temperature' => 0.7,
+                            'maxOutputTokens' => 1500,
                         ]
-                    ]
-                ],
-                'generationConfig' => [
-                    'temperature' => 0.7,
-                    'maxOutputTokens' => 1024,
-                ]
-            ]);
+                    ]);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -106,24 +105,24 @@ class GeminiService
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($this->apiUrl . '?key=' . $this->apiKey, [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $prompt],
+                        'contents' => [
                             [
-                                'inline_data' => [
-                                    'mime_type' => 'application/pdf',
-                                    'data' => $base64Pdf
+                                'parts' => [
+                                    ['text' => $prompt],
+                                    [
+                                        'inline_data' => [
+                                            'mime_type' => 'application/pdf',
+                                            'data' => $base64Pdf
+                                        ]
+                                    ]
                                 ]
                             ]
+                        ],
+                        'generationConfig' => [
+                            'temperature' => 0.7,
+                            'maxOutputTokens' => 2048,
                         ]
-                    ]
-                ],
-                'generationConfig' => [
-                    'temperature' => 0.7,
-                    'maxOutputTokens' => 2048,
-                ]
-            ]);
+                    ]);
 
             if ($response->successful()) {
                 $data = $response->json();
