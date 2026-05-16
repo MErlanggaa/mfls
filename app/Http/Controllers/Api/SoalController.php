@@ -125,6 +125,7 @@ class SoalController extends Controller
         }
 
         $ujianId = $request->ujian_id;
+        $ujian = Ujian::findOrFail($ujianId);
         $submittedAnswers = $request->answers;
         
         // Get all questions for this exam to calculate score
