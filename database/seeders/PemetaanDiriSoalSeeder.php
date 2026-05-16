@@ -67,6 +67,7 @@ class PemetaanDiriSoalSeeder extends Seeder
                     'opsi_c' => 'Netral',
                     'opsi_d' => 'Sesuai',
                     'opsi_e' => 'Sangat Sesuai',
+                    'kunci_jawaban' => null,
                     'bobot' => 1
                 ]);
             }

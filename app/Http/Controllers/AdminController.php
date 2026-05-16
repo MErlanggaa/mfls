@@ -942,6 +942,7 @@ class AdminController extends Controller
         ]);
 
         $data = $request->all();
+        if (empty($data['kunci_jawaban'])) $data['kunci_jawaban'] = null;
 
         if ($request->hasFile('gambar')) {
             $path = $request->file('gambar')->store('soal_images', 'public');
@@ -999,6 +1000,7 @@ class AdminController extends Controller
 
         $soal = \App\Models\Soal::findOrFail($id);
         $data = $request->all();
+        if (empty($data['kunci_jawaban'])) $data['kunci_jawaban'] = null;
 
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama jika ada
