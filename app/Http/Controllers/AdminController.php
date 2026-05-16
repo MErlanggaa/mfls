@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
@@ -1005,7 +1006,7 @@ class AdminController extends Controller
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama jika ada
             if ($soal->gambar) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
+                Storage::disk('public')->delete($soal->gambar);
             }
             $path = $request->file('gambar')->store('soal_images', 'public');
             $data['gambar'] = $path;
@@ -1018,7 +1019,7 @@ class AdminController extends Controller
             if ($request->hasFile($fieldName)) {
                 // Delete old image if exists
                 if ($soal->$fieldName) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$fieldName);
+                    Storage::disk('public')->delete($soal->$fieldName);
                 }
                 $path = $request->file($fieldName)->store('soal_images', 'public');
                 $data[$fieldName] = $path;
@@ -1039,14 +1040,14 @@ class AdminController extends Controller
 
         // Delete main question image
         if ($soal->gambar) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
+            Storage::disk('public')->delete($soal->gambar);
         }
 
         // Delete option images
         foreach (['a', 'b', 'c', 'd', 'e'] as $option) {
             $fieldName = "opsi_{$option}_image";
             if ($soal->$fieldName) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$fieldName);
+                Storage::disk('public')->delete($soal->$fieldName);
             }
         }
 
@@ -1077,10 +1078,10 @@ class AdminController extends Controller
 
         foreach ($soals as $soal) {
             // Delete images
-            if ($soal->gambar) \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->gambar);
+            if ($soal->gambar) Storage::disk('public')->delete($soal->gambar);
             foreach (['a', 'b', 'c', 'd', 'e'] as $opt) {
                 $f = "opsi_{$opt}_image";
-                if ($soal->$f) \Illuminate\Support\Facades\Storage::disk('public')->delete($soal->$f);
+                if ($soal->$f) Storage::disk('public')->delete($soal->$f);
             }
             $soal->delete();
         }

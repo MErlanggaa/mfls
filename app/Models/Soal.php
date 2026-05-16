@@ -23,6 +23,9 @@ class Soal extends Model
         'opsi_c_image',
         'opsi_d',
         'opsi_d_image',
+        'opsi_e',
+        'opsi_e_image',
+        'kategori',
         'kunci_jawaban',
         'bobot',
     ];
