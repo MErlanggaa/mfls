@@ -377,7 +377,16 @@ class AdminController extends Controller
             }
         }
 
-        $hasilUjians = $query->latest()->get();
+        $hasilUjians = $query->latest()->get()->map(function($hasil) {
+            // Override nilai dengan skor_rata dari NilaiUjian (skala 100) jika ada
+            $nilaiAsli = \App\Models\NilaiUjian::where('ujian_id', $hasil->ujian_id)
+                ->where('peserta_id', $hasil->peserta_id)
+                ->first();
+            if ($nilaiAsli) {
+                $hasil->nilai = $nilaiAsli->skor_rata;
+            }
+            return $hasil;
+        });
 
         return view('admin.hasil_ujian.index', compact('hasilUjians'));
     }
