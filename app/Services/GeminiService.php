@@ -29,7 +29,7 @@ class GeminiService
 
         $data = json_decode($jsonData, true);
         $scores = $data['scores'];
-        $prompt = "Kamu adalah Arion, asisten AI cerdas dari MNC University. Tugasmu adalah melakukan analisis kepribadian dan potensi (Pemetaan Diri) berdasarkan skor rata-rata (skala 1-5) pada 5 dimensi berikut ini:\n\n";
+        $prompt = "Kamu adalah Arion, asisten AI cerdas dari MNC University. Tugasmu adalah melakukan analisis kepribadian dan potensi (Pemetaan Diri) berdasarkan skor rata-rata (skala 1-5) pada 6 dimensi berikut ini:\n\n";
 
         foreach ($scores as $dimension => $score) {
             $prompt .= "- **$dimension**: $score / 5.00\n";

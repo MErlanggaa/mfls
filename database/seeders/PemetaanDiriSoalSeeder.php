@@ -1,11 +1,11 @@
 <?php
-
+ 
 namespace Database\Seeders;
-
+ 
 use Illuminate\Database\Seeder;
 use App\Models\Soal;
 use App\Models\Ujian;
-
+ 
 class PemetaanDiriSoalSeeder extends Seeder
 {
     public function run()
@@ -13,17 +13,20 @@ class PemetaanDiriSoalSeeder extends Seeder
         $ujian = Ujian::where('nama', 'Pemetaan Diri')->first();
         if (!$ujian) return;
 
+        // Hapus soal lama untuk menghindari duplikasi saat di-seed ulang
+        Soal::where('ujian_id', $ujian->id)->delete();
+ 
         $dimensions = [
             'A. Self Awareness' => [
                 'Saya memahami kelebihan utama dalam diri saya.',
                 'Saya menyadari kelemahan yang perlu diperbaiki.',
-                'Saya mampu merefleksikan tindakan yang telah saya lakukan.',
-                'Saya mengenali emosi yang saya rasakan saat ini.',
-                'Saya tahu apa yang memotivasi saya untuk maju.',
-                'Saya memahami nilai-nilai yang menjadi prinsip hidup saya.'
+                'Saya mampu merefleksikan pengalaman hidup saya.',
+                'Saya mengetahui hal-hal yang memotivasi saya.',
+                'Saya memahami nilai hidup yang saya pegang.',
+                'Saya sadar terhadap reaksi emosi saya.'
             ],
             'B. Self Confidence' => [
-                'Saya yakin dengan kemampuan yang saya miliki.',
+                'Saya yakin terhadap kemampuan diri saya.',
                 'Saya berani mengambil keputusan penting.',
                 'Saya tidak takut gagal saat mencoba hal baru.',
                 'Saya mampu berbicara di depan umum.',
@@ -53,9 +56,17 @@ class PemetaanDiriSoalSeeder extends Seeder
                 'Saya terus mencari cara untuk berkembang.',
                 'Saya menikmati proses belajar.',
                 'Saya tidak mudah puas dengan pencapaian saat ini.'
+            ],
+            'F. Leadership Potential' => [
+                'Saya mampu memimpin kelompok kecil.',
+                'Saya dapat mengambil inisiatif dalam situasi tertentu.',
+                'Saya mampu mempengaruhi orang lain secara positif.',
+                'Saya bertanggung jawab terhadap tim.',
+                'Saya mampu mengambil keputusan dalam tekanan.',
+                'Saya siap menjadi role model bagi orang lain.'
             ]
         ];
-
+ 
         foreach ($dimensions as $kategori => $qs) {
             foreach ($qs as $q) {
                 Soal::create([
