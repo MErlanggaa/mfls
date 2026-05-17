@@ -75,6 +75,65 @@ class GeminiService
     }
 
     /**
+     * Generate narrative analysis based on mathematically computed profile and scores.
+     */
+    public function generateNarrativeAnalysis(array $scores, string $profile, string $karakteristik, string $prodi, string $career)
+    {
+        if (!$this->apiKey) {
+            return "Analisis psikologis naratif tidak tersedia (API Key missing).";
+        }
+
+        $prompt = "Kamu adalah Arion, asisten AI psikolog dan konsultan karir cerdas dari MNC University.\n";
+        $prompt .= "Tugasmu adalah menyusun sebuah narasi analisis kepribadian mendalam (3 paragraf) berdasarkan data pemetaan diri berikut:\n\n";
+        
+        $prompt .= "PROFIL UTAMA: $profile\n";
+        $prompt .= "KARAKTERISTIK KUNCI: $karakteristik\n";
+        $prompt .= "REKOMENDASI PRODI: $prodi\n";
+        $prompt .= "REKOMENDASI KARIR: $career\n\n";
+        
+        $prompt .= "RATA-RATA SKOR DIMENSI (Skala 1.00 - 5.00):\n";
+        foreach ($scores as $dim => $avg) {
+            $prompt .= "- **$dim**: $avg / 5.00\n";
+        }
+        
+        $prompt .= "\n**Petunjuk Penulisan Narasi:**\n";
+        $prompt .= "1. Tuliskan dalam TEPAT 3 PARAGRAF yang padat, inspiratif, dan sangat berbobot.\n";
+        $prompt .= "2. Paragraf 1: Bahas interpretasi psikologis umum tentang kepribadiannya dan mengapa profil utama '$profile' sangat cocok untuknya berdasarkan skor-skor tersebut.\n";
+        $prompt .= "3. Paragraf 2: Analisis mendalam tentang kekuatan terbesarnya (ambil dari dimensi skor tertinggi) dan bagaimana kekuatan itu membantunya sukses di program studi '$prodi'.\n";
+        $prompt .= "4. Paragraf 3: Bahas saran pengembangan diri yang positif (terutama pada dimensi dengan skor terendah) dan motivasi penutup yang hangat, dengan menyapa dia sebagai 'Future Leader'.\n";
+        $prompt .= "5. Gunakan bahasa Indonesia yang sangat profesional, elegan, dan memotivasi.\n";
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post($this->apiUrl . '?key=' . $this->apiKey, [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ],
+                'generationConfig' => [
+                    'temperature' => 0.7,
+                    'maxOutputTokens' => 1500,
+                ]
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                return $data['candidates'][0]['content']['parts'][0]['text'] ?? "Gagal mendapatkan analisis naratif.";
+            }
+
+            Log::error('Gemini API Error: ' . $response->body());
+            return "Maaf, sistem AI kami sedang sibuk saat menyusun narasi psikologis.";
+        } catch (\Exception $e) {
+            Log::error('Gemini Service Exception: ' . $e->getMessage());
+            return "Terjadi kesalahan saat menghubungi layanan AI.";
+        }
+    }
+
+    /**
      * Analyze personality based on answers.
      * 
      * @param array $questionsAndAnswers

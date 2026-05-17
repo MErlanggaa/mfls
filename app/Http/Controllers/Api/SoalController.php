@@ -196,8 +196,14 @@ class SoalController extends Controller
         // Handle AI Analysis for Pemetaan Diri
         $kesimpulanAi = null;
         if (str_contains(strtolower($ujian->nama), 'pemetaan diri')) {
-            $categoryScores = [];
-            $categoryCounts = [];
+            $dimensionScores = [
+                'SA' => 0,
+                'SC' => 0,
+                'SS' => 0,
+                'SM' => 0,
+                'GM' => 0,
+                'LP' => 0,
+            ];
             
             // Map values: A=1, B=2, C=3, D=4, E=5
             $valMap = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5];
@@ -207,19 +213,158 @@ class SoalController extends Controller
                 $val = $valMap[$userAns] ?? 0;
                 
                 if ($val > 0) {
-                    $cat = $soal->kategori ?? 'Umum';
-                    $categoryScores[$cat] = ($categoryScores[$cat] ?? 0) + $val;
-                    $categoryCounts[$cat] = ($categoryCounts[$cat] ?? 0) + 1;
+                    $cat = strtolower($soal->kategori ?? '');
+                    if (str_contains($cat, 'awareness') || str_contains($cat, 'sa')) {
+                        $dimensionScores['SA'] += $val;
+                    } elseif (str_contains($cat, 'confidence') || str_contains($cat, 'sc')) {
+                        $dimensionScores['SC'] += $val;
+                    } elseif (str_contains($cat, 'social') || str_contains($cat, 'ss')) {
+                        $dimensionScores['SS'] += $val;
+                    } elseif (str_contains($cat, 'management') || str_contains($cat, 'sm')) {
+                        $dimensionScores['SM'] += $val;
+                    } elseif (str_contains($cat, 'growth') || str_contains($cat, 'gm')) {
+                        $dimensionScores['GM'] += $val;
+                    } elseif (str_contains($cat, 'leadership') || str_contains($cat, 'lp')) {
+                        $dimensionScores['LP'] += $val;
+                    }
                 }
             }
+
+            // Hitung persentase tiap dimensi & kategori
+            $pct = [];
+            $kategoriDimensi = [];
             
-            $finalAverages = [];
-            foreach ($categoryScores as $cat => $sum) {
-                $finalAverages[$cat] = round($sum / $categoryCounts[$cat], 2);
+            $getCategory = function($percentage) {
+                if ($percentage >= 85) {
+                    return ['Sangat Tinggi', 'Menunjukkan potensi yang sangat matang dan siap menjadi mentor/pemimpin.'];
+                } elseif ($percentage >= 70) {
+                    return ['Tinggi', 'Memiliki kompetensi yang kuat di atas rata-rata.'];
+                } elseif ($percentage >= 55) {
+                    return ['Sedang', 'Kompetensi berkembang namun memerlukan bimbingan berkala.'];
+                } elseif ($percentage >= 40) {
+                    return ['Rendah', 'Membutuhkan pengembangan intensif pada aspek terkait.'];
+                } else {
+                    return ['Sangat Rendah', 'Memerlukan pemetaan ulang dan pendampingan khusus.'];
+                }
+            };
+
+            foreach ($dimensionScores as $key => $score) {
+                $pct[$key] = round(($score / 30) * 100, 2);
+                $kategoriDimensi[$key] = $getCategory($pct[$key])[0];
             }
+
+            // Hitung total skor akhir
+            $totalSkor = array_sum($dimensionScores);
+            $totalPercentage = round(($totalSkor / 180) * 100, 2);
+            $finalCategoryInfo = $getCategory($totalPercentage);
+            $finalKategori = $finalCategoryInfo[0];
+            $finalDeskripsi = $finalCategoryInfo[1];
+
+            // Tentukan profil kepribadian utama secara matematis
+            $profilUtama = 'The Balanced Professional';
+            $karakteristik = 'Memiliki keseimbangan yang baik di seluruh aspek kompetensi diri, adaptif, dan siap berkembang di berbagai bidang.';
+            $prodiRekomendasi = 'Sains Komunikasi, Sistem Informasi, Manajemen';
+            $karirRekomendasi = 'General Consultant, Project Coordinator, Entrepreneur';
+
+            if ($pct['LP'] >= 80 && $pct['SS'] >= 70) {
+                $profilUtama = 'The Strategic Leader / Visionary Pioneer';
+                $karakteristik = 'Sangat kuat dalam memimpin tim, mengambil keputusan taktis di bawah tekanan, memiliki pengaruh positif yang besar, dan komunikatif.';
+                $prodiRekomendasi = 'Manajemen, Sains Komunikasi';
+                $karirRekomendasi = 'Corporate Executive, Business Development Manager, Public Policy Specialist, Politician';
+            } elseif ($pct['GM'] >= 80 && $pct['SM'] >= 70) {
+                $profilUtama = 'The Analytical Innovator / High Achiever';
+                $karakteristik = 'Sangat adaptif terhadap pembelajaran baru, disiplin tinggi dalam eksekusi tugas, terencana, dan selalu mencari peningkatan kualitas.';
+                $prodiRekomendasi = 'Sistem Informasi, Sains Komunikasi (Digital)';
+                $karirRekomendasi = 'IT Analyst, Data Scientist, Researcher, Product Manager';
+            } elseif ($pct['SS'] >= 80 && $pct['SC'] >= 70) {
+                $profilUtama = 'The Collaborative Diplomat / PR Specialist';
+                $karakteristik = 'Sangat terampil dalam membangun relasi interpersonal, percaya diri tinggi dalam bersosialisasi dan berbicara di depan umum, serta ulung menyelesaikan konflik.';
+                $prodiRekomendasi = 'Sains Komunikasi';
+                $karirRekomendasi = 'Public Relations Manager, Corporate Communications, HR Specialist, Diplomat';
+            } elseif ($pct['SM'] >= 80 && $pct['SA'] >= 70) {
+                $profilUtama = 'The Precision Strategist / Operations Director';
+                $karakteristik = 'Sangat teratur, memiliki ketahanan emosi yang prima saat tertekan, bertanggung jawab penuh, dan sadar betul akan kelebihan serta kelemahan diri.';
+                $prodiRekomendasi = 'Manajemen, Sistem Informasi';
+                $karirRekomendasi = 'Operations Manager, Chief Financial Officer, Strategic Planner, Risk Analyst';
+            } else {
+                // Cari skor tertinggi
+                arsort($pct);
+                $highestKey = key($pct);
+                
+                switch ($highestKey) {
+                    case 'SA':
+                        $profilUtama = 'The Self-Reflective Explorer';
+                        $karakteristik = 'Memiliki kesadaran diri yang sangat tinggi, sangat memahami kelebihan, kelemahan, serta motivasi internal yang mendorong kesuksesan.';
+                        $prodiRekomendasi = 'Sains Komunikasi, Manajemen (SDM)';
+                        $karirRekomendasi = 'Human Resource Analyst, Counselor, Creative Writer, Researcher';
+                        break;
+                    case 'SC':
+                        $profilUtama = 'The Bold Entrepreneur';
+                        $karakteristik = 'Memiliki kepercayaan diri yang luar biasa, berani mengambil risiko, tidak takut gagal, dan sangat mandiri dalam mengambil keputusan penting.';
+                        $prodiRekomendasi = 'Manajemen (Bisnis/Pemasaran)';
+                        $karirRekomendasi = 'Startup Founder, Venture Builder, Marketing Director, Investment Analyst';
+                        break;
+                    case 'SS':
+                        $profilUtama = 'The Community Connector';
+                        $karakteristik = 'Memiliki kecerdasan sosial yang tinggi, pandai berkolaborasi, pendengar yang baik, serta sangat menghargai keberagaman pendapat.';
+                        $prodiRekomendasi = 'Sains Komunikasi';
+                        $karirRekomendasi = 'Social Media Manager, PR Consultant, Community Director, Customer Success Specialist';
+                        break;
+                    case 'SM':
+                        $profilUtama = 'The Operations Master';
+                        $karakteristik = 'Sangat disiplin, andal dalam manajemen waktu, memiliki ketahanan mental yang tinggi, dan memiliki perencanaan hidup yang sangat matang.';
+                        $prodiRekomendasi = 'Sistem Informasi, Manajemen';
+                        $karirRekomendasi = 'Project Manager, Operations Specialist, Database Administrator, Auditor';
+                        break;
+                    case 'GM':
+                        $profilUtama = 'The Lifelong Learner';
+                        $karakteristik = 'Memiliki growth mindset yang luar biasa, terbuka terhadap kritik, menikmati proses belajar, dan menganggap kesalahan sebagai batu loncatan.';
+                        $prodiRekomendasi = 'Sistem Informasi, Sains Komunikasi';
+                        $karirRekomendasi = 'Software Developer, UX Researcher, Business Consultant, Educator';
+                        break;
+                    case 'LP':
+                        $profilUtama = 'The Dynamic Executive';
+                        $karakteristik = 'Memiliki bakat kepemimpinan alami yang sangat baik, berani berinisiatif, dan siap menjadi role model bagi rekan sebayanya.';
+                        $prodiRekomendasi = 'Manajemen';
+                        $karirRekomendasi = 'Management Trainee, CEO Office Associate, Operations Lead, Community Leader';
+                        break;
+                }
+            }
+
+            // Hitung narasi secara lokal di PHP tanpa menggunakan API Gemini
+            $narasiAi = JawabanUjian::generateLocalNarrative($pct, $profilUtama, $prodiRekomendasi);
+
+            // Susun report final berformat Markdown cantik
+            $kesimpulanAi = "📊 **HASIL ANALISIS INSTRUMEN PEMETAAN DIRI**\n";
+            $kesimpulanAi .= "--------------------------------------------------\n";
+            $kesimpulanAi .= "👤 **Nama Peserta:** " . ($user->nama ?? 'Peserta') . "\n";
+            $kesimpulanAi .= "📅 **Tanggal Ujian:** " . now()->translatedFormat('d F Y') . "\n\n";
             
-            $gemini = new GeminiService();
-            $kesimpulanAi = $gemini->analyzePemetaanDiri(json_encode(['scores' => $finalAverages]));
+            $kesimpulanAi .= "📈 **PENCAPAIAN SKOR DIMENSI:**\n";
+            $kesimpulanAi .= "1. **Self Awareness (SA):** " . $dimensionScores['SA'] . "/30 (" . $pct['SA'] . "%) - " . $kategoriDimensi['SA'] . "\n";
+            $kesimpulanAi .= "2. **Self Confidence (SC):** " . $dimensionScores['SC'] . "/30 (" . $pct['SC'] . "%) - " . $kategoriDimensi['SC'] . "\n";
+            $kesimpulanAi .= "3. **Social Skill (SS):** " . $dimensionScores['SS'] . "/30 (" . $pct['SS'] . "%) - " . $kategoriDimensi['SS'] . "\n";
+            $kesimpulanAi .= "4. **Self Management (SM):** " . $dimensionScores['SM'] . "/30 (" . $pct['SM'] . "%) - " . $kategoriDimensi['SM'] . "\n";
+            $kesimpulanAi .= "5. **Growth Mindset (GM):** " . $dimensionScores['GM'] . "/30 (" . $pct['GM'] . "%) - " . $kategoriDimensi['GM'] . "\n";
+            $kesimpulanAi .= "6. **Leadership Potential (LP):** " . $dimensionScores['LP'] . "/30 (" . $pct['LP'] . "%) - " . $kategoriDimensi['LP'] . "\n\n";
+            
+            $kesimpulanAi .= "🎯 **SKOR KESELURUHAN & KESIAPAN:**\n";
+            $kesimpulanAi .= "* **Total Skor:** " . $totalSkor . "/180\n";
+            $kesimpulanAi .= "* **Persentase Akhir:** " . $totalPercentage . "%\n";
+            $kesimpulanAi .= "* **Kategori Kesiapan:** **" . $finalKategori . "**\n";
+            $kesimpulanAi .= "* *Deskripsi:* " . $finalDeskripsi . "\n\n";
+            
+            $kesimpulanAi .= "🧠 **PROFIL KEPRIBADIAN (DOMINAN):**\n";
+            $kesimpulanAi .= "* **Profil Utama:** **" . $profilUtama . "**\n";
+            $kesimpulanAi .= "* **Karakteristik Kunci:** " . $karakteristik . "\n\n";
+            
+            $kesimpulanAi .= "🎓 **REKOMENDASI PROGRAM STUDI & KARIR:**\n";
+            $kesimpulanAi .= "* **Program Studi Sangat Cocok (MNC University):** **" . $prodiRekomendasi . "**\n";
+            $kesimpulanAi .= "* **Rekomendasi Karir Masa Depan:** **" . $karirRekomendasi . "**\n\n";
+            
+            $kesimpulanAi .= "--------------------------------------------------\n";
+            $kesimpulanAi .= "🤖 **INTERPRETASI PSIKOLOGIS (ARION AI):**\n";
+            $kesimpulanAi .= $narasiAi;
         }
 
         // Save or update jawaban_ujian (Detailed JSON)

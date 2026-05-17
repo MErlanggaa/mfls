@@ -216,8 +216,8 @@
                             <div class="flex items-center gap-3 mb-4">
                                 <span class="px-3 py-1 bg-primary-orange text-white rounded-full text-[9px] font-black uppercase tracking-widest">Kesimpulan AI Arion (Analisis Kepribadian)</span>
                             </div>
-                            <div class="text-sm md:text-base italic leading-relaxed text-orange-50/90">
-                                "{!! nl2br(e($pemetaan->kesimpulan_ai)) !!}"
+                            <div class="text-sm md:text-base leading-relaxed text-orange-50/90">
+                                {!! nl2br(e($pemetaan->getOrGeneratePemetaanReport())) !!}
                             </div>
                         </div>
                     </div>

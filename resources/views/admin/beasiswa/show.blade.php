@@ -286,12 +286,12 @@
                     return str_contains(strtolower($j->ujian->nama ?? ''), 'pemetaan diri');
                 })->first();
             @endphp
-            @if($pemetaan && $pemetaan->kesimpulan_ai)
+            @if($pemetaan)
                 <div class="p-6 bg-slate-900 rounded-3xl text-white relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-orange-400/10 rounded-full blur-2xl"></div>
                     <div class="relative z-10">
-                        <div class="text-xs md:text-sm italic leading-relaxed text-slate-300">
-                            "{!! nl2br(e($pemetaan->kesimpulan_ai)) !!}"
+                        <div class="text-xs md:text-sm leading-relaxed text-slate-300">
+                            {!! nl2br(e($pemetaan->getOrGeneratePemetaanReport())) !!}
                         </div>
                     </div>
                 </div>
