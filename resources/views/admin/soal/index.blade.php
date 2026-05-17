@@ -34,6 +34,39 @@
             </div>
             @endif
 
+            @if(request('ujian_id'))
+            @php
+                $currentUjian = $ujians->where('id', request('ujian_id'))->first();
+            @endphp
+            @if($currentUjian)
+            <!-- Pengaturan Ujian Card -->
+            <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-2xl mb-6">
+                <h3 class="font-bold text-yellow-900 mb-2">Pengaturan: {{ $currentUjian->nama }}</h3>
+                <form action="{{ route('admin.ujian.update', $currentUjian->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div class="mb-3">
+                        <label class="block text-[10px] font-bold text-yellow-800 mb-1">Durasi (Menit)</label>
+                        <input type="number" name="durasi" value="{{ $currentUjian->durasi ?? 60 }}" required min="1" class="w-full px-3 py-2 bg-white border border-yellow-300 rounded-lg text-sm">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-bold text-yellow-800 mb-1">Status Ujian</label>
+                        <select name="is_active" class="w-full px-3 py-2 bg-white border border-yellow-300 rounded-lg text-sm font-bold">
+                            <option value="1" {{ ($currentUjian->is_active ?? true) ? 'selected' : '' }}>🟢 BUKA (Aktif)</option>
+                            <option value="0" {{ !($currentUjian->is_active ?? true) ? 'selected' : '' }}>🔴 TUTUP (Tidak Aktif)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 rounded-lg text-sm transition-all shadow-md">
+                        Simpan Pengaturan
+                    </button>
+                </form>
+            </div>
+            @endif
+            @endif
+
             <!-- Import Card -->
             <div class="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl">
                 <h3 class="font-bold text-indigo-900 mb-2">Import Soal Massal</h3>

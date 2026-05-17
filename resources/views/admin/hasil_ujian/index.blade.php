@@ -59,9 +59,17 @@
                         <div class="text-[9px] text-slate-400 uppercase font-black">{{ $hasil->created_at->diffForHumans() }}</div>
                     </td>
                     <td class="px-6 py-4 text-right">
-                        <a href="{{ route('admin.beasiswa.show', $hasil->peserta->akun_id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-[9px] font-black hover:bg-blue-600 hover:text-white transition-all shadow-sm uppercase tracking-widest">
-                            Report Lulus 📑
-                        </a>
+                        <div class="flex justify-end gap-2">
+                            <a href="{{ route('admin.beasiswa.show', $hasil->peserta->akun_id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl text-[9px] font-black hover:bg-blue-600 hover:text-white transition-all shadow-sm uppercase tracking-widest">
+                                Report 📑
+                            </a>
+                            <form action="{{ route('admin.hasil_ujian.reset', $hasil->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin mereset/menghapus jawaban ini? Peserta akan bisa mengerjakan ujian kembali.');">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-[9px] font-black hover:bg-red-600 hover:text-white transition-all shadow-sm uppercase tracking-widest">
+                                    Hapus 🗑️
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @endforeach

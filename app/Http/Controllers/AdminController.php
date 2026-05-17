@@ -382,6 +382,28 @@ class AdminController extends Controller
         return view('admin.hasil_ujian.index', compact('hasilUjians'));
     }
 
+    public function resetJawabanUjian($id)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
+            return abort(403);
+
+        $jawaban = \App\Models\JawabanUjian::findOrFail($id);
+        
+        // Hapus juga nilai_ujian jika ada
+        \App\Models\NilaiUjian::where('ujian_id', $jawaban->ujian_id)
+            ->where('peserta_id', $jawaban->peserta_id)
+            ->delete();
+
+        $namaUjian = $jawaban->ujian->nama ?? 'Unknown';
+        $namaPeserta = $jawaban->peserta->akun->nama ?? 'Unknown';
+        
+        $this->logAktivitas('Reset Ujian', 'Ujian', $jawaban->ujian_id, "Mereset jawaban ujian {$namaUjian} untuk peserta {$namaPeserta}");
+        
+        $jawaban->delete();
+
+        return back()->with('success', "Jawaban ujian peserta {$namaPeserta} berhasil dihapus. Peserta sekarang dapat mengikuti ujian kembali.");
+    }
+
     // --- DATA PENDAFTAR: PENILAIAN MENTOR ---
     public function indexPenilaian(Request $request)
     {
@@ -1088,6 +1110,26 @@ class AdminController extends Controller
         return back()->with('success', 'Soal berhasil dihapus!');
     }
 
+    public function updateUjian(Request $request, $id)
+    {
+        if (!in_array(auth()->user()->role, ['admin', 'akademik']))
+            return abort(403);
+
+        $request->validate([
+            'durasi' => 'required|integer|min:1',
+            'is_active' => 'required|boolean'
+        ]);
+
+        $ujian = \App\Models\Ujian::findOrFail($id);
+        $ujian->update([
+            'durasi' => $request->durasi,
+            'is_active' => $request->is_active
+        ]);
+
+        $this->logAktivitas('Update Ujian', 'Ujian', $id, "Mengubah pengaturan ujian: " . $ujian->nama);
+        return back()->with('success', 'Pengaturan ujian berhasil diperbarui!');
+    }
+
     public function deleteAllSoal(Request $request)
     {
         if (!in_array(auth()->user()->role, ['admin', 'akademik']))
@@ -1244,10 +1286,10 @@ class AdminController extends Controller
             $pdfBase64 = base64_encode(file_get_contents($file->getRealPath()));
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=" . $apiKey;
 
-            $prompt = "Tolong ekstrak soal-soal dari PDF ini. Deteksi jawaban yang benar berdasarkan teks yang DI-BOLD (tebal). 
-            Berikan output dalam format JSON array of objects dengan struktur: 
-            [{\"pertanyaan\": \"...\", \"opsi_a\": \"...\", \"opsi_b\": \"...\", \"opsi_c\": \"...\", \"opsi_d\": \"...\", \"opsi_e\": \"...\", \"kunci_jawaban\": \"a/b/c/d/e\"}].
-            Pastikan hanya mengembalikan JSON saja tanpa markdown atau penjelasan apapun. Ambil opsi A sampai E.";
+            $prompt = "Tolong ekstrak SELURUH soal dari PDF ini tanpa ada yang terlewat (ekstrak semua soal dari awal hingga akhir). Deteksi jawaban yang benar berdasarkan teks yang DI-BOLD (tebal). 
+            Berikan output dalam format JSON array of objects dengan struktur kunci singkat untuk menghemat token: 
+            [{\"q\": \"pertanyaan\", \"a\": \"opsi a\", \"b\": \"opsi b\", \"c\": \"opsi c\", \"d\": \"opsi d\", \"e\": \"opsi e\", \"k\": \"a/b/c/d/e\"}].
+            Pastikan hanya mengembalikan JSON saja tanpa markdown atau penjelasan apapun. PENTING: Ekstrak SEMUA soal, jangan berhenti di tengah.";
 
             $data = [
                 "contents" => [
@@ -1262,6 +1304,10 @@ class AdminController extends Controller
                             ]
                         ]
                     ]
+                ],
+                "generationConfig" => [
+                    "maxOutputTokens" => 8192,
+                    "temperature" => 0.1
                 ]
             ];
 
@@ -1310,16 +1356,19 @@ class AdminController extends Controller
                 // Konversi semua key ke lowercase untuk menghindari masalah case-sensitivity
                 $s = array_change_key_case($s, CASE_LOWER);
 
-                if (isset($s['pertanyaan']) && isset($s['kunci_jawaban'])) {
+                $pertanyaan = $s['pertanyaan'] ?? $s['q'] ?? null;
+                $kunci = $s['kunci_jawaban'] ?? $s['k'] ?? null;
+
+                if ($pertanyaan && $kunci) {
                     \App\Models\Soal::create([
                         'ujian_id' => $ujianId,
-                        'pertanyaan' => $s['pertanyaan'],
-                        'opsi_a' => $s['opsi_a'] ?? '-',
-                        'opsi_b' => $s['opsi_b'] ?? '-',
-                        'opsi_c' => $s['opsi_c'] ?? '-',
-                        'opsi_d' => $s['opsi_d'] ?? '-',
-                        'opsi_e' => $s['opsi_e'] ?? '-',
-                        'kunci_jawaban' => strtolower($s['kunci_jawaban']),
+                        'pertanyaan' => $pertanyaan,
+                        'opsi_a' => $s['opsi_a'] ?? $s['a'] ?? '-',
+                        'opsi_b' => $s['opsi_b'] ?? $s['b'] ?? '-',
+                        'opsi_c' => $s['opsi_c'] ?? $s['c'] ?? '-',
+                        'opsi_d' => $s['opsi_d'] ?? $s['d'] ?? '-',
+                        'opsi_e' => $s['opsi_e'] ?? $s['e'] ?? '-',
+                        'kunci_jawaban' => strtolower($kunci),
                         'bobot' => 5
                     ]);
                     $count++;

@@ -25,13 +25,15 @@ class SoalController extends Controller
             $pesertaId = $user->peserta->id;
         }
         
-        $ujians = Ujian::select('id', 'nama')
+        $ujians = Ujian::select('id', 'nama', 'durasi')
+            ->where('is_active', true)
             ->withCount('soals as jumlah_soal') // Count questions
             ->get()
             ->map(function ($ujian) use ($pesertaId) {
                 $data = [
                     'id' => $ujian->id,
                     'nama' => $ujian->nama,
+                    'durasi' => $ujian->durasi,
                     'jumlah_soal' => $ujian->jumlah_soal,
                     'is_submitted' => false,
                 ];
@@ -86,7 +88,11 @@ class SoalController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'ujian' => $ujian->nama,
+            'ujian' => [
+                'id' => $ujian->id,
+                'title' => $ujian->nama,
+                'duration' => $ujian->durasi ?? 60
+            ],
             'data' => $soals
         ]);
     }

@@ -147,6 +147,8 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/admin/soal/{id}', [App\Http\Controllers\AdminController::class, 'updateSoal'])->name('admin.soal.update');
             Route::delete('/admin/soal/{id}', [App\Http\Controllers\AdminController::class, 'destroySoal'])->name('admin.soal.destroy');
             Route::post('/admin/soal/import', [App\Http\Controllers\AdminController::class, 'importSoal'])->name('admin.soal.import');
+            Route::put('/admin/soal/ujian/{id}', [App\Http\Controllers\AdminController::class, 'updateUjian'])->name('admin.ujian.update');
+            Route::post('/admin/hasil-ujian/{id}/reset', [App\Http\Controllers\AdminController::class, 'resetJawabanUjian'])->name('admin.hasil_ujian.reset');
 
             // Manajemen Berita
             Route::middleware(['role:admin,panitia,palugada'])->group(

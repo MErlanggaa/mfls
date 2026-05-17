@@ -13,6 +13,8 @@ class Ujian extends Model
 
     protected $fillable = [
         'nama',
+        'durasi',
+        'is_active',
     ];
 
     public function soals()
