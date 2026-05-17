@@ -702,6 +702,32 @@ class AdminController extends Controller
         return back()->with('success', 'Tahun lulus berhasil diperbarui!');
     }
 
+    public function storeDispensasiUjian(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada')
+            return abort(403);
+
+        $request->validate([
+            'ujian_id' => 'required|exists:ujian,id',
+            'tambahan_menit' => 'required|integer|min:0'
+        ]);
+
+        $akun = Akun::with('peserta')->findOrFail($id);
+        
+        if (!$akun->peserta) {
+            return back()->with('error', 'Profil peserta tidak ditemukan.');
+        }
+
+        $dispensasi = \App\Models\DispensasiUjian::updateOrCreate(
+            ['peserta_id' => $akun->peserta->id, 'ujian_id' => $request->ujian_id],
+            ['tambahan_menit' => $request->tambahan_menit]
+        );
+
+        $this->logAktivitas('Dispensasi Waktu Ujian', 'Peserta', $akun->peserta->id, "Admin memberikan tambahan waktu {$request->tambahan_menit} menit untuk ujian {$request->ujian_id} ke {$akun->nama}");
+
+        return back()->with('success', "Dispensasi waktu ujian berhasil diberikan sebesar {$request->tambahan_menit} menit.");
+    }
+
     public function destroyUser($id)
     {
         if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada')
@@ -789,7 +815,9 @@ class AdminController extends Controller
     public function detailPendaftar($id)
     {
         $user = Akun::with(['peserta.daftar', 'peserta.berkas', 'peserta.nilais.matpel', 'peserta.jawabanUjians.ujian'])->findOrFail($id);
-        return view('admin.pendaftar.show', compact('user'));
+        $ujians = \App\Models\Ujian::where('is_active', true)->get();
+        $dispensasiUjian = \App\Models\DispensasiUjian::where('peserta_id', $user->peserta->id ?? 0)->get();
+        return view('admin.pendaftar.show', compact('user', 'ujians', 'dispensasiUjian'));
     }
 
     public function generateCertificate($id, \App\Services\CertificateService $certificateService)

@@ -86,12 +86,24 @@ class SoalController extends Controller
                 return $data;
             });
 
+        $dispensasiMenit = 0;
+        $user = $request->user('sanctum') ?? $request->user();
+        if ($user && $user->role === 'pendaftar' && $user->peserta) {
+            $dispensasi = \App\Models\DispensasiUjian::where('ujian_id', $ujianId)
+                ->where('peserta_id', $user->peserta->id)
+                ->first();
+            if ($dispensasi) {
+                $dispensasiMenit = $dispensasi->tambahan_menit;
+            }
+        }
+
         return response()->json([
             'status' => 'success',
             'ujian' => [
                 'id' => $ujian->id,
                 'title' => $ujian->nama,
-                'duration' => $ujian->durasi ?? 60
+                'duration' => $ujian->durasi ?? 60,
+                'dispensasi_menit' => $dispensasiMenit
             ],
             'data' => $soals
         ]);
@@ -187,7 +199,7 @@ class SoalController extends Controller
             'ujian_id' => $ujianId,
             'peserta_id' => $peserta->id,
             'jawaban' => json_encode($submittedAnswers),
-            'nilai' => $totalScore,
+            'nilai' => $finalScore, // Use final scale of 0-100
             'kesimpulan_ai' => $kesimpulanAi
         ]);
 

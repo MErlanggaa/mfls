@@ -110,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class, 'storePenilaianMentor'])->name('mentor_nilai');
                 Route::post('/{id}/update-email', [App\Http\Controllers\AdminController::class, 'updateEmailPendaftar'])->name('update_email');
                 Route::post('/{id}/update-tahun-lulus', [App\Http\Controllers\AdminController::class, 'updateTahunLulus'])->name('update_tahun_lulus');
+                Route::post('/{id}/dispensasi-ujian', [App\Http\Controllers\AdminController::class, 'storeDispensasiUjian'])->name('dispensasi_ujian');
                 Route::delete('/{id}', [App\Http\Controllers\AdminController::class, 'destroyPendaftar'])->name('destroy');
             }
             );

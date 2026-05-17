@@ -94,6 +94,52 @@
             </div>
         </div>
 
+        <!-- 1.5. Dispensasi Waktu Ujian -->
+        @if(in_array(auth()->user()->role, ['admin', 'palugada']))
+        <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden mb-8">
+            <h3 class="text-xl font-black text-slate-800 mb-6 flex items-center gap-4">
+                <span class="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center">
+                    <span class="iconify text-2xl" data-icon="solar:alarm-add-bold"></span>
+                </span>
+                Dispensasi Waktu Ujian
+            </h3>
+            
+            <form action="{{ route('admin.pendaftar.dispensasi_ujian', $user->id) }}" method="POST" class="mb-6 p-6 bg-yellow-50 rounded-3xl border border-yellow-100 flex flex-col md:flex-row gap-4 items-end">
+                @csrf
+                <div class="flex-grow w-full">
+                    <label class="block text-[10px] font-black text-yellow-800 uppercase tracking-widest mb-2">Pilih Ujian Aktif</label>
+                    <select name="ujian_id" required class="w-full px-4 py-3 bg-white border border-yellow-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-yellow-400">
+                        <option value="">-- Pilih Ujian --</option>
+                        @foreach($ujians as $u)
+                            <option value="{{ $u->id }}">{{ $u->nama }} (Default: {{ $u->durasi ?? 60 }} mnt)</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="w-full md:w-48">
+                    <label class="block text-[10px] font-black text-yellow-800 uppercase tracking-widest mb-2">Tambahan (Menit)</label>
+                    <input type="number" name="tambahan_menit" required min="0" placeholder="Misal: 15" class="w-full px-4 py-3 bg-white border border-yellow-200 rounded-2xl text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-yellow-400">
+                </div>
+                <button type="submit" class="w-full md:w-auto px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-black rounded-2xl transition-all shadow-md flex items-center justify-center gap-2">
+                    <span class="iconify" data-icon="solar:disk-bold"></span> Simpan
+                </button>
+            </form>
+
+            @if($dispensasiUjian->count() > 0)
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @foreach($dispensasiUjian as $d)
+                        <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between">
+                            <div>
+                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $d->ujian->nama ?? 'Ujian Dihapus' }}</div>
+                                <div class="text-sm font-black text-yellow-600">+{{ $d->tambahan_menit }} Menit Ekstra</div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="mt-4 text-[10px] text-slate-400 font-medium italic">*Peserta yang sedang ujian harus me-refresh halamannya agar waktu masuk.</div>
+            @endif
+        </div>
+        @endif
+
         <!-- 2. Rincian Raport -->
         <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
             <h3 class="text-xl font-black text-slate-800 mb-8 flex items-center gap-4">
