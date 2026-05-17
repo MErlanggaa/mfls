@@ -43,7 +43,15 @@ class SoalController extends Controller
                     $hasSubmitted = JawabanUjian::where('ujian_id', $ujian->id)
                         ->where('peserta_id', $pesertaId)
                         ->exists();
-                    $data['is_submitted'] = $hasSubmitted;
+
+                    // Check if there is an active dispensation
+                    $hasDispensation = \App\Models\DispensasiUjian::where('ujian_id', $ujian->id)
+                        ->where('peserta_id', $pesertaId)
+                        ->where('tambahan_menit', '>', 0)
+                        ->exists();
+
+                    // If dispensation exists, allow them to re-enter (is_submitted = false)
+                    $data['is_submitted'] = $hasSubmitted && !$hasDispensation;
                 }
                 
                 return $data;
@@ -71,7 +79,7 @@ class SoalController extends Controller
 
         $ujian = Ujian::findOrFail($ujianId);
         $soals = Soal::where('ujian_id', $ujianId)
-            ->inRandomOrder()
+            ->orderBy('id', 'asc') // Urutan tetap berdasarkan ID
             ->get(['id', 'ujian_id', 'pertanyaan', 'gambar', 'opsi_a', 'opsi_a_image', 'opsi_b', 'opsi_b_image', 'opsi_c', 'opsi_c_image', 'opsi_d', 'opsi_d_image', 'opsi_e', 'opsi_e_image', 'kategori', 'bobot'])
             ->map(function ($soal) {
                 $data = $soal->toArray();
@@ -87,13 +95,26 @@ class SoalController extends Controller
             });
 
         $dispensasiMenit = 0;
+        $hasSubmittedBefore = false;
+        $savedAnswers = null;
+
         $user = $request->user('sanctum') ?? $request->user();
         if ($user && $user->role === 'pendaftar' && $user->peserta) {
+            $pesertaId = $user->peserta->id;
+            
             $dispensasi = \App\Models\DispensasiUjian::where('ujian_id', $ujianId)
-                ->where('peserta_id', $user->peserta->id)
+                ->where('peserta_id', $pesertaId)
                 ->first();
             if ($dispensasi) {
                 $dispensasiMenit = $dispensasi->tambahan_menit;
+            }
+
+            $existingJawaban = \App\Models\JawabanUjian::where('ujian_id', $ujianId)
+                ->where('peserta_id', $pesertaId)
+                ->first();
+            if ($existingJawaban) {
+                $hasSubmittedBefore = true;
+                $savedAnswers = json_decode($existingJawaban->jawaban, true) ?: new \stdClass();
             }
         }
 
@@ -103,7 +124,9 @@ class SoalController extends Controller
                 'id' => $ujian->id,
                 'title' => $ujian->nama,
                 'duration' => $ujian->durasi ?? 60,
-                'dispensasi_menit' => $dispensasiMenit
+                'dispensasi_menit' => $dispensasiMenit,
+                'has_submitted_before' => $hasSubmittedBefore,
+                'saved_answers' => $savedAnswers
             ],
             'data' => $soals
         ]);
@@ -133,8 +156,13 @@ class SoalController extends Controller
         $existing = JawabanUjian::where('ujian_id', $request->ujian_id)
             ->where('peserta_id', $peserta->id)
             ->first();
+
+        // Check if there is an active dispensation
+        $dispensasi = \App\Models\DispensasiUjian::where('ujian_id', $request->ujian_id)
+            ->where('peserta_id', $peserta->id)
+            ->first();
         
-        if ($existing) {
+        if ($existing && (!$dispensasi || $dispensasi->tambahan_menit <= 0)) {
              return response()->json([
                 'status' => 'error',
                 'message' => 'Anda sudah mengerjakan ujian ini sebelumnya.',
@@ -194,22 +222,44 @@ class SoalController extends Controller
             $kesimpulanAi = $gemini->analyzePemetaanDiri(json_encode(['scores' => $finalAverages]));
         }
 
-        // Save to jawaban_ujian (Detailed JSON)
-        $result = JawabanUjian::create([
-            'ujian_id' => $ujianId,
-            'peserta_id' => $peserta->id,
-            'jawaban' => json_encode($submittedAnswers),
-            'nilai' => $finalScore, // Use final scale of 0-100
-            'kesimpulan_ai' => $kesimpulanAi
-        ]);
+        // Save or update jawaban_ujian (Detailed JSON)
+        if ($existing) {
+            $existing->update([
+                'jawaban' => json_encode($submittedAnswers),
+                'nilai' => $finalScore,
+                'kesimpulan_ai' => $kesimpulanAi
+            ]);
+            $result = $existing;
 
-        // Save to nilai_ujian (Official Score Summary)
-        \App\Models\NilaiUjian::create([
-            'ujian_id' => $ujianId,
-            'peserta_id' => $peserta->id,
-            'skor_asli' => $totalScore,
-            'skor_rata' => $finalScore
-        ]);
+            // Update nilai_ujian (Official Score Summary)
+            \App\Models\NilaiUjian::where('ujian_id', $ujianId)
+                ->where('peserta_id', $peserta->id)
+                ->update([
+                    'skor_asli' => $totalScore,
+                    'skor_rata' => $finalScore
+                ]);
+        } else {
+            $result = JawabanUjian::create([
+                'ujian_id' => $ujianId,
+                'peserta_id' => $peserta->id,
+                'jawaban' => json_encode($submittedAnswers),
+                'nilai' => $finalScore, // Use final scale of 0-100
+                'kesimpulan_ai' => $kesimpulanAi
+            ]);
+
+            // Save to nilai_ujian (Official Score Summary)
+            \App\Models\NilaiUjian::create([
+                'ujian_id' => $ujianId,
+                'peserta_id' => $peserta->id,
+                'skor_asli' => $totalScore,
+                'skor_rata' => $finalScore
+            ]);
+        }
+
+        // Clean up dispensation since it is now used
+        if ($dispensasi) {
+            $dispensasi->delete();
+        }
 
         return response()->json([
             'status' => 'success',
