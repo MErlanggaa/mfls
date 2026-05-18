@@ -34,7 +34,7 @@
 
     <!-- Filter Tabs -->
     <div class="flex flex-wrap gap-2 p-1.5 bg-gray-100 rounded-[2rem] w-fit">
-        <a href="{{ route('admin.hasil_ujian.index', ['search' => request('search']) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ !request('type') ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Semua</a>
+        <a href="{{ route('admin.hasil_ujian.index', ['search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ !request('type') ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Semua</a>
         <a href="{{ route('admin.hasil_ujian.index', ['type' => 'tba', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') == 'tba' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">TBA (Akademik)</a>
         <a href="{{ route('admin.hasil_ujian.index', ['type' => 'tbi', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') == 'tbi' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">TBI (Inggris)</a>
         <a href="{{ route('admin.hasil_ujian.index', ['type' => 'pemetaan_diri', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all {{ request('type') == 'pemetaan_diri' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Pemetaan Diri</a>
