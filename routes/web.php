@@ -55,7 +55,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/', function () {
-    return view('maintenance');
+    return view('auth.maintance');
 })->name('maintenance');
 // Pengumuman Route (Public)
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
