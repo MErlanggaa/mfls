@@ -46,6 +46,13 @@ return [
             'password' => env('HOSTINGER_PW'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'stream' => [
+                'ssl' => [
+                    'allow_self_signed' => true,
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
+                ],
+            ],
         ],
 
         'ses' => [
@@ -82,6 +89,13 @@ return [
             'username' => env('GMAIL_MAIL_USERNAME'),
             'password' => env('GMAIL_PW'),
             'timeout' => null,
+            'stream' => [
+                'ssl' => [
+                    'allow_self_signed' => true,
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
+                ],
+            ],
             'from' => [
                 'address' => env('GMAIL_MAIL_FROM_ADDRESS', 'beasiswamncuniversity@gmail.com'),
                 'name' => env('GMAIL_MAIL_FROM_NAME', 'MNCU Future Leaders Scholarship'),

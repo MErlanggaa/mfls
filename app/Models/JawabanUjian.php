@@ -17,6 +17,7 @@ class JawabanUjian extends Model
         'jawaban',
         'nilai',
         'kesimpulan_ai',
+        'status_seleksi',
     ];
 
     public function ujian()
