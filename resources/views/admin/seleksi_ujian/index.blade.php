@@ -89,6 +89,9 @@
         <table class="w-full text-sm text-left">
             <thead class="bg-slate-50 text-slate-400 font-black uppercase text-[10px] tracking-[0.2em]">
                 <tr>
+                    <th class="px-6 py-5 text-center w-12">
+                        <input type="checkbox" id="selectAllCheckbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer">
+                    </th>
                     <th class="px-6 py-5">Peserta</th>
                     <th class="px-6 py-5 text-center">Nilai TBA</th>
                     <th class="px-6 py-5 text-center">Nilai TBI</th>
@@ -104,6 +107,10 @@
                     $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
                 @endphp
                 <tr class="hover:bg-slate-50/50 transition-all">
+                    {{-- Checkbox --}}
+                    <td class="px-6 py-4 text-center">
+                        <input type="checkbox" class="candidate-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" value="{{ $peserta->id }}" onchange="updateBulkActionBar()">
+                    </td>
                     {{-- Peserta Info --}}
                     <td class="px-6 py-4">
                         <div class="font-black text-slate-800 uppercase">{{ $peserta->nama }}</div>
@@ -292,5 +299,101 @@
             modal.classList.add('hidden');
         }, 300);
     }
+
+    // Select All Checkboxes
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.candidate-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+            updateBulkActionBar();
+        });
+    }
+
+    function updateBulkActionBar() {
+        const checkboxes = document.querySelectorAll('.candidate-checkbox:checked');
+        const count = checkboxes.length;
+        const bar = document.getElementById('bulkActionBar');
+        const countText = document.getElementById('bulkCountText');
+
+        if (count > 0) {
+            countText.innerText = count + " Peserta Terpilih";
+            bar.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
+            bar.classList.add('translate-y-0', 'opacity-100');
+        } else {
+            bar.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
+            bar.classList.remove('translate-y-0', 'opacity-100');
+            if (selectAllCheckbox) selectAllCheckbox.checked = false;
+        }
+    }
+
+    function clearSelection() {
+        const checkboxes = document.querySelectorAll('.candidate-checkbox');
+        checkboxes.forEach(cb => cb.checked = false);
+        if (selectAllCheckbox) selectAllCheckbox.checked = false;
+        updateBulkActionBar();
+    }
+
+    function submitBulkAction(status) {
+        const checkboxes = document.querySelectorAll('.candidate-checkbox:checked');
+        if (checkboxes.length === 0) return;
+
+        let statusText = status === 'lulus' ? 'LOLOSKAN' : (status === 'tidak_lulus' ? 'GAGALKAN' : 'SET MENUNGGU');
+        if (!confirm(`Yakin ingin melakukan aksi ${statusText} massal untuk ${checkboxes.length} peserta terpilih?`)) {
+            return;
+        }
+
+        const form = document.getElementById('bulkForm');
+        const statusInput = document.getElementById('bulkStatusInput');
+        const inputsContainer = document.getElementById('bulkFormInputs');
+
+        statusInput.value = status;
+        inputsContainer.innerHTML = '';
+
+        checkboxes.forEach(cb => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ids[]';
+            input.value = cb.value;
+            inputsContainer.appendChild(input);
+        });
+
+        form.submit();
+    }
 </script>
+
+<!-- ================= FLOATING BULK ACTION BAR ================= -->
+<div id="bulkActionBar" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-slate-900 text-white rounded-3xl px-8 py-5 flex items-center justify-between gap-8 shadow-2xl transition-all duration-300 translate-y-28 opacity-0 pointer-events-none w-[90%] max-w-3xl border border-slate-800">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
+            <span class="iconify text-xl" data-icon="solar:users-group-two-rounded-bold"></span>
+        </div>
+        <div>
+            <div class="font-black text-xs uppercase tracking-wider text-slate-400">Aksi Massal</div>
+            <div id="bulkCountText" class="font-black text-sm text-white">0 Peserta Terpilih</div>
+        </div>
+    </div>
+    
+    <div class="flex items-center gap-3">
+        <button type="button" onclick="submitBulkAction('lulus')" class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-[9px] font-black uppercase tracking-widest rounded-2xl cursor-pointer shadow-md transition-all">
+            Loloskan 👍
+        </button>
+        <button type="button" onclick="submitBulkAction('tidak_lulus')" class="px-5 py-3 bg-rose-600 hover:bg-rose-700 text-white text-[9px] font-black uppercase tracking-widest rounded-2xl cursor-pointer shadow-md transition-all">
+            Gagalkan 👎
+        </button>
+        <button type="button" onclick="submitBulkAction('menunggu')" class="px-5 py-3 bg-amber-600 hover:bg-amber-700 text-white text-[9px] font-black uppercase tracking-widest rounded-2xl cursor-pointer shadow-md transition-all">
+            Set Menunggu ⏳
+        </button>
+        <button type="button" onclick="clearSelection()" class="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[9px] font-black uppercase tracking-widest rounded-2xl cursor-pointer transition-all">
+            Batal
+        </button>
+    </div>
+</div>
+
+{{-- Hidden form to handle the POST submission --}}
+<form id="bulkForm" action="{{ route('admin.seleksi_ujian.bulk_update') }}" method="POST" class="hidden">
+    @csrf
+    <input type="hidden" name="status_seleksi_ujian" id="bulkStatusInput" value="">
+    <div id="bulkFormInputs"></div>
+</form>
 @endsection

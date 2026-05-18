@@ -528,6 +528,35 @@ class AdminController extends Controller
     }
 
     /**
+     * Update status seleksi ujian peserta secara massal/bulk
+     */
+    public function bulkUpdateStatusSeleksiUjianCandidate(Request $request)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
+            return abort(403);
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|exists:peserta,id',
+            'status_seleksi_ujian' => 'required|in:menunggu,lulus,tidak_lulus'
+        ]);
+
+        $ids = $request->ids;
+        $status = $request->status_seleksi_ujian;
+        $statusText = $status === 'lulus' ? 'LULUS' : ($status === 'tidak_lulus' ? 'TIDAK LULUS' : 'MENUNGGU');
+
+        \App\Models\Peserta::whereIn('id', $ids)->update([
+            'status_seleksi_ujian' => $status
+        ]);
+
+        $count = count($ids);
+        $this->logAktivitas('Bulk Update Status Seleksi Ujian', 'Peserta', null, 
+            "Mengubah status seleksi ujian {$count} peserta secara massal menjadi {$statusText}");
+
+        return back()->with('success', "Status seleksi ujian {$count} peserta berhasil diperbarui menjadi {$statusText} secara massal!");
+    }
+
+    /**
      * Kirim email notifikasi lolos seleksi ujian ke 1 peserta
      */
     public function kirimEmailLolosUjianCandidate($id)

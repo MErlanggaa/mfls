@@ -159,6 +159,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/admin/seleksi-ujian/{id}/update-status', [App\Http\Controllers\AdminController::class, 'updateStatusSeleksiUjianCandidate'])->name('admin.seleksi_ujian.update_status');
             Route::post('/admin/seleksi-ujian/{id}/kirim-email', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosUjianCandidate'])->name('admin.seleksi_ujian.kirim_email');
             Route::post('/admin/seleksi-ujian/kirim-massal', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosMassalCandidate'])->name('admin.seleksi_ujian.kirim_massal');
+            Route::post('/admin/seleksi-ujian/bulk-update', [App\Http\Controllers\AdminController::class, 'bulkUpdateStatusSeleksiUjianCandidate'])->name('admin.seleksi_ujian.bulk_update');
 
             // Manajemen Berita
             Route::middleware(['role:admin,panitia,palugada'])->group(
