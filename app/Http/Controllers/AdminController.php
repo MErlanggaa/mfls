@@ -445,7 +445,16 @@ class AdminController extends Controller
             });
         }
 
-        $pesertas = $query->latest()->get()->map(function ($peserta) {
+        $sort = $request->get('sort', 'a-z');
+        if ($sort === 'z-a') {
+            $query->orderBy('nama', 'desc');
+        } elseif ($sort === 'latest') {
+            $query->orderBy('created_at', 'desc');
+        } else {
+            $query->orderBy('nama', 'asc');
+        }
+
+        $pesertas = $query->get()->map(function ($peserta) {
             // Temukan nilai TBA
             $tbaRecord = $peserta->nilaiUjians->filter(function ($n) {
                 $nama = strtolower($n->ujian->nama ?? '');

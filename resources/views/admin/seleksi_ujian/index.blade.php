@@ -11,6 +11,7 @@
         <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <!-- Search Form -->
             <form action="{{ route('admin.seleksi_ujian.index') }}" method="GET" class="w-full sm:w-80 relative">
+                <input type="hidden" name="sort" value="{{ request('sort', 'a-z') }}">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama peserta..." class="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-3xl text-sm font-bold shadow-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all outline-none">
                 <span class="iconify absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" data-icon="solar:magnifer-linear"></span>
             </form>
@@ -45,6 +46,14 @@
             {{ session('error') }}
         </div>
     @endif
+
+    <!-- Sorting Filters -->
+    <div class="flex flex-wrap gap-2 p-1.5 bg-gray-100 rounded-[2rem] w-fit">
+        <span class="px-4 py-2.5 text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center">Urutan:</span>
+        <a href="{{ route('admin.seleksi_ujian.index', ['sort' => 'a-z', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ request('sort', 'a-z') == 'a-z' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Nama (A - Z) 🔠</a>
+        <a href="{{ route('admin.seleksi_ujian.index', ['sort' => 'z-a', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ request('sort') == 'z-a' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Nama (Z - A) 🔡</a>
+        <a href="{{ route('admin.seleksi_ujian.index', ['sort' => 'latest', 'search' => request('search')]) }}" class="px-6 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all {{ request('sort') == 'latest' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700' }}">Terbaru 📅</a>
+    </div>
 
     {{-- Summary Stats --}}
     @php
