@@ -148,6 +148,12 @@
                     <span class="iconify text-xl {{ request()->routeIs('admin.hasil_ujian.*') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:document-text-bold"></span>
                     Hasil Ujian
                 </a>
+                <a href="{{ route('admin.seleksi_ujian.index') }}" onclick="closeSidebar()"
+                    class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
+                    {{ request()->routeIs('admin.seleksi_ujian.*') ? 'bg-blue-50 text-blue-600 shadow-sm ring-1 ring-blue-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.seleksi_ujian.*') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:shield-star-bold"></span>
+                    Seleksi Ujian
+                </a>
                 @endif
 
                 @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')

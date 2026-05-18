@@ -29,6 +29,7 @@ class Peserta extends Model
         'link_tiktok',
         'link_twibbon',
         'pilihan_prodi',
+        'status_seleksi_ujian',
     ];
 
     public function akun()

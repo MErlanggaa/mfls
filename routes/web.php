@@ -153,9 +153,12 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/admin/soal/import', [App\Http\Controllers\AdminController::class, 'importSoal'])->name('admin.soal.import');
             Route::put('/admin/soal/ujian/{id}', [App\Http\Controllers\AdminController::class, 'updateUjian'])->name('admin.ujian.update');
             Route::post('/admin/hasil-ujian/{id}/reset', [App\Http\Controllers\AdminController::class, 'resetJawabanUjian'])->name('admin.hasil_ujian.reset');
-            Route::post('/admin/hasil-ujian/{id}/update-status', [App\Http\Controllers\AdminController::class, 'updateStatusSeleksiUjian'])->name('admin.hasil_ujian.update_status');
-            Route::post('/admin/hasil-ujian/kirim-massal', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosMassal'])->name('admin.hasil_ujian.kirim_massal');
-            Route::post('/admin/hasil-ujian/{id}/kirim-email', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosUjian'])->name('admin.hasil_ujian.kirim_email');
+            
+            // Seleksi Ujian (CBT) Agregat per Peserta
+            Route::get('/admin/seleksi-ujian', [App\Http\Controllers\AdminController::class, 'indexSeleksiUjian'])->name('admin.seleksi_ujian.index');
+            Route::post('/admin/seleksi-ujian/{id}/update-status', [App\Http\Controllers\AdminController::class, 'updateStatusSeleksiUjianCandidate'])->name('admin.seleksi_ujian.update_status');
+            Route::post('/admin/seleksi-ujian/{id}/kirim-email', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosUjianCandidate'])->name('admin.seleksi_ujian.kirim_email');
+            Route::post('/admin/seleksi-ujian/kirim-massal', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosMassalCandidate'])->name('admin.seleksi_ujian.kirim_massal');
 
             // Manajemen Berita
             Route::middleware(['role:admin,panitia,palugada'])->group(

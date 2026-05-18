@@ -426,73 +426,132 @@ class AdminController extends Controller
     }
 
     /**
-     * Update status seleksi ujian secara manual
+     * Tampilkan halaman Seleksi Ujian (CBT) secara agregat per peserta
      */
-    public function updateStatusSeleksiUjian(Request $request, $id)
+    public function indexSeleksiUjian(Request $request)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
+            return abort(403);
+
+        $query = \App\Models\Peserta::whereHas('daftar', function ($q) {
+            $q->where('status', 'lulus');
+        })->with(['akun', 'daftar', 'jawabanUjians.ujian', 'nilaiUjians.ujian']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'LIKE', "%{$search}%")
+                  ->orWhere('nama_sekolah', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $pesertas = $query->latest()->get()->map(function ($peserta) {
+            // Temukan nilai TBA
+            $tbaRecord = $peserta->nilaiUjians->filter(function ($n) {
+                $nama = strtolower($n->ujian->nama ?? '');
+                return str_contains($nama, 'tba') || str_contains($nama, 'potensi') || str_contains($nama, 'akademik');
+            })->first();
+            
+            if (!$tbaRecord) {
+                $tbaJawaban = $peserta->jawabanUjians->filter(function ($j) {
+                    $nama = strtolower($j->ujian->nama ?? '');
+                    return str_contains($nama, 'tba') || str_contains($nama, 'potensi') || str_contains($nama, 'akademik');
+                })->first();
+                $peserta->score_tba = $tbaJawaban ? ($tbaJawaban->nilai ?? 0) : null;
+            } else {
+                $peserta->score_tba = $tbaRecord->skor_rata;
+            }
+
+            // Temukan nilai TBI
+            $tbiRecord = $peserta->nilaiUjians->filter(function ($n) {
+                $nama = strtolower($n->ujian->nama ?? '');
+                return str_contains($nama, 'tbi') || str_contains($nama, 'inggris');
+            })->first();
+            
+            if (!$tbiRecord) {
+                $tbiJawaban = $peserta->jawabanUjians->filter(function ($j) {
+                    $nama = strtolower($j->ujian->nama ?? '');
+                    return str_contains($nama, 'tbi') || str_contains($nama, 'inggris');
+                })->first();
+                $peserta->score_tbi = $tbiJawaban ? ($tbiJawaban->nilai ?? 0) : null;
+            } else {
+                $peserta->score_tbi = $tbiRecord->skor_rata;
+            }
+
+            // Temukan Kesimpulan AI Pemetaan Diri
+            $pdJawaban = $peserta->jawabanUjians->filter(function ($j) {
+                $nama = strtolower($j->ujian->nama ?? '');
+                return str_contains($nama, 'pemetaan diri');
+            })->first();
+            
+            $peserta->analisis_pemetaan = $pdJawaban ? $pdJawaban->kesimpulan_ai : null;
+            $peserta->pemetaan_id = $pdJawaban ? $pdJawaban->id : null;
+
+            return $peserta;
+        });
+
+        return view('admin.seleksi_ujian.index', compact('pesertas'));
+    }
+
+    /**
+     * Update status seleksi ujian peserta secara manual
+     */
+    public function updateStatusSeleksiUjianCandidate(Request $request, $id)
     {
         if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
             return abort(403);
 
         $request->validate([
-            'status_seleksi' => 'required|in:menunggu,lulus,tidak_lulus'
+            'status_seleksi_ujian' => 'required|in:menunggu,lulus,tidak_lulus'
         ]);
 
-        $jawaban = \App\Models\JawabanUjian::findOrFail($id);
-        $jawaban->update([
-            'status_seleksi' => $request->status_seleksi
+        $peserta = \App\Models\Peserta::findOrFail($id);
+        $peserta->update([
+            'status_seleksi_ujian' => $request->status_seleksi_ujian
         ]);
 
-        $namaPeserta = $jawaban->peserta->akun->nama ?? 'Unknown';
-        $statusText = $request->status_seleksi === 'lulus' ? 'LULUS' : ($request->status_seleksi === 'tidak_lulus' ? 'TIDAK LULUS' : 'MENUNGGU');
+        $statusText = $request->status_seleksi_ujian === 'lulus' ? 'LULUS' : ($request->status_seleksi_ujian === 'tidak_lulus' ? 'TIDAK LULUS' : 'MENUNGGU');
 
-        $this->logAktivitas('Update Status Seleksi Ujian', 'Ujian', $jawaban->ujian_id, 
-            "Mengubah status seleksi ujian {$namaPeserta} menjadi {$statusText}");
+        $this->logAktivitas('Update Status Seleksi Ujian', 'Peserta', $peserta->id, 
+            "Mengubah status seleksi ujian {$peserta->nama} menjadi {$statusText}");
 
-        return back()->with('success', "Status seleksi ujian peserta {$namaPeserta} berhasil diperbarui menjadi {$statusText}!");
+        return back()->with('success', "Status seleksi ujian peserta {$peserta->nama} berhasil diperbarui menjadi {$statusText}!");
     }
 
     /**
      * Kirim email notifikasi lolos seleksi ujian ke 1 peserta
      */
-    public function kirimEmailLolosUjian($id)
+    public function kirimEmailLolosUjianCandidate($id)
     {
         if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
             return abort(403);
 
-        $jawaban = \App\Models\JawabanUjian::with(['peserta.akun', 'peserta.daftar', 'ujian'])->findOrFail($id);
+        $peserta = \App\Models\Peserta::with(['akun', 'daftar'])->findOrFail($id);
 
-        // Cek status manual
-        if ($jawaban->status_seleksi !== 'lulus') {
-            return back()->with('error', 'Peserta ini belum diset Lulus Seleksi Ujian secara manual untuk menerima notifikasi.');
+        if ($peserta->status_seleksi_ujian !== 'lulus') {
+            return back()->with('error', 'Peserta ini belum dinyatakan Lulus Seleksi Ujian CBT.');
         }
 
-        // Ambil skor dari NilaiUjian jika ada
-        $nilaiRecord = \App\Models\NilaiUjian::where('ujian_id', $jawaban->ujian_id)
-            ->where('peserta_id', $jawaban->peserta_id)
-            ->first();
-        $skor = $nilaiRecord ? $nilaiRecord->skor_rata : ($jawaban->nilai ?? 0);
-
-        $emailTujuan = $jawaban->peserta->akun->email ?? null;
+        $emailTujuan = $peserta->akun->email ?? null;
         if (!$emailTujuan) {
             return back()->with('error', 'Email peserta tidak ditemukan.');
         }
 
-        $nama       = $jawaban->peserta->akun->nama ?? 'Peserta';
-        $asalSekolah = $jawaban->peserta->daftar->asal_sekolah ?? ($jawaban->peserta->nama_sekolah ?? '-');
-        $namaUjian  = $jawaban->ujian->nama ?? 'Ujian MFLS';
+        $nama       = $peserta->akun->nama ?? $peserta->nama;
+        $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
 
         try {
             \Illuminate\Support\Facades\Mail::mailer('gmail')
                 ->send('emails.lolos_seleksi_ujian',
-                    compact('nama', 'asalSekolah', 'namaUjian', 'skor'),
+                    compact('nama', 'asalSekolah'),
                     function ($message) use ($emailTujuan, $nama) {
                         $message->to($emailTujuan, $nama)
                                 ->subject('🎉 Selamat! Anda Lolos Seleksi Ujian MNCU Future Leader Scholarship 2026');
                     }
                 );
 
-            $this->logAktivitas('Kirim Email Lolos Ujian', 'Ujian', $jawaban->ujian_id,
-                "Mengirim email lolos seleksi ujian ke {$nama} ({$emailTujuan}) — Skor: {$skor}");
+            $this->logAktivitas('Kirim Email Lolos Ujian', 'Peserta', $peserta->id,
+                "Mengirim email lolos seleksi ujian ke {$nama} ({$emailTujuan})");
 
             return back()->with('success', "Email notifikasi lolos seleksi ujian berhasil dikirim ke {$nama} ({$emailTujuan})!");
         } catch (\Exception $e) {
@@ -502,49 +561,35 @@ class AdminController extends Controller
     }
 
     /**
-     * Kirim email massal ke semua peserta yang lolos seleksi ujian (status_seleksi = lulus)
-     * Pemetaan Diri dikecualikan
+     * Kirim email massal ke semua peserta yang lulus seleksi ujian
      */
-    public function kirimEmailLolosMassal(\Illuminate\Http\Request $request)
+    public function kirimEmailLolosMassalCandidate(\Illuminate\Http\Request $request)
     {
         if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
             return abort(403);
 
-        // Ambil semua jawaban ujian (kecuali Pemetaan Diri), lalu filter status_seleksi == 'lulus'
-        $semuaJawaban = \App\Models\JawabanUjian::with(['peserta.akun', 'peserta.daftar', 'ujian'])
-            ->whereHas('ujian', function ($q) {
-                $q->where('nama', 'NOT LIKE', '%Pemetaan Diri%');
-            })
-            ->where('status_seleksi', 'lulus')
-            ->get()
-            ->map(function ($j) {
-                $nilaiRecord = \App\Models\NilaiUjian::where('ujian_id', $j->ujian_id)
-                    ->where('peserta_id', $j->peserta_id)
-                    ->first();
-                $j->skor_final = $nilaiRecord ? $nilaiRecord->skor_rata : ($j->nilai ?? 0);
-                return $j;
-            });
+        $semuaPeserta = \App\Models\Peserta::where('status_seleksi_ujian', 'lulus')
+            ->with(['akun', 'daftar'])
+            ->get();
 
-        if ($semuaJawaban->isEmpty()) {
+        if ($semuaPeserta->isEmpty()) {
             return back()->with('error', 'Tidak ada peserta dengan status Lulus Seleksi Ujian untuk dikirim email.');
         }
 
         $berhasil = 0;
         $gagal    = 0;
 
-        foreach ($semuaJawaban as $jawaban) {
-            $emailTujuan = $jawaban->peserta->akun->email ?? null;
+        foreach ($semuaPeserta as $peserta) {
+            $emailTujuan = $peserta->akun->email ?? null;
             if (!$emailTujuan) { $gagal++; continue; }
 
-            $nama        = $jawaban->peserta->akun->nama ?? 'Peserta';
-            $asalSekolah = $jawaban->peserta->daftar->asal_sekolah ?? ($jawaban->peserta->nama_sekolah ?? '-');
-            $namaUjian   = $jawaban->ujian->nama ?? 'Ujian MFLS';
-            $skor        = $jawaban->skor_final;
+            $nama        = $peserta->akun->nama ?? $peserta->nama;
+            $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
 
             try {
                 \Illuminate\Support\Facades\Mail::mailer('gmail')
                     ->send('emails.lolos_seleksi_ujian',
-                        compact('nama', 'asalSekolah', 'namaUjian', 'skor'),
+                        compact('nama', 'asalSekolah'),
                         function ($message) use ($emailTujuan, $nama) {
                             $message->to($emailTujuan, $nama)
                                     ->subject('🎉 Selamat! Anda Lolos Seleksi Ujian MNCU Future Leader Scholarship 2026');
