@@ -29,6 +29,10 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+        if (auth()->user()->role === 'dosen') {
+            return redirect()->route('admin.penilaian.akademik.index');
+        }
+
         $riwayats = \App\Models\RiwayatAktivitas::with('pelaku')->latest()->take(10)->get();
 
         // Stats untuk Dashboard Real-time
@@ -852,11 +856,8 @@ class AdminController extends Controller
             ->whereHas('peserta.daftar', function ($q) {
                 $q->where('status', 'lulus');
             })
-            ->whereHas('peserta.jawabanUjians', function ($q) {
-                $q->where('status_seleksi', 'lulus')
-                  ->whereHas('ujian', function ($qu) {
-                      $qu->where('nama', 'NOT LIKE', '%Pemetaan Diri%');
-                  });
+            ->whereHas('peserta', function ($q) {
+                $q->where('status_seleksi_ujian', 'lulus');
             })
             ->with(['peserta.daftar', 'peserta.penilaianMentors']);
 
@@ -866,20 +867,24 @@ class AdminController extends Controller
     // --- DATA PENDAFTAR: PENILAIAN AKADEMIK ---
     public function indexPenilaianAkademik(Request $request)
     {
-        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor' && auth()->user()->role !== 'palugada')
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor' && auth()->user()->role !== 'palugada' && auth()->user()->role !== 'dosen')
             return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
             ->whereHas('peserta.daftar', function ($q) {
                 $q->where('status', 'lulus');
             })
-            ->whereHas('peserta.jawabanUjians', function ($q) {
-                $q->where('status_seleksi', 'lulus')
-                  ->whereHas('ujian', function ($qu) {
-                      $qu->where('nama', 'NOT LIKE', '%Pemetaan Diri%');
-                  });
-            })
-            ->with(['peserta.daftar', 'peserta.penilaianAkademiks']);
+            ->whereHas('peserta', function ($q) {
+                $q->where('status_seleksi_ujian', 'lulus');
+            });
+
+        if (auth()->user()->role === 'dosen') {
+            $query->whereHas('peserta', function ($q) {
+                $q->where('interviewer_id', auth()->id());
+            });
+        }
+
+        $query->with(['peserta.daftar', 'peserta.penilaianAkademiks']);
 
         return $this->processPenilaianIndex($query, $request, 'akademik');
     }
@@ -925,26 +930,178 @@ class AdminController extends Controller
 
         $pendaftars = $query->get();
 
-        return view('admin.penilaian.index', compact('pendaftars', 'type'));
+        $dosens = [];
+        if (in_array(auth()->user()->role, ['admin', 'palugada', 'akademik'])) {
+            $dosens = Akun::where('role', 'dosen')->orderBy('nama', 'asc')->get();
+        }
+
+        return view('admin.penilaian.index', compact('pendaftars', 'type', 'dosens'));
     }
 
     public function showPenilaian($id, Request $request)
     {
-        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
+        if (auth()->user()->role !== 'mentor' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada' && auth()->user()->role !== 'dosen')
             return abort(403);
 
         $type = $request->get('type', 'mentor'); // Default to mentor if not specified
+
+        // If user is dosen, force the type to 'akademik'
+        if (auth()->user()->role === 'dosen') {
+            $type = 'akademik';
+        }
+
         $user = Akun::with(['peserta.daftar', 'peserta.penilaianMentors.mentor', 'peserta.penilaianAkademiks.penilai'])->findOrFail($id);
+
+        // Security check for dosen
+        if (auth()->user()->role === 'dosen' && ($user->peserta->interviewer_id ?? null) !== auth()->id()) {
+            return abort(403, 'Anda tidak ditugaskan untuk mewawancarai peserta ini.');
+        }
 
         return view('admin.penilaian.show', compact('user', 'type'));
     }
 
     public function storePenilaianAkademik(Request $request, $id)
     {
-        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor' && auth()->user()->role !== 'palugada') {
-            return back()->with('loginError', 'Hanya bagian Akademik dan Mentor yang dapat memberikan penilaian ini.');
+        if (auth()->user()->role !== 'akademik' && auth()->user()->role !== 'admin' && auth()->user()->role !== 'mentor' && auth()->user()->role !== 'palugada' && auth()->user()->role !== 'dosen') {
+            return back()->with('loginError', 'Hanya bagian Akademik, Mentor, dan Dosen yang dapat memberikan penilaian ini.');
         }
 
+        $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
+
+        // Security check for dosen: must be assigned to this candidate
+        if (auth()->user()->role === 'dosen' && $peserta->interviewer_id !== auth()->id()) {
+            return abort(403, 'Anda tidak ditugaskan untuk mewawancarai peserta ini.');
+        }
+
+        // Cek apakah sudah lulus seleksi ujian CBT
+        // Accept either: JawabanUjian with status_seleksi='lulus' OR peserta.status_seleksi_ujian='lulus'
+        $lulusUjianFromJawaban = \App\Models\JawabanUjian::where('peserta_id', $peserta->id)
+            ->where('status_seleksi', 'lulus')
+            ->whereHas('ujian', function ($q) {
+                $q->where('nama', 'NOT LIKE', '%Pemetaan Diri%');
+            })
+            ->exists();
+
+        $lulusUjian = $lulusUjianFromJawaban || $peserta->status_seleksi_ujian === 'lulus';
+
+        if (!$lulusUjian) {
+            return back()->with('loginError', 'Peserta ini belum dinyatakan Lulus Seleksi Ujian CBT. Pastikan status seleksi ujian sudah diperbarui menjadi "lulus" terlebih dahulu.');
+        }
+
+        if (auth()->user()->role === 'dosen') {
+            $request->validate([
+                'wawancara_motivasi_q1' => 'required|numeric|min:1|max:5',
+                'wawancara_motivasi_q2' => 'required|numeric|min:1|max:5',
+                'wawancara_motivasi_q3' => 'required|numeric|min:1|max:5',
+                'wawancara_motivasi_q4' => 'required|numeric|min:1|max:5',
+
+                'wawancara_prestasi_q1' => 'required|numeric|min:1|max:5',
+                'wawancara_prestasi_q2' => 'required|numeric|min:1|max:5',
+                'wawancara_prestasi_q3' => 'required|numeric|min:1|max:5',
+                'wawancara_prestasi_q4' => 'required|numeric|min:1|max:5',
+
+                'wawancara_karakter_q1' => 'required|numeric|min:1|max:5',
+                'wawancara_karakter_q2' => 'required|numeric|min:1|max:5',
+                'wawancara_karakter_q3' => 'required|numeric|min:1|max:5',
+                'wawancara_karakter_q4' => 'required|numeric|min:1|max:5',
+
+                'wawancara_kontribusi_q1' => 'required|numeric|min:1|max:5',
+                'wawancara_kontribusi_q2' => 'required|numeric|min:1|max:5',
+                'wawancara_kontribusi_q3' => 'required|numeric|min:1|max:5',
+                'wawancara_kontribusi_q4' => 'required|numeric|min:1|max:5',
+
+                'wawancara_komunikasi_q1' => 'required|numeric|min:1|max:5',
+                'wawancara_komunikasi_q2' => 'required|numeric|min:1|max:5',
+                'wawancara_komunikasi_q3' => 'required|numeric|min:1|max:5',
+                'wawancara_komunikasi_q4' => 'required|numeric|min:1|max:5',
+
+                'wawancara_motivasi_catatan' => 'nullable|string',
+                'wawancara_prestasi_catatan' => 'nullable|string',
+                'wawancara_karakter_catatan' => 'nullable|string',
+                'wawancara_kontribusi_catatan' => 'nullable|string',
+                'wawancara_komunikasi_catatan' => 'nullable|string',
+
+                'rekomendasi_akhir' => 'required|string',
+                'rekomendasi_beasiswa' => 'required|string',
+                'catatan_rekomendasi_beasiswa' => 'nullable|string',
+            ]);
+
+            // Helper to calculate component average from non-null questions
+            $calcAvg = function($q1, $q2, $q3, $q4) {
+                $scores = array_filter([$q1, $q2, $q3, $q4], function($v) {
+                    return $v !== null && $v !== '';
+                });
+                return count($scores) > 0 ? (array_sum($scores) / count($scores)) : 0;
+            };
+
+            $wawancaraMotivasi = $calcAvg($request->wawancara_motivasi_q1, $request->wawancara_motivasi_q2, $request->wawancara_motivasi_q3, $request->wawancara_motivasi_q4);
+            $wawancaraPrestasi = $calcAvg($request->wawancara_prestasi_q1, $request->wawancara_prestasi_q2, $request->wawancara_prestasi_q3, $request->wawancara_prestasi_q4);
+            $wawancaraKarakter = $calcAvg($request->wawancara_karakter_q1, $request->wawancara_karakter_q2, $request->wawancara_karakter_q3, $request->wawancara_karakter_q4);
+            $wawancaraKontribusi = $calcAvg($request->wawancara_kontribusi_q1, $request->wawancara_kontribusi_q2, $request->wawancara_kontribusi_q3, $request->wawancara_kontribusi_q4);
+            $wawancaraKomunikasi = $calcAvg($request->wawancara_komunikasi_q1, $request->wawancara_komunikasi_q2, $request->wawancara_komunikasi_q3, $request->wawancara_komunikasi_q4);
+
+            // Calculate weighted final score: (25%, 20%, 20%, 20%, 15%)
+            // Scale from 1-5 to 0-100 by multiplying the final average by 20
+            $totalAkhir = (($wawancaraMotivasi * 0.25) + 
+                          ($wawancaraPrestasi * 0.20) + 
+                          ($wawancaraKarakter * 0.20) + 
+                          ($wawancaraKontribusi * 0.20) + 
+                          ($wawancaraKomunikasi * 0.15)) * 20;
+
+            \App\Models\PenilaianAkademik::updateOrCreate(
+                ['peserta_id' => $peserta->id, 'penilai_id' => auth()->id()],
+                [
+                    'wawancara_motivasi_q1' => $request->wawancara_motivasi_q1,
+                    'wawancara_motivasi_q2' => $request->wawancara_motivasi_q2,
+                    'wawancara_motivasi_q3' => $request->wawancara_motivasi_q3,
+                    'wawancara_motivasi_q4' => $request->wawancara_motivasi_q4,
+
+                    'wawancara_prestasi_q1' => $request->wawancara_prestasi_q1,
+                    'wawancara_prestasi_q2' => $request->wawancara_prestasi_q2,
+                    'wawancara_prestasi_q3' => $request->wawancara_prestasi_q3,
+                    'wawancara_prestasi_q4' => $request->wawancara_prestasi_q4,
+
+                    'wawancara_karakter_q1' => $request->wawancara_karakter_q1,
+                    'wawancara_karakter_q2' => $request->wawancara_karakter_q2,
+                    'wawancara_karakter_q3' => $request->wawancara_karakter_q3,
+                    'wawancara_karakter_q4' => $request->wawancara_karakter_q4,
+
+                    'wawancara_kontribusi_q1' => $request->wawancara_kontribusi_q1,
+                    'wawancara_kontribusi_q2' => $request->wawancara_kontribusi_q2,
+                    'wawancara_kontribusi_q3' => $request->wawancara_kontribusi_q3,
+                    'wawancara_kontribusi_q4' => $request->wawancara_kontribusi_q4,
+
+                    'wawancara_komunikasi_q1' => $request->wawancara_komunikasi_q1,
+                    'wawancara_komunikasi_q2' => $request->wawancara_komunikasi_q2,
+                    'wawancara_komunikasi_q3' => $request->wawancara_komunikasi_q3,
+                    'wawancara_komunikasi_q4' => $request->wawancara_komunikasi_q4,
+
+                    'wawancara_motivasi' => round($wawancaraMotivasi, 2),
+                    'wawancara_prestasi' => round($wawancaraPrestasi, 2),
+                    'wawancara_karakter' => round($wawancaraKarakter, 2),
+                    'wawancara_kontribusi' => round($wawancaraKontribusi, 2),
+                    'wawancara_komunikasi' => round($wawancaraKomunikasi, 2),
+
+                    'wawancara_motivasi_catatan' => $request->wawancara_motivasi_catatan,
+                    'wawancara_prestasi_catatan' => $request->wawancara_prestasi_catatan,
+                    'wawancara_karakter_catatan' => $request->wawancara_karakter_catatan,
+                    'wawancara_kontribusi_catatan' => $request->wawancara_kontribusi_catatan,
+                    'wawancara_komunikasi_catatan' => $request->wawancara_komunikasi_catatan,
+
+                    'rekomendasi_akhir' => $request->rekomendasi_akhir,
+                    'rekomendasi_beasiswa' => $request->rekomendasi_beasiswa,
+                    'catatan_rekomendasi_beasiswa' => $request->catatan_rekomendasi_beasiswa,
+
+                    'total_akhir' => round($totalAkhir, 2),
+                ]
+            );
+
+            $this->logAktivitas('Input Penilaian Wawancara Dosen', 'Peserta', $peserta->id, "Memberikan penilaian wawancara dosen untuk {$peserta->nama}");
+
+            return back()->with('success', 'Penilaian wawancara dosen berhasil disimpan!');
+        }
+
+        // Standard academic / admin form validation and saving
         $request->validate([
             'dosen_kompetensi' => 'required|numeric|min:0|max:100',
             'dosen_motivasi' => 'required|numeric|min:0|max:100',
@@ -960,20 +1117,6 @@ class AdminController extends Controller
             'catatan' => 'nullable|string'
         ]);
 
-        $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
-
-        // Cek apakah sudah lulus seleksi ujian CBT
-        $lulusUjian = \App\Models\JawabanUjian::where('peserta_id', $peserta->id)
-            ->where('status_seleksi', 'lulus')
-            ->whereHas('ujian', function ($q) {
-                $q->where('nama', 'NOT LIKE', '%Pemetaan Diri%');
-            })
-            ->exists();
-
-        if (!$lulusUjian) {
-            return back()->with('loginError', 'Peserta ini belum dinyatakan Lulus Seleksi Ujian CBT.');
-        }
-
         $totalDosen = ($request->dosen_kompetensi + $request->dosen_motivasi + $request->dosen_wawasan +
             $request->dosen_karir + $request->dosen_integritas) / 5;
 
@@ -983,30 +1126,58 @@ class AdminController extends Controller
         $totalAkhir = ($totalDosen + $totalMhs) / 2;
 
         \App\Models\PenilaianAkademik::updateOrCreate(
-        ['peserta_id' => $peserta->id, 'penilai_id' => auth()->id()],
-        [
-            'dosen_kompetensi' => $request->dosen_kompetensi,
-            'dosen_motivasi' => $request->dosen_motivasi,
-            'dosen_wawasan' => $request->dosen_wawasan,
-            'dosen_karir' => $request->dosen_karir,
-            'dosen_integritas' => $request->dosen_integritas,
-            'total_dosen' => round($totalDosen, 2),
+            ['peserta_id' => $peserta->id, 'penilai_id' => auth()->id()],
+            [
+                'dosen_kompetensi' => $request->dosen_kompetensi,
+                'dosen_motivasi' => $request->dosen_motivasi,
+                'dosen_wawasan' => $request->dosen_wawasan,
+                'dosen_karir' => $request->dosen_karir,
+                'dosen_integritas' => $request->dosen_integritas,
+                'total_dosen' => round($totalDosen, 2),
 
-            'mhs_leadership' => $request->mhs_leadership,
-            'mhs_organisasi' => $request->mhs_organisasi,
-            'mhs_etika' => $request->mhs_etika,
-            'mhs_adaptasi' => $request->mhs_adaptasi,
-            'mhs_komitmen' => $request->mhs_komitmen,
-            'total_mhs' => round($totalMhs, 2),
+                'mhs_leadership' => $request->mhs_leadership,
+                'mhs_organisasi' => $request->mhs_organisasi,
+                'mhs_etika' => $request->mhs_etika,
+                'mhs_adaptasi' => $request->mhs_adaptasi,
+                'mhs_komitmen' => $request->mhs_komitmen,
+                'total_mhs' => round($totalMhs, 2),
 
-            'total_akhir' => round($totalAkhir, 2),
-            'catatan' => $request->catatan,
-        ]
+                'total_akhir' => round($totalAkhir, 2),
+                'catatan' => $request->catatan,
+            ]
         );
 
         $this->logAktivitas('Input Penilaian Akademik', 'Peserta', $peserta->id, "Memberikan penilaian akademik untuk {$peserta->nama}");
 
         return back()->with('success', 'Penilaian akademik berhasil disimpan!');
+    }
+
+    public function assignInterviewer(Request $request, $id)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada') {
+            return abort(403);
+        }
+
+        $request->validate([
+            'interviewer_id' => 'nullable|exists:akun,id',
+            'ruangan' => 'nullable|string|max:255'
+        ]);
+
+        $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
+        $peserta->update([
+            'interviewer_id' => $request->interviewer_id,
+            'ruangan' => $request->ruangan
+        ]);
+
+        $dosenName = 'Belum Ditentukan';
+        if ($request->interviewer_id) {
+            $dosen = \App\Models\Akun::find($request->interviewer_id);
+            if ($dosen) $dosenName = $dosen->nama;
+        }
+
+        $this->logAktivitas('Assign Interviewer', 'Peserta', $peserta->id, "Mengatur pewawancara {$dosenName} di ruangan {$request->ruangan} untuk {$peserta->nama}");
+
+        return back()->with('success', 'Pewawancara dan ruangan berhasil diperbarui!');
     }
 
     // --- PENGATURAN: MANAJEMEN USER ---

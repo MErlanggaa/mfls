@@ -104,6 +104,7 @@
 
             <!-- Navigation Links -->
             <nav class="flex-grow px-4 pb-4 space-y-1 overflow-y-auto mt-4">
+                @if(auth()->user()->role !== 'dosen')
                 <div class="px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">Main Menu</div>
 
                 <a href="{{ route('admin.dashboard') }}" onclick="closeSidebar()"
@@ -112,6 +113,7 @@
                     <span class="iconify text-xl {{ request()->routeIs('admin.dashboard') ? 'text-orange-600' : 'text-slate-400' }}" data-icon="solar:chart-square-bold"></span>
                     Dashboard
                 </a>
+                @endif
 
                 @if((auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada') && (in_array(auth()->user()->role, ['akademik', 'palugada']) || in_array(auth()->user()->email, ['dion@gmail.com', 'info@beasiswamncu.com'])))
                 <a href="{{ route('admin.beasiswa.index') }}" onclick="closeSidebar()"
@@ -122,7 +124,11 @@
                 </a>
                 @endif
 
+                @if(auth()->user()->role === 'dosen')
+                <div class="px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">Penilaian</div>
+                @else
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Data</div>
+                @endif
 
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
                 @if(auth()->user()->role === 'palugada')
@@ -163,6 +169,9 @@
                     <span class="iconify text-xl {{ request()->routeIs('admin.penilaian.index') ? 'text-blue-600' : 'text-slate-400' }}" data-icon="solar:user-id-bold"></span>
                     Penilaian Mentor
                 </a>
+                @endif
+
+                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'mentor' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada' || auth()->user()->role === 'dosen')
                 <a href="{{ route('admin.penilaian.akademik.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.penilaian.akademik.*') ? 'bg-orange-50 text-orange-600 shadow-sm ring-1 ring-orange-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -302,6 +311,26 @@
                 text: "{{ session('error') }}",
                 icon: 'error',
                 confirmButtonColor: '#ef4444',
+                borderRadius: '1.5rem'
+            });
+        @endif
+
+        @if(session('loginError'))
+            Swal.fire({
+                title: 'Tidak Dapat Menyimpan!',
+                text: "{{ session('loginError') }}",
+                icon: 'error',
+                confirmButtonColor: '#ef4444',
+                borderRadius: '1.5rem'
+            });
+        @endif
+
+        @if(session('warning'))
+            Swal.fire({
+                title: 'Perhatian!',
+                text: "{{ session('warning') }}",
+                icon: 'warning',
+                confirmButtonColor: '#F97316',
                 borderRadius: '1.5rem'
             });
         @endif

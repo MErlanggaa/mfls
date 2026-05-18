@@ -95,7 +95,7 @@ Route::post('/internal/login', [AuthController::class, 'internalLogin']);
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
     // === ROLE: Admin, Panitia, Akademik, Mentor ===
-    Route::middleware(['role:admin,panitia,akademik,mentor,palugada'])->group(
+    Route::middleware(['role:admin,panitia,akademik,mentor,palugada,dosen'])->group(
         function () {
             // Admin / Staff Dashboard
             Route::get('/admin/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -136,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/admin/penilaian-akademik', [App\Http\Controllers\AdminController::class, 'indexPenilaianAkademik'])->name('admin.penilaian.akademik.index');
             Route::get('/admin/penilaian-detail/{id}', [App\Http\Controllers\AdminController::class, 'showPenilaian'])->name('admin.penilaian.show');
             Route::post('/admin/penilaian-akademik/{id}', [App\Http\Controllers\AdminController::class, 'storePenilaianAkademik'])->name('admin.penilaian.akademik.store');
+            Route::post('/admin/penilaian-akademik/{id}/assign-interviewer', [App\Http\Controllers\AdminController::class, 'assignInterviewer'])->name('admin.penilaian.akademik.assign');
 
             Route::get('/admin/user', [App\Http\Controllers\AdminController::class, 'indexUser'])->name('admin.user.index');
             Route::post('/admin/user', [App\Http\Controllers\AdminController::class, 'storeUser'])->name('admin.user.store');

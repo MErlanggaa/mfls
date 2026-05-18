@@ -31,6 +31,8 @@ class Peserta extends Model
         'pilihan_prodi',
         'status_seleksi_ujian',
         'is_email_dikirim',
+        'interviewer_id',
+        'ruangan',
     ];
 
     public function akun()
@@ -81,6 +83,11 @@ class Peserta extends Model
     public function keputusan()
     {
         return $this->hasOne(Keputusan::class, 'peserta_id');
+    }
+
+    public function interviewer()
+    {
+        return $this->belongsTo(Akun::class, 'interviewer_id');
     }
 
     /**

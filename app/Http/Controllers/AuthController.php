@@ -105,6 +105,10 @@ class AuthController extends Controller
                 return back()->with('loginError', 'Pendaftar tidak memiliki akses ke sini.');
             }
 
+            if (Auth::user()->role === 'dosen') {
+                return redirect()->intended('/admin/penilaian-akademik');
+            }
+
             return redirect()->intended('/admin/dashboard');
         }
 

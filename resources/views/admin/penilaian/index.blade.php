@@ -4,9 +4,11 @@
 <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
         <h2 class="text-2xl font-black text-slate-800">
-            {{ $type === 'mentor' ? 'Evaluasi Peserta (Mentor)' : 'Evaluasi Peserta (Akademik)' }}
+            {{ auth()->user()->role === 'dosen' ? 'Evaluasi Wawancara (Dosen)' : ($type === 'mentor' ? 'Evaluasi Peserta (Mentor)' : 'Evaluasi Peserta (Akademik)') }}
         </h2>
-        <p class="text-slate-500 font-medium">Berikan penilaian kualitatif untuk setiap peserta yang lolos seleksi berkas.</p>
+        <p class="text-slate-500 font-medium">
+            {{ auth()->user()->role === 'dosen' ? 'Berikan penilaian wawancara untuk peserta yang ditugaskan kepada Anda.' : 'Berikan penilaian kualitatif untuk setiap peserta yang lolos seleksi berkas.' }}
+        </p>
     </div>
 </div>
 
@@ -74,6 +76,73 @@
                         <p class="text-xs font-bold text-slate-700 truncate">{{ $akun->peserta->kabupaten ?? '-' }}, {{ $akun->peserta->provinsi ?? '-' }}</p>
                     </div>
                 </div>
+
+                @if($type === 'akademik')
+                <div class="flex flex-col gap-3 p-4 bg-orange-50/30 rounded-2xl border border-orange-100/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-orange-500 shadow-sm font-bold border border-orange-100/30">
+                            <span class="iconify" data-icon="solar:medal-ribbon-bold"></span>
+                        </div>
+                        <div class="min-w-0 flex-grow">
+                            <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest leading-none mb-1">Status Wawancara</p>
+                            <p class="text-xs font-bold text-slate-700 truncate">
+                                {{ $akun->peserta->ruangan ?? 'Belum Ditentukan' }} 
+                                <span class="text-slate-400 font-semibold">• {{ $akun->peserta->interviewer->nama ?? 'Belum Ditentukan' }}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    @if(in_array(auth()->user()->role, ['admin', 'palugada', 'akademik']))
+                    @php
+                        $roomMap = [
+                            'muhammad.rezki@mncu.ac.id' => 'Ruangan 1',
+                            'humairas.betty@mncu.ac.id' => 'Ruangan 2',
+                            'vickrie.ardy@mncu.ac.id' => 'Ruangan 3',
+                            'andi.heru@mncu.ac.id' => 'Ruangan 4',
+                            'liena.prajogi@mncu.ac.id' => 'Ruangan 5',
+                            'fenny.yutika@mncu.ac.id' => 'Ruangan 6',
+                            'neni.nurkhamidah@mncu.ac.id' => 'Ruangan 7',
+                            'anita@mncu.ac.id' => 'Ruangan 8',
+                            'nadya.syifa@mncu.ac.id' => 'Ruangan 9',
+                            'ahmad.fikri@mncu.ac.id' => 'Ruangan 10',
+                            'shelly.morin@mncu.ac.id' => 'Ruangan 11',
+                            'hafsah.diana@mncu.ac.id' => 'Ruangan 12',
+                            'eko.amri@mncu.ac.id' => 'Ruangan 13',
+                            'bk.ane@mncu.ac.id' => 'Ruangan 14',
+                            'dendi.pratama@mncu.ac.id' => 'Ruangan 15',
+                        ];
+                    @endphp
+                    <form action="{{ route('admin.penilaian.akademik.assign', $akun->id) }}" method="POST" class="mt-2 pt-2 border-t border-orange-100/30 space-y-2">
+                        @csrf
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Ruangan</label>
+                                <input type="text" name="ruangan" value="{{ $akun->peserta->ruangan ?? '' }}" readonly placeholder="Ruangan Wawancara"
+                                    class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-bold text-slate-400 outline-none shadow-inner cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Pewawancara</label>
+                                 <select name="interviewer_id" onchange="const room = this.options[this.selectedIndex].getAttribute('data-room'); if(room) { this.closest('form').querySelector('input[name=\'ruangan\']').value = room; }" class="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-xl text-[10px] font-bold text-slate-700 outline-none focus:border-orange-500 shadow-sm">
+                                    <option value="">-- Pilih Dosen --</option>
+                                    @foreach($dosens as $dosen)
+                                        @php
+                                            $cleanEmail = strtolower(trim($dosen->email));
+                                            $defaultRoom = $roomMap[$cleanEmail] ?? 'Ruangan Wawancara';
+                                        @endphp
+                                        <option value="{{ $dosen->id }}" data-room="{{ $defaultRoom }}" {{ ($akun->peserta->interviewer_id ?? '') == $dosen->id ? 'selected' : '' }}>
+                                            {{ $dosen->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-md shadow-orange-500/10">
+                            <span class="iconify" data-icon="solar:check-read-bold"></span> Update Pewawancara
+                        </button>
+                    </form>
+                    @endif
+                </div>
+                @endif
 
                 @php
                     if($type === 'mentor') {
