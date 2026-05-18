@@ -28,14 +28,10 @@
                 $belumKirim = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus' && !$p->is_email_dikirim)->count();
             @endphp
             @if($belumKirim > 0)
-            <form action="{{ route('admin.seleksi_ujian.kirim_massal') }}" method="POST"
-                  onsubmit="return showMailSendingLoading('Kirim email notifikasi lolos seleksi ujian ke {{ $belumKirim }} peserta yang belum dikirimi email?');">
-                @csrf
-                <button type="submit" class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-3xl shadow-md transition-all whitespace-nowrap cursor-pointer">
-                    <span class="iconify text-lg" data-icon="solar:letter-bold"></span>
-                    Kirim Massal ({{ $belumKirim }} Belum Terkirim)
-                </button>
-            </form>
+            <button type="button" onclick="startBulkEmailSending({{ $belumKirim }})" class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-3xl shadow-md transition-all whitespace-nowrap cursor-pointer">
+                <span class="iconify text-lg" data-icon="solar:letter-bold"></span>
+                Kirim Massal ({{ $belumKirim }} Belum Terkirim)
+            </button>
             @elseif($adaYangLulus > 0)
             <button type="button" disabled class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-3xl cursor-not-allowed whitespace-nowrap">
                 <span class="iconify text-lg" data-icon="solar:check-circle-bold"></span>
@@ -386,19 +382,6 @@
 
         form.submit();
     }
-
-    function showMailSendingLoading(confirmMessage) {
-        if (confirmMessage && !confirm(confirmMessage)) {
-            return false;
-        }
-        
-        const overlay = document.getElementById('loadingOverlay');
-        overlay.classList.remove('hidden', 'pointer-events-none');
-        setTimeout(() => {
-            overlay.classList.remove('opacity-0');
-        }, 50);
-        return true;
-    }
 </script>
 
 <!-- ================= FLOATING BULK ACTION BAR ================= -->
@@ -436,23 +419,160 @@
     <div id="bulkFormInputs"></div>
 </form>
 
-<!-- ================= PREMIUM FULL SCREEN LOADING OVERLAY ================= -->
-<div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/85 backdrop-blur-md hidden opacity-0 transition-all duration-300 pointer-events-none">
-    <div class="flex flex-col items-center justify-center space-y-6 text-center max-w-sm px-6">
-        <!-- Gorgeous animated spinner -->
-        <div class="relative w-20 h-20">
-            <div class="absolute inset-0 rounded-full border-4 border-slate-700/50"></div>
-            <div class="absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
-            <div class="absolute inset-4 rounded-full bg-slate-900 flex items-center justify-center shadow-inner">
-                <span class="iconify text-2xl text-blue-400 animate-pulse" data-icon="solar:letter-opened-bold-duotone"></span>
+<script>
+    let progressInterval;
+
+    function startBulkEmailSending(totalCount) {
+        Swal.fire({
+            title: 'Kirim Email Massal',
+            text: `Kirim email notifikasi lolos seleksi ujian ke ${totalCount} peserta yang belum dikirimi email?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Kirim Massal!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 50);
+
+                // Reset UI
+                document.getElementById('bulkProgressBar').style.width = '0%';
+                document.getElementById('bulkProgressCount').innerText = `0 / ${totalCount}`;
+                document.getElementById('bulkProgressText').innerText = '0%';
+
+                fetch("{{ route('admin.seleksi_ujian.kirim_massal') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem('activeUjianEmailBatchId', data.batch_id);
+                        localStorage.setItem('activeUjianEmailTotal', data.total);
+                        pollEmailProgress(data.batch_id, data.total);
+                    } else {
+                        hideLoadingOverlay();
+                        Swal.fire('Gagal', data.error || 'Terjadi kesalahan saat memulai antrean.', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error starting bulk email:', error);
+                    hideLoadingOverlay();
+                    Swal.fire('Error', 'Terjadi kesalahan sistem.', 'error');
+                });
+            }
+        });
+    }
+
+    function pollEmailProgress(batchId, total) {
+        if (progressInterval) clearInterval(progressInterval);
+
+        progressInterval = setInterval(() => {
+            fetch(`{{ route('admin.seleksi_ujian.kirim_massal_progress') }}?batch_id=${batchId}`, {
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+                if (response.status === 404) {
+                    clearInterval(progressInterval);
+                    localStorage.removeItem('activeUjianEmailBatchId');
+                    localStorage.removeItem('activeUjianEmailTotal');
+                    hideLoadingOverlay();
+                    return null;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!data) return;
+
+                const percentage = data.percentage;
+                document.getElementById('bulkProgressBar').style.width = `${percentage}%`;
+                document.getElementById('bulkProgressCount').innerText = `${data.current} / ${data.total}`;
+                document.getElementById('bulkProgressText').innerText = `${percentage}%`;
+
+                if (data.status === 'completed' || data.current >= data.total) {
+                    clearInterval(progressInterval);
+                    localStorage.removeItem('activeUjianEmailBatchId');
+                    localStorage.removeItem('activeUjianEmailTotal');
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Selesai!',
+                            text: 'Semua email notifikasi lolos seleksi ujian telah sukses terkirim!',
+                            confirmButtonColor: '#10b981',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }, 800);
+                }
+            })
+            .catch(error => {
+                console.error('Polling error:', error);
+            });
+        }, 1500);
+    }
+
+    function hideLoadingOverlay() {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.classList.add('hidden'), 300);
+    }
+
+    // Auto-resume polling on page load if active batch exists
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedBatchId = localStorage.getItem('activeUjianEmailBatchId');
+        const savedTotal = localStorage.getItem('activeUjianEmailTotal');
+        if (savedBatchId && savedTotal) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.remove('opacity-0');
+            pollEmailProgress(savedBatchId, parseInt(savedTotal));
+        }
+    });
+</script>
+
+<!-- ================= PREMIUM FULL SCREEN PROGRESS MODAL ================= -->
+<div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/85 backdrop-blur-md hidden opacity-0 transition-all duration-300">
+    <div class="bg-white rounded-[2.5rem] p-8 w-full max-w-md border border-slate-100 shadow-2xl text-center space-y-6 mx-4">
+        <!-- Animated icon -->
+        <div class="relative w-20 h-20 mx-auto">
+            <div class="absolute inset-0 rounded-full border-4 border-emerald-100"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
+            <div class="absolute inset-4 rounded-full bg-emerald-50 flex items-center justify-center shadow-inner">
+                <span class="iconify text-2xl text-emerald-500 animate-pulse" data-icon="solar:letter-opened-bold-duotone"></span>
             </div>
         </div>
         
         <div>
-            <h3 class="text-xl font-black text-white uppercase tracking-wider mb-2">Mengirim Email Notifikasi 📧</h3>
-            <p class="text-slate-400 font-semibold text-xs leading-relaxed">
-                Mohon tunggu beberapa saat. Sistem sedang mengirimkan email pengumuman kelulusan wawancara ke kotak masuk peserta...
+            <h3 class="text-xl font-black text-slate-800 uppercase tracking-wider mb-2">Mengirim Email Massal... 📧</h3>
+            <p class="text-slate-500 font-bold text-xs leading-relaxed">
+                Mohon tunggu beberapa saat. Sistem sedang mengirimkan email pengumuman kelulusan ke antrean latar belakang secara aman.
             </p>
+        </div>
+
+        <div class="relative pt-1">
+            <div class="flex mb-2 items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-black inline-block py-1 px-3 uppercase rounded-full text-emerald-600 bg-emerald-50" id="bulkProgressText">
+                        0%
+                    </span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-black inline-block text-emerald-600" id="bulkProgressCount">
+                        0 / 0
+                    </span>
+                </div>
+            </div>
+            <div class="overflow-hidden h-3 mb-4 text-xs flex rounded-full bg-slate-100 border border-slate-50">
+                <div id="bulkProgressBar" style="width:0%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-emerald-500 transition-all duration-500 rounded-full"></div>
+            </div>
         </div>
     </div>
 </div>

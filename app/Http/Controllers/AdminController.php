@@ -735,56 +735,87 @@ class AdminController extends Controller
     }
 
     /**
-     * Kirim email massal ke semua peserta yang lulus seleksi ujian
+     * Kirim email massal ke semua peserta yang lulus seleksi ujian (via Queue)
      */
     public function kirimEmailLolosMassalCandidate(\Illuminate\Http\Request $request)
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada') {
+            if ($request->ajax()) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
             return abort(403);
+        }
 
         $semuaPeserta = \App\Models\Peserta::where('status_seleksi_ujian', 'lulus')
             ->where('is_email_dikirim', false)
-            ->with(['akun', 'daftar'])
             ->get();
 
         if ($semuaPeserta->isEmpty()) {
+            if ($request->ajax()) {
+                return response()->json(['error' => 'Tidak ada peserta dengan status Lulus Seleksi Ujian yang belum dikirimi email.'], 400);
+            }
             return back()->with('error', 'Tidak ada peserta dengan status Lulus Seleksi Ujian yang belum dikirimi email.');
         }
 
-        $berhasil = 0;
-        $gagal    = 0;
+        $batchId = (string) \Illuminate\Support\Str::uuid();
+        $total = $semuaPeserta->count();
+
+        // Store progress in Cache (expires in 1 hour)
+        \Illuminate\Support\Facades\Cache::put("ujian_email_batch_{$batchId}_total", $total, 3600);
+        \Illuminate\Support\Facades\Cache::put("ujian_email_batch_{$batchId}_current", 0, 3600);
+        \Illuminate\Support\Facades\Cache::put("ujian_email_batch_{$batchId}_status", 'processing', 3600);
 
         foreach ($semuaPeserta as $peserta) {
-            $emailTujuan = $peserta->akun->email ?? null;
-            if (!$emailTujuan) { $gagal++; continue; }
-
-            $nama        = $peserta->akun->nama ?? $peserta->nama;
-            $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
-
-            try {
-                \Illuminate\Support\Facades\Mail::mailer('gmail')
-                    ->send('emails.lolos_seleksi_ujian',
-                        compact('nama', 'asalSekolah'),
-                        function ($message) use ($emailTujuan, $nama) {
-                            $message->to($emailTujuan, $nama)
-                                    ->subject('🎉 Selamat! Anda Lolos Seleksi Ujian MNCU Future Leader Scholarship 2026');
-                        }
-                    );
-                
-                // Mark email as successfully sent
-                $peserta->update(['is_email_dikirim' => true]);
-                
-                $berhasil++;
-            } catch (\Exception $e) {
-                Log::error("Gagal kirim email lolos ujian ke {$emailTujuan}: " . $e->getMessage());
-                $gagal++;
-            }
+            \App\Jobs\SendLolosUjianEmailJob::dispatch($peserta->id, $batchId);
         }
 
         $this->logAktivitas('Kirim Email Massal Lolos Ujian', 'Bulk', null,
-            "Pengiriman massal email lolos ujian: {$berhasil} berhasil, {$gagal} gagal.");
+            "Memulai pengiriman massal email lolos ujian untuk {$total} peserta (Batch: {$batchId}).");
 
-        return back()->with('success', "Email massal selesai! ✅ Berhasil: {$berhasil}" . ($gagal > 0 ? ", ⚠️ Gagal: {$gagal}" : "."));
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'batch_id' => $batchId,
+                'total' => $total,
+                'message' => 'Proses pengiriman email massal seleksi ujian dimulai.'
+            ]);
+        }
+
+        return back()->with('success', "Proses pengiriman massal untuk {$total} peserta telah dimulai di antrean latar belakang.");
+    }
+
+    /**
+     * Get real-time progress of bulk exam email sending
+     */
+    public function getBulkEmailProgress(\Illuminate\Http\Request $request)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $batchId = $request->query('batch_id');
+        if (!$batchId || !\Illuminate\Support\Facades\Cache::has("ujian_email_batch_{$batchId}_total")) {
+            return response()->json(['status' => 'not_found'], 404);
+        }
+
+        $total = \Illuminate\Support\Facades\Cache::get("ujian_email_batch_{$batchId}_total", 0);
+        $current = \Illuminate\Support\Facades\Cache::get("ujian_email_batch_{$batchId}_current", 0);
+        
+        $percentage = $total > 0 ? round(($current / $total) * 100) : 0;
+        
+        $status = 'processing';
+        if ($current >= $total && $total > 0) {
+            $status = 'completed';
+            \Illuminate\Support\Facades\Cache::put("ujian_email_batch_{$batchId}_status", 'completed', 3600);
+        }
+
+        return response()->json([
+            'batch_id' => $batchId,
+            'total' => $total,
+            'current' => $current,
+            'percentage' => $percentage,
+            'status' => $status
+        ]);
     }
 
 
