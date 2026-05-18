@@ -639,7 +639,7 @@ class AdminController extends Controller
             'Expires' => '0'
         ];
 
-        $columns = ['No', 'NISN', 'Nama Lengkap', 'Asal Sekolah', 'Nilai TBA', 'Nilai TBI', 'Analisis Pemetaan Diri (AI)', 'Status Seleksi', 'Status Email Notifikasi'];
+        $columns = ['No', 'Nama Lengkap', 'Asal Sekolah', 'Status Seleksi'];
 
         $callback = function() use ($pesertas, $columns) {
             $file = fopen('php://output', 'w');
@@ -651,8 +651,8 @@ class AdminController extends Controller
 
             $no = 1;
             foreach ($pesertas as $peserta) {
-                // Tidy up Status Seleksi without emojis that can cause glitches in Excel
-                $statusText = 'Menunggu';
+                // Tidy up Status Seleksi without emojis
+                $statusText = 'Menunggu Konfirmasi';
                 if ($peserta->status_seleksi_ujian === 'lulus') {
                     $statusText = 'Lulus Seleksi';
                 } elseif ($peserta->status_seleksi_ujian === 'tidak_lulus') {
@@ -696,25 +696,11 @@ class AdminController extends Controller
                     $asalSekolah = trim($asalSekolah);
                 }
 
-                $analisisClean = !empty($peserta->analisis_pemetaan) ? strip_tags(str_replace(["\r", "\n"], ' ', $peserta->analisis_pemetaan)) : 'Belum Mengerjakan';
-
-                $emailSentText = 'Belum Dikirim';
-                if ($peserta->status_seleksi_ujian === 'lulus') {
-                    $emailSentText = $peserta->is_email_dikirim ? 'Sudah Terkirim' : 'Belum Dikirim';
-                } else {
-                    $emailSentText = '-';
-                }
-
                 fputcsv($file, [
                     $no++,
-                    $peserta->nisn,
                     $namaLengkap,
                     $asalSekolah,
-                    $peserta->score_tba !== null ? number_format($peserta->score_tba, 2) : 'Belum Mengerjakan',
-                    $peserta->score_tbi !== null ? number_format($peserta->score_tbi, 2) : 'Belum Mengerjakan',
-                    $analisisClean,
-                    $statusText,
-                    $emailSentText
+                    $statusText
                 ], ';');
             }
             fclose($file);
