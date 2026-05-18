@@ -222,6 +222,24 @@ class InterviewerSeeder extends Seeder
         DB::transaction(function () use ($mapping) {
             $mappedCount = 0;
 
+            $roomMap = [
+                'muhammad.rezki@mncu.ac.id' => 'Ruangan 1',
+                'humairas.betty@mncu.ac.id' => 'Ruangan 2',
+                'vickrie.ardy@mncu.ac.id' => 'Ruangan 3',
+                'andi.heru@mncu.ac.id' => 'Ruangan 4',
+                'liena.prajogi@mncu.ac.id' => 'Ruangan 5',
+                'fenny.yutika@mncu.ac.id' => 'Ruangan 6',
+                'neni.nurkhamidah@mncu.ac.id' => 'Ruangan 7',
+                'anita@mncu.ac.id' => 'Ruangan 8',
+                'nadya.syifa@mncu.ac.id' => 'Ruangan 9',
+                'ahmad.fikri@mncu.ac.id' => 'Ruangan 10',
+                'shelly.morin@mncu.ac.id' => 'Ruangan 11',
+                'hafsah.diana@mncu.ac.id' => 'Ruangan 12',
+                'eko.amri@mncu.ac.id' => 'Ruangan 13',
+                'bk.ane@mncu.ac.id' => 'Ruangan 14',
+                'dendi.pratama@mncu.ac.id' => 'Ruangan 15',
+            ];
+
             foreach ($mapping as $dosenData) {
                 // 1. Create or Update Akun for Dosen
                 $akun = Akun::updateOrCreate(
@@ -236,6 +254,9 @@ class InterviewerSeeder extends Seeder
 
                 $this->command->info("Seeded interviewer: {$akun->nama} ({$akun->email})");
 
+                $cleanEmail = strtolower(trim($dosenData['email']));
+                $ruangan = $roomMap[$cleanEmail] ?? 'Ruangan Wawancara';
+
                 // 2. Map Candidates to this Interviewer
                 foreach ($dosenData['candidates'] as $candidateName) {
                     $cleanedName = trim($candidateName);
@@ -249,8 +270,11 @@ class InterviewerSeeder extends Seeder
                     }
 
                     if ($peserta) {
-                        $peserta->update(['interviewer_id' => $akun->id]);
-                        $this->command->info("  -> Mapped candidate: {$peserta->nama}");
+                        $peserta->update([
+                            'interviewer_id' => $akun->id,
+                            'ruangan' => $ruangan
+                        ]);
+                        $this->command->info("  -> Mapped candidate: {$peserta->nama} to Room: {$ruangan}");
                         $mappedCount++;
                     } else {
                         $this->command->warn("  -> Candidate not found in database: '{$candidateName}'");
@@ -262,8 +286,13 @@ class InterviewerSeeder extends Seeder
             if (app()->environment('local') && $mappedCount === 0) {
                 $firstInterviewer = Akun::where('email', 'muhammad.rezki@mncu.ac.id')->first();
                 if ($firstInterviewer) {
-                    Peserta::query()->update(['interviewer_id' => $firstInterviewer->id]);
-                    $this->command->info("Local fallback: Mapped all existing test candidates to {$firstInterviewer->nama}");
+                    $cleanEmail = strtolower(trim($firstInterviewer->email));
+                    $ruangan = $roomMap[$cleanEmail] ?? 'Ruangan 1';
+                    Peserta::query()->update([
+                        'interviewer_id' => $firstInterviewer->id,
+                        'ruangan' => $ruangan
+                    ]);
+                    $this->command->info("Local fallback: Mapped all existing test candidates to {$firstInterviewer->nama} in Room: {$ruangan}");
                 }
             }
         });
