@@ -30,6 +30,7 @@ class Peserta extends Model
         'link_twibbon',
         'pilihan_prodi',
         'status_seleksi_ujian',
+        'is_email_dikirim',
     ];
 
     public function akun()

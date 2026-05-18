@@ -516,7 +516,8 @@ class AdminController extends Controller
 
         $peserta = \App\Models\Peserta::findOrFail($id);
         $peserta->update([
-            'status_seleksi_ujian' => $request->status_seleksi_ujian
+            'status_seleksi_ujian' => $request->status_seleksi_ujian,
+            'is_email_dikirim' => false
         ]);
 
         $statusText = $request->status_seleksi_ujian === 'lulus' ? 'LULUS' : ($request->status_seleksi_ujian === 'tidak_lulus' ? 'TIDAK LULUS' : 'MENUNGGU');
@@ -546,7 +547,8 @@ class AdminController extends Controller
         $statusText = $status === 'lulus' ? 'LULUS' : ($status === 'tidak_lulus' ? 'TIDAK LULUS' : 'MENUNGGU');
 
         \App\Models\Peserta::whereIn('id', $ids)->update([
-            'status_seleksi_ujian' => $status
+            'status_seleksi_ujian' => $status,
+            'is_email_dikirim' => false
         ]);
 
         $count = count($ids);
@@ -637,7 +639,7 @@ class AdminController extends Controller
             'Expires' => '0'
         ];
 
-        $columns = ['No', 'NISN', 'Nama Lengkap', 'Asal Sekolah', 'Nilai TBA', 'Nilai TBI', 'Analisis Pemetaan Diri (AI)', 'Status Seleksi'];
+        $columns = ['No', 'NISN', 'Nama Lengkap', 'Asal Sekolah', 'Nilai TBA', 'Nilai TBI', 'Analisis Pemetaan Diri (AI)', 'Status Seleksi', 'Status Email Notifikasi'];
 
         $callback = function() use ($pesertas, $columns) {
             $file = fopen('php://output', 'w');
@@ -659,6 +661,13 @@ class AdminController extends Controller
                 $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
                 $analisisClean = !empty($peserta->analisis_pemetaan) ? strip_tags(str_replace(["\r", "\n"], ' ', $peserta->analisis_pemetaan)) : 'Belum Mengerjakan';
 
+                $emailSentText = 'Belum Dikirim';
+                if ($peserta->status_seleksi_ujian === 'lulus') {
+                    $emailSentText = $peserta->is_email_dikirim ? 'Sudah Terkirim' : 'Belum Dikirim';
+                } else {
+                    $emailSentText = '-';
+                }
+
                 fputcsv($file, [
                     $no++,
                     $peserta->nisn,
@@ -667,7 +676,8 @@ class AdminController extends Controller
                     $peserta->score_tba !== null ? number_format($peserta->score_tba, 2) : 'Belum Mengerjakan',
                     $peserta->score_tbi !== null ? number_format($peserta->score_tbi, 2) : 'Belum Mengerjakan',
                     $analisisClean,
-                    $statusText
+                    $statusText,
+                    $emailSentText
                 ], ';');
             }
             fclose($file);
@@ -711,6 +721,9 @@ class AdminController extends Controller
                     }
                 );
 
+            // Mark email as successfully sent
+            $peserta->update(['is_email_dikirim' => true]);
+
             $this->logAktivitas('Kirim Email Lolos Ujian', 'Peserta', $peserta->id,
                 "Mengirim email lolos seleksi ujian ke {$nama} ({$emailTujuan})");
 
@@ -730,11 +743,12 @@ class AdminController extends Controller
             return abort(403);
 
         $semuaPeserta = \App\Models\Peserta::where('status_seleksi_ujian', 'lulus')
+            ->where('is_email_dikirim', false)
             ->with(['akun', 'daftar'])
             ->get();
 
         if ($semuaPeserta->isEmpty()) {
-            return back()->with('error', 'Tidak ada peserta dengan status Lulus Seleksi Ujian untuk dikirim email.');
+            return back()->with('error', 'Tidak ada peserta dengan status Lulus Seleksi Ujian yang belum dikirimi email.');
         }
 
         $berhasil = 0;
@@ -756,6 +770,10 @@ class AdminController extends Controller
                                     ->subject('🎉 Selamat! Anda Lolos Seleksi Ujian MNCU Future Leader Scholarship 2026');
                         }
                     );
+                
+                // Mark email as successfully sent
+                $peserta->update(['is_email_dikirim' => true]);
+                
                 $berhasil++;
             } catch (\Exception $e) {
                 Log::error("Gagal kirim email lolos ujian ke {$emailTujuan}: " . $e->getMessage());

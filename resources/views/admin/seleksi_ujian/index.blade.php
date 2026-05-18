@@ -25,16 +25,22 @@
             <!-- Tombol Kirim Email Massal -->
             @php
                 $adaYangLulus = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus')->count();
+                $belumKirim = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus' && !$p->is_email_dikirim)->count();
             @endphp
-            @if($adaYangLulus > 0)
+            @if($belumKirim > 0)
             <form action="{{ route('admin.seleksi_ujian.kirim_massal') }}" method="POST"
-                  onsubmit="return showMailSendingLoading('Kirim email notifikasi lolos seleksi ujian ke {{ $adaYangLulus }} peserta yang telah dinyatakan LULUS?');">
+                  onsubmit="return showMailSendingLoading('Kirim email notifikasi lolos seleksi ujian ke {{ $belumKirim }} peserta yang belum dikirimi email?');">
                 @csrf
-                <button type="submit" class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-3xl shadow-md transition-all whitespace-nowrap">
+                <button type="submit" class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-3xl shadow-md transition-all whitespace-nowrap cursor-pointer">
                     <span class="iconify text-lg" data-icon="solar:letter-bold"></span>
-                    Kirim Email Massal ({{ $adaYangLulus }} Lulus)
+                    Kirim Massal ({{ $belumKirim }} Belum Terkirim)
                 </button>
             </form>
+            @elseif($adaYangLulus > 0)
+            <button type="button" disabled class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-3xl cursor-not-allowed whitespace-nowrap">
+                <span class="iconify text-lg" data-icon="solar:check-circle-bold"></span>
+                Semua Email Terkirim ({{ $adaYangLulus }} Lulus)
+            </button>
             @endif
         </div>
     </div>
@@ -168,19 +174,32 @@
 
                     {{-- Status Seleksi Ujian --}}
                     <td class="px-6 py-4 text-center">
-                        @if($status === 'lulus')
-                            <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-emerald-200">
-                                ✅ Lulus Seleksi
-                            </span>
-                        @elseif($status === 'tidak_lulus')
-                            <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 text-rose-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-rose-100">
-                                ❌ Gagal Seleksi
-                            </span>
-                        @else
-                            <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-amber-200">
-                                ⏳ Menunggu
-                            </span>
-                        @endif
+                        <div class="flex flex-col items-center justify-center gap-1.5">
+                            @if($status === 'lulus')
+                                <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-emerald-200">
+                                    ✅ Lulus Seleksi
+                                </span>
+                                
+                                {{-- Status Notifikasi Email --}}
+                                @if($peserta->is_email_dikirim)
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-600 text-[8px] font-black uppercase tracking-widest rounded-full border border-blue-100" title="Email notifikasi kelulusan sudah berhasil dikirim">
+                                        <span class="iconify text-[10px]" data-icon="solar:check-circle-bold"></span> Sudah Dikirim 📬
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-500 text-[8px] font-black uppercase tracking-widest rounded-full border border-slate-200" title="Email notifikasi kelulusan belum dikirim">
+                                        <span class="iconify text-[10px] animate-pulse" data-icon="solar:letter-bold"></span> Belum Dikirim ✉️
+                                    </span>
+                                @endif
+                            @elseif($status === 'tidak_lulus')
+                                <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-rose-50 text-rose-600 text-[9px] font-black uppercase tracking-widest rounded-full border border-rose-100">
+                                    ❌ Gagal Seleksi
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-amber-200">
+                                    ⏳ Menunggu
+                                </span>
+                            @endif
+                        </div>
                     </td>
 
                     {{-- Actions --}}
@@ -213,8 +232,9 @@
                             <form action="{{ route('admin.seleksi_ujian.kirim_email', $peserta->id) }}" method="POST" class="inline"
                                   onsubmit="return showMailSendingLoading('Kirim email notifikasi lolos seleksi ujian ke {{ $peserta->nama }}?');">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center gap-1 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[9px] font-black hover:bg-emerald-600 hover:text-white transition-all shadow-sm uppercase tracking-widest animate-bounce">
-                                    <span class="iconify" data-icon="solar:letter-bold"></span> Email
+                                <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[9px] font-black transition-all shadow-sm uppercase tracking-widest {{ $peserta->is_email_dikirim ? 'bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white animate-bounce' }}">
+                                    <span class="iconify" data-icon="{{ $peserta->is_email_dikirim ? 'solar:reply-bold' : 'solar:letter-bold' }}"></span> 
+                                    {{ $peserta->is_email_dikirim ? 'Kirim Ulang' : 'Email' }}
                                 </button>
                             </form>
                             @endif

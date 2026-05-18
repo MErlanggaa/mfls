@@ -106,7 +106,7 @@ return [
             'transport' => 'failover',
             'mailers' => [
                 'smtp',
-                'log',
+                'gmail',
             ],
         ],
 
