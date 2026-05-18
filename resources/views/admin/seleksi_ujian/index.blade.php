@@ -22,10 +22,13 @@
                 Ekspor Excel 📊
             </a>
 
-            <!-- Tombol Kirim Email Massal -->
             @php
-                $adaYangLulus = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus')->count();
-                $belumKirim = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus' && !$p->is_email_dikirim)->count();
+                $adaYangLulus = $pesertas->filter(function($p) {
+                    return ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus';
+                })->count();
+                $belumKirim = $pesertas->filter(function($p) {
+                    return ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus' && !$p->is_email_dikirim;
+                })->count();
             @endphp
             @if($belumKirim > 0)
             <button type="button" onclick="startBulkEmailSending({{ $belumKirim }})" class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-3xl shadow-md transition-all whitespace-nowrap cursor-pointer">
@@ -66,9 +69,15 @@
     {{-- Summary Stats --}}
     @php
         $totalPeserta = $pesertas->count();
-        $totalLulus  = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus')->count();
-        $totalGagal  = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'tidak_lulus')->count();
-        $totalMenunggu = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'menunggu')->count();
+        $totalLulus  = $pesertas->filter(function($p) {
+            return ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus';
+        })->count();
+        $totalGagal  = $pesertas->filter(function($p) {
+            return ($p->status_seleksi_ujian ?? 'menunggu') === 'tidak_lulus';
+        })->count();
+        $totalMenunggu = $pesertas->filter(function($p) {
+            return ($p->status_seleksi_ujian ?? 'menunggu') === 'menunggu';
+        })->count();
     @endphp
     @if($totalPeserta > 0)
     <div class="grid grid-cols-4 gap-4">
@@ -225,14 +234,10 @@
 
                             {{-- Tombol Kirim Email (hanya untuk yang lulus manual) --}}
                             @if($status === 'lulus')
-                            <form action="{{ route('admin.seleksi_ujian.kirim_email', $peserta->id) }}" method="POST" class="inline"
-                                  onsubmit="return showMailSendingLoading('Kirim email notifikasi lolos seleksi ujian ke {{ $peserta->nama }}?');">
-                                @csrf
-                                <button type="submit" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[9px] font-black transition-all shadow-sm uppercase tracking-widest {{ $peserta->is_email_dikirim ? 'bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white animate-bounce' }}">
-                                    <span class="iconify" data-icon="{{ $peserta->is_email_dikirim ? 'solar:reply-bold' : 'solar:letter-bold' }}"></span> 
-                                    {{ $peserta->is_email_dikirim ? 'Kirim Ulang' : 'Email' }}
-                                </button>
-                            </form>
+                            <button type="button" onclick="sendIndividualEmail({{ $peserta->id }}, '{{ addslashes($peserta->nama) }}')" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[9px] font-black transition-all shadow-sm uppercase tracking-widest {{ $peserta->is_email_dikirim ? 'bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white animate-bounce' }}">
+                                <span class="iconify" data-icon="{{ $peserta->is_email_dikirim ? 'solar:reply-bold' : 'solar:letter-bold' }}"></span> 
+                                {{ $peserta->is_email_dikirim ? 'Kirim Ulang' : 'Email' }}
+                            </button>
                             @endif
                         </div>
                     </td>
@@ -523,6 +528,45 @@
         const overlay = document.getElementById('loadingOverlay');
         overlay.classList.add('opacity-0');
         setTimeout(() => overlay.classList.add('hidden'), 300);
+    }
+
+    function sendIndividualEmail(id, name) {
+        Swal.fire({
+            title: 'Kirim Email',
+            text: `Kirim email notifikasi lolos seleksi ujian ke ${name}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Kirim!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show clean loading spinner using Swal
+                Swal.fire({
+                    title: 'Mengirim Email...',
+                    text: 'Mohon tunggu beberapa saat.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Create a dynamic form to submit the request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/seleksi-ujian/${id}/kirim-email`;
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = '{{ csrf_token() }}';
+                form.appendChild(csrfInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     }
 
     // Auto-resume polling on page load if active batch exists

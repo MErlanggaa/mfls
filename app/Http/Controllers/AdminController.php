@@ -651,14 +651,51 @@ class AdminController extends Controller
 
             $no = 1;
             foreach ($pesertas as $peserta) {
-                $statusText = '⏳ Menunggu';
+                // Tidy up Status Seleksi without emojis that can cause glitches in Excel
+                $statusText = 'Menunggu';
                 if ($peserta->status_seleksi_ujian === 'lulus') {
-                    $statusText = '✅ Lulus Seleksi';
+                    $statusText = 'Lulus Seleksi';
                 } elseif ($peserta->status_seleksi_ujian === 'tidak_lulus') {
-                    $statusText = '❌ Gagal Seleksi';
+                    $statusText = 'Gagal Seleksi';
                 }
 
-                $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
+                // Tidy up Nama Lengkap (proper title casing and space collapsing)
+                $namaLengkap = trim($peserta->nama ?? ($peserta->akun->nama ?? ''));
+                $namaLengkap = preg_replace('/\s+/', ' ', $namaLengkap);
+                $namaLengkap = ucwords(strtolower($namaLengkap));
+
+                // Tidy up Asal Sekolah (proper capitalization & standardizing abbreviations like SMA, SMK, Negeri)
+                $asalSekolahRaw = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
+                $asalSekolah = '-';
+                if (!empty($asalSekolahRaw) && $asalSekolahRaw !== '-') {
+                    $asalSekolah = preg_replace('/\s+/', ' ', trim($asalSekolahRaw));
+                    $asalSekolah = ucwords(strtolower($asalSekolah));
+                    
+                    // Replace common abbreviations to make them look professional
+                    $replacements = [
+                        'Sma ' => 'SMA ',
+                        'Smk ' => 'SMK ',
+                        'Ma ' => 'MA ',
+                        'Smp ' => 'SMP ',
+                        'Sd ' => 'SD ',
+                        ' Sma' => ' SMA',
+                        ' Smk' => ' SMK',
+                        ' Smp' => ' SMP',
+                        ' Sd' => ' SD',
+                        ' Negeri' => ' Negeri',
+                        ' Swasta' => ' Swasta',
+                        'Mts ' => 'MTs ',
+                        ' Man ' => ' MAN ',
+                        'Ipa' => 'IPA',
+                        'Ips' => 'IPS',
+                        'Tk ' => 'TK ',
+                    ];
+                    foreach ($replacements as $search => $replace) {
+                        $asalSekolah = str_ireplace($search, $replace, $asalSekolah);
+                    }
+                    $asalSekolah = trim($asalSekolah);
+                }
+
                 $analisisClean = !empty($peserta->analisis_pemetaan) ? strip_tags(str_replace(["\r", "\n"], ' ', $peserta->analisis_pemetaan)) : 'Belum Mengerjakan';
 
                 $emailSentText = 'Belum Dikirim';
@@ -671,7 +708,7 @@ class AdminController extends Controller
                 fputcsv($file, [
                     $no++,
                     $peserta->nisn,
-                    $peserta->nama,
+                    $namaLengkap,
                     $asalSekolah,
                     $peserta->score_tba !== null ? number_format($peserta->score_tba, 2) : 'Belum Mengerjakan',
                     $peserta->score_tbi !== null ? number_format($peserta->score_tbi, 2) : 'Belum Mengerjakan',
