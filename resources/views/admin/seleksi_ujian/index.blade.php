@@ -16,6 +16,12 @@
                 <span class="iconify absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" data-icon="solar:magnifer-linear"></span>
             </form>
 
+            <!-- Tombol Ekspor Excel -->
+            <a href="{{ route('admin.seleksi_ujian.export', ['search' => request('search'), 'sort' => request('sort')]) }}" class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black uppercase tracking-widest rounded-3xl shadow-md transition-all whitespace-nowrap cursor-pointer">
+                <span class="iconify text-lg" data-icon="solar:document-bold"></span>
+                Ekspor Excel 📊
+            </a>
+
             <!-- Tombol Kirim Email Massal -->
             @php
                 $adaYangLulus = $pesertas->filter(fn($p) => ($p->status_seleksi_ujian ?? 'menunggu') === 'lulus')->count();

@@ -557,6 +557,129 @@ class AdminController extends Controller
     }
 
     /**
+     * Ekspor data Seleksi Ujian (CBT) ke file CSV/Excel
+     */
+    public function exportSeleksiUjianCandidate(Request $request)
+    {
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'akademik' && auth()->user()->role !== 'palugada')
+            return abort(403);
+
+        $query = \App\Models\Peserta::whereHas('daftar', function ($q) {
+            $q->where('status', 'lulus');
+        })->with(['akun', 'daftar', 'jawabanUjians.ujian', 'nilaiUjians.ujian']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'LIKE', "%{$search}%")
+                  ->orWhere('nama_sekolah', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $sort = $request->get('sort', 'a-z');
+        if ($sort === 'z-a') {
+            $query->orderBy('nama', 'desc');
+        } elseif ($sort === 'latest') {
+            $query->orderBy('created_at', 'desc');
+        } else {
+            $query->orderBy('nama', 'asc');
+        }
+
+        $pesertas = $query->get()->map(function ($peserta) {
+            // Temukan nilai TBA
+            $tbaRecord = $peserta->nilaiUjians->filter(function ($n) {
+                $nama = strtolower($n->ujian->nama ?? '');
+                return str_contains($nama, 'tba') || str_contains($nama, 'potensi') || str_contains($nama, 'akademik');
+            })->first();
+            
+            if (!$tbaRecord) {
+                $tbaJawaban = $peserta->jawabanUjians->filter(function ($j) {
+                    $nama = strtolower($j->ujian->nama ?? '');
+                    return str_contains($nama, 'tba') || str_contains($nama, 'potensi') || str_contains($nama, 'akademik');
+                })->first();
+                $peserta->score_tba = $tbaJawaban ? ($tbaJawaban->nilai ?? 0) : null;
+            } else {
+                $peserta->score_tba = $tbaRecord->skor_rata;
+            }
+
+            // Temukan nilai TBI
+            $tbiRecord = $peserta->nilaiUjians->filter(function ($n) {
+                $nama = strtolower($n->ujian->nama ?? '');
+                return str_contains($nama, 'tbi') || str_contains($nama, 'inggris');
+            })->first();
+            
+            if (!$tbiRecord) {
+                $tbiJawaban = $peserta->jawabanUjians->filter(function ($j) {
+                    $nama = strtolower($j->ujian->nama ?? '');
+                    return str_contains($nama, 'tbi') || str_contains($nama, 'inggris');
+                })->first();
+                $peserta->score_tbi = $tbiJawaban ? ($tbiJawaban->nilai ?? 0) : null;
+            } else {
+                $peserta->score_tbi = $tbiRecord->skor_rata;
+            }
+
+            // Temukan Kesimpulan AI Pemetaan Diri
+            $pdJawaban = $peserta->jawabanUjians->filter(function ($j) {
+                $nama = strtolower($j->ujian->nama ?? '');
+                return str_contains($nama, 'pemetaan diri');
+            })->first();
+            
+            $peserta->analisis_pemetaan = $pdJawaban ? $pdJawaban->kesimpulan_ai : null;
+
+            return $peserta;
+        });
+
+        $headers = [
+            'Content-type' => 'text/csv; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename=MFLS_Seleksi_Ujian_CBT_2026.csv',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        ];
+
+        $columns = ['No', 'NISN', 'Nama Lengkap', 'Asal Sekolah', 'Nilai TBA', 'Nilai TBI', 'Analisis Pemetaan Diri (AI)', 'Status Seleksi'];
+
+        $callback = function() use ($pesertas, $columns) {
+            $file = fopen('php://output', 'w');
+            
+            // Add UTF-8 BOM for proper Excel encoding
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, $columns, ';');
+
+            $no = 1;
+            foreach ($pesertas as $peserta) {
+                $statusText = '⏳ Menunggu';
+                if ($peserta->status_seleksi_ujian === 'lulus') {
+                    $statusText = '✅ Lulus Seleksi';
+                } elseif ($peserta->status_seleksi_ujian === 'tidak_lulus') {
+                    $statusText = '❌ Gagal Seleksi';
+                }
+
+                $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
+                $analisisClean = !empty($peserta->analisis_pemetaan) ? strip_tags(str_replace(["\r", "\n"], ' ', $peserta->analisis_pemetaan)) : 'Belum Mengerjakan';
+
+                fputcsv($file, [
+                    $no++,
+                    $peserta->nisn,
+                    $peserta->nama,
+                    $asalSekolah,
+                    $peserta->score_tba !== null ? number_format($peserta->score_tba, 2) : 'Belum Mengerjakan',
+                    $peserta->score_tbi !== null ? number_format($peserta->score_tbi, 2) : 'Belum Mengerjakan',
+                    $analisisClean,
+                    $statusText
+                ], ';');
+            }
+            fclose($file);
+        };
+
+        $this->logAktivitas('Ekspor Excel Seleksi Ujian', 'Peserta', null, 
+            "Mengekspor data seleksi ujian CBT peserta ke Excel");
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Kirim email notifikasi lolos seleksi ujian ke 1 peserta
      */
     public function kirimEmailLolosUjianCandidate($id)

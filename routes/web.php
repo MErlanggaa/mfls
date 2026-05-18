@@ -160,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/admin/seleksi-ujian/{id}/kirim-email', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosUjianCandidate'])->name('admin.seleksi_ujian.kirim_email');
             Route::post('/admin/seleksi-ujian/kirim-massal', [App\Http\Controllers\AdminController::class, 'kirimEmailLolosMassalCandidate'])->name('admin.seleksi_ujian.kirim_massal');
             Route::post('/admin/seleksi-ujian/bulk-update', [App\Http\Controllers\AdminController::class, 'bulkUpdateStatusSeleksiUjianCandidate'])->name('admin.seleksi_ujian.bulk_update');
+            Route::get('/admin/seleksi-ujian/export', [App\Http\Controllers\AdminController::class, 'exportSeleksiUjianCandidate'])->name('admin.seleksi_ujian.export');
 
             // Manajemen Berita
             Route::middleware(['role:admin,panitia,palugada'])->group(
