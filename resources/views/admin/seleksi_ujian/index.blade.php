@@ -28,7 +28,7 @@
             @endphp
             @if($adaYangLulus > 0)
             <form action="{{ route('admin.seleksi_ujian.kirim_massal') }}" method="POST"
-                  onsubmit="return confirm('Kirim email notifikasi lolos seleksi ujian ke {{ $adaYangLulus }} peserta yang telah dinyatakan LULUS?');">
+                  onsubmit="return showMailSendingLoading('Kirim email notifikasi lolos seleksi ujian ke {{ $adaYangLulus }} peserta yang telah dinyatakan LULUS?');">
                 @csrf
                 <button type="submit" class="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase tracking-widest rounded-3xl shadow-md transition-all whitespace-nowrap">
                     <span class="iconify text-lg" data-icon="solar:letter-bold"></span>
@@ -211,7 +211,7 @@
                             {{-- Tombol Kirim Email (hanya untuk yang lulus manual) --}}
                             @if($status === 'lulus')
                             <form action="{{ route('admin.seleksi_ujian.kirim_email', $peserta->id) }}" method="POST" class="inline"
-                                  onsubmit="return confirm('Kirim email notifikasi lolos seleksi ujian ke {{ $peserta->nama }}?');">
+                                  onsubmit="return showMailSendingLoading('Kirim email notifikasi lolos seleksi ujian ke {{ $peserta->nama }}?');">
                                 @csrf
                                 <button type="submit" class="inline-flex items-center gap-1 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-[9px] font-black hover:bg-emerald-600 hover:text-white transition-all shadow-sm uppercase tracking-widest animate-bounce">
                                     <span class="iconify" data-icon="solar:letter-bold"></span> Email
@@ -366,6 +366,19 @@
 
         form.submit();
     }
+
+    function showMailSendingLoading(confirmMessage) {
+        if (confirmMessage && !confirm(confirmMessage)) {
+            return false;
+        }
+        
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.classList.remove('hidden', 'pointer-events-none');
+        setTimeout(() => {
+            overlay.classList.remove('opacity-0');
+        }, 50);
+        return true;
+    }
 </script>
 
 <!-- ================= FLOATING BULK ACTION BAR ================= -->
@@ -402,4 +415,25 @@
     <input type="hidden" name="status_seleksi_ujian" id="bulkStatusInput" value="">
     <div id="bulkFormInputs"></div>
 </form>
+
+<!-- ================= PREMIUM FULL SCREEN LOADING OVERLAY ================= -->
+<div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/85 backdrop-blur-md hidden opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="flex flex-col items-center justify-center space-y-6 text-center max-w-sm px-6">
+        <!-- Gorgeous animated spinner -->
+        <div class="relative w-20 h-20">
+            <div class="absolute inset-0 rounded-full border-4 border-slate-700/50"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+            <div class="absolute inset-4 rounded-full bg-slate-900 flex items-center justify-center shadow-inner">
+                <span class="iconify text-2xl text-blue-400 animate-pulse" data-icon="solar:letter-opened-bold-duotone"></span>
+            </div>
+        </div>
+        
+        <div>
+            <h3 class="text-xl font-black text-white uppercase tracking-wider mb-2">Mengirim Email Notifikasi 📧</h3>
+            <p class="text-slate-400 font-semibold text-xs leading-relaxed">
+                Mohon tunggu beberapa saat. Sistem sedang mengirimkan email pengumuman kelulusan wawancara ke kotak masuk peserta...
+            </p>
+        </div>
+    </div>
+</div>
 @endsection
