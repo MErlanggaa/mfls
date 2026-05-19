@@ -130,7 +130,7 @@
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Data</div>
                 @endif
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada' || auth()->user()->email === 'dendi.pratama@mncu.ac.id')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
                 @if(auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.palugada.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all

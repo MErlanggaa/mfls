@@ -104,17 +104,22 @@ Route::middleware(['auth'])->group(function () {
             // Unified Seleksi Administrasi (Profil, Raport, Berkas)
             Route::prefix('admin/pendaftar')->name('admin.pendaftar.')->group(
                 function () {
-                Route::get('/', [App\Http\Controllers\AdminController::class, 'indexPendaftar'])->name('index');
-                Route::get('/{id}', [App\Http\Controllers\AdminController::class, 'detailPendaftar'])->name('show');
-                Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifikasi'])->name('verify');
-                Route::get('/{id}/download-zip', [App\Http\Controllers\AdminController::class, 'downloadZip'])->name('download_zip');
-                Route::post('/{id}/upload-berkas', [App\Http\Controllers\AdminController::class, 'uploadBerkas'])->name('upload_berkas');
-                Route::post('/{id}/delete-berkas', [App\Http\Controllers\AdminController::class, 'deleteBerkas'])->name('delete_berkas');
+                // Route for Mentor grading
                 Route::post('/{id}/mentor-nilai', [App\Http\Controllers\AdminController::class, 'storePenilaianMentor'])->name('mentor_nilai');
-                Route::post('/{id}/update-email', [App\Http\Controllers\AdminController::class, 'updateEmailPendaftar'])->name('update_email');
-                Route::post('/{id}/update-tahun-lulus', [App\Http\Controllers\AdminController::class, 'updateTahunLulus'])->name('update_tahun_lulus');
-                Route::post('/{id}/dispensasi-ujian', [App\Http\Controllers\AdminController::class, 'storeDispensasiUjian'])->name('dispensasi_ujian');
-                Route::delete('/{id}', [App\Http\Controllers\AdminController::class, 'destroyPendaftar'])->name('destroy');
+
+                // Routes restricted to Admin, Panitia, Akademik, Palugada
+                Route::middleware(['role:admin,panitia,akademik,palugada'])->group(function () {
+                    Route::get('/', [App\Http\Controllers\AdminController::class, 'indexPendaftar'])->name('index');
+                    Route::get('/{id}', [App\Http\Controllers\AdminController::class, 'detailPendaftar'])->name('show');
+                    Route::post('/{id}/verify', [App\Http\Controllers\AdminController::class, 'verifikasi'])->name('verify');
+                    Route::get('/{id}/download-zip', [App\Http\Controllers\AdminController::class, 'downloadZip'])->name('download_zip');
+                    Route::post('/{id}/upload-berkas', [App\Http\Controllers\AdminController::class, 'uploadBerkas'])->name('upload_berkas');
+                    Route::post('/{id}/delete-berkas', [App\Http\Controllers\AdminController::class, 'deleteBerkas'])->name('delete_berkas');
+                    Route::post('/{id}/update-email', [App\Http\Controllers\AdminController::class, 'updateEmailPendaftar'])->name('update_email');
+                    Route::post('/{id}/update-tahun-lulus', [App\Http\Controllers\AdminController::class, 'updateTahunLulus'])->name('update_tahun_lulus');
+                    Route::post('/{id}/dispensasi-ujian', [App\Http\Controllers\AdminController::class, 'storeDispensasiUjian'])->name('dispensasi_ujian');
+                    Route::delete('/{id}', [App\Http\Controllers\AdminController::class, 'destroyPendaftar'])->name('destroy');
+                });
             }
             );
 
