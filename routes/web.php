@@ -34,10 +34,10 @@ use Illuminate\Support\Facades\Route;
 
 
 // Guest Routes
-// Route::get('/', function () {
-//     // Original Logic:
-//     $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
-//     // $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->has('peserta')->count();
+Route::get('/', function () {
+    // Original Logic:
+    $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
+    //     // $totalPendaftar = \App\Models\Akun::where('role', 'pendaftar')->has('peserta')->count();
 //     // $locationStats = \App\Models\Peserta::select('kabupaten', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
 //     //     ->whereNotNull('kabupaten')
 //     //     ->groupBy('kabupaten')
@@ -50,13 +50,13 @@ use Illuminate\Support\Facades\Route;
 //     //             'lokasi' => $p->kabupaten,
 //     //         ];
 //     //     });
-//     return view('pendaftar.home', compact('beritas'));
+    return view('pendaftar.home', compact('beritas'));
 
-// });
+});
 
-Route::get('/', function () {
-    return view('auth.maintance');
-})->name('maintenance');
+// Route::get('/', function () {
+//     return view('auth.maintance');
+// })->name('maintenance');
 // Pengumuman Route (Public)
 Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman');
 
@@ -154,7 +154,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/admin/soal/import', [App\Http\Controllers\AdminController::class, 'importSoal'])->name('admin.soal.import');
             Route::put('/admin/soal/ujian/{id}', [App\Http\Controllers\AdminController::class, 'updateUjian'])->name('admin.ujian.update');
             Route::post('/admin/hasil-ujian/{id}/reset', [App\Http\Controllers\AdminController::class, 'resetJawabanUjian'])->name('admin.hasil_ujian.reset');
-            
+
             // Seleksi Ujian (CBT) Agregat per Peserta
             Route::get('/admin/seleksi-ujian', [App\Http\Controllers\AdminController::class, 'indexSeleksiUjian'])->name('admin.seleksi_ujian.index');
             Route::post('/admin/seleksi-ujian/{id}/update-status', [App\Http\Controllers\AdminController::class, 'updateStatusSeleksiUjianCandidate'])->name('admin.seleksi_ujian.update_status');
