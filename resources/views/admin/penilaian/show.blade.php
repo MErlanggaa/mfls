@@ -452,6 +452,36 @@
                             </div>
                         </div>
 
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Rekomendasi Kelas</label>
+                                <select name="rekomendasi_kelas" required class="w-full px-5 py-4 bg-white border border-orange-100 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-bold text-slate-700 transition-all shadow-sm">
+                                    <option value="" disabled selected>Pilih Kelas</option>
+                                    @foreach(['Kelas Reguler', 'Kelas Karyawan'] as $option)
+                                        <option value="{{ $option }}" {{ ($myDosenEval->rekomendasi_kelas ?? '') === $option ? 'selected' : '' }}>{{ $option }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Rekomendasi Prodi 1</label>
+                                <select name="rekomendasi_prodi_1" required class="w-full px-5 py-4 bg-white border border-orange-100 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-bold text-slate-700 transition-all shadow-sm">
+                                    <option value="" disabled selected>Pilih Prodi 1</option>
+                                    @foreach(['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer'] as $option)
+                                        <option value="{{ $option }}" {{ ($myDosenEval->rekomendasi_prodi_1 ?? '') === $option ? 'selected' : '' }}>{{ $option }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Rekomendasi Prodi 2</label>
+                                <select name="rekomendasi_prodi_2" required class="w-full px-5 py-4 bg-white border border-orange-100 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-bold text-slate-700 transition-all shadow-sm">
+                                    <option value="" disabled selected>Pilih Prodi 2</option>
+                                    @foreach(['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer'] as $option)
+                                        <option value="{{ $option }}" {{ ($myDosenEval->rekomendasi_prodi_2 ?? '') === $option ? 'selected' : '' }}>{{ $option }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="space-y-2 mt-4">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Catatan Rekomendasi Beasiswa</label>
                             <textarea name="catatan_rekomendasi_beasiswa" rows="4" placeholder="Tuliskan catatan tambahan mengenai skema beasiswa..."
@@ -535,12 +565,12 @@
                     </div>
                 </div>
 
-                <!-- Rekomendasi Akhir & Beasiswa -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-inner">
+                <!-- Rekomendasi Akhir & Beasiswa & Kelas/Prodi -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-slate-50 p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-inner">
                     <div class="space-y-1">
                         <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Rekomendasi Kelulusan</span>
-                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider {{ $dosenEval->rekomendasi_akhir === 'lulus' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200' }}">
-                            <span class="iconify text-base" data-icon="{{ $dosenEval->rekomendasi_akhir === 'lulus' ? 'solar:shield-check-bold' : 'solar:shield-cross-bold' }}"></span>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider {{ in_array($dosenEval->rekomendasi_akhir, ['Sangat Direkomendasikan', 'Direkomendasikan', 'Direkomendasikan dengan Catatan']) ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200' }}">
+                            <span class="iconify text-base" data-icon="{{ in_array($dosenEval->rekomendasi_akhir, ['Sangat Direkomendasikan', 'Direkomendasikan', 'Direkomendasikan dengan Catatan']) ? 'solar:shield-check-bold' : 'solar:shield-cross-bold' }}"></span>
                             {{ $dosenEval->rekomendasi_akhir }}
                         </div>
                     </div>
@@ -551,8 +581,28 @@
                             {{ $dosenEval->rekomendasi_beasiswa }}
                         </div>
                     </div>
+                    <div class="space-y-1">
+                        <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Rekomendasi Kelas</span>
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">
+                            <span class="iconify text-base" data-icon="solar:users-group-two-rounded-bold"></span>
+                            {{ $dosenEval->rekomendasi_kelas ?? '-' }}
+                        </div>
+                    </div>
+                    <div class="space-y-1 md:col-span-2 lg:col-span-3 pt-3 border-t border-slate-200/50">
+                        <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Rekomendasi Program Studi</span>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <div class="flex-1 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black bg-blue-50 text-blue-800 border border-blue-200">
+                                <span class="iconify text-base" data-icon="solar:square-academic-cap-bold"></span>
+                                <span class="text-[9px] opacity-75 font-semibold">Prodi 1:</span> {{ $dosenEval->rekomendasi_prodi_1 ?? '-' }}
+                            </div>
+                            <div class="flex-1 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black bg-teal-50 text-teal-800 border border-teal-200">
+                                <span class="iconify text-base" data-icon="solar:square-academic-cap-bold"></span>
+                                <span class="text-[9px] opacity-75 font-semibold">Prodi 2:</span> {{ $dosenEval->rekomendasi_prodi_2 ?? '-' }}
+                            </div>
+                        </div>
+                    </div>
                     @if($dosenEval->catatan_rekomendasi_beasiswa)
-                    <div class="col-span-1 md:col-span-2 pt-4 border-t border-slate-200/50 space-y-1">
+                    <div class="col-span-1 md:col-span-2 lg:col-span-3 pt-4 border-t border-slate-200/50 space-y-1">
                         <span class="block text-[9px] font-black text-slate-400 uppercase tracking-widest">Catatan & Rationale Rekomendasi</span>
                         <p class="text-xs font-bold text-slate-600 leading-relaxed italic">"{{ $dosenEval->catatan_rekomendasi_beasiswa }}"</p>
                     </div>
@@ -743,6 +793,26 @@
                                         <span>Skema Beasiswa:</span>
                                         <span class="text-indigo-600 uppercase tracking-wider text-[9px]">{{ $penilaian->rekomendasi_beasiswa }}</span>
                                     </div>
+                                    @if($penilaian->rekomendasi_kelas)
+                                    <div class="flex justify-between items-center text-[10px] font-black text-slate-700">
+                                        <span>Rekomendasi Kelas:</span>
+                                        <span class="text-amber-600 uppercase tracking-wider text-[9px]">{{ $penilaian->rekomendasi_kelas }}</span>
+                                    </div>
+                                    @endif
+                                    @if($penilaian->rekomendasi_prodi_1)
+                                    <div class="text-[10px] font-black text-slate-700 space-y-0.5">
+                                        <div class="flex justify-between items-center">
+                                            <span>Rekomendasi Prodi 1:</span>
+                                            <span class="text-blue-600 uppercase tracking-wider text-[9px]">{{ $penilaian->rekomendasi_prodi_1 }}</span>
+                                        </div>
+                                        @if($penilaian->rekomendasi_prodi_2)
+                                        <div class="flex justify-between items-center">
+                                            <span>Rekomendasi Prodi 2:</span>
+                                            <span class="text-teal-600 uppercase tracking-wider text-[9px]">{{ $penilaian->rekomendasi_prodi_2 }}</span>
+                                        </div>
+                                        @endif
+                                    </div>
+                                    @endif
                                     <div class="grid grid-cols-5 gap-1 pt-1">
                                         <span class="text-center py-1 bg-slate-50 border border-slate-100 rounded text-[9px] font-black text-slate-600" title="Motivasi">M: {{ number_format($penilaian->wawancara_motivasi * 20, 1) }}</span>
                                         <span class="text-center py-1 bg-slate-50 border border-slate-100 rounded text-[9px] font-black text-slate-600" title="Prestasi">P: {{ number_format($penilaian->wawancara_prestasi * 20, 1) }}</span>

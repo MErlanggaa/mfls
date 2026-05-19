@@ -61,6 +61,9 @@ class PenilaianAkademik extends Model
         'rekomendasi_akhir',
         'rekomendasi_beasiswa',
         'catatan_rekomendasi_beasiswa',
+        'rekomendasi_kelas',
+        'rekomendasi_prodi_1',
+        'rekomendasi_prodi_2',
     ];
 
     public function peserta()

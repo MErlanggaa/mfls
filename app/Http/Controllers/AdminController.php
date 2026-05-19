@@ -1026,6 +1026,9 @@ class AdminController extends Controller
                 'rekomendasi_akhir' => 'required|string',
                 'rekomendasi_beasiswa' => 'required|string',
                 'catatan_rekomendasi_beasiswa' => 'nullable|string',
+                'rekomendasi_kelas' => 'required|string',
+                'rekomendasi_prodi_1' => 'required|string',
+                'rekomendasi_prodi_2' => 'required|string',
             ]);
 
             // Helper to calculate component average from non-null questions
@@ -1093,6 +1096,9 @@ class AdminController extends Controller
                     'rekomendasi_akhir' => $request->rekomendasi_akhir,
                     'rekomendasi_beasiswa' => $request->rekomendasi_beasiswa,
                     'catatan_rekomendasi_beasiswa' => $request->catatan_rekomendasi_beasiswa,
+                    'rekomendasi_kelas' => $request->rekomendasi_kelas,
+                    'rekomendasi_prodi_1' => $request->rekomendasi_prodi_1,
+                    'rekomendasi_prodi_2' => $request->rekomendasi_prodi_2,
 
                     'total_akhir' => round($totalAkhir, 2),
                 ]
