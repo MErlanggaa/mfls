@@ -417,7 +417,7 @@
                                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Rekomendasi Kelas</label>
                                 <select name="rekomendasi_kelas" required class="w-full px-5 py-4 bg-white border border-orange-100 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-bold text-slate-700 transition-all shadow-sm">
                                     <option value="" disabled selected>Pilih Kelas</option>
-                                    @foreach(['Kelas Reguler', 'Kelas Karyawan'] as $option)
+                                    @foreach(['Kelas Reguler', 'Kelas Excellent'] as $option)
                                         <option value="{{ $option }}" {{ ($myDosenEval->rekomendasi_kelas ?? '') === $option ? 'selected' : '' }}>{{ $option }}</option>
                                     @endforeach
                                 </select>
