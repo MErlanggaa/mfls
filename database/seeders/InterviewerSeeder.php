@@ -45,12 +45,12 @@ class InterviewerSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'Vickrie Ardy, S.Ds., M.Pd',
-                'email' => 'vickrie.ardy@mncu.ac.id',
+                'name' => 'Gilang Surya Pratama, S.M., M.Ak.',
+                'email' => 'gilang.surya@mncu.ac.id',
                 'candidates' => [
-                    // Online
-                    "FATUROHMAN", "Dimaz Sugiactiranado Utomo", "Nasywa Adelia Putri", "Rahmawati", 
-                    "Shofia latifah", "Muhammad Riki Sudarman", "Hana Zahra", "Tanti inda lestari",
+                    // Online (Selasa 19 Mei 2026)
+                    "Adelia Mandasari", "SITI AISYAH FEBRIANI", "Nasywa Adelia Putri", "Rahmawati", 
+                    "Shofia latifah", "Muhammad Riki Sudarman", "Tanti inda lestari",
                     // Offline
                     "Nur Tyas Putri Asep Rahmadi", "Richard Adriel Wong", "Ilham Fathan Khairul", 
                     "Muhammad Dhiyaur Ramadhan Bakhr", "Putra Izhar Gumilar", "Abyan Dzaky Haidar", 
@@ -63,9 +63,9 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Andi Heru Susanto, S.Sos., M.Si',
                 'email' => 'andi.heru@mncu.ac.id',
                 'candidates' => [
-                    // Online
-                    "Nayla Salsabila Assyifa", "Faiqa Hadiya", "Fadila Ayu Amelya", "Adlin Ni’Mah", 
-                    "Natasya Ahmi Safira", "Suci Ramadhani",
+                    // Online (Selasa 19 Mei 2026)
+                    "Nayla Salsabila Assyifa", "ARTA ULI BR MARINGGA", "Fadila Ayu Amelya", "Adlin Ni’Mah", 
+                    "Natasya Ahmi Safira", "Ulya Zahro Maitsa",
                     // Offline
                     "Alya Putri Sulaiman", "Tiara Citra Dewi", "Brianya Aprilia Silitonga", "Raffa Athalariq", 
                     "SITI AISYAH FEBRIANI", "Sri Wulan", "Vivi Aulivia", "Octavia rahmadanti", "Julia Syafitri", 
@@ -77,8 +77,8 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Liena Prajogi, S.E., M.M',
                 'email' => 'liena.prajogi@mncu.ac.id',
                 'candidates' => [
-                    // Online
-                    "Nasya Alzeta Mulera", "ADINDA SOFA SYAI'RILLAH", "Rotua Angelina", "ANGGUN ZAHRA JULINA", 
+                    // Online (Selasa 19 Mei 2026)
+                    "ADINDA SOFA SYAI'RILLAH", "Rotua Angelina", "ANGGUN ZAHRA JULINA", 
                     "Naima Aulia zahara", "MUHAMAD MISBAHUSSURUR", "Nazwa Marfa Putri",
                     // Offline
                     "Rachmat Kusworo Wibowo", "Pebrian Suhendiawan", "Diana nabilla", "Felisha Savinnatunasah", 
@@ -88,12 +88,12 @@ class InterviewerSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'Fenny Yutika Selly, M.Pd',
-                'email' => 'fenny.yutika@mncu.ac.id',
+                'name' => 'Noval Adi Priyatno, S. Hub. Int',
+                'email' => 'noval.adi@mncu.ac.id',
                 'candidates' => [
-                    // Online
-                    "Maryana Cecilia Sitorus", "Gabriel Taliak", "YOGA SAPUTRA", "AISHA NOORMEDINA WILDANI", 
-                    "Ester Enjelina Aritonang", "Shabrina Aqilah Hanin",
+                    // Online (Selasa 19 Mei 2026)
+                    "Maryana Cecilia Sitorus", "Gabriel Taliak", "RADITYA", 
+                    "Ester Enjelina Aritonang", "Muhammad Faisal", "Shabrina Aqilah Hanin",
                     // Offline
                     "Muhammad Triyudha Asnan", "MUHAMMAD RAIHAN NAUFAL", "Cristy Stefany Putri", 
                     "Desila Dwi Sartika", "Zesica erlinda putri", "Anayla", "Fira Gebi Monica", 
@@ -106,7 +106,7 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Neni Nurkhamidah, M.Pd',
                 'email' => 'neni.nurkhamidah@mncu.ac.id',
                 'candidates' => [
-                    // Online
+                    // Online (Selasa 19 Mei 2026)
                     "Maria Magdalena Putri Do Karmo", "Intania Setia Rahayu", "Karina", "siti rohmah azzahra", 
                     "Sohibul Milah", "SYIFA AULIA MAULANA", "Davina fransisca laura",
                     // Offline
@@ -120,8 +120,8 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Anita, S.E.,M.Ak',
                 'email' => 'anita@mncu.ac.id',
                 'candidates' => [
-                    // Online
-                    "KIRANA FAADHILAH HISAANAH", "OLIVIA", "Widy Nurani Syakila", "Zahra Awliya Ramadhani", 
+                    // Online (Selasa 19 Mei 2026)
+                    "KIRANA FAADHILAH HISAANAH", "Abyan Dzaky Haidar", "Zahra Awliya Ramadhani", 
                     "ULMILA SYARITA", "Andre Septyo Mardianto", "Raafi achta nadesta", "Jenaya Soiya Hulu",
                     // Offline
                     "Dea Fadilah", "Inayah Rahmaniyah", "TALITHA ADELA", "Olivia Ramadhani", "Shafiq Alief Faiz", 
@@ -134,8 +134,8 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Dr. Nadya Syifa Utami',
                 'email' => 'nadya.syifa@mncu.ac.id',
                 'candidates' => [
-                    // Online
-                    "Liani", "Sekar puji lestari", "MUHAMMAD DAFAA", "Zahrah Adeha", "Melinda Kesuma Dewi", 
+                    // Online (Selasa 19 Mei 2026)
+                    "Liani", "Andra Ramadhan Sahara", "MUHAMMAD DAFAA", "Zahrah Adeha", "Melinda Kesuma Dewi", 
                     "NERA REPTIANA", "ELMEERA RADHIYA REZQYA BASARI", "Putri Wulandari",
                     // Offline
                     "Muhammad Daidan Hilmy", "Sinar Suryono", "Yuki Meiliana Farosa", "Sabrina Caltha Chairunnisa", 
@@ -148,9 +148,9 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Ahmad Fikri Alamin, S.Akun., M.Si',
                 'email' => 'ahmad.fikri@mncu.ac.id',
                 'candidates' => [
-                    // Online
+                    // Online (Selasa 19 Mei 2026)
                     "Luzzeina Nadila Yusuf", "Raisa octavia", "Risa Aura Ramadani", "Cita Aulan Hasanah", 
-                    "Izzan Azzhilan Afhal", "Nadia Rahma Az Zahra", "KIARA ANAYA SYIEFANNY",
+                    "Desi Adelia Pratiwi", "Nadia Rahma Az Zahra", "KIARA ANAYA SYIEFANNY",
                     // Offline
                     "ALYA LATHIFA SARI", "Arka Aditya", "Putri Pebyanti", "Najwa Mecca", "REVINA DEA ARIPIANTI", 
                     "Tiara Dewi Lestari", "Keyla Aulya Rizky", "Fahira Sasti Ramadhani", "Azizah Khairunnisa", 
@@ -162,9 +162,9 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Dr. Shelly Morin, M.Pd',
                 'email' => 'shelly.morin@mncu.ac.id',
                 'candidates' => [
-                    // Online
+                    // Online (Selasa 19 Mei 2026)
                     "Erin Afrillia", "Moch Dziqri Al Ghifari", "Nazra Latizha Maulida", "NAJLA AULIA LBS", 
-                    "Andrea Puspa Ningrum", "Willy Alimudin", "Aura Angelina Fasha",
+                    "Andrea Puspa Ningrum", "Siti Sahila Tansa", "Aura Angelina Fasha",
                     // Offline
                     "Shafira Fatimah Nurzahrah", "Nabila Annastasya", "Fernando Kevin Pratama", "SAMUEL MARBUN", 
                     "Zeid Held Tirta Zaputra", "Muhammad Faisal", "AZRIEL AZIZ BAZLIA SUYONO", "ALFIZAHRA KEISHADI", 
@@ -173,10 +173,10 @@ class InterviewerSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'Hafsah Diana Adha, M.Pd',
-                'email' => 'hafsah.diana@mncu.ac.id',
+                'name' => 'Wida Nofiasari, M. Ikom',
+                'email' => 'wida.nofiasari@mncu.ac.id',
                 'candidates' => [
-                    // Online
+                    // Online (Selasa 19 Mei 2026)
                     "Laura muthia kirana", "Annisaul Mardhiyah Octavia", "JOHANES BULLER IMANUEL SITOMPUL", 
                     "Salma Tani'ah", "Zaidan Rifki", "Nadatul munawaroh", "SALSA HUSNA LATIFA", "Kirana Gumilangsari",
                     // Offline
@@ -190,7 +190,7 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Eko Amri Jaya, M.Kom',
                 'email' => 'eko.amri@mncu.ac.id',
                 'candidates' => [
-                    // Online
+                    // Online (Selasa 19 Mei 2026)
                     "ADELIA MANDASARI", "Cahaya Eka Rahayu", "DAVID VALENTINOTODA", "Rivana Adelia", 
                     "Naila Rohimatus Sa'diyah", "ADITIA ABDUL AZIZ", "AHMAD DZAKY NASUTION",
                     // Offline
@@ -204,8 +204,8 @@ class InterviewerSeeder extends Seeder
                 'name' => 'Dr. Bernadetta Kwintiana Ane',
                 'email' => 'bk.ane@mncu.ac.id',
                 'candidates' => [
-                    // Online
-                    "RADITYA", "Siti Sahila Tansa", "ARTA ULI BR MARINGGA", "Muhammad Farid Firdaus",
+                    // Online (Selasa 19 Mei 2026)
+                    "YOGA SAPUTRA", "Willy Alimudin", "Faiqa Hadiya", "Muhammad Farid Firdaus", "NUR FEBBRIANIY RIVVANTI FATULAH",
                     // Offline
                     "NASYIFAH NAILATUL IZZAH", "FRIZKA MAWARNI", "Nanda Gadis Supriadi", "SATRIA CAHAYA MULYA", 
                     "Khirana Try mulia", "Desi Adelia Pratiwi", "IBRAHIM MOVIC DIPONEGORO", "Ayu Wulandari", 
@@ -225,16 +225,16 @@ class InterviewerSeeder extends Seeder
             $roomMap = [
                 'muhammad.rezki@mncu.ac.id' => 'Ruangan 1',
                 'humairas.betty@mncu.ac.id' => 'Ruangan 2',
-                'vickrie.ardy@mncu.ac.id' => 'Ruangan 3',
+                'gilang.surya@mncu.ac.id' => 'Ruangan 3',
                 'andi.heru@mncu.ac.id' => 'Ruangan 4',
                 'liena.prajogi@mncu.ac.id' => 'Ruangan 5',
-                'fenny.yutika@mncu.ac.id' => 'Ruangan 6',
+                'noval.adi@mncu.ac.id' => 'Ruangan 6',
                 'neni.nurkhamidah@mncu.ac.id' => 'Ruangan 7',
                 'anita@mncu.ac.id' => 'Ruangan 8',
                 'nadya.syifa@mncu.ac.id' => 'Ruangan 9',
                 'ahmad.fikri@mncu.ac.id' => 'Ruangan 10',
                 'shelly.morin@mncu.ac.id' => 'Ruangan 11',
-                'hafsah.diana@mncu.ac.id' => 'Ruangan 12',
+                'wida.nofiasari@mncu.ac.id' => 'Ruangan 12',
                 'eko.amri@mncu.ac.id' => 'Ruangan 13',
                 'bk.ane@mncu.ac.id' => 'Ruangan 14',
                 'dendi.pratama@mncu.ac.id' => 'Ruangan 15',
