@@ -13,7 +13,7 @@ return [
     */
     'show_warnings' => false,   // Throw an Exception on warnings from dompdf
 
-    'public_path' => base_path('../public_html'), // Override the public path if needed
+    'public_path' => is_dir(base_path('../public_html')) ? base_path('../public_html') : base_path('public'), // Override the public path if needed
 
     /*
      * Dejavu Sans font is missing glyphs for converted entities, turn it off if you need to show € and £.
@@ -78,7 +78,7 @@ return [
          * direct class use like:
          * $dompdf = new DOMPDF();  $dompdf->load_html($htmldata); $dompdf->render(); $pdfdata = $dompdf->output();
          */
-        'chroot' => base_path('../'),
+        'chroot' => is_dir(base_path('../public_html')) ? base_path('../') : base_path(),
 
         /**
          * Protocol whitelist

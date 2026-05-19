@@ -879,9 +879,11 @@ class AdminController extends Controller
             });
 
         if (auth()->user()->role === 'dosen') {
-            $query->whereHas('peserta', function ($q) {
-                $q->where('interviewer_id', auth()->id());
-            });
+            if (auth()->user()->email !== 'dendi.pratama@mncu.ac.id') {
+                $query->whereHas('peserta', function ($q) {
+                    $q->where('interviewer_id', auth()->id());
+                });
+            }
         }
 
         $query->with(['peserta.daftar', 'peserta.penilaianAkademiks']);
@@ -1158,6 +1160,10 @@ class AdminController extends Controller
             return abort(403);
         }
 
+        if (auth()->user()->email === 'dendi.pratama@mncu.ac.id') {
+            return abort(403, 'Anda tidak diizinkan untuk memilih dosen.');
+        }
+
         $request->validate([
             'interviewer_id' => 'nullable|exists:akun,id',
             'ruangan' => 'nullable|string|max:255'
@@ -1183,7 +1189,7 @@ class AdminController extends Controller
     // --- PENGATURAN: MANAJEMEN USER ---
     public function indexUser()
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada' && auth()->user()->email !== 'info@beasiswamncu.com')
             return abort(403);
         $users = Akun::where('role', '!=', 'pendaftar')->withCount('peserta')->get();
         return view('admin.user.index', compact('users'));
@@ -1263,13 +1269,13 @@ class AdminController extends Controller
 
     public function storeUser(Request $request)
     {
-        if (auth()->user()->role !== 'admin')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada' && auth()->user()->email !== 'info@beasiswamncu.com')
             return abort(403);
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:akun,email',
             'password' => 'required|min:6',
-            'role' => 'required|in:admin,panitia,akademik,mentor,palugada'
+            'role' => 'required|in:admin,panitia,akademik,mentor,palugada,dosen'
         ]);
 
         Akun::create([
@@ -1284,14 +1290,14 @@ class AdminController extends Controller
 
     public function updateUser(Request $request, $id)
     {
-        if (auth()->user()->role !== 'admin')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada' && auth()->user()->email !== 'info@beasiswamncu.com')
             return abort(403);
         $user = Akun::findOrFail($id);
 
         $rules = [
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:akun,email,' . $id,
-            'role' => 'required|in:admin,panitia,akademik,mentor,palugada'
+            'role' => 'required|in:admin,panitia,akademik,mentor,palugada,dosen'
         ];
 
         if ($request->password) {
@@ -1363,7 +1369,7 @@ class AdminController extends Controller
 
     public function destroyUser($id)
     {
-        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada')
+        if (auth()->user()->role !== 'admin' && auth()->user()->role !== 'palugada' && auth()->user()->email !== 'info@beasiswamncu.com')
             return abort(403);
         $user = Akun::findOrFail($id);
 

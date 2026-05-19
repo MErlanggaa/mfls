@@ -6,7 +6,7 @@
         <h2 class="text-2xl font-black text-gray-800">Manajemen Pengguna</h2>
         <p class="text-gray-500">Kelola akun operasional sistem (Admin, Administrasi, Akademik, Mentor).</p>
     </div>
-    @if(auth()->check() && auth()->user()->role === 'admin')
+    @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'palugada' || auth()->user()->email === 'info@beasiswamncu.com'))
     <button onclick="openAddModal()" class="px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-black shadow-lg shadow-slate-200 hover:bg-black transition-all uppercase tracking-widest flex items-center gap-2">
         <span class="iconify" data-icon="solar:user-plus-bold"></span> Tambah User
     </button>
@@ -29,6 +29,10 @@
                 $colorClass = 'bg-blue-600'; $bgColorClass = 'bg-blue-50'; $textColorClass = 'text-blue-600';
             } elseif($user->role === 'mentor') {
                 $colorClass = 'bg-emerald-600'; $bgColorClass = 'bg-emerald-50'; $textColorClass = 'text-emerald-600';
+            } elseif($user->role === 'palugada') {
+                $colorClass = 'bg-purple-600'; $bgColorClass = 'bg-purple-50'; $textColorClass = 'text-purple-600';
+            } elseif($user->role === 'dosen') {
+                $colorClass = 'bg-indigo-600'; $bgColorClass = 'bg-indigo-50'; $textColorClass = 'text-indigo-600';
             }
         @endphp
         
@@ -59,7 +63,7 @@
             @endif
         </div>
 
-        @if(auth()->check() && auth()->user()->role === 'admin')
+        @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'palugada' || auth()->user()->email === 'info@beasiswamncu.com'))
         <div class="flex gap-2">
             <button onclick="openEditModal({{ json_encode($user) }})" class="flex-1 py-3 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-black hover:bg-slate-100 transition-all uppercase tracking-widest">Edit Akun</button>
             <button type="button" onclick="confirmQuickReset({{ $user->id }}, '{{ $user->nama }}')" class="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center hover:bg-yellow-500 hover:text-white transition-all shadow-sm" title="Quick Reset Password">
@@ -113,6 +117,8 @@
                                     <option value="panitia">Administrasi (Selection & Docs)</option>
                                     <option value="akademik">Akademik (Bank Soal & Results)</option>
                                     <option value="mentor">Mentor (Assessments)</option>
+                                    <option value="palugada">Palugada</option>
+                                    <option value="dosen">Dosen / Interviewer (Wawancara)</option>
                                 </select>
                                 <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                                     <span class="iconify" data-icon="solar:alt-arrow-down-bold"></span>

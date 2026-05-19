@@ -130,7 +130,7 @@
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Master Data</div>
                 @endif
 
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada' || auth()->user()->email === 'dendi.pratama@mncu.ac.id')
                 @if(auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.palugada.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
@@ -191,7 +191,7 @@
 
                 @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'panitia' || auth()->user()->role === 'palugada' || in_array(auth()->user()->email, ['dion@gmail.com', 'adminis@mfls.com', 'info@beasiswamncu.com'])))
                 <div class="px-4 py-2 mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Admin Control</div>
-                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'palugada')
+                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'palugada' || auth()->user()->email === 'info@beasiswamncu.com')
                 <a href="{{ route('admin.user.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.user.index') ? 'bg-slate-100 text-slate-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">

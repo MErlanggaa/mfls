@@ -92,7 +92,7 @@
                         </div>
                     </div>
 
-                    @if(in_array(auth()->user()->role, ['admin', 'palugada', 'akademik']))
+                    @if(in_array(auth()->user()->role, ['admin', 'palugada', 'akademik']) && auth()->user()->email !== 'dendi.pratama@mncu.ac.id')
                     @php
                         $roomMap = [
                             'muhammad.rezki@mncu.ac.id' => 'Ruangan 1',
