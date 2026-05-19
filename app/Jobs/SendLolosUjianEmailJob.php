@@ -51,7 +51,7 @@ class SendLolosUjianEmailJob implements ShouldQueue
         try {
             Log::info("Sending Lolos Ujian Email to {$emailTujuan} (Peserta ID: {$this->pesertaId})");
             
-            \Illuminate\Support\Facades\Mail::mailer('smtp')
+            \Illuminate\Support\Facades\Mail::mailer('hostinger')
                 ->send('emails.lolos_seleksi_ujian',
                     compact('nama', 'asalSekolah'),
                     function ($message) use ($emailTujuan, $nama) {

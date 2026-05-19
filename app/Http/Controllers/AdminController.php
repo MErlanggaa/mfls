@@ -739,7 +739,7 @@ class AdminController extends Controller
         $asalSekolah = $peserta->daftar->asal_sekolah ?? ($peserta->nama_sekolah ?? '-');
 
         try {
-            \Illuminate\Support\Facades\Mail::mailer('gmail')
+            \Illuminate\Support\Facades\Mail::mailer('hostinger')
                 ->send('emails.lolos_seleksi_ujian',
                     compact('nama', 'asalSekolah'),
                     function ($message) use ($emailTujuan, $nama) {

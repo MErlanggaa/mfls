@@ -102,11 +102,33 @@ return [
             ],
         ],
 
+        'hostinger' => [
+            'transport' => 'smtp',
+            'host' => env('HOSTINGER_MAIL_HOST', 'smtp.hostinger.com'),
+            'port' => env('HOSTINGER_MAIL_PORT', 465),
+            'encryption' => env('HOSTINGER_MAIL_ENCRYPTION', 'ssl'),
+            'username' => env('HOSTINGER_MAIL_USERNAME'),
+            'password' => env('HOSTINGER_MAIL_PASSWORD'),
+            'timeout' => null,
+            'stream' => [
+                'ssl' => [
+                    'allow_self_signed' => true,
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
+                ],
+            ],
+            'from' => [
+                'address' => env('HOSTINGER_MAIL_FROM_ADDRESS', 'info@beasiswamncu.com'),
+                'name' => env('HOSTINGER_MAIL_FROM_NAME', 'MNCU Future Leaders Scholarship'),
+            ],
+        ],
+
         'failover' => [
             'transport' => 'failover',
             'mailers' => [
                 'smtp',
                 'gmail',
+                'hostinger',
             ],
         ],
 
