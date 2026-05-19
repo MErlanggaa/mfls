@@ -155,48 +155,40 @@
                         </h4>
                         <p class="text-xs font-semibold text-slate-400 mb-4">Mengukur dorongan diri calon mahasiswa, kesungguhan, komitmen, dan ketahanan dalam menyelesaikan studi.</p>
                         
-                        <!-- Hal yang Digali Banner -->
-                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-3.5 flex items-start gap-3">
-                            <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
-                            <div>
-                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
-                                <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Ketulusan motivasi, kesadaran diri, relevansi dengan program.</p>
+                        <!-- Hal yang Digali & Panduan Pertanyaan Banner -->
+                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-4 space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
+                                <div>
+                                    <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
+                                    <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Ketulusan motivasi, kesadaran diri, relevansi dengan program.</p>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-orange-100/30">
+                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-2">Panduan Pertanyaan Wawancara (Deskripsi):</span>
+                                <ul class="list-decimal list-inside space-y-1.5 ml-1">
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Apa yang mendorong Anda melamar MNCU Future Leader Scholarship, dan mengapa Anda merasa layak mendapatkannya?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Bagaimana beasiswa ini akan berkontribusi pada tujuan jangka panjang Anda?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Tantangan terbesar apa yang pernah Anda hadapi dalam perjalanan akademik Anda, dan bagaimana Anda mengatasinya?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Apa komitmen dan kontribusi apa yang akan Anda berikan untuk MNC University / MNCU Future Leader Scholarship?</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- Questions List -->
-                        <div class="space-y-4 mb-6">
-                            @foreach([
-                                1 => 'Apa yang mendorong Anda melamar MNCU Future Leader Scholarship, dan mengapa Anda merasa layak mendapatkannya?',
-                                2 => 'Bagaimana beasiswa ini akan berkontribusi pada tujuan jangka panjang Anda?',
-                                3 => 'Tantangan terbesar apa yang pernah Anda hadapi dalam perjalanan akademik Anda, dan bagaimana Anda mengatasinya?',
-                                4 => 'Apa komitmen dan kontribusi apa yang akan Anda berikan untuk MNC University / MNCU Future Leader Scholarship?'
-                            ] as $idx => $qText)
-                                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
-                                    <div class="flex items-start gap-3">
-                                        <span class="w-5 h-5 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{{ $idx }}</span>
-                                        <span class="text-[11px] font-bold text-slate-700 leading-relaxed">{{ $qText }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
-                                            <label class="cursor-pointer text-center flex-grow">
-                                                <input type="radio" name="wawancara_motivasi_q{{ $idx }}" value="{{ $score }}" class="sr-only peer calc-input" required
-                                                    {{ ($myDosenEval->{'wawancara_motivasi_q'.$idx} ?? '') == $score ? 'checked' : '' }}>
-                                                <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
-                                                    <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
-                                                </div>
-                                            </label>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Catatan Kualitatif Komponen Wawancara 1</label>
-                            <textarea name="wawancara_motivasi_catatan" rows="3" placeholder="Masukkan alasan atau poin penting wawancara..."
-                                class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-semibold text-slate-700 text-xs transition-all shadow-inner">{{ $myDosenEval->wawancara_motivasi_catatan ?? '' }}</textarea>
+                        <!-- Single Rating Field -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Skor Penilaian Motivasi & Komitmen</label>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
+                                    <label class="cursor-pointer text-center flex-grow">
+                                        <input type="radio" name="wawancara_motivasi" value="{{ $score }}" class="sr-only peer calc-input" required
+                                            {{ ($myDosenEval->wawancara_motivasi ?? '') == $score ? 'checked' : '' }}>
+                                        <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
+                                            <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -208,48 +200,40 @@
                         </h4>
                         <p class="text-xs font-semibold text-slate-400 mb-4">Mengukur rekam jejak prestasi, pemahaman akademik dasar, serta potensi pengembangan keilmuan calon mahasiswa.</p>
                         
-                        <!-- Hal yang Digali Banner -->
-                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-3.5 flex items-start gap-3">
-                            <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
-                            <div>
-                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
-                                <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Kualitas pencapaian, kerja keras, konsistensi belajar, pemahaman mendalam, minat keilmuan, sikap terhadap kegagalan, strategi perbaikan, pengalaman riset, kemampuan analitis.</p>
+                        <!-- Hal yang Digali & Panduan Pertanyaan Banner -->
+                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-4 space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
+                                <div>
+                                    <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
+                                    <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Kualitas pencapaian, kerja keras, konsistensi belajar, pemahaman mendalam, minat keilmuan, sikap terhadap kegagalan, strategi perbaikan, pengalaman riset, kemampuan analitis.</p>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-orange-100/30">
+                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-2">Panduan Pertanyaan Wawancara (Deskripsi):</span>
+                                <ul class="list-decimal list-inside space-y-1.5 ml-1">
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Ceritakan pencapaian akademik yang paling membanggakan Anda dan proses di baliknya.</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Mata Pelajaran atau bidang studi mana yang paling Anda kuasai dan mengapa?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Bagaimana Anda menyikapi mata pelajaran yang nilainya kurang memuaskan?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Apakah Anda pernah terlibat dalam penelitian, karya tulis, atau proyek akademik? Jelaskan kontribusi Anda.</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- Questions List -->
-                        <div class="space-y-4 mb-6">
-                            @foreach([
-                                1 => 'Ceritakan pencapaian akademik yang paling membanggakan Anda dan proses di baliknya.',
-                                2 => 'Mata Pelajaran atau bidang studi mana yang paling Anda kuasai dan mengapa?',
-                                3 => 'Bagaimana Anda menyikapi mata pelajaran yang nilainya kurang memuaskan?',
-                                4 => 'Apakah Anda pernah terlibat dalam penelitian, karya tulis, atau proyek akademik? Jelaskan kontribusi Anda.'
-                            ] as $idx => $qText)
-                                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
-                                    <div class="flex items-start gap-3">
-                                        <span class="w-5 h-5 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{{ $idx }}</span>
-                                        <span class="text-[11px] font-bold text-slate-700 leading-relaxed">{{ $qText }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
-                                            <label class="cursor-pointer text-center flex-grow">
-                                                <input type="radio" name="wawancara_prestasi_q{{ $idx }}" value="{{ $score }}" class="sr-only peer calc-input" required
-                                                    {{ ($myDosenEval->{'wawancara_prestasi_q'.$idx} ?? '') == $score ? 'checked' : '' }}>
-                                                <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
-                                                    <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
-                                                </div>
-                                            </label>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Catatan Kualitatif Komponen Wawancara 2</label>
-                            <textarea name="wawancara_prestasi_catatan" rows="3" placeholder="Masukkan alasan atau poin penting wawancara..."
-                                class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-semibold text-slate-700 text-xs transition-all shadow-inner">{{ $myDosenEval->wawancara_prestasi_catatan ?? '' }}</textarea>
+                        <!-- Single Rating Field -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Skor Penilaian Prestasi Akademik</label>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
+                                    <label class="cursor-pointer text-center flex-grow">
+                                        <input type="radio" name="wawancara_prestasi" value="{{ $score }}" class="sr-only peer calc-input" required
+                                            {{ ($myDosenEval->wawancara_prestasi ?? '') == $score ? 'checked' : '' }}>
+                                        <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
+                                            <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -261,48 +245,40 @@
                         </h4>
                         <p class="text-xs font-semibold text-slate-400 mb-4">Mengukur kejujuran, nilai-nilai moral, sopan santun, etika komunikasi, dan kepribadian calon mahasiswa.</p>
                         
-                        <!-- Hal yang Digali Banner -->
-                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-3.5 flex items-start gap-3">
-                            <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
-                            <div>
-                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
-                                <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Kejujuran, konsistensi nilai, pengambilan keputusan etis, keteguhan karakter, integritas di bawah tekanan, empati, tanggung jawab sosial, sistem nilai, konsistensi antara prinsip dan perilaku.</p>
+                        <!-- Hal yang Digali & Panduan Pertanyaan Banner -->
+                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-4 space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
+                                <div>
+                                    <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
+                                    <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Kejujuran, konsistensi nilai, pengambilan keputusan etis, keteguhan karakter, integritas di bawah tekanan, empati, tanggung jawab sosial, sistem nilai, konsistensi antara prinsip dan perilaku.</p>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-orange-100/30">
+                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-2">Panduan Pertanyaan Wawancara (Deskripsi):</span>
+                                <ul class="list-decimal list-inside space-y-1.5 ml-1">
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Ceritakan situasi di mana Anda harus membuat keputusan sulit yang melibatkan nilai-nilai moral atau etika.</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Pernahkah Anda menghadapi tekanan untuk melakukan sesuatu yang bertentangan dengan prinsip Anda? Bagaimana respons Anda?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Bagaimana Anda membangun kepercayaan dalam hubungan dengan teman, guru, atau anggota organisasi?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Apa nilai hidup yang paling penting bagi Anda dan bagaimana nilai itu tercermin dalam keseharian Anda?</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- Questions List -->
-                        <div class="space-y-4 mb-6">
-                            @foreach([
-                                1 => 'Ceritakan situasi di mana Anda harus membuat keputusan sulit yang melibatkan nilai-nilai moral atau etika.',
-                                2 => 'Pernahkah Anda menghadapi tekanan untuk melakukan sesuatu yang bertentangan dengan prinsip Anda? Bagaimana respons Anda?',
-                                3 => 'Bagaimana Anda membangun kepercayaan dalam hubungan dengan teman, guru, atau anggota organisasi?',
-                                4 => 'Apa nilai hidup yang paling penting bagi Anda dan bagaimana nilai itu tercermin dalam keseharian Anda?'
-                            ] as $idx => $qText)
-                                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
-                                    <div class="flex items-start gap-3">
-                                        <span class="w-5 h-5 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{{ $idx }}</span>
-                                        <span class="text-[11px] font-bold text-slate-700 leading-relaxed">{{ $qText }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
-                                            <label class="cursor-pointer text-center flex-grow">
-                                                <input type="radio" name="wawancara_karakter_q{{ $idx }}" value="{{ $score }}" class="sr-only peer calc-input" required
-                                                    {{ ($myDosenEval->{'wawancara_karakter_q'.$idx} ?? '') == $score ? 'checked' : '' }}>
-                                                <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
-                                                    <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
-                                                </div>
-                                            </label>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Catatan Kualitatif Komponen Wawancara 3</label>
-                            <textarea name="wawancara_karakter_catatan" rows="3" placeholder="Masukkan alasan atau poin penting wawancara..."
-                                class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-semibold text-slate-700 text-xs transition-all shadow-inner">{{ $myDosenEval->wawancara_karakter_catatan ?? '' }}</textarea>
+                        <!-- Single Rating Field -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Skor Penilaian Karakter & Integritas</label>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
+                                    <label class="cursor-pointer text-center flex-grow">
+                                        <input type="radio" name="wawancara_karakter" value="{{ $score }}" class="sr-only peer calc-input" required
+                                            {{ ($myDosenEval->wawancara_karakter ?? '') == $score ? 'checked' : '' }}>
+                                        <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
+                                            <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -314,48 +290,40 @@
                         </h4>
                         <p class="text-xs font-semibold text-slate-400 mb-4">Mengukur keaktifan berorganisasi, jiwa kepemimpinan, kerja tim, serta rencana kontribusi bagi masyarakat.</p>
                         
-                        <!-- Hal yang Digali Banner -->
-                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-3.5 flex items-start gap-3">
-                            <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
-                            <div>
-                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
-                                <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Gaya kepemimpinan, kemampuan manajemen konflik, dampak sosial, inisiatif, kepedulian, kecerdasan emosional, keterampilan interpersonal, visi kepemimpinan ke depan, rasa tanggung jawab.</p>
+                        <!-- Hal yang Digali & Panduan Pertanyaan Banner -->
+                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-4 space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
+                                <div>
+                                    <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
+                                    <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Gaya kepemimpinan, kemampuan manajemen konflik, dampak sosial, inisiatif, kepedulian, kecerdasan emosional, keterampilan interpersonal, visi kepemimpinan ke depan, rasa tanggung jawab.</p>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-orange-100/30">
+                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-2">Panduan Pertanyaan Wawancara (Deskripsi):</span>
+                                <ul class="list-decimal list-inside space-y-1.5 ml-1">
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Ceritakan pengalaman Anda memimpin suatu tim atau organisasi. Apa tantangan terbesar dan bagaimana Anda mengatasinya?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Kontribusi nyata apa yang pernah Anda berikan kepada organisasi/komunitas atau lingkungan sekitar Anda?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Bagaimana Anda memotivasi anggota tim yang kurang bersemangat atau berkonflik satu sama lain?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Jika mendapat beasiswa ini, kontribusi apa yang ingin Anda berikan bagi almamater atau masyarakat?</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- Questions List -->
-                        <div class="space-y-4 mb-6">
-                            @foreach([
-                                1 => 'Ceritakan pengalaman Anda memimpin suatu tim atau organisasi. Apa tantangan terbesar dan bagaimana Anda mengatasinya?',
-                                2 => 'Kontribusi nyata apa yang pernah Anda berikan kepada organisasi/komunitas atau lingkungan sekitar Anda?',
-                                3 => 'Bagaimana Anda memotivasi anggota tim yang kurang bersemangat atau berkonflik satu sama lain?',
-                                4 => 'Jika mendapat beasiswa ini, kontribusi apa yang ingin Anda berikan bagi almamater atau masyarakat?'
-                            ] as $idx => $qText)
-                                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
-                                    <div class="flex items-start gap-3">
-                                        <span class="w-5 h-5 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{{ $idx }}</span>
-                                        <span class="text-[11px] font-bold text-slate-700 leading-relaxed">{{ $qText }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
-                                            <label class="cursor-pointer text-center flex-grow">
-                                                <input type="radio" name="wawancara_kontribusi_q{{ $idx }}" value="{{ $score }}" class="sr-only peer calc-input" required
-                                                    {{ ($myDosenEval->{'wawancara_kontribusi_q'.$idx} ?? '') == $score ? 'checked' : '' }}>
-                                                <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
-                                                    <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
-                                                </div>
-                                            </label>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Catatan Kualitatif Komponen Wawancara 4</label>
-                            <textarea name="wawancara_kontribusi_catatan" rows="3" placeholder="Masukkan alasan atau poin penting wawancara..."
-                                class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-semibold text-slate-700 text-xs transition-all shadow-inner">{{ $myDosenEval->wawancara_kontribusi_catatan ?? '' }}</textarea>
+                        <!-- Single Rating Field -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Skor Penilaian Kontribusi & Kepemimpinan</label>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
+                                    <label class="cursor-pointer text-center flex-grow">
+                                        <input type="radio" name="wawancara_kontribusi" value="{{ $score }}" class="sr-only peer calc-input" required
+                                            {{ ($myDosenEval->wawancara_kontribusi ?? '') == $score ? 'checked' : '' }}>
+                                        <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
+                                            <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -367,48 +335,40 @@
                         </h4>
                         <p class="text-xs font-semibold text-slate-400 mb-4">Mengukur kejelasan penyampaian pendapat, pengucapan kata, kepercayaan diri, dan kelancaran bertutur kata.</p>
                         
-                        <!-- Hal yang Digali Banner -->
-                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-3.5 flex items-start gap-3">
-                            <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
-                            <div>
-                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
-                                <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Kejelasan, struktur komunikasi, kepercayaan diri, asertivitas, diplomasi, kemampuan persuasi, keterampilan public speaking, ketenangan di bawah sorotan, active listening, kemampuan adaptasi komunikasi.</p>
+                        <!-- Hal yang Digali & Panduan Pertanyaan Banner -->
+                        <div class="mb-6 bg-orange-50/40 border border-orange-100/50 rounded-2xl px-5 py-4 space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="iconify text-orange-600 mt-0.5 text-base shrink-0" data-icon="solar:info-square-bold-duotone"></span>
+                                <div>
+                                    <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-0.5">Hal yang Digali:</span>
+                                    <p class="text-[10px] font-bold text-slate-600 leading-relaxed">Kejelasan, struktur komunikasi, kepercayaan diri, asertivitas, diplomasi, kemampuan persuasi, keterampilan public speaking, ketenangan di bawah sorotan, active listening, kemampuan adaptasi komunikasi.</p>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-orange-100/30">
+                                <span class="block text-[8px] font-black text-orange-800 uppercase tracking-widest mb-2">Panduan Pertanyaan Wawancara (Deskripsi):</span>
+                                <ul class="list-decimal list-inside space-y-1.5 ml-1">
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Jelaskan secara singkat tentang diri Anda dalam 60 detik kepada orang yang baru Anda kenal.</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Bagaimana cara Anda menyampaikan ide atau pendapat yang berbeda dari mayoritas kelompok?</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Ceritakan pengalaman Anda melakukan presentasi atau berbicara di depan umum.</li>
+                                    <li class="text-[10px] font-bold text-slate-600 leading-relaxed">Bagaimana Anda memastikan pesan yang Anda sampaikan dipahami dengan baik oleh lawan bicara?</li>
+                                </ul>
                             </div>
                         </div>
 
-                        <!-- Questions List -->
-                        <div class="space-y-4 mb-6">
-                            @foreach([
-                                1 => 'Jelaskan secara singkat tentang diri Anda dalam 60 detik kepada orang yang baru Anda kenal.',
-                                2 => 'Bagaimana cara Anda menyampaikan ide atau pendapat yang berbeda dari mayoritas kelompok?',
-                                3 => 'Ceritakan pengalaman Anda melakukan presentasi atau berbicara di depan umum.',
-                                4 => 'Bagaimana Anda memastikan pesan yang Anda sampaikan dipahami dengan baik oleh lawan bicara?'
-                            ] as $idx => $qText)
-                                <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
-                                    <div class="flex items-start gap-3">
-                                        <span class="w-5 h-5 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{{ $idx }}</span>
-                                        <span class="text-[11px] font-bold text-slate-700 leading-relaxed">{{ $qText }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
-                                            <label class="cursor-pointer text-center flex-grow">
-                                                <input type="radio" name="wawancara_komunikasi_q{{ $idx }}" value="{{ $score }}" class="sr-only peer calc-input" required
-                                                    {{ ($myDosenEval->{'wawancara_komunikasi_q'.$idx} ?? '') == $score ? 'checked' : '' }}>
-                                                <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
-                                                    <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
-                                                </div>
-                                            </label>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Catatan Kualitatif Komponen Wawancara 5</label>
-                            <textarea name="wawancara_komunikasi_catatan" rows="3" placeholder="Masukkan alasan atau poin penting wawancara..."
-                                class="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-semibold text-slate-700 text-xs transition-all shadow-inner">{{ $myDosenEval->wawancara_komunikasi_catatan ?? '' }}</textarea>
+                        <!-- Single Rating Field -->
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Skor Penilaian Kemampuan Komunikasi</label>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
+                                    <label class="cursor-pointer text-center flex-grow">
+                                        <input type="radio" name="wawancara_komunikasi" value="{{ $score }}" class="sr-only peer calc-input" required
+                                            {{ ($myDosenEval->wawancara_komunikasi ?? '') == $score ? 'checked' : '' }}>
+                                        <div class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-slate-600 transition-all peer-checked:bg-orange-600 peer-checked:text-white peer-checked:border-orange-600 hover:bg-slate-50 shadow-sm">
+                                            <span>{{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span></span>
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
 
@@ -483,9 +443,9 @@
                         </div>
 
                         <div class="space-y-2 mt-4">
-                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Catatan Rekomendasi Beasiswa</label>
-                            <textarea name="catatan_rekomendasi_beasiswa" rows="4" placeholder="Tuliskan catatan tambahan mengenai skema beasiswa..."
-                                class="w-full px-5 py-4 bg-white border border-orange-100 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-semibold text-slate-700 text-xs transition-all shadow-sm">{{ $myDosenEval->catatan_rekomendasi_beasiswa ?? '' }}</textarea>
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Catatan / Ulasan Hasil Wawancara</label>
+                            <textarea name="catatan" rows="4" placeholder="Tuliskan ulasan, catatan kualitatif, atau alasan rekomendasi kelulusan & skema beasiswa secara keseluruhan..."
+                                class="w-full px-5 py-4 bg-white border border-orange-100 rounded-2xl focus:border-orange-500 focus:ring-4 focus:ring-orange-100 outline-none font-semibold text-slate-700 text-xs transition-all shadow-sm">{{ $myDosenEval->catatan ?? '' }}</textarea>
                         </div>
                     </div>
 
@@ -502,25 +462,16 @@
                     const totalEl = document.getElementById('live-total');
 
                     function calculateTotal() {
-                        const getAvg = (prefix) => {
-                            const scores = [];
-                            for (let i = 1; i <= 4; i++) {
-                                const checkedInput = document.querySelector(`input[name="${prefix}_q${i}"]:checked`);
-                                if (checkedInput) {
-                                    const val = parseFloat(checkedInput.value);
-                                    if (!isNaN(val)) {
-                                        scores.push(val);
-                                    }
-                                }
-                            }
-                            return scores.length > 0 ? (scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+                        const getVal = (name) => {
+                            const checkedInput = document.querySelector(`input[name="${name}"]:checked`);
+                            return checkedInput ? parseFloat(checkedInput.value) : 0;
                         };
 
-                        const m = getAvg('wawancara_motivasi');
-                        const p = getAvg('wawancara_prestasi');
-                        const k = getAvg('wawancara_karakter');
-                        const c = getAvg('wawancara_kontribusi');
-                        const cm = getAvg('wawancara_komunikasi');
+                        const m = getVal('wawancara_motivasi');
+                        const p = getVal('wawancara_prestasi');
+                        const k = getVal('wawancara_karakter');
+                        const c = getVal('wawancara_kontribusi');
+                        const cm = getVal('wawancara_komunikasi');
 
                         const total = ((m * 0.25) + (p * 0.20) + (k * 0.20) + (c * 0.20) + (cm * 0.15)) * 20;
                         totalEl.innerText = total.toFixed(2);
@@ -622,103 +573,78 @@
                                     3 => 'Tantangan terbesar apa yang pernah Anda hadapi dalam perjalanan akademik Anda, dan bagaimana Anda mengatasinya?',
                                     4 => 'Apa komitmen dan kontribusi apa yang akan Anda berikan untuk MNC University / MNCU Future Leader Scholarship?'
                                 ],
-                                'prefix' => 'wawancara_motivasi',
-                                'catatan' => $dosenEval->wawancara_motivasi_catatan,
-                                'avg' => $dosenEval->wawancara_motivasi
+                                'score' => $dosenEval->wawancara_motivasi
                             ],
                             [
-                                'title' => '2. Prestasi Akademik & Non-Akademik (Bobot 20%)',
+                                'title' => '2. Prestasi Akademik (Bobot 20%)',
                                 'color' => 'indigo',
                                 'questions' => [
-                                    1 => 'Bagaimana rekam jejak prestasi akademik Anda selama di jenjang sekolah menengah (SMA/SMK/MA)?',
-                                    2 => 'Sebutkan prestasi non-akademik (organisasi, kompetisi, seni, olahraga) terbaik yang pernah Anda capai.',
-                                    3 => 'Bagaimana strategi belajar Anda sehingga mampu mempertahankan atau meningkatkan prestasi di perguruan tinggi nanti?',
-                                    4 => 'Adakah karya orisinal, proyek mandiri, atau portofolio khusus yang pernah Anda buat dan banggakan?'
+                                    1 => 'Ceritakan pencapaian akademik yang paling membanggakan Anda dan proses di baliknya.',
+                                    2 => 'Mata Pelajaran atau bidang studi mana yang paling Anda kuasai dan mengapa?',
+                                    3 => 'Bagaimana Anda menyikapi mata pelajaran yang nilainya kurang memuaskan?',
+                                    4 => 'Apakah Anda pernah terlibat dalam penelitian, karya tulis, atau proyek akademik? Jelaskan kontribusi Anda.'
                                 ],
-                                'prefix' => 'wawancara_prestasi',
-                                'catatan' => $dosenEval->wawancara_prestasi_catatan,
-                                'avg' => $dosenEval->wawancara_prestasi
+                                'score' => $dosenEval->wawancara_prestasi
                             ],
                             [
                                 'title' => '3. Karakter & Integritas (Bobot 20%)',
                                 'color' => 'rose',
                                 'questions' => [
-                                    1 => 'Bagaimana Anda mendefinisikan nilai kejujuran dan integritas dalam kehidupan sehari-hari sebagai seorang pelajar?',
-                                    2 => 'Ceritakan pengalaman Anda ketika berada di situasi yang menguji nilai moral atau etika Anda. Apa tindakan Anda?',
-                                    3 => 'Bagaimana sikap Anda menghadapi kegagalan, kritik destruktif, atau penolakan dalam mencapai tujuan?',
-                                    4 => 'Bagaimana Anda membagi waktu dan tanggung jawab secara adil tanpa mengorbankan kejujuran akademik?'
+                                    1 => 'Ceritakan situasi di mana Anda harus membuat keputusan sulit yang melibatkan nilai-nilai moral atau etika.',
+                                    2 => 'Pernahkah Anda menghadapi tekanan untuk melakukan sesuatu yang bertentangan dengan prinsip Anda? Bagaimana respons Anda?',
+                                    3 => 'Bagaimana Anda membangun kepercayaan dalam hubungan dengan teman, guru, atau anggota organisasi?',
+                                    4 => 'Apa nilai hidup yang paling penting bagi Anda dan bagaimana nilai itu tercermin dalam keseharian Anda?'
                                 ],
-                                'prefix' => 'wawancara_karakter',
-                                'catatan' => $dosenEval->wawancara_karakter_catatan,
-                                'avg' => $dosenEval->wawancara_karakter
+                                'score' => $dosenEval->wawancara_karakter
                             ],
                             [
                                 'title' => '4. Kontribusi & Kepemimpinan (Bobot 20%)',
                                 'color' => 'emerald',
                                 'questions' => [
-                                    1 => 'Ceritakan pengalaman kepemimpinan Anda, baik dalam organisasi formal maupun kepemimpinan informal di lingkungan.',
-                                    2 => 'Bagaimana kontribusi nyata Anda bagi masyarakat sekitar, sekolah, atau komunitas sosial tempat Anda berada?',
-                                    3 => 'Jika Anda terpilih, bagaimana cara Anda menginspirasi dan membimbing rekan sesama penerima beasiswa (peer)?',
-                                    4 => 'Proyek sosial atau kontribusi nyata apa yang paling ingin Anda wujudkan di MNC University setelah lolos?'
+                                    1 => 'Ceritakan pengalaman Anda memimpin suatu tim atau organisasi. Apa tantangan terbesar dan bagaimana Anda mengatasinya?',
+                                    2 => 'Kontribusi nyata apa yang pernah Anda berikan kepada organisasi/komunitas atau lingkungan sekitar Anda?',
+                                    3 => 'Bagaimana Anda memotivasi anggota tim yang kurang bersemangat atau berkonflik satu sama lain?',
+                                    4 => 'Jika mendapat beasiswa ini, kontribusi apa yang ingin Anda berikan bagi almamater atau masyarakat?'
                                 ],
-                                'prefix' => 'wawancara_kontribusi',
-                                'catatan' => $dosenEval->wawancara_kontribusi_catatan,
-                                'avg' => $dosenEval->wawancara_kontribusi
+                                'score' => $dosenEval->wawancara_kontribusi
                             ],
                             [
-                                'title' => '5. Kemampuan Komunikasi & Presentasi (Bobot 15%)',
+                                'title' => '5. Kemampuan Komunikasi (Bobot 15%)',
                                 'color' => 'amber',
                                 'questions' => [
-                                    1 => 'Seberapa baik kemampuan Anda dalam menyampaikan gagasan atau ide kompleks secara lugas dan terstruktur?',
-                                    2 => 'Bagaimana cara Anda meredam ketegangan atau membangun hubungan baik saat berkomunikasi dengan orang baru?',
-                                    3 => 'Bagaimana kesiapan dan kepercayaan diri Anda jika diminta mempresentasikan profil beasiswa MNCU di depan publik?',
-                                    4 => 'Bagaimana cara Anda menanggapi pendapat yang berseberangan dengan pandangan Anda secara persuasif?'
+                                    1 => 'Jelaskan secara singkat tentang diri Anda dalam 60 detik kepada orang yang baru Anda kenal.',
+                                    2 => 'Bagaimana cara Anda menyampaikan ide atau pendapat yang berbeda dari mayoritas kelompok?',
+                                    3 => 'Ceritakan pengalaman Anda melakukan presentasi atau berbicara di depan umum.',
+                                    4 => 'Bagaimana Anda memastikan pesan yang Anda sampaikan dipahami dengan baik oleh lawan bicara?'
                                 ],
-                                'prefix' => 'wawancara_komunikasi',
-                                'catatan' => $dosenEval->wawancara_komunikasi_catatan,
-                                'avg' => $dosenEval->wawancara_komunikasi
+                                'score' => $dosenEval->wawancara_komunikasi
                             ],
                         ];
                     @endphp
 
                     @foreach($rubrikData as $rubrik)
                     <div class="p-6 sm:p-8 bg-slate-50/50 rounded-[2rem] border border-slate-100 shadow-sm space-y-4">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pb-3 border-b border-slate-100">
                             <h4 class="text-sm font-black text-slate-800 uppercase tracking-wider">
                                 {{ $rubrik['title'] }}
                             </h4>
-                            <span class="text-xs font-black text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                                Rata-rata: {{ number_format($rubrik['avg'] * 20, 2) }}
-                            </span>
+                            <div class="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-100 shadow-sm">
+                                @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
+                                    <div class="px-3 py-1.5 rounded-lg text-[9px] font-black transition-all border {{ ($rubrik['score'] ?? 0) == $score ? 'bg-orange-600 text-white border-orange-600 shadow-sm' : 'bg-slate-50 text-slate-400 border-slate-200/50' }}">
+                                        {{ $score }} <span class="text-[8px] opacity-75 font-semibold">({{ $label }})</span>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                         
-                        <div class="space-y-4">
-                            @foreach($rubrik['questions'] as $qIdx => $qText)
-                                @php
-                                    $scoreVal = $dosenEval->{$rubrik['prefix'].'_q'.$qIdx};
-                                @endphp
-                                <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                    <div class="flex items-start gap-3 max-w-2xl">
-                                        <span class="w-5 h-5 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">{{ $qIdx }}</span>
-                                        <span class="text-[11px] font-bold text-slate-600 leading-relaxed">{{ $qText }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1 shrink-0">
-                                        @foreach([1 => 'SK', 2 => 'K', 3 => 'C', 4 => 'B', 5 => 'SB'] as $score => $label)
-                                            <div class="px-2.5 py-1.5 rounded-lg text-[9px] font-black transition-all shadow-sm border {{ $scoreVal == $score ? 'bg-orange-600 text-white border-orange-600' : 'bg-slate-50 text-slate-400 border-slate-200/50' }}">
-                                                {{ $score }}
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100/50 space-y-2">
+                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Panduan Pertanyaan Wawancara (Deskripsi):</span>
+                            <ul class="list-decimal list-inside space-y-1 ml-1">
+                                @foreach($rubrik['questions'] as $qText)
+                                    <li class="text-[10px] font-bold text-slate-500 leading-relaxed">{{ $qText }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-
-                        @if($rubrik['catatan'])
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-inner">
-                            <span class="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Catatan Kualitatif</span>
-                            <p class="text-[10px] font-bold text-slate-500 italic">"{{ $rubrik['catatan'] }}"</p>
-                        </div>
-                        @endif
                     </div>
                     @endforeach
                 </div>

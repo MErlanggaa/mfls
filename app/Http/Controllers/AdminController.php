@@ -992,58 +992,26 @@ class AdminController extends Controller
 
         if (auth()->user()->role === 'dosen') {
             $request->validate([
-                'wawancara_motivasi_q1' => 'required|numeric|min:1|max:5',
-                'wawancara_motivasi_q2' => 'required|numeric|min:1|max:5',
-                'wawancara_motivasi_q3' => 'required|numeric|min:1|max:5',
-                'wawancara_motivasi_q4' => 'required|numeric|min:1|max:5',
+                'wawancara_motivasi' => 'required|numeric|min:1|max:5',
+                'wawancara_prestasi' => 'required|numeric|min:1|max:5',
+                'wawancara_karakter' => 'required|numeric|min:1|max:5',
+                'wawancara_kontribusi' => 'required|numeric|min:1|max:5',
+                'wawancara_komunikasi' => 'required|numeric|min:1|max:5',
 
-                'wawancara_prestasi_q1' => 'required|numeric|min:1|max:5',
-                'wawancara_prestasi_q2' => 'required|numeric|min:1|max:5',
-                'wawancara_prestasi_q3' => 'required|numeric|min:1|max:5',
-                'wawancara_prestasi_q4' => 'required|numeric|min:1|max:5',
-
-                'wawancara_karakter_q1' => 'required|numeric|min:1|max:5',
-                'wawancara_karakter_q2' => 'required|numeric|min:1|max:5',
-                'wawancara_karakter_q3' => 'required|numeric|min:1|max:5',
-                'wawancara_karakter_q4' => 'required|numeric|min:1|max:5',
-
-                'wawancara_kontribusi_q1' => 'required|numeric|min:1|max:5',
-                'wawancara_kontribusi_q2' => 'required|numeric|min:1|max:5',
-                'wawancara_kontribusi_q3' => 'required|numeric|min:1|max:5',
-                'wawancara_kontribusi_q4' => 'required|numeric|min:1|max:5',
-
-                'wawancara_komunikasi_q1' => 'required|numeric|min:1|max:5',
-                'wawancara_komunikasi_q2' => 'required|numeric|min:1|max:5',
-                'wawancara_komunikasi_q3' => 'required|numeric|min:1|max:5',
-                'wawancara_komunikasi_q4' => 'required|numeric|min:1|max:5',
-
-                'wawancara_motivasi_catatan' => 'nullable|string',
-                'wawancara_prestasi_catatan' => 'nullable|string',
-                'wawancara_karakter_catatan' => 'nullable|string',
-                'wawancara_kontribusi_catatan' => 'nullable|string',
-                'wawancara_komunikasi_catatan' => 'nullable|string',
+                'catatan' => 'nullable|string',
 
                 'rekomendasi_akhir' => 'required|string',
                 'rekomendasi_beasiswa' => 'required|string',
-                'catatan_rekomendasi_beasiswa' => 'nullable|string',
                 'rekomendasi_kelas' => 'required|string',
                 'rekomendasi_prodi_1' => 'required|string',
                 'rekomendasi_prodi_2' => 'required|string',
             ]);
 
-            // Helper to calculate component average from non-null questions
-            $calcAvg = function($q1, $q2, $q3, $q4) {
-                $scores = array_filter([$q1, $q2, $q3, $q4], function($v) {
-                    return $v !== null && $v !== '';
-                });
-                return count($scores) > 0 ? (array_sum($scores) / count($scores)) : 0;
-            };
-
-            $wawancaraMotivasi = $calcAvg($request->wawancara_motivasi_q1, $request->wawancara_motivasi_q2, $request->wawancara_motivasi_q3, $request->wawancara_motivasi_q4);
-            $wawancaraPrestasi = $calcAvg($request->wawancara_prestasi_q1, $request->wawancara_prestasi_q2, $request->wawancara_prestasi_q3, $request->wawancara_prestasi_q4);
-            $wawancaraKarakter = $calcAvg($request->wawancara_karakter_q1, $request->wawancara_karakter_q2, $request->wawancara_karakter_q3, $request->wawancara_karakter_q4);
-            $wawancaraKontribusi = $calcAvg($request->wawancara_kontribusi_q1, $request->wawancara_kontribusi_q2, $request->wawancara_kontribusi_q3, $request->wawancara_kontribusi_q4);
-            $wawancaraKomunikasi = $calcAvg($request->wawancara_komunikasi_q1, $request->wawancara_komunikasi_q2, $request->wawancara_komunikasi_q3, $request->wawancara_komunikasi_q4);
+            $wawancaraMotivasi = (float) $request->wawancara_motivasi;
+            $wawancaraPrestasi = (float) $request->wawancara_prestasi;
+            $wawancaraKarakter = (float) $request->wawancara_karakter;
+            $wawancaraKontribusi = (float) $request->wawancara_kontribusi;
+            $wawancaraKomunikasi = (float) $request->wawancara_komunikasi;
 
             // Calculate weighted final score: (25%, 20%, 20%, 20%, 15%)
             // Scale from 1-5 to 0-100 by multiplying the final average by 20
@@ -1056,46 +1024,22 @@ class AdminController extends Controller
             \App\Models\PenilaianAkademik::updateOrCreate(
                 ['peserta_id' => $peserta->id, 'penilai_id' => auth()->id()],
                 [
-                    'wawancara_motivasi_q1' => $request->wawancara_motivasi_q1,
-                    'wawancara_motivasi_q2' => $request->wawancara_motivasi_q2,
-                    'wawancara_motivasi_q3' => $request->wawancara_motivasi_q3,
-                    'wawancara_motivasi_q4' => $request->wawancara_motivasi_q4,
-
-                    'wawancara_prestasi_q1' => $request->wawancara_prestasi_q1,
-                    'wawancara_prestasi_q2' => $request->wawancara_prestasi_q2,
-                    'wawancara_prestasi_q3' => $request->wawancara_prestasi_q3,
-                    'wawancara_prestasi_q4' => $request->wawancara_prestasi_q4,
-
-                    'wawancara_karakter_q1' => $request->wawancara_karakter_q1,
-                    'wawancara_karakter_q2' => $request->wawancara_karakter_q2,
-                    'wawancara_karakter_q3' => $request->wawancara_karakter_q3,
-                    'wawancara_karakter_q4' => $request->wawancara_karakter_q4,
-
-                    'wawancara_kontribusi_q1' => $request->wawancara_kontribusi_q1,
-                    'wawancara_kontribusi_q2' => $request->wawancara_kontribusi_q2,
-                    'wawancara_kontribusi_q3' => $request->wawancara_kontribusi_q3,
-                    'wawancara_kontribusi_q4' => $request->wawancara_kontribusi_q4,
-
-                    'wawancara_komunikasi_q1' => $request->wawancara_komunikasi_q1,
-                    'wawancara_komunikasi_q2' => $request->wawancara_komunikasi_q2,
-                    'wawancara_komunikasi_q3' => $request->wawancara_komunikasi_q3,
-                    'wawancara_komunikasi_q4' => $request->wawancara_komunikasi_q4,
-
                     'wawancara_motivasi' => round($wawancaraMotivasi, 2),
                     'wawancara_prestasi' => round($wawancaraPrestasi, 2),
                     'wawancara_karakter' => round($wawancaraKarakter, 2),
                     'wawancara_kontribusi' => round($wawancaraKontribusi, 2),
                     'wawancara_komunikasi' => round($wawancaraKomunikasi, 2),
 
-                    'wawancara_motivasi_catatan' => $request->wawancara_motivasi_catatan,
-                    'wawancara_prestasi_catatan' => $request->wawancara_prestasi_catatan,
-                    'wawancara_karakter_catatan' => $request->wawancara_karakter_catatan,
-                    'wawancara_kontribusi_catatan' => $request->wawancara_kontribusi_catatan,
-                    'wawancara_komunikasi_catatan' => $request->wawancara_komunikasi_catatan,
+                    'wawancara_motivasi_catatan' => null,
+                    'wawancara_prestasi_catatan' => null,
+                    'wawancara_karakter_catatan' => null,
+                    'wawancara_kontribusi_catatan' => null,
+                    'wawancara_komunikasi_catatan' => null,
 
                     'rekomendasi_akhir' => $request->rekomendasi_akhir,
                     'rekomendasi_beasiswa' => $request->rekomendasi_beasiswa,
-                    'catatan_rekomendasi_beasiswa' => $request->catatan_rekomendasi_beasiswa,
+                    'catatan' => $request->catatan,
+                    'catatan_rekomendasi_beasiswa' => $request->catatan,
                     'rekomendasi_kelas' => $request->rekomendasi_kelas,
                     'rekomendasi_prodi_1' => $request->rekomendasi_prodi_1,
                     'rekomendasi_prodi_2' => $request->rekomendasi_prodi_2,
