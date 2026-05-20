@@ -2283,7 +2283,7 @@ class AdminController extends Controller
         ];
         
         $mediaColumns = [
-            'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK'
+            'LINK VIDEO', 'LINK TWIBBON'
         ];
 
         $columns = array_merge($columns, $berkasColumns, $sertifikatColumns, $mediaColumns);
@@ -2387,8 +2387,6 @@ class AdminController extends Controller
                 // E. Media Links
                 $row[] = ($berkas && $berkas->motivasi_video) ? $berkas->motivasi_video : '-';
                 $row[] = $peserta->link_twibbon ?? '-';
-                $row[] = $peserta->link_ig ?? '-';
-                $row[] = $peserta->link_tiktok ?? '-';
 
                 fputcsv($file, $row);
             }

@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Jobs\SyncGoogleSheetJob;
+use Illuminate\Support\Facades\Log;
 
 class GoogleSheetObserver
 {
@@ -12,7 +12,7 @@ class GoogleSheetObserver
     public function saved(): void
     {
         if (app()->runningInConsole()) return;
-        \App\Jobs\SyncGoogleSheetJob::dispatch();
+        $this->safeSync();
     }
 
     /**
@@ -21,7 +21,7 @@ class GoogleSheetObserver
     public function deleted(): void
     {
         if (app()->runningInConsole()) return;
-        \App\Jobs\SyncGoogleSheetJob::dispatch();
+        $this->safeSync();
     }
 
     /**
@@ -30,7 +30,7 @@ class GoogleSheetObserver
     public function restored(): void
     {
         if (app()->runningInConsole()) return;
-        \App\Jobs\SyncGoogleSheetJob::dispatch();
+        $this->safeSync();
     }
 
     /**
@@ -39,6 +39,27 @@ class GoogleSheetObserver
     public function forceDeleted(): void
     {
         if (app()->runningInConsole()) return;
-        \App\Jobs\SyncGoogleSheetJob::dispatch();
+        $this->safeSync();
+    }
+
+    /**
+     * Run sync safely — tangkap error quota/rate-limit Google API
+     * agar tidak menyebabkan HTTP 500 pada request utama.
+     */
+    protected function safeSync(): void
+    {
+        try {
+            (new \App\Services\GoogleSheetService())->syncAll();
+        } catch (\Google\Service\Exception $e) {
+            // 429 = Quota exceeded — catat sebagai warning, lanjut tanpa crash
+            Log::warning('GoogleSheetObserver: Sheets API error (sync skipped)', [
+                'code'    => $e->getCode(),
+                'message' => substr($e->getMessage(), 0, 300),
+            ]);
+        } catch (\Exception $e) {
+            Log::warning('GoogleSheetObserver: Unexpected error during sync', [
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

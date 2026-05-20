@@ -87,7 +87,7 @@ class GoogleSheetService
         ];
 
         $headerAfter = [
-            'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK'
+            'LINK VIDEO MOTIVASI', 'LINK TWIBBON'
         ];
 
         $rows[] = array_merge($headerBefore, $sertifikatHeaders, $headerAfter);
@@ -186,9 +186,7 @@ class GoogleSheetService
 
             // Links
             $row[] = $berkas->motivasi_video ?? '-';
-            $row[] = $peserta->link_twibbon ?? '-';
-            $row[] = $peserta->link_ig ?? '-';
-            $row[] = $peserta->link_tiktok ?? '-';
+            $row[] = $peserta?->link_twibbon ?? '-';
 
             $rows[] = $row;
         }
