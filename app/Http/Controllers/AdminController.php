@@ -2224,7 +2224,7 @@ class AdminController extends Controller
 
         $fileName = 'Database_Seleksi_Administrasi_' . date('Y-m-d_H-i') . '.csv';
         $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
-            ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas'])
+            ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas', 'peserta.sertifikats'])
             ->get();
 
         // 1. Definisikan Mapel Core & Cari Mapel Tambahan yang ada nilainya
@@ -2257,12 +2257,36 @@ class AdminController extends Controller
         $columns[] = "TOTAL NILAI (S1-S5)";
         $columns[] = "RATA RATA AKADEMIK (S1-S5)";
 
+        // Calculate max certificates
+        $maxSertifikatCount = 0;
+        foreach ($pendaftars as $user) {
+            $peserta = $user->peserta;
+            if ($peserta && $peserta->sertifikats) {
+                $count = $peserta->sertifikats->count();
+                if ($count > $maxSertifikatCount) {
+                    $maxSertifikatCount = $count;
+                }
+            }
+        }
+        $maxSertifikatCount = max(3, $maxSertifikatCount); // Minimum 3 columns for certificates
+
+        $sertifikatColumns = [];
+        for ($i = 1; $i <= $maxSertifikatCount; $i++) {
+            $sertifikatColumns[] = "SERTIFIKAT {$i} (NAMA)";
+            $sertifikatColumns[] = "SERTIFIKAT {$i} (LINK)";
+        }
+
         // Data Berkas & Links
-        $columns = array_merge($columns, [
+        $berkasColumns = [
             'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5',
             'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)',
+        ];
+        
+        $mediaColumns = [
             'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK'
-        ]);
+        ];
+
+        $columns = array_merge($columns, $berkasColumns, $sertifikatColumns, $mediaColumns);
 
         $headers = [
             "Content-type" => "text/csv",
@@ -2272,7 +2296,7 @@ class AdminController extends Controller
             "Expires" => "0"
         ];
 
-        $callback = function () use ($pendaftars, $columns, $orderedMatpels) {
+        $callback = function () use ($pendaftars, $columns, $orderedMatpels, $maxSertifikatCount) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
@@ -2345,6 +2369,19 @@ class AdminController extends Controller
                 }
                 else {
                     $row[] = 'N/A';
+                }
+
+                // Sertifikats
+                $sertifikats = $peserta?->sertifikats ?? collect();
+                for ($i = 0; $i < $maxSertifikatCount; $i++) {
+                    $sertifikatObj = $sertifikats->get($i);
+                    if ($sertifikatObj) {
+                        $row[] = $sertifikatObj->nama ?? '-';
+                        $row[] = $sertifikatObj->file ? url('storage/' . $sertifikatObj->file) : '-';
+                    } else {
+                        $row[] = '-';
+                        $row[] = '-';
+                    }
                 }
 
                 // E. Media Links

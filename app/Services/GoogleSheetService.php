@@ -40,7 +40,7 @@ class GoogleSheetService
         if (!$this->service) return;
 
         $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
-            ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas'])
+            ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas', 'peserta.sertifikats'])
             ->get()
             ->sort(function ($a, $b) {
                 $progA = $a->peserta->progress ?? 0;
@@ -53,9 +53,28 @@ class GoogleSheetService
                 return $progB <=> $progA;
             });
 
+        // Calculate max certificates
+        $maxSertifikatCount = 0;
+        foreach ($pendaftars as $user) {
+            $peserta = $user->peserta;
+            if ($peserta && $peserta->sertifikats) {
+                $count = $peserta->sertifikats->count();
+                if ($count > $maxSertifikatCount) {
+                    $maxSertifikatCount = $count;
+                }
+            }
+        }
+        $maxSertifikatCount = max(3, $maxSertifikatCount); // Minimum 3 columns for certificates
+
+        $sertifikatHeaders = [];
+        for ($i = 1; $i <= $maxSertifikatCount; $i++) {
+            $sertifikatHeaders[] = "SERTIFIKAT {$i} (NAMA)";
+            $sertifikatHeaders[] = "SERTIFIKAT {$i} (LINK)";
+        }
+
         $rows = [];
-        // Header (52 Columns)
-        $rows[] = [
+        // Header
+        $headerBefore = [
             'STT / KETERANGAN', 'PROGRES (%)', 
             'Nama Lengkap', 'Email', 'Jenis Kelamin', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Provinsi', 'Kabupaten', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)', 'Sumber Informasi', 'Kode Referral',
             'S1 - B.Indo', 'S1 - B.Inggris', 'S1 - Mat.Wajib', 'S1 - Mapel 4', 'S1 - Mapel 5', 'Rata Rata S1',
@@ -64,9 +83,14 @@ class GoogleSheetService
             'S4 - B.Indo', 'S4 - B.Inggris', 'S4 - Mat.Wajib', 'S4 - Mapel 4', 'S4 - Mapel 5', 'Rata Rata S4',
             'S5 - B.Indo', 'S5 - B.Inggris', 'S5 - Mat.Wajib', 'S5 - Mapel 4', 'S5 - Mapel 5', 'Rata Rata S5',
             'TOTAL NILAI S1-S5', 'RATA RATA AKADEMIK (TOT/25)',
-            'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)',
+            'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)'
+        ];
+
+        $headerAfter = [
             'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK'
         ];
+
+        $rows[] = array_merge($headerBefore, $sertifikatHeaders, $headerAfter);
 
         foreach ($pendaftars as $user) {
             /** @var \App\Models\Akun $user */
@@ -147,6 +171,19 @@ class GoogleSheetService
             $row[] = $this->getFileUrl($berkas->personal_statement ?? null);
             $row[] = $this->getFileUrl($berkas->surat_buta_warna ?? null);
 
+            // Sertifikats
+            $sertifikats = $peserta?->sertifikats ?? collect();
+            for ($i = 0; $i < $maxSertifikatCount; $i++) {
+                $sertifikatObj = $sertifikats->get($i);
+                if ($sertifikatObj) {
+                    $row[] = $sertifikatObj->nama ?? '-';
+                    $row[] = $sertifikatObj->file ? $this->getFileUrl($sertifikatObj->file) : '-';
+                } else {
+                    $row[] = '-';
+                    $row[] = '-';
+                }
+            }
+
             // Links
             $row[] = $berkas->motivasi_video ?? '-';
             $row[] = $peserta->link_twibbon ?? '-';
@@ -159,7 +196,7 @@ class GoogleSheetService
         $body = new ValueRange(['values' => $rows]);
         $params = ['valueInputOption' => 'RAW'];
         
-        $this->service->spreadsheets_values->clear($this->spreadsheetId, 'Sheet1!A1:AZ5000', new \Google\Service\Sheets\ClearValuesRequest());
+        $this->service->spreadsheets_values->clear($this->spreadsheetId, 'Sheet1!A1:CZ5000', new \Google\Service\Sheets\ClearValuesRequest());
         $this->service->spreadsheets_values->update($this->spreadsheetId, 'Sheet1!A1', $body, $params);
 
         $this->applyFormatting($pendaftars);
