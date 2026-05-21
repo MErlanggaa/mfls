@@ -228,6 +228,77 @@ class GoogleSheetService
         $this->service->spreadsheets_values->update($this->spreadsheetId, $sheetTitle . '!A1', $body, $params);
     }
 
+    /**
+     * Sync wawancara results to the specific sheet (GID: 821132360)
+     */
+    public function syncWawancara()
+    {
+        if (!$this->service) return;
+
+        $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar', function ($q) {
+                $q->where('status', 'lulus');
+            })
+            ->whereHas('peserta', function ($q) {
+                $q->where('status_seleksi_ujian', 'lulus');
+            })
+            ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
+            ->get();
+
+        $rows = [];
+        $rows[] = [
+            'No', 'Nama Lengkap', 'Asal Sekolah', 'Email', 'No HP', 'Minat Prodi 1', 'Minat Prodi 2', 
+            'Total Nilai Akhir', 'Wawancara Motivasi', 'Wawancara Prestasi', 'Wawancara Karakter', 'Wawancara Kontribusi', 'Wawancara Komunikasi', 
+            'Rekomendasi Akhir', 'Rekomendasi Beasiswa', 'Catatan Rekomendasi', 'Status Wawancara'
+        ];
+
+        foreach ($pendaftars as $index => $user) {
+            $peserta = $user->peserta;
+            $daftar = $peserta?->daftar;
+            $penilaian = $peserta?->penilaianAkademiks->first(); // Take the first evaluation
+
+            $rows[] = [
+                $index + 1,
+                $user->nama,
+                $daftar?->asal_sekolah ?? $peserta?->nama_sekolah ?? '-',
+                $this->cleanDeletedEmail($user->email),
+                $peserta?->no_whatsapp ?? '-',
+                explode(' | ', $peserta?->pilihan_prodi ?? '')[0] ?? '-',
+                explode(' | ', $peserta?->pilihan_prodi ?? '')[1] ?? '-',
+                $penilaian ? $penilaian->total_akhir : '-',
+                $penilaian ? $penilaian->wawancara_motivasi : '-',
+                $penilaian ? $penilaian->wawancara_prestasi : '-',
+                $penilaian ? $penilaian->wawancara_karakter : '-',
+                $penilaian ? $penilaian->wawancara_kontribusi : '-',
+                $penilaian ? $penilaian->wawancara_komunikasi : '-',
+                $penilaian ? $penilaian->rekomendasi_akhir : '-',
+                $penilaian ? $penilaian->rekomendasi_beasiswa : '-',
+                $penilaian ? $penilaian->catatan_rekomendasi_beasiswa : '-',
+                $penilaian ? 'Sudah Dinilai' : 'Belum Dinilai'
+            ];
+        }
+
+        $body = new \Google\Service\Sheets\ValueRange(['values' => $rows]);
+        $params = ['valueInputOption' => 'USER_ENTERED'];
+
+        // Find sheet title for GID 821132360
+        $spreadsheet = $this->service->spreadsheets->get($this->spreadsheetId);
+        $sheetTitle = null;
+        foreach ($spreadsheet->getSheets() as $sheet) {
+            if ($sheet->getProperties()->getSheetId() == 821132360) {
+                $sheetTitle = $sheet->getProperties()->getTitle();
+                break;
+            }
+        }
+
+        if ($sheetTitle) {
+            $this->service->spreadsheets_values->clear($this->spreadsheetId, $sheetTitle . '!A1:Z5000', new \Google\Service\Sheets\ClearValuesRequest());
+            $this->service->spreadsheets_values->update($this->spreadsheetId, $sheetTitle . '!A1', $body, $params);
+        } else {
+            \Illuminate\Support\Facades\Log::warning("Sheet with GID 821132360 not found in spreadsheet {$this->spreadsheetId}");
+        }
+    }
+
     protected function cleanDeletedEmail($val)
     {
         if (strpos($val, 'deleted_') === 0) {

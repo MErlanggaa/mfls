@@ -2387,4 +2387,86 @@ class AdminController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    public function exportExcelWawancara(\App\Services\GoogleSheetService $sheetService)
+    {
+        // Sync to Google Sheet as requested
+        try {
+            $sheetService->syncWawancara();
+        } catch(\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('GSheet Sync Wawancara failed during export: '.$e->getMessage());
+        }
+
+        $fileName = 'Database_Hasil_Wawancara_' . date('Y-m-d_H-i') . '.csv';
+        
+        $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar', function ($q) {
+                $q->where('status', 'lulus');
+            })
+            ->whereHas('peserta', function ($q) {
+                $q->where('status_seleksi_ujian', 'lulus');
+            })
+            ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
+            ->get();
+
+        $columns = [
+            'No', 'Nama Lengkap', 'Asal Sekolah', 'Email', 'No HP', 'Minat Prodi 1', 'Minat Prodi 2', 
+            'Total Nilai Akhir', 'Wawancara Motivasi', 'Wawancara Prestasi', 'Wawancara Karakter', 'Wawancara Kontribusi', 'Wawancara Komunikasi', 
+            'Rekomendasi Akhir', 'Rekomendasi Beasiswa', 'Catatan Rekomendasi', 'Status Wawancara'
+        ];
+
+        $headers = [
+            "Content-type" => "text/csv; charset=utf-8",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function () use ($pendaftars, $columns) {
+            $file = fopen('php://output', 'w');
+            // Add UTF-8 BOM for proper Excel encoding
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            fputcsv($file, $columns, ';');
+
+            foreach ($pendaftars as $index => $user) {
+                $peserta = $user->peserta;
+                $daftar = $peserta?->daftar;
+                $penilaian = $peserta?->penilaianAkademiks->first();
+
+                // Format Email
+                $email = $user->email;
+                if (strpos($email, 'deleted_') === 0) {
+                    $parts = explode('_', $email, 3);
+                    $email = $parts[2] ?? $email;
+                }
+
+                $row = [
+                    $index + 1,
+                    $user->nama,
+                    $daftar?->asal_sekolah ?? $peserta?->nama_sekolah ?? '-',
+                    $email,
+                    $peserta?->no_whatsapp ?? '-',
+                    explode(' | ', $peserta?->pilihan_prodi ?? '')[0] ?? '-',
+                    explode(' | ', $peserta?->pilihan_prodi ?? '')[1] ?? '-',
+                    $penilaian ? $penilaian->total_akhir : '-',
+                    $penilaian ? $penilaian->wawancara_motivasi : '-',
+                    $penilaian ? $penilaian->wawancara_prestasi : '-',
+                    $penilaian ? $penilaian->wawancara_karakter : '-',
+                    $penilaian ? $penilaian->wawancara_kontribusi : '-',
+                    $penilaian ? $penilaian->wawancara_komunikasi : '-',
+                    $penilaian ? $penilaian->rekomendasi_akhir : '-',
+                    $penilaian ? $penilaian->rekomendasi_beasiswa : '-',
+                    $penilaian ? $penilaian->catatan_rekomendasi_beasiswa : '-',
+                    $penilaian ? 'Sudah Dinilai' : 'Belum Dinilai'
+                ];
+                
+                fputcsv($file, $row, ';');
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

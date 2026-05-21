@@ -10,6 +10,14 @@
             {{ auth()->user()->role === 'dosen' ? 'Berikan penilaian wawancara untuk peserta yang ditugaskan kepada Anda.' : 'Berikan penilaian kualitatif untuk setiap peserta yang lolos seleksi berkas.' }}
         </p>
     </div>
+    @if(in_array(auth()->user()->role, ['admin', 'akademik', 'palugada']) && $type === 'akademik')
+    <div class="flex items-center gap-3">
+        <a href="{{ route('admin.export_wawancara') }}" class="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-emerald-100 flex items-center gap-2">
+            <span class="iconify" data-icon="solar:export-bold"></span>
+            Export Hasil Wawancara
+        </a>
+    </div>
+    @endif
 </div>
 
 <!-- Filter & Search Section -->
