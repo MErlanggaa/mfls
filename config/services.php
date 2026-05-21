@@ -35,4 +35,8 @@ return [
         'key' => env('GEMINI_API_KEY'),
     ],
 
+    'google_sheet' => [
+        'id' => env('GOOGLE_SHEET_ID'),
+    ],
+
 ];

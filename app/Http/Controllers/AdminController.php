@@ -2281,12 +2281,8 @@ class AdminController extends Controller
             'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5',
             'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)',
         ];
-        
-        $mediaColumns = [
-            'LINK VIDEO', 'LINK TWIBBON'
-        ];
 
-        $columns = array_merge($columns, $berkasColumns, $sertifikatColumns, $mediaColumns);
+        $columns = array_merge($columns, $berkasColumns, $sertifikatColumns);
 
         $headers = [
             "Content-type" => "text/csv",
@@ -2383,10 +2379,6 @@ class AdminController extends Controller
                         $row[] = '-';
                     }
                 }
-
-                // E. Media Links
-                $row[] = ($berkas && $berkas->motivasi_video) ? $berkas->motivasi_video : '-';
-                $row[] = $peserta->link_twibbon ?? '-';
 
                 fputcsv($file, $row);
             }

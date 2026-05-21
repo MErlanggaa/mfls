@@ -86,11 +86,7 @@ class GoogleSheetService
             'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)'
         ];
 
-        $headerAfter = [
-            'LINK VIDEO MOTIVASI', 'LINK TWIBBON'
-        ];
-
-        $rows[] = array_merge($headerBefore, $sertifikatHeaders, $headerAfter);
+        $rows[] = array_merge($headerBefore, $sertifikatHeaders);
 
         foreach ($pendaftars as $user) {
             /** @var \App\Models\Akun $user */
@@ -183,10 +179,6 @@ class GoogleSheetService
                     $row[] = '-';
                 }
             }
-
-            // Links
-            $row[] = $berkas->motivasi_video ?? '-';
-            $row[] = $peserta?->link_twibbon ?? '-';
 
             $rows[] = $row;
         }
