@@ -53,25 +53,6 @@ class GoogleSheetService
                 return $progB <=> $progA;
             });
 
-        // Calculate max certificates
-        $maxSertifikatCount = 0;
-        foreach ($pendaftars as $user) {
-            $peserta = $user->peserta;
-            if ($peserta && $peserta->sertifikats) {
-                $count = $peserta->sertifikats->count();
-                if ($count > $maxSertifikatCount) {
-                    $maxSertifikatCount = $count;
-                }
-            }
-        }
-        $maxSertifikatCount = max(3, $maxSertifikatCount); // Minimum 3 columns for certificates
-
-        $sertifikatHeaders = [];
-        for ($i = 1; $i <= $maxSertifikatCount; $i++) {
-            $sertifikatHeaders[] = "SERTIFIKAT {$i} (NAMA)";
-            $sertifikatHeaders[] = "SERTIFIKAT {$i} (LINK)";
-        }
-
         $rows = [];
         // Header
         $headerBefore = [
@@ -86,7 +67,7 @@ class GoogleSheetService
             'FOTO', 'RAPOR S1', 'RAPOR S2', 'RAPOR S3', 'RAPOR S4', 'RAPOR S5', 'IJAZAH', 'PERSONAL STATEMENT', 'SURAT BUTA WARNA (DKV)'
         ];
 
-        $rows[] = array_merge($headerBefore, $sertifikatHeaders);
+        $rows[] = array_merge($headerBefore, ['SERTIFIKAT', 'LINK VIDEO', 'LINK TWIBBON', 'LINK IG', 'LINK TIKTOK']);
 
         foreach ($pendaftars as $user) {
             /** @var \App\Models\Akun $user */
@@ -167,27 +148,40 @@ class GoogleSheetService
             $row[] = $this->getFileUrl($berkas->personal_statement ?? null);
             $row[] = $this->getFileUrl($berkas->surat_buta_warna ?? null);
 
-            // Sertifikats
+            // Sertifikats (Multiple links in one cell)
             $sertifikats = $peserta?->sertifikats ?? collect();
-            for ($i = 0; $i < $maxSertifikatCount; $i++) {
-                $sertifikatObj = $sertifikats->get($i);
-                if ($sertifikatObj) {
-                    $row[] = $sertifikatObj->nama ?? '-';
-                    $row[] = $sertifikatObj->file ? $this->getFileUrl($sertifikatObj->file) : '-';
-                } else {
-                    $row[] = '-';
-                    $row[] = '-';
+            $sertifikatUrls = [];
+            foreach ($sertifikats as $sertifikatObj) {
+                if ($sertifikatObj->file) {
+                    $sertifikatUrls[] = $this->getFileUrl($sertifikatObj->file);
                 }
             }
+            $row[] = count($sertifikatUrls) > 0 ? implode("\n", $sertifikatUrls) : '-';
+
+            // Links (Video, Twibbon, IG & TikTok)
+            $row[] = $berkas?->motivasi_video ?? '-';
+            $row[] = $peserta?->link_twibbon ?? '-';
+            $row[] = $peserta?->link_ig ?? '-';
+            $row[] = $peserta?->link_tiktok ?? '-';
 
             $rows[] = $row;
         }
 
         $body = new ValueRange(['values' => $rows]);
         $params = ['valueInputOption' => 'RAW'];
+
+        // Dynamically find the first sheet title (GID 0) instead of hardcoding 'Sheet1'
+        $spreadsheet = $this->service->spreadsheets->get($this->spreadsheetId);
+        $firstSheetTitle = 'Sheet1'; // Fallback
+        foreach ($spreadsheet->getSheets() as $sheet) {
+            if ($sheet->getProperties()->getSheetId() == 0) {
+                $firstSheetTitle = $sheet->getProperties()->getTitle();
+                break;
+            }
+        }
         
-        $this->service->spreadsheets_values->clear($this->spreadsheetId, 'Sheet1!A1:CZ5000', new \Google\Service\Sheets\ClearValuesRequest());
-        $this->service->spreadsheets_values->update($this->spreadsheetId, 'Sheet1!A1', $body, $params);
+        $this->service->spreadsheets_values->clear($this->spreadsheetId, $firstSheetTitle . '!A1:CZ5000', new \Google\Service\Sheets\ClearValuesRequest());
+        $this->service->spreadsheets_values->update($this->spreadsheetId, $firstSheetTitle . '!A1', $body, $params);
 
         $this->applyFormatting($pendaftars);
         $this->syncSecondSheet();
@@ -254,11 +248,11 @@ class GoogleSheetService
         $requests = [];
         $index = 1;
 
-        // Get the sheetId for 'Sheet1'
+        // Get the sheetId for first sheet (GID 0)
         $spreadsheet = $this->service->spreadsheets->get($this->spreadsheetId);
         $sheetId = 0;
         foreach ($spreadsheet->getSheets() as $sheet) {
-            if ($sheet->getProperties()->getTitle() === 'Sheet1') {
+            if ($sheet->getProperties()->getSheetId() == 0) {
                 $sheetId = $sheet->getProperties()->getSheetId();
                 break;
             }
