@@ -240,15 +240,20 @@ class GoogleSheetService
             return;
         }
 
-        $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
-            ->whereHas('peserta.daftar', function ($q) {
-                $q->where('status', 'lulus');
-            })
-            ->whereHas('peserta', function ($q) {
-                $q->where('status_seleksi_ujian', 'lulus');
-            })
-            ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
-            ->get();
+        try {
+            $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
+                ->whereHas('peserta.daftar', function ($q) {
+                    $q->where('status', 'lulus');
+                })
+                ->whereHas('peserta', function ($q) {
+                    $q->where('status_seleksi_ujian', 'lulus');
+                })
+                ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
+                ->get() ?? collect();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('syncWawancara: DB query failed - ' . $e->getMessage());
+            return; // abort sync if DB unavailable
+        }
 
         \Illuminate\Support\Facades\Log::info("syncWawancara: Ditemukan " . $pendaftars->count() . " peserta.");
 
@@ -293,7 +298,19 @@ class GoogleSheetService
             ];
         }
 
-        $body = new \Google\Service\Sheets\ValueRange(['values' => $rows]);
+     $rows = array_map(function ($row) {
+    return array_values(array_map(function ($cell) {
+        if (is_array($cell) || is_object($cell)) {
+            return json_encode($cell, JSON_UNESCAPED_UNICODE);
+        }
+
+        return $cell ?? '-';
+    }, $row));
+}, $rows);
+
+$body = new \Google\Service\Sheets\ValueRange([
+    'values' => $rows
+]);
         $params = ['valueInputOption' => 'USER_ENTERED'];
 
         // Find sheet title for GID 821132360
