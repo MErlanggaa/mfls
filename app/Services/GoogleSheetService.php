@@ -292,8 +292,9 @@ class GoogleSheetService
         }
 
         if ($sheetTitle) {
-            $this->service->spreadsheets_values->clear($this->spreadsheetId, $sheetTitle . '!A1:Z5000', new \Google\Service\Sheets\ClearValuesRequest());
-            $this->service->spreadsheets_values->update($this->spreadsheetId, $sheetTitle . '!A1', $body, $params);
+            $safeSheetTitle = "'" . $sheetTitle . "'";
+            $this->service->spreadsheets_values->clear($this->spreadsheetId, $safeSheetTitle . '!A1:Z5000', new \Google\Service\Sheets\ClearValuesRequest());
+            $this->service->spreadsheets_values->update($this->spreadsheetId, $safeSheetTitle . '!A1', $body, $params);
         } else {
             \Illuminate\Support\Facades\Log::warning("Sheet with GID 821132360 not found in spreadsheet {$this->spreadsheetId}");
         }
