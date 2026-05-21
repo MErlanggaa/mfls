@@ -130,15 +130,8 @@ class AdminController extends Controller
             return back()->with('loginError', 'Peserta ini belum lulus tahap administrasi.');
         }
 
-        // Cek apakah sudah lulus seleksi ujian CBT
-        $lulusUjian = \App\Models\JawabanUjian::where('peserta_id', $peserta->id)
-            ->where('status_seleksi', 'lulus')
-            ->whereHas('ujian', function ($q) {
-                $q->where('nama', 'NOT LIKE', '%Pemetaan Diri%');
-            })
-            ->exists();
-
-        if (!$lulusUjian) {
+        // Cek apakah sudah lulus seleksi ujian
+        if ($peserta->status_seleksi_ujian !== 'lulus') {
             return back()->with('loginError', 'Peserta ini belum dinyatakan Lulus Seleksi Ujian CBT.');
         }
 
@@ -273,6 +266,9 @@ class AdminController extends Controller
             ->whereHas('peserta.daftar', function ($q) {
             $q->where('status', 'lulus');
         })
+            ->whereHas('peserta', function ($q) {
+                $q->where('status_seleksi_ujian', 'lulus');
+            })
             ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas', 'peserta.penilaianMentors.mentor', 'peserta.jawabanUjians.ujian']);
 
         // filters ...
@@ -328,7 +324,7 @@ class AdminController extends Controller
 
         $rataRataAkademik = $user->peserta->nilais->avg('nilai') ?? 0;
         $rataRataMentor = $user->peserta->penilaianMentors->avg('nilai') ?? 0;
-        $rataRataAkademikFinal = $user->peserta->penilaianAkademiks->avg('total_nilai') ?? 0;
+        $rataRataAkademikFinal = $user->peserta->penilaianAkademiks->avg('total_akhir') ?? 0;
 
         // Calculate CBT Score (Exclude Pemetaan Diri)
         $cbtUjians = $user->peserta->nilaiUjians->filter(function($n) {
@@ -991,21 +987,21 @@ class AdminController extends Controller
         }
 
         if (auth()->user()->role === 'dosen') {
-            $request->validate([
-                'wawancara_motivasi' => 'required|numeric|min:1|max:5',
-                'wawancara_prestasi' => 'required|numeric|min:1|max:5',
-                'wawancara_karakter' => 'required|numeric|min:1|max:5',
-                'wawancara_kontribusi' => 'required|numeric|min:1|max:5',
-                'wawancara_komunikasi' => 'required|numeric|min:1|max:5',
+                    $request->validate([
+            'wawancara_motivasi' => 'required|integer|min:1|max:5',
+            'wawancara_prestasi' => 'required|integer|min:1|max:5',
+            'wawancara_karakter' => 'required|integer|min:1|max:5',
+            'wawancara_kontribusi' => 'required|integer|min:1|max:5',
+            'wawancara_komunikasi' => 'required|integer|min:1|max:5',
 
-                'catatan' => 'nullable|string',
+            'catatan' => 'nullable|string',
 
-                'rekomendasi_akhir' => 'required|string',
-                'rekomendasi_beasiswa' => 'required|string',
-                'rekomendasi_kelas' => 'required|string',
-                'rekomendasi_prodi_1' => 'required|string',
-                'rekomendasi_prodi_2' => 'required|string',
-            ]);
+            'rekomendasi_akhir' => 'required|string',
+            'rekomendasi_beasiswa' => 'required|string',
+            'rekomendasi_kelas' => 'required|string',
+            'rekomendasi_prodi_1' => 'required|string',
+            'rekomendasi_prodi_2' => 'required|string',
+        ]);
 
             $wawancaraMotivasi = (float) $request->wawancara_motivasi;
             $wawancaraPrestasi = (float) $request->wawancara_prestasi;

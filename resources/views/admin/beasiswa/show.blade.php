@@ -238,40 +238,34 @@
             <h3 class="text-sm font-black text-slate-800 mb-6 uppercase tracking-widest text-center">Rekapitulasi Penilaian Wawancara</h3>
             
             @foreach($user->peserta->penilaianAkademiks as $eval)
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <!-- Dosen -->
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center border-b-2 border-orange-50 pb-2">
-                        <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">I. Penilaian Prodi (Dosen)</span>
-                        <div class="px-3 py-1 bg-orange-500 text-white text-[10px] font-black rounded-lg">SUBTOTAL: {{ number_format($eval->total_dosen, 2) }}</div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center border-b-2 border-orange-50 pb-2">
+                    <span class="text-[10px] font-black text-orange-600 uppercase tracking-widest">Wawancara oleh: {{ $eval->penilai->nama ?? 'Dosen' }}</span>
+                    <div class="px-3 py-1 bg-orange-500 text-white text-[10px] font-black rounded-lg">TOTAL SKOR: {{ number_format($eval->total_akhir, 2) }}</div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-[10px]">
+                    <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Motivasi & Komitmen (25%)</span><span class="font-black">{{ $eval->wawancara_motivasi }}</span></div>
+                    <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Prestasi Akademik (20%)</span><span class="font-black">{{ $eval->wawancara_prestasi }}</span></div>
+                    <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Karakter & Integritas (20%)</span><span class="font-black">{{ $eval->wawancara_karakter }}</span></div>
+                    <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Kontribusi & Kepemimpinan (20%)</span><span class="font-black">{{ $eval->wawancara_kontribusi }}</span></div>
+                    <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Kemampuan Komunikasi (15%)</span><span class="font-black">{{ $eval->wawancara_komunikasi }}</span></div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="p-3 bg-blue-50/50 rounded-xl border border-blue-100 text-[10px]">
+                        <span class="block font-black text-blue-600 uppercase mb-1">Rekomendasi Kelulusan</span>
+                        <span class="font-bold text-slate-700">{{ $eval->rekomendasi_akhir ?: '-' }}</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-3 text-[10px]">
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Kompetensi</span><span class="font-black">{{ $eval->dosen_kompetensi }}</span></div>
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Motivasi</span><span class="font-black">{{ $eval->dosen_motivasi }}</span></div>
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Wawasan</span><span class="font-black">{{ $eval->dosen_wawasan }}</span></div>
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Karir</span><span class="font-black">{{ $eval->dosen_karir }}</span></div>
-                        <div class="col-span-2 flex justify-between p-2 bg-slate-50 rounded-xl"><span>Integritas</span><span class="font-black">{{ $eval->dosen_integritas }}</span></div>
+                    <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 text-[10px]">
+                        <span class="block font-black text-emerald-600 uppercase mb-1">Skema Beasiswa</span>
+                        <span class="font-bold text-slate-700">{{ $eval->rekomendasi_beasiswa ?: '-' }}</span>
                     </div>
                 </div>
 
-                <!-- Mhs -->
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center border-b-2 border-blue-50 pb-2">
-                        <span class="text-[10px] font-black text-blue-600 uppercase tracking-widest">II. Penilaian Kemahasiswaan</span>
-                        <div class="px-3 py-1 bg-blue-500 text-white text-[10px] font-black rounded-lg">SUBTOTAL: {{ number_format($eval->total_mhs, 2) }}</div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 text-[10px]">
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Kepemimpinan</span><span class="font-black">{{ $eval->mhs_leadership }}</span></div>
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Organisasi</span><span class="font-black">{{ $eval->mhs_organisasi }}</span></div>
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Etika</span><span class="font-black">{{ $eval->mhs_etika }}</span></div>
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-xl"><span>Adaptasi</span><span class="font-black">{{ $eval->mhs_adaptasi }}</span></div>
-                        <div class="col-span-2 flex justify-between p-2 bg-slate-50 rounded-xl"><span>Komitmen</span><span class="font-black">{{ $eval->mhs_komitmen }}</span></div>
-                    </div>
+                <div class="mt-4 p-4 bg-slate-100 rounded-2xl flex justify-between items-center text-slate-800">
+                    <span class="text-[10px] font-black uppercase tracking-widest">Catatan Wawancara:</span>
+                    <span class="text-xs font-semibold italic">"{{ $eval->catatan ?: '-' }}"</span>
                 </div>
-            </div>
-            <div class="mt-6 p-4 bg-slate-100 rounded-2xl flex justify-between items-center text-slate-800">
-                <span class="text-[10px] font-black uppercase tracking-widest">Catatan Wawancara:</span>
-                <span class="text-xs font-semibold italic">"{{ $eval->catatan ?: '-' }}"</span>
             </div>
             @endforeach
         </div>
