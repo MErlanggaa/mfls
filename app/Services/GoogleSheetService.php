@@ -168,7 +168,7 @@ class GoogleSheetService
         }
 
         $body = new ValueRange(['values' => $rows]);
-        $params = ['valueInputOption' => 'RAW'];
+        $params = ['valueInputOption' => 'USER_ENTERED'];
 
         // Dynamically find the first sheet title (GID 0) instead of hardcoding 'Sheet1'
         $spreadsheet = $this->service->spreadsheets->get($this->spreadsheetId);
@@ -212,7 +212,7 @@ class GoogleSheetService
         }
 
         $body = new ValueRange(['values' => $rows]);
-        $params = ['valueInputOption' => 'RAW'];
+        $params = ['valueInputOption' => 'USER_ENTERED'];
 
         // Find sheet title for GID 433979925
         $spreadsheet = $this->service->spreadsheets->get($this->spreadsheetId);
