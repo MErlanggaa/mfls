@@ -233,7 +233,12 @@ class GoogleSheetService
      */
     public function syncWawancara()
     {
-        if (!$this->service) return;
+        \Illuminate\Support\Facades\Log::info("Memulai syncWawancara...");
+        
+        if (!$this->service) {
+            \Illuminate\Support\Facades\Log::error("syncWawancara: service is null");
+            return;
+        }
 
         $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
             ->whereHas('peserta.daftar', function ($q) {
@@ -245,11 +250,17 @@ class GoogleSheetService
             ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
             ->get();
 
+        \Illuminate\Support\Facades\Log::info("syncWawancara: Ditemukan " . $pendaftars->count() . " peserta.");
+
         $rows = [];
         $rows[] = [
-            'No', 'Nama Lengkap', 'Asal Sekolah', 'Email', 'No HP', 'Minat Prodi 1', 'Minat Prodi 2', 
-            'Total Nilai Akhir', 'Wawancara Motivasi', 'Wawancara Prestasi', 'Wawancara Karakter', 'Wawancara Kontribusi', 'Wawancara Komunikasi', 
-            'Rekomendasi Akhir', 'Rekomendasi Beasiswa', 'Catatan Rekomendasi', 'Status Wawancara'
+            'No', 'Nama Lengkap', 'Asal Sekolah', 'Email', 'No HP', 'Minat Prodi 1', 'Minat Prodi 2',
+            'Total Nilai Akhir',
+            'Wawancara Motivasi', 'Wawancara Prestasi', 'Wawancara Karakter', 'Wawancara Kontribusi', 'Wawancara Komunikasi',
+            'Rekomendasi Prodi 1', 'Rekomendasi Prodi 2',
+            'Rekomendasi Akhir', 'Rekomendasi Beasiswa', 'Catatan Rekomendasi',
+            'Penilai (Dosen)', 'Alasan Rekomendasi',
+            'Status Wawancara'
         ];
 
         foreach ($pendaftars as $index => $user) {
@@ -271,9 +282,13 @@ class GoogleSheetService
                 $penilaian ? $penilaian->wawancara_karakter : '-',
                 $penilaian ? $penilaian->wawancara_kontribusi : '-',
                 $penilaian ? $penilaian->wawancara_komunikasi : '-',
+                $penilaian ? $penilaian->rekomendasi_prodi_1 : '-',
+                $penilaian ? $penilaian->rekomendasi_prodi_2 : '-',
                 $penilaian ? $penilaian->rekomendasi_akhir : '-',
                 $penilaian ? $penilaian->rekomendasi_beasiswa : '-',
                 $penilaian ? $penilaian->catatan_rekomendasi_beasiswa : '-',
+                $penilaian && $penilaian->penilai ? $penilaian->penilai->nama : '-',
+                $penilaian ? $penilaian->catatan : '-',
                 $penilaian ? 'Sudah Dinilai' : 'Belum Dinilai'
             ];
         }
@@ -293,8 +308,10 @@ class GoogleSheetService
 
         if ($sheetTitle) {
             $safeSheetTitle = "'" . $sheetTitle . "'";
+            \Illuminate\Support\Facades\Log::info("syncWawancara: Menemukan sheet title {$sheetTitle}. Melakukan update ke GSheet...");
             $this->service->spreadsheets_values->clear($this->spreadsheetId, $safeSheetTitle . '!A1:Z5000', new \Google\Service\Sheets\ClearValuesRequest());
             $this->service->spreadsheets_values->update($this->spreadsheetId, $safeSheetTitle . '!A1', $body, $params);
+            \Illuminate\Support\Facades\Log::info("syncWawancara: Update GSheet selesai.");
         } else {
             \Illuminate\Support\Facades\Log::warning("Sheet with GID 821132360 not found in spreadsheet {$this->spreadsheetId}");
         }
