@@ -2220,7 +2220,7 @@ class AdminController extends Controller
 
         $fileName = 'Database_Seleksi_Administrasi_' . date('Y-m-d_H-i') . '.csv';
         $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
-            ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas', 'peserta.sertifikats'])
+            ->with(['peserta.daftar', 'peserta.nilais.matpel', 'peserta.berkas', 'peserta.sertifikats', 'peserta.penilaianAkademiks', 'peserta.penilaianMentors'])
             ->get();
 
         // 1. Definisikan Mapel Core & Cari Mapel Tambahan yang ada nilainya
@@ -2239,7 +2239,7 @@ class AdminController extends Controller
         // 2. Definisikan Column Headers
         $columns = [
             'Nama Lengkap', 'Email', 'Jenis Kelamin', 'Nomor HP', 'NISN', 'Asal Sekolah', 'Minat Prodi 1', 'Minat Prodi 2', 'Wilayah (Jabodetabek)',
-            'Kode Referral'
+            'Kode Referral', 'Catatan Dosen', 'Catatan Mentor'
         ];
 
         // Detail Semester 1-5 sesuai request "nilai S1 apa aja terus ada avgnya"
@@ -2315,6 +2315,8 @@ class AdminController extends Controller
                         return "DI LUAR JABODETABEK";
                     })($peserta?->kabupaten ?? null),
                     $daftar?->kode_referral ?? '-',
+                    $peserta?->penilaianAkademiks->first()?->catatan ?? '-',
+                    $peserta?->penilaianMentors->first()?->catatan ?? '-',
                 ];
 
                 // B. Data Akademik Rinci (S1-S5)
@@ -2402,13 +2404,13 @@ class AdminController extends Controller
             ->whereHas('peserta', function ($q) {
                 $q->where('status_seleksi_ujian', 'lulus');
             })
-            ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
+            ->with(['peserta.daftar', 'peserta.penilaianAkademiks', 'peserta.penilaianMentors'])
             ->get();
 
         $columns = [
             'No', 'Nama Lengkap', 'Asal Sekolah', 'Email', 'No HP', 'Minat Prodi 1', 'Minat Prodi 2', 
             'Total Nilai Akhir', 'Wawancara Motivasi', 'Wawancara Prestasi', 'Wawancara Karakter', 'Wawancara Kontribusi', 'Wawancara Komunikasi', 
-            'Rekomendasi Akhir', 'Rekomendasi Beasiswa', 'Catatan Rekomendasi', 'Status Wawancara'
+            'Rekomendasi Akhir', 'Rekomendasi Beasiswa', 'Catatan Dosen', 'Catatan Mentor', 'Catatan Rekomendasi', 'Status Wawancara'
         ];
 
         $headers = [
@@ -2454,6 +2456,8 @@ class AdminController extends Controller
                     $penilaian ? $penilaian->wawancara_komunikasi : '-',
                     $penilaian ? $penilaian->rekomendasi_akhir : '-',
                     $penilaian ? $penilaian->rekomendasi_beasiswa : '-',
+                    $penilaian ? $penilaian->catatan : '-',
+                    $peserta?->penilaianMentors->first()?->catatan ?? '-',
                     $penilaian ? $penilaian->catatan_rekomendasi_beasiswa : '-',
                     $penilaian ? 'Sudah Dinilai' : 'Belum Dinilai'
                 ];

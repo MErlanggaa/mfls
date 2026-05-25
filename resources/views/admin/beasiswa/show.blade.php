@@ -27,6 +27,7 @@
             color: black !important;
             font-size: 8.5pt;
             line-height: 1.2;
+            zoom: 0.85;
         }
 
         /* Extremely Compact Sectioning */
@@ -270,7 +271,7 @@
             @endforeach
         </div>
 
-        <div class="section-box bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
+        <div class="section-box no-print bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
             <h3 class="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest flex items-center gap-2">
                 <span class="iconify text-primary-orange" data-icon="solar:magic-stick-3-bold-duotone"></span>
                 Hasil Pemetaan Diri (AI Report)
