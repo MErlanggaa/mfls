@@ -114,140 +114,168 @@
                 $status = $peserta->daftar->status ?? 'menunggu';
                 $isLulus = ($status === 'lulus');
                 $isGagal = !$isLulus;
-                $isProses = false;
-
-                $headerColor = $isLulus ? 'bg-snbp-blue' : 'bg-snbp-red';
-                $statusText = $isLulus ? 'SELAMAT! ANDA DINYATAKAN LULUS SELEKSI ADMINISTRASI' : 'ANDA DINYATAKAN TIDAK LULUS SELEKSI ADMINISTRASI';
+                $nominalBeasiswa = $peserta->daftar->nominal_beasiswa ?? null;
             @endphp
 
             <div id="announcementCard"
-                class="w-full max-w-lg overflow-hidden rounded-3xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] transform transition-all duration-500 hover:scale-[1.01]">
-                <!-- Card Header -->
-                <div class="{{ $headerColor }} p-8 text-center relative overflow-hidden">
-                    <div class="absolute inset-0 bg-white/10 -skew-x-12 transform translate-x-1/2"></div>
+                class="w-full max-w-lg overflow-hidden rounded-3xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.35)] transform transition-all duration-500 hover:scale-[1.01]">
+
+                @if($isLulus)
+                {{-- ===== CARD: LULUS / PENERIMA BEASISWA ===== --}}
+
+                {{-- Header Gradient --}}
+                <div class="relative bg-gradient-to-br from-[#003580] via-[#00509d] to-[#0070cc] p-8 text-center overflow-hidden">
+                    {{-- Decorative circles --}}
+                    <div class="absolute -top-10 -right-10 w-48 h-48 bg-white/5 rounded-full"></div>
+                    <div class="absolute -bottom-14 -left-10 w-56 h-56 bg-white/5 rounded-full"></div>
+                    <div class="absolute top-4 left-4 w-16 h-16 bg-yellow-400/10 rounded-full blur-xl"></div>
+
                     <div class="relative z-10">
-                        <img src="{{ asset('icon/logoo.png') }}" class="h-28 mx-auto mb-4 brightness-0 invert" alt="Logo">
-                        <h3 class="text-white font-black text-lg md:text-xl leading-tight px-4">{{ $statusText }}</h3>
+                        <img src="{{ asset('icon/logoo.png') }}" class="h-24 mx-auto mb-5 brightness-0 invert drop-shadow-2xl" alt="Logo">
 
-                        <p class="text-white/80 text-[10px] mt-3 font-medium uppercase tracking-wider">MNCU FUTURE LEADER
-                            SCHOLARSHIP</p>
+                        {{-- Trophy Icon --}}
+                        <div class="w-16 h-16 mx-auto mb-4 bg-yellow-400/20 border-2 border-yellow-400/40 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                            <span class="iconify text-yellow-400 text-3xl" data-icon="solar:cup-star-bold-duotone"></span>
+                        </div>
 
+                        <p class="text-white/60 text-[9px] font-black uppercase tracking-[0.3em] mb-2">MNCU FUTURE LEADER SCHOLARSHIP 2026</p>
+                        <h3 class="text-white font-black text-xl leading-tight px-2">
+                            SELAMAT! ANDA DINYATAKAN SEBAGAI<br>
+                            <span class="text-yellow-300">PENERIMA BEASISWA</span>
+                        </h3>
                     </div>
                 </div>
 
-                <!-- Card Body (Black Style) -->
-                <div class="bg-snbp-black p-8 text-white relative">
-                    <div class="flex flex-col md:flex-row gap-6 items-center md:items-start mb-8">
-                        {{-- Foto 3x4 --}}
-                        {{-- @php
-                        $fotoPath = $peserta->berkas->foto ?? null;
-                        $fotoUrl = $fotoPath ? asset('storage/' . $fotoPath) : "https://ui-avatars.com/api/?name=" .
-                        urlencode($peserta->nama) . "&background=F97316&color=fff";
-                        @endphp
-                        <div
-                            class="w-24 h-32 rounded-xl overflow-hidden shadow-lg border-2 border-white/20 flex-shrink-0 bg-slate-800">
-                            <img src="{{ $fotoUrl }}" class="w-full h-full object-cover" alt="Foto {{ $peserta->nama }}">
-                        </div> --}}
-                        <div class="text-center md:text-left">
-                            <p class="text-white/50 text-[10px] font-bold tracking-widest uppercase">NISN
-                                {{ $peserta->nisn }} - NOREG {{ $peserta->id }}
-                            </p>
-                            <h4 class="text-2xl font-black mt-1 uppercase tracking-tight">{{ $peserta->nama }}</h4>
-                            @if($isLulus)
-                                <p class="text-amber-400 font-bold text-sm mt-1 uppercase">{{ $peserta->pilihan_prodi ?? '-' }}
-                                </p>
-                                <p class="text-white/70 text-xs font-medium">MNC UNIVERSITY</p>
-                                @if(!empty($peserta->daftar->nominal_beasiswa))
-                                    <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-xl">
-                                        <span class="iconify text-emerald-400 text-lg" data-icon="solar:medal-ribbons-star-bold-duotone"></span>
-                                        <p class="text-emerald-400 font-black text-[11px] uppercase tracking-widest">BEASISWA {{ $peserta->daftar->nominal_beasiswa }}</p>
-                                    </div>
-                                @endif
-                            @endif
+                {{-- Scholarship Badge Strip --}}
+                @if(!empty($nominalBeasiswa))
+                <div class="bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-500 px-6 py-4 flex items-center justify-center gap-3">
+                    <span class="iconify text-yellow-900 text-2xl" data-icon="solar:medal-ribbons-star-bold-duotone"></span>
+                    <div class="text-center">
+                        <p class="text-yellow-900 text-[9px] font-black uppercase tracking-[0.25em]">Nominal Beasiswa Diterima</p>
+                        <p class="text-yellow-900 font-black text-2xl leading-none">BEASISWA {{ $nominalBeasiswa }}</p>
+                    </div>
+                    <span class="iconify text-yellow-900 text-2xl" data-icon="solar:medal-ribbons-star-bold-duotone"></span>
+                </div>
+                @else
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-500 px-6 py-3 flex items-center justify-center gap-3">
+                    <span class="iconify text-white text-xl" data-icon="solar:verified-check-bold"></span>
+                    <p class="text-white font-black text-sm uppercase tracking-widest">PENERIMA BEASISWA MFLS 2026</p>
+                </div>
+                @endif
+
+                {{-- Card Body --}}
+                <div class="bg-[#0d1117] px-8 py-7 text-white">
+                    {{-- Identitas --}}
+                    <div class="mb-6">
+                        <p class="text-white/30 text-[9px] font-black tracking-[0.25em] uppercase mb-1">NISN {{ $peserta->nisn }} &nbsp;|&nbsp; NO. REG {{ $peserta->id }}</p>
+                        <h4 class="text-2xl font-black uppercase tracking-tight leading-snug">{{ $peserta->nama }}</h4>
+                        <p class="text-amber-400 font-bold text-sm mt-1 uppercase">{{ $peserta->pilihan_prodi ?? '-' }}</p>
+                        <p class="text-white/40 text-xs font-semibold">MNC UNIVERSITY</p>
+                    </div>
+
+                    {{-- Info Grid --}}
+                    <div class="grid grid-cols-2 gap-3 text-sm border-t border-white/8 pt-5 mb-6">
+                        <div class="bg-white/4 rounded-2xl p-4">
+                            <span class="text-white/30 text-[8px] font-black uppercase tracking-widest block mb-1">Tanggal Lahir</span>
+                            <span class="font-bold text-sm">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->translatedFormat('d F Y') : '-' }}</span>
+                        </div>
+                        <div class="bg-white/4 rounded-2xl p-4">
+                            <span class="text-white/30 text-[8px] font-black uppercase tracking-widest block mb-1">Kabupaten/Kota</span>
+                            <span class="font-bold text-sm uppercase">{{ $peserta->kabupaten ?? '-' }}</span>
+                        </div>
+                        <div class="bg-white/4 rounded-2xl p-4 col-span-2">
+                            <span class="text-white/30 text-[8px] font-black uppercase tracking-widest block mb-1">Asal Sekolah</span>
+                            <span class="font-bold text-sm uppercase">{{ $peserta->daftar->asal_sekolah ?? '-' }}</span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-4 text-sm border-t border-white/10 pt-6">
-                        <div class="flex flex-col">
-                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Tanggal Lahir</span>
-                            <span class="font-bold">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->translatedFormat('d F Y') : '-' }}</span>
+                    {{-- Quote --}}
+                    <div class="border-t border-white/8 pt-5 text-center">
+                        <span class="iconify text-yellow-400/50 text-4xl mb-1 block" data-icon="solar:quote-up-circle-bold-duotone"></span>
+                        <p class="text-xs text-white/50 leading-relaxed italic">
+                            Selamat atas pencapaian luar biasa Anda! Pantau email dan dashboard untuk informasi selanjutnya.
+                        </p>
+                    </div>
+                </div>
+
+                @else
+                {{-- ===== CARD: TIDAK LULUS ===== --}}
+                <div class="relative bg-gradient-to-br from-[#7f0011] via-[#d0021b] to-[#ff3040] p-8 text-center overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-48 h-48 bg-white/5 rounded-full"></div>
+                    <div class="absolute -bottom-14 -left-10 w-56 h-56 bg-white/5 rounded-full"></div>
+                    <div class="relative z-10">
+                        <img src="{{ asset('icon/logoo.png') }}" class="h-24 mx-auto mb-5 brightness-0 invert drop-shadow-2xl" alt="Logo">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-white/10 border-2 border-white/20 rounded-2xl flex items-center justify-center">
+                            <span class="iconify text-white text-3xl" data-icon="solar:close-circle-bold-duotone"></span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Asal Sekolah</span>
-                            <span class="font-bold uppercase">{{ $peserta->daftar->asal_sekolah ?? '-' }}</span>
+                        <p class="text-white/60 text-[9px] font-black uppercase tracking-[0.3em] mb-2">MNCU FUTURE LEADER SCHOLARSHIP 2026</p>
+                        <h3 class="text-white font-black text-xl leading-tight px-2">ANDA DINYATAKAN TIDAK LOLOS SELEKSI</h3>
+                    </div>
+                </div>
+
+                <div class="bg-[#0d1117] px-8 py-7 text-white">
+                    <div class="mb-6">
+                        <p class="text-white/30 text-[9px] font-black tracking-[0.25em] uppercase mb-1">NISN {{ $peserta->nisn }} &nbsp;|&nbsp; NO. REG {{ $peserta->id }}</p>
+                        <h4 class="text-2xl font-black uppercase tracking-tight">{{ $peserta->nama }}</h4>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-sm border-t border-white/8 pt-5 mb-6">
+                        <div class="bg-white/4 rounded-2xl p-4">
+                            <span class="text-white/30 text-[8px] font-black uppercase tracking-widest block mb-1">Tanggal Lahir</span>
+                            <span class="font-bold text-sm">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->translatedFormat('d F Y') : '-' }}</span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Kabupaten/Kota</span>
-                            <span class="font-bold uppercase">{{ $peserta->kabupaten ?? '-' }}</span>
+                        <div class="bg-white/4 rounded-2xl p-4">
+                            <span class="text-white/30 text-[8px] font-black uppercase tracking-widest block mb-1">Kabupaten/Kota</span>
+                            <span class="font-bold text-sm uppercase">{{ $peserta->kabupaten ?? '-' }}</span>
                         </div>
-                        <div class="flex flex-col">
-                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Provinsi</span>
-                            <span class="font-bold uppercase">{{ $peserta->provinsi ?? '-' }}</span>
+                        <div class="bg-white/4 rounded-2xl p-4 col-span-2">
+                            <span class="text-white/30 text-[8px] font-black uppercase tracking-widest block mb-1">Asal Sekolah</span>
+                            <span class="font-bold text-sm uppercase">{{ $peserta->daftar->asal_sekolah ?? '-' }}</span>
                         </div>
                     </div>
 
-                    @if($isLulus)
-                        <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                            <p class="text-xs text-white/80 leading-relaxed italic text-center">
-                                "Selamat atas pencapaian luar biasa Anda! Perjuangan Anda baru saja dimulai. Terus
-                                pantau dashboard dan email Anda untuk informasi mengenai tahapan seleksi selanjutnya.
-                                Tetap semangat!"
-                            </p>
-
+                    <div class="border-t border-white/8 pt-5">
+                        <p class="text-xs text-white/40 leading-relaxed mb-5 text-center">
+                            Jangan patah semangat! Masih ada kesempatan bergabung melalui jalur
+                            <span class="text-white font-bold">Beasiswa Mandiri</span>.
+                        </p>
+                        <div class="grid grid-cols-1 gap-3">
+                            <a href="https://wa.me/6281181221792" target="_blank"
+                                class="flex items-center justify-between px-5 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
+                                    <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case">0811-8122-1792</span></span>
+                                </div>
+                                <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
+                            </a>
+                            <a href="https://wa.me/6281181221791" target="_blank"
+                                class="flex items-center justify-between px-5 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
+                                    <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case">0811-8122-1791</span></span>
+                                </div>
+                                <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
+                            </a>
                         </div>
-                    @elseif($isGagal)
-                        <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                            <p class="text-xs text-white/50 leading-relaxed mb-6 px-4">
-                                Jangan patah semangat! Masih ada kesempatan untuk bergabung bersama kami melalui jalur 
-                                <span class="text-white font-bold">Beasiswa Mandiri</span>. Hubungi kami untuk informasi lebih lanjut:
-                            </p>
-                            
-                            <div class="grid grid-cols-1 gap-3 px-2">
-                                <a href="https://wa.me/6281181221792" target="_blank"
-                                    class="flex items-center justify-between px-6 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
-                                    <div class="flex items-center gap-3">
-                                        <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
-                                        <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case tracking-wider">0811-8122-1792</span></span>
-                                    </div>
-                                    <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
-                                </a>
-
-                                <a href="https://wa.me/6281181221791" target="_blank"
-                                    class="flex items-center justify-between px-6 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
-                                    <div class="flex items-center gap-3">
-                                        <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
-                                        <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case tracking-wider">0811-8122-1791</span></span>
-                                    </div>
-                                    <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
-                                </a>
-                            </div>
-
-                            <a href="{{ route('pengumuman') }}"
-                                class="inline-flex items-center gap-2 text-white/30 hover:text-white text-[10px] font-bold mt-8 uppercase tracking-widest transition-all">
+                        <div class="text-center mt-6">
+                            <a href="{{ route('pengumuman') }}" class="inline-flex items-center gap-2 text-white/20 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-all">
                                 <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali Cek NISN
                             </a>
                         </div>
-                    @else
-                        <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                            <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-5">
-                                <p class="text-xs text-amber-200 leading-relaxed font-bold">
-                                    Berkas Anda telah kami terima dan sedang dalam antrean verifikasi. Silakan cek kembali
-                                    secara berkala.
-                                </p>
-                            </div>
-                        </div>
-                    @endif
+                    </div>
                 </div>
+                @endif
 
-                <!-- Card Footer (Integrated Share Button) -->
-                <div class="bg-slate-50 p-4 no-capture flex items-center justify-center border-t border-slate-100">
+                <!-- Card Footer -->
+                <div class="bg-[#0a0f16] border-t border-white/5 p-4 no-capture flex items-center justify-center">
                     <button onclick="captureAndShare()" id="btnCapture"
-                        class="flex items-center gap-2 text-slate-500 hover:text-snbp-blue text-[10px] font-black uppercase tracking-widest transition-all">
+                        class="flex items-center gap-2 text-white/30 hover:text-white text-[10px] font-black uppercase tracking-widest transition-all">
                         <span class="iconify text-sm" data-icon="solar:share-bold"></span>
                         <span id="btnCaptureText">BAGIKAN HASIL SELEKSI</span>
                     </button>
                 </div>
             </div>
+
 
             <p class="mt-8 text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">© 2026 MNCU FUTURE LEADER
                 SCHOLARSHIP</p>

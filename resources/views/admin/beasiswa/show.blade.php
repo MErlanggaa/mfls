@@ -393,10 +393,21 @@
                     </select>
                 </div>
 
-                <button type="submit" class="w-full py-5 bg-yellow-400 text-slate-900 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-xl shadow-yellow-400/20">
+                <button type="submit" class="w-full py-5 bg-yellow-400 text-slate-900 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-xl shadow-yellow-400/20 mb-3">
                     SIMPAN HASIL SELEKSI
                 </button>
             </form>
+
+            @if($user->peserta->daftar->status === 'lulus' || !empty($user->peserta->daftar->nominal_beasiswa))
+            <form action="{{ route('admin.beasiswa.update', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan kelulusan & menghapus beasiswa kandidat ini?');">
+                @csrf
+                <input type="hidden" name="status" value="menunggu">
+                <input type="hidden" name="nominal_beasiswa" value="">
+                <button type="submit" class="w-full py-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                    <span class="iconify inline-block mr-1" data-icon="solar:trash-bin-trash-bold"></span> BATALKAN KELULUSAN
+                </button>
+            </form>
+            @endif
         </div>
 
         <div class="preview-decision print-only section-box bg-white p-6 rounded-2xl border-2 border-slate-900">

@@ -1,87 +1,156 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="mb-8 flex justify-between items-center">
+
+{{-- Page Header --}}
+<div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-        <h2 class="text-2xl font-black text-slate-800">Wawancara BoD (Beasiswa 100%)</h2>
-        <p class="text-slate-500">Penilaian Kelayakan Wawancara BoD khusus penerima Beasiswa 100%.</p>
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full mb-3">
+            <span class="iconify text-amber-500 text-sm" data-icon="solar:cup-star-bold-duotone"></span>
+            <span class="text-amber-700 text-[10px] font-black uppercase tracking-widest">Tahap Final</span>
+        </div>
+        <h2 class="text-2xl font-black text-slate-800 leading-tight">Wawancara BoD</h2>
+        <p class="text-slate-400 font-medium text-sm mt-1">Kelayakan penerima <span class="text-amber-600 font-black">Beasiswa 100%</span> — ditentukan langsung oleh Board of Directors.</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <div class="px-5 py-3 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+            <span class="iconify text-amber-400" data-icon="solar:users-group-two-rounded-bold-duotone"></span>
+            {{ $pesertas->count() }} Kandidat
+        </div>
     </div>
 </div>
 
-<!-- Database Table -->
-<div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-            <thead class="bg-slate-50 text-slate-400 font-black uppercase text-[10px] tracking-[0.2em]">
-                <tr>
-                    <th class="px-6 py-5">Mahasiswa / Pendaftar</th>
-                    <th class="px-6 py-5 text-center">Sekolah</th>
-                    <th class="px-6 py-5 text-center">Rekomendasi / Keputusan Beasiswa</th>
-                    <th class="px-6 py-5 text-center">Status Kelayakan</th>
-                    <th class="px-6 py-5 text-right">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-50 uppercase">
-                @foreach($pesertas as $akun)
-                <tr class="hover:bg-slate-50/50 transition-all group">
-                    <td class="px-6 py-4">
-                        <div class="font-black text-slate-800">{{ $akun->nama }}</div>
-                        <div class="text-[9px] font-bold text-blue-500 tracking-widest">{{ $akun->peserta->nisn ?? '-' }}</div>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <div class="text-xs font-bold text-slate-500">{{ $akun->peserta->daftar->asal_sekolah ?? '-' }}</div>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <div class="flex flex-col gap-1 items-center">
-                            @if($akun->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa)
-                                <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-[9px] font-black border border-purple-100" title="Rekomendasi Wawancara Akademik">
-                                    Rek: {{ $akun->peserta->penilaianAkademiks->first()->rekomendasi_beasiswa }}
+@if(session('success'))
+    <div class="mb-6 flex items-center gap-3 px-6 py-4 bg-emerald-50 border border-emerald-200 rounded-2xl">
+        <span class="iconify text-emerald-500 text-xl" data-icon="solar:verified-check-bold-duotone"></span>
+        <p class="text-emerald-700 font-bold text-sm">{{ session('success') }}</p>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="mb-6 flex items-center gap-3 px-6 py-4 bg-red-50 border border-red-200 rounded-2xl">
+        <span class="iconify text-red-500 text-xl" data-icon="solar:danger-triangle-bold-duotone"></span>
+        <p class="text-red-700 font-bold text-sm">{{ session('error') }}</p>
+    </div>
+@endif
+
+@if($pesertas->isEmpty())
+    {{-- Empty State --}}
+    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-16 text-center">
+        <div class="w-20 h-20 mx-auto mb-6 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-center">
+            <span class="iconify text-slate-300 text-4xl" data-icon="solar:cup-star-bold-duotone"></span>
+        </div>
+        <p class="text-slate-400 font-black text-sm uppercase tracking-widest">Belum ada kandidat beasiswa 100%</p>
+        <p class="text-slate-300 text-xs mt-2">Kandidat akan muncul setelah rekomendasi wawancara akademik ditetapkan.</p>
+    </div>
+@else
+    {{-- Cards Grid --}}
+    <div class="grid grid-cols-1 gap-5">
+        @foreach($pesertas as $akun)
+        @php
+            $statusWawancara = $akun->peserta->daftar->status_wawancara_bod ?? null;
+            $nominalFinal    = $akun->peserta->daftar->nominal_beasiswa ?? null;
+            $rekBeasiswa     = $akun->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? null;
+
+            $isLayak    = $statusWawancara && str_starts_with($statusWawancara, 'Layak');
+            $isTidak    = $statusWawancara === 'Tidak Layak';
+            $isBelum    = !$statusWawancara;
+        @endphp
+
+        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg hover:border-slate-200 transition-all duration-300 overflow-hidden">
+            <div class="flex flex-col lg:flex-row">
+
+                {{-- Left: Colored Status Bar --}}
+                <div class="lg:w-2 w-full h-2 lg:h-auto flex-shrink-0 {{ $isLayak ? 'bg-gradient-to-b from-amber-400 to-yellow-500' : ($isTidak ? 'bg-gradient-to-b from-red-400 to-red-600' : 'bg-gradient-to-b from-slate-200 to-slate-300') }}"></div>
+
+                {{-- Main Content --}}
+                <div class="flex-1 p-6 flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+
+                    {{-- Identity --}}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3 flex-wrap mb-2">
+                            <h3 class="text-slate-900 font-black text-base uppercase tracking-tight">{{ $akun->nama }}</h3>
+
+                            {{-- Status Badge --}}
+                            @if($isLayak)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                    <span class="iconify" data-icon="solar:cup-star-bold"></span>
+                                    {{ $statusWawancara }}
                                 </span>
-                            @endif
-                            
-                            @if($akun->peserta->daftar->nominal_beasiswa)
-                                <span class="px-3 py-1 bg-green-50 text-green-700 rounded-lg text-[9px] font-black border border-green-100" title="Keputusan Final Admin">
-                                    Final: {{ $akun->peserta->daftar->nominal_beasiswa }}
+                            @elseif($isTidak)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 border border-red-200 text-red-600 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                    <span class="iconify" data-icon="solar:close-circle-bold"></span>
+                                    Tidak Layak
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 border border-slate-200 text-slate-400 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                    <span class="iconify" data-icon="solar:clock-circle-bold"></span>
+                                    Belum Dinilai
                                 </span>
                             @endif
                         </div>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        @if($akun->peserta->daftar->status_wawancara_bod === 'Layak')
-                            <span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-[10px] font-black border border-blue-100">Layak</span>
-                        @elseif($akun->peserta->daftar->status_wawancara_bod === 'Tidak Layak')
-                            <span class="px-3 py-1 bg-red-50 text-red-700 rounded-lg text-[10px] font-black border border-red-100">Tidak Layak</span>
-                        @else
-                            <span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black border border-slate-200">Belum Dinilai</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <form action="{{ route('admin.wawancara_bod.update', $akun->peserta->daftar->id) }}" method="POST" class="flex justify-end items-center gap-2">
+
+                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400 font-medium">
+                            <span class="flex items-center gap-1">
+                                <span class="iconify" data-icon="solar:card-bold"></span>
+                                NISN {{ $akun->peserta->nisn ?? '-' }}
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <span class="iconify" data-icon="solar:buildings-3-bold"></span>
+                                {{ $akun->peserta->daftar->asal_sekolah ?? '-' }}
+                            </span>
+                        </div>
+
+                        {{-- Rekomendasi & Final Tags --}}
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            @if($rekBeasiswa)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 border border-purple-100 text-purple-700 rounded-xl text-[10px] font-black uppercase tracking-wider">
+                                    <span class="iconify" data-icon="solar:document-text-bold"></span>
+                                    Rek. Wawancara: {{ $rekBeasiswa }}
+                                </span>
+                            @endif
+                            @if($nominalFinal)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-xl text-[10px] font-black uppercase tracking-wider">
+                                    <span class="iconify" data-icon="solar:medal-star-bold"></span>
+                                    Keputusan Final: {{ $nominalFinal }}
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Action Form --}}
+                    <div class="w-full lg:w-auto flex-shrink-0">
+                        <form action="{{ route('admin.wawancara_bod.update', $akun->peserta->daftar->id) }}" method="POST" class="flex items-center gap-2">
                             @csrf
-                            <select name="status_wawancara_bod" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 focus:border-orange-500 outline-none">
-                                <option value="" {{ empty($akun->peserta->daftar->status_wawancara_bod) ? 'selected' : '' }}>Pilih Kelayakan</option>
-                                <option value="Layak (100%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (100%)' ? 'selected' : '' }}>Layak (100%)</option>
-                                <option value="Layak (75%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (75%)' ? 'selected' : '' }}>Layak (75%)</option>
-                                <option value="Layak (50%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (50%)' ? 'selected' : '' }}>Layak (50%)</option>
-                                <option value="Layak (25%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (25%)' ? 'selected' : '' }}>Layak (25%)</option>
-                                <option value="Tidak Layak" {{ $akun->peserta->daftar->status_wawancara_bod === 'Tidak Layak' ? 'selected' : '' }}>Tidak Layak</option>
-                            </select>
-                            <button type="submit" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-black hover:bg-blue-700 transition-all uppercase">
+                            <div class="relative">
+                                <select name="status_wawancara_bod"
+                                    class="appearance-none pl-4 pr-10 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer min-w-[180px]">
+                                    <option value="" {{ empty($statusWawancara) ? 'selected' : '' }}>— Pilih Kelayakan —</option>
+                                    <optgroup label="Layak">
+                                        <option value="Layak (100%)" {{ $statusWawancara === 'Layak (100%)' ? 'selected' : '' }}>✦ Layak — Beasiswa 100%</option>
+                                        <option value="Layak (75%)"  {{ $statusWawancara === 'Layak (75%)'  ? 'selected' : '' }}>✦ Layak — Beasiswa 75%</option>
+                                        <option value="Layak (50%)"  {{ $statusWawancara === 'Layak (50%)'  ? 'selected' : '' }}>✦ Layak — Beasiswa 50%</option>
+                                        <option value="Layak (25%)"  {{ $statusWawancara === 'Layak (25%)'  ? 'selected' : '' }}>✦ Layak — Beasiswa 25%</option>
+                                    </optgroup>
+                                    <optgroup label="Tidak Layak">
+                                        <option value="Tidak Layak" {{ $statusWawancara === 'Tidak Layak' ? 'selected' : '' }}>✕ Tidak Layak</option>
+                                    </optgroup>
+                                </select>
+                                <span class="iconify absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs" data-icon="solar:alt-arrow-down-bold"></span>
+                            </div>
+                            <button type="submit"
+                                class="px-5 py-3 bg-slate-900 hover:bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-sm hover:shadow-amber-200 flex items-center gap-1.5 whitespace-nowrap">
+                                <span class="iconify" data-icon="solar:diskette-bold"></span>
                                 Simpan
                             </button>
                         </form>
-                    </td>
-                </tr>
-                @endforeach
-                @if($pesertas->isEmpty())
-                <tr>
-                    <td colspan="5" class="px-6 py-8 text-center text-slate-400 font-bold">
-                        Tidak ada data penerima beasiswa 100%.
-                    </td>
-                </tr>
-                @endif
-            </tbody>
-        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @endforeach
     </div>
-</div>
+@endif
+
 @endsection
