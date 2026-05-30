@@ -951,7 +951,7 @@ class AdminController extends Controller
         $user = Akun::with(['peserta.daftar', 'peserta.penilaianMentors.mentor', 'peserta.penilaianAkademiks.penilai'])->findOrFail($id);
 
         // Security check for dosen
-        if (auth()->user()->role === 'dosen' && ($user->peserta->interviewer_id ?? null) !== auth()->id()) {
+        if (auth()->user()->role === 'dosen' && auth()->user()->email !== 'dendi.pratama@mncu.ac.id' && ($user->peserta->interviewer_id ?? null) !== auth()->id()) {
             return abort(403, 'Anda tidak ditugaskan untuk mewawancarai peserta ini.');
         }
 
@@ -967,7 +967,7 @@ class AdminController extends Controller
         $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
 
         // Security check for dosen: must be assigned to this candidate
-        if (auth()->user()->role === 'dosen' && $peserta->interviewer_id !== auth()->id()) {
+        if (auth()->user()->role === 'dosen' && auth()->user()->email !== 'dendi.pratama@mncu.ac.id' && $peserta->interviewer_id !== auth()->id()) {
             return abort(403, 'Anda tidak ditugaskan untuk mewawancarai peserta ini.');
         }
 
@@ -2473,7 +2473,7 @@ class AdminController extends Controller
     public function indexWawancaraBod()
     {
         $user = auth()->user();
-        $isAuthorized = $user->role === 'admin' || in_array(strtolower($user->nama), ['dendi', 'rezki', 'noval']);
+        $isAuthorized = $user->role === 'admin' || in_array($user->email, ['dendi.pratama@mncu.ac.id', 'muhammad.rezki@mncu.ac.id', 'noval.adi@mncu.ac.id']);
 
         if (!$isAuthorized) {
             return abort(403, 'Anda tidak memiliki akses ke halaman ini.');
@@ -2494,7 +2494,7 @@ class AdminController extends Controller
     public function updateWawancaraBod(Request $request, $id)
     {
         $user = auth()->user();
-        $isAuthorized = $user->role === 'admin' || in_array(strtolower($user->nama), ['dendi', 'rezki', 'noval']);
+        $isAuthorized = $user->role === 'admin' || in_array($user->email, ['dendi.pratama@mncu.ac.id', 'muhammad.rezki@mncu.ac.id', 'noval.adi@mncu.ac.id']);
 
         if (!$isAuthorized) {
             return abort(403, 'Anda tidak memiliki akses.');

@@ -180,7 +180,7 @@
                 </a>
                 @endif
 
-                @if(auth()->check() && (auth()->user()->role === 'admin' || in_array(strtolower(auth()->user()->nama), ['dendi', 'rezki', 'noval'])))
+                @if(auth()->check() && (auth()->user()->role === 'admin' || in_array(auth()->user()->email, ['dendi.pratama@mncu.ac.id', 'muhammad.rezki@mncu.ac.id', 'noval.adi@mncu.ac.id'])))
                 <a href="{{ route('admin.wawancara_bod.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
                     {{ request()->routeIs('admin.wawancara_bod.*') ? 'bg-red-50 text-red-600 shadow-sm ring-1 ring-red-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
