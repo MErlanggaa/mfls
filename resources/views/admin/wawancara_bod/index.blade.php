@@ -16,7 +16,7 @@
                 <tr>
                     <th class="px-6 py-5">Mahasiswa / Pendaftar</th>
                     <th class="px-6 py-5 text-center">Sekolah</th>
-                    <th class="px-6 py-5 text-center">Nominal Beasiswa</th>
+                    <th class="px-6 py-5 text-center">Rekomendasi / Keputusan Beasiswa</th>
                     <th class="px-6 py-5 text-center">Status Kelayakan</th>
                     <th class="px-6 py-5 text-right">Aksi</th>
                 </tr>
@@ -32,9 +32,19 @@
                         <div class="text-xs font-bold text-slate-500">{{ $akun->peserta->daftar->asal_sekolah ?? '-' }}</div>
                     </td>
                     <td class="px-6 py-4 text-center">
-                        <span class="px-3 py-1 bg-green-50 text-green-700 rounded-lg text-[10px] font-black border border-green-100">
-                            {{ $akun->peserta->daftar->nominal_beasiswa ?? '100%' }}
-                        </span>
+                        <div class="flex flex-col gap-1 items-center">
+                            @if($akun->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa)
+                                <span class="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-[9px] font-black border border-purple-100" title="Rekomendasi Wawancara Akademik">
+                                    Rek: {{ $akun->peserta->penilaianAkademiks->first()->rekomendasi_beasiswa }}
+                                </span>
+                            @endif
+                            
+                            @if($akun->peserta->daftar->nominal_beasiswa)
+                                <span class="px-3 py-1 bg-green-50 text-green-700 rounded-lg text-[9px] font-black border border-green-100" title="Keputusan Final Admin">
+                                    Final: {{ $akun->peserta->daftar->nominal_beasiswa }}
+                                </span>
+                            @endif
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-center">
                         @if($akun->peserta->daftar->status_wawancara_bod === 'Layak')

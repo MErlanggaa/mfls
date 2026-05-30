@@ -6,6 +6,29 @@ use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\SurveyController;
 use Illuminate\Support\Facades\Route;
 
+// === TEMPORARY DEBUG ROUTE - HAPUS SETELAH SELESAI ===
+Route::get('/debug-beasiswa-100', function () {
+    if (!auth()->check() || auth()->user()->role !== 'admin') abort(403);
+
+    $totalPA = \App\Models\PenilaianAkademik::count();
+    $pa100 = \App\Models\PenilaianAkademik::where('rekomendasi_beasiswa', 'like', '%100%')->count();
+    $distinctRek = \App\Models\PenilaianAkademik::whereNotNull('rekomendasi_beasiswa')
+        ->select('rekomendasi_beasiswa')->distinct()->pluck('rekomendasi_beasiswa');
+    $totalDaftar100 = \App\Models\Daftar::where('nominal_beasiswa', 'like', '%100%')->count();
+    $distinctNominal = \App\Models\Daftar::whereNotNull('nominal_beasiswa')
+        ->select('nominal_beasiswa')->distinct()->pluck('nominal_beasiswa');
+
+    return response()->json([
+        'total_penilaian_akademiks' => $totalPA,
+        'penilaian_rekomendasi_100_percent' => $pa100,
+        'distinct_rekomendasi_beasiswa' => $distinctRek,
+        'total_daftar_nominal_beasiswa_100' => $totalDaftar100,
+        'distinct_nominal_beasiswa' => $distinctNominal,
+    ], 200, [], JSON_PRETTY_PRINT);
+});
+// === END DEBUG ROUTE ===
+
+
 // // Route::get('/', function () {
 //     $beritas = \App\Models\Berita::where('is_published', true)->orderBy('created_at', 'desc')->take(3)->get();
 

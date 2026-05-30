@@ -2480,9 +2480,13 @@ class AdminController extends Controller
         }
 
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
-            ->whereHas('peserta.daftar', function ($q) {
-                $q->where('nominal_beasiswa', 'like', '%100%');
-            })->with('peserta.daftar')->get();
+            ->where(function ($query) {
+                $query->whereHas('peserta.daftar', function ($q) {
+                    $q->where('nominal_beasiswa', 'like', '%100%');
+                })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
+                    $q->where('rekomendasi_beasiswa', 'like', '%100%');
+                });
+            })->with(['peserta.daftar', 'peserta.penilaianAkademiks'])->get();
 
         return view('admin.wawancara_bod.index', compact('pesertas'));
     }
@@ -2501,9 +2505,10 @@ class AdminController extends Controller
         ]);
 
         $daftar = \App\Models\Daftar::findOrFail($id);
+        $rekomendasiBeasiswa = $daftar->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? '';
         
-        if (!str_contains($daftar->nominal_beasiswa, '100')) {
-            return back()->with('error', 'Hanya peserta dengan Beasiswa 100% yang dapat diubah.');
+        if (!str_contains($daftar->nominal_beasiswa, '100') && !str_contains($rekomendasiBeasiswa, '100')) {
+            return back()->with('error', 'Hanya peserta dengan Beasiswa 100% (atau rekomendasi) yang dapat diubah.');
         }
 
         $daftar->update([
