@@ -2481,7 +2481,7 @@ class AdminController extends Controller
 
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
             ->whereHas('peserta.daftar', function ($q) {
-                $q->where('nominal_beasiswa', '100%');
+                $q->where('nominal_beasiswa', 'like', '%100%');
             })->with('peserta.daftar')->get();
 
         return view('admin.wawancara_bod.index', compact('pesertas'));
@@ -2502,7 +2502,7 @@ class AdminController extends Controller
 
         $daftar = \App\Models\Daftar::findOrFail($id);
         
-        if ($daftar->nominal_beasiswa !== '100%') {
+        if (!str_contains($daftar->nominal_beasiswa, '100')) {
             return back()->with('error', 'Hanya peserta dengan Beasiswa 100% yang dapat diubah.');
         }
 
