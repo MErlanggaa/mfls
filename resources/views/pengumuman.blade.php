@@ -157,6 +157,12 @@
                                 <p class="text-amber-400 font-bold text-sm mt-1 uppercase">{{ $peserta->pilihan_prodi ?? '-' }}
                                 </p>
                                 <p class="text-white/70 text-xs font-medium">MNC UNIVERSITY</p>
+                                @if(!empty($peserta->daftar->nominal_beasiswa))
+                                    <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-xl">
+                                        <span class="iconify text-emerald-400 text-lg" data-icon="solar:medal-ribbons-star-bold-duotone"></span>
+                                        <p class="text-emerald-400 font-black text-[11px] uppercase tracking-widest">BEASISWA {{ $peserta->daftar->nominal_beasiswa }}</p>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                     </div>

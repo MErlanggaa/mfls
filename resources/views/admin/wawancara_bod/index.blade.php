@@ -60,7 +60,10 @@
                             @csrf
                             <select name="status_wawancara_bod" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700 focus:border-orange-500 outline-none">
                                 <option value="" {{ empty($akun->peserta->daftar->status_wawancara_bod) ? 'selected' : '' }}>Pilih Kelayakan</option>
-                                <option value="Layak" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak' ? 'selected' : '' }}>Layak</option>
+                                <option value="Layak (100%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (100%)' ? 'selected' : '' }}>Layak (100%)</option>
+                                <option value="Layak (75%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (75%)' ? 'selected' : '' }}>Layak (75%)</option>
+                                <option value="Layak (50%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (50%)' ? 'selected' : '' }}>Layak (50%)</option>
+                                <option value="Layak (25%)" {{ $akun->peserta->daftar->status_wawancara_bod === 'Layak (25%)' ? 'selected' : '' }}>Layak (25%)</option>
                                 <option value="Tidak Layak" {{ $akun->peserta->daftar->status_wawancara_bod === 'Tidak Layak' ? 'selected' : '' }}>Tidak Layak</option>
                             </select>
                             <button type="submit" class="px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-black hover:bg-blue-700 transition-all uppercase">

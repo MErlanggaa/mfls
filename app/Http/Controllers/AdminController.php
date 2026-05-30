@@ -2501,7 +2501,7 @@ class AdminController extends Controller
         }
 
         $request->validate([
-            'status_wawancara_bod' => 'nullable|in:Layak,Tidak Layak',
+            'status_wawancara_bod' => 'nullable|in:Layak (100%),Layak (75%),Layak (50%),Layak (25%),Tidak Layak',
         ]);
 
         $daftar = \App\Models\Daftar::findOrFail($id);
