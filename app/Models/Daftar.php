@@ -31,6 +31,7 @@ class Daftar extends Model
         'avg_semester_5',
         'avg_semester_6',
         'nominal_beasiswa',
+        'status_wawancara_bod',
     ];
 
     public function peserta()

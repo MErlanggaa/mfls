@@ -2469,4 +2469,47 @@ class AdminController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    public function indexWawancaraBod()
+    {
+        $user = auth()->user();
+        $isAuthorized = $user->role === 'admin' || in_array(strtolower($user->nama), ['dendi', 'rezki', 'noval']);
+
+        if (!$isAuthorized) {
+            return abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        }
+
+        $pesertas = \App\Models\Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar', function ($q) {
+                $q->where('nominal_beasiswa', '100%');
+            })->with('peserta.daftar')->get();
+
+        return view('admin.wawancara_bod.index', compact('pesertas'));
+    }
+
+    public function updateWawancaraBod(Request $request, $id)
+    {
+        $user = auth()->user();
+        $isAuthorized = $user->role === 'admin' || in_array(strtolower($user->nama), ['dendi', 'rezki', 'noval']);
+
+        if (!$isAuthorized) {
+            return abort(403, 'Anda tidak memiliki akses.');
+        }
+
+        $request->validate([
+            'status_wawancara_bod' => 'nullable|in:Layak,Tidak Layak',
+        ]);
+
+        $daftar = \App\Models\Daftar::findOrFail($id);
+        
+        if ($daftar->nominal_beasiswa !== '100%') {
+            return back()->with('error', 'Hanya peserta dengan Beasiswa 100% yang dapat diubah.');
+        }
+
+        $daftar->update([
+            'status_wawancara_bod' => $request->status_wawancara_bod,
+        ]);
+
+        return back()->with('success', 'Status Wawancara BoD berhasil diperbarui.');
+    }
 }

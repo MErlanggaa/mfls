@@ -180,6 +180,15 @@
                 </a>
                 @endif
 
+                @if(auth()->check() && (auth()->user()->role === 'admin' || in_array(strtolower(auth()->user()->nama), ['dendi', 'rezki', 'noval'])))
+                <a href="{{ route('admin.wawancara_bod.index') }}" onclick="closeSidebar()"
+                    class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
+                    {{ request()->routeIs('admin.wawancara_bod.*') ? 'bg-red-50 text-red-600 shadow-sm ring-1 ring-red-100' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <span class="iconify text-xl {{ request()->routeIs('admin.wawancara_bod.*') ? 'text-red-600' : 'text-slate-400' }}" data-icon="solar:user-hand-up-bold"></span>
+                    Wawancara BoD
+                </a>
+                @endif
+
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.soal.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
