@@ -15,8 +15,25 @@
     <div class="flex items-center gap-3">
         <div class="px-5 py-3 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
             <span class="iconify text-amber-400" data-icon="solar:users-group-two-rounded-bold-duotone"></span>
-            {{ $pesertas->count() }} Kandidat
+            <span id="candidateCount">{{ $pesertas->count() }}</span> Kandidat
         </div>
+    </div>
+</div>
+
+{{-- Search Bar --}}
+<div class="mb-6">
+    <div class="relative max-w-md">
+        <span class="iconify absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none" data-icon="solar:magnifer-bold"></span>
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Cari nama atau NISN kandidat..."
+            oninput="filterCandidates()"
+            class="w-full pl-11 pr-4 py-3.5 bg-white border-2 border-slate-200 rounded-2xl text-sm font-medium text-slate-700 placeholder-slate-300 focus:border-amber-400 focus:outline-none transition-all shadow-sm"
+        >
+        <button onclick="document.getElementById('searchInput').value=''; filterCandidates()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors" id="clearSearch" style="display:none">
+            <span class="iconify" data-icon="solar:close-circle-bold"></span>
+        </button>
     </div>
 </div>
 
@@ -57,7 +74,8 @@
             $isBelum    = !$statusWawancara;
         @endphp
 
-        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg hover:border-slate-200 transition-all duration-300 overflow-hidden">
+        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg hover:border-slate-200 transition-all duration-300 overflow-hidden candidate-card"
+             data-search="{{ strtolower($akun->nama . ' ' . ($akun->peserta->nisn ?? '') . ' ' . ($akun->peserta->daftar->asal_sekolah ?? '')) }}">
             <div class="flex flex-col lg:flex-row">
 
                 {{-- Left: Colored Status Bar --}}
@@ -153,4 +171,31 @@
     </div>
 @endif
 
+<div id="noResultsMsg" class="hidden bg-white rounded-[2rem] border border-dashed border-slate-200 p-12 text-center">
+    <span class="iconify text-slate-200 text-5xl mb-3 block" data-icon="solar:magnifer-bold"></span>
+    <p class="text-slate-400 font-black text-sm uppercase tracking-widest">Tidak ada kandidat ditemukan</p>
+    <p class="text-slate-300 text-xs mt-1">Coba kata kunci lain</p>
+</div>
+
+<script>
+function filterCandidates() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.candidate-card');
+    const clearBtn = document.getElementById('clearSearch');
+    const noResults = document.getElementById('noResultsMsg');
+
+    clearBtn.style.display = query ? 'block' : 'none';
+
+    let visible = 0;
+    cards.forEach(card => {
+        const searchData = card.getAttribute('data-search') || '';
+        const match = !query || searchData.includes(query);
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+    });
+
+    document.getElementById('candidateCount').textContent = visible;
+    noResults.classList.toggle('hidden', visible > 0);
+}
+</script>
 @endsection

@@ -133,11 +133,6 @@
                     <div class="relative z-10">
                         <img src="{{ asset('icon/logoo.png') }}" class="h-24 mx-auto mb-5 brightness-0 invert drop-shadow-2xl" alt="Logo">
 
-                        {{-- Trophy Icon --}}
-                        <div class="w-16 h-16 mx-auto mb-4 bg-yellow-400/20 border-2 border-yellow-400/40 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                            <span class="iconify text-yellow-400 text-3xl" data-icon="solar:cup-star-bold-duotone"></span>
-                        </div>
-
                         <p class="text-white/60 text-[9px] font-black uppercase tracking-[0.3em] mb-2">MNCU FUTURE LEADER SCHOLARSHIP 2026</p>
                         <h3 class="text-white font-black text-xl leading-tight px-2">
                             SELAMAT! ANDA DINYATAKAN SEBAGAI<br>
@@ -148,13 +143,12 @@
 
                 {{-- Scholarship Badge Strip --}}
                 @if(!empty($nominalBeasiswa))
-                <div class="bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-500 px-6 py-4 flex items-center justify-center gap-3">
-                    <span class="iconify text-yellow-900 text-2xl" data-icon="solar:medal-ribbons-star-bold-duotone"></span>
-                    <div class="text-center">
-                        <p class="text-yellow-900 text-[9px] font-black uppercase tracking-[0.25em]">Nominal Beasiswa Diterima</p>
-                        <p class="text-yellow-900 font-black text-2xl leading-none">BEASISWA {{ $nominalBeasiswa }}</p>
+                <div class="bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-500 px-6 py-6 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 0, transparent 50%); background-size: 8px 8px;"></div>
+                    <div class="relative z-10">
+                        <p class="text-yellow-900/70 text-[10px] font-black uppercase tracking-[0.35em] mb-1">Nominal Beasiswa Diterima</p>
+                        <p class="text-yellow-950 font-black leading-none" style="font-size: clamp(2rem, 10vw, 3.5rem); letter-spacing: -0.02em;">BEASISWA {{ $nominalBeasiswa }}</p>
                     </div>
-                    <span class="iconify text-yellow-900 text-2xl" data-icon="solar:medal-ribbons-star-bold-duotone"></span>
                 </div>
                 @else
                 <div class="bg-gradient-to-r from-emerald-600 to-teal-500 px-6 py-3 flex items-center justify-center gap-3">
