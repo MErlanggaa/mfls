@@ -113,225 +113,185 @@
             @php
                 $status = $peserta->daftar->status ?? 'menunggu';
                 $isLulus = ($status === 'lulus');
+                $isGagal = !$isLulus;
                 $nominalBeasiswa = $peserta->daftar->nominal_beasiswa ?? null;
             @endphp
 
             <style>
-                @keyframes shimmer {
+                @keyframes badge-shimmer {
                     0% { background-position: -200% center; }
                     100% { background-position: 200% center; }
                 }
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); }
-                    33% { transform: translateY(-8px) rotate(1deg); }
-                    66% { transform: translateY(-4px) rotate(-1deg); }
+                @keyframes badge-glow {
+                    0%, 100% { box-shadow: 0 0 12px rgba(251,191,36,0.4), 0 0 24px rgba(251,191,36,0.15); }
+                    50% { box-shadow: 0 0 20px rgba(251,191,36,0.7), 0 0 40px rgba(251,191,36,0.3); }
                 }
-                @keyframes pulse-ring {
-                    0% { transform: scale(1); opacity: 0.6; }
-                    100% { transform: scale(1.6); opacity: 0; }
-                }
-                @keyframes fade-up {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .shimmer-text {
-                    background: linear-gradient(90deg, #fbbf24 0%, #fef3c7 40%, #f59e0b 60%, #fbbf24 100%);
-                    background-size: 200% auto;
+                .beasiswa-badge { animation: badge-glow 2.5s ease-in-out infinite; }
+                .beasiswa-text {
+                    background: linear-gradient(90deg, #fbbf24 0%, #fff9c4 45%, #f59e0b 55%, #fbbf24 100%);
+                    background-size: 250% auto;
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                     background-clip: text;
-                    animation: shimmer 3s linear infinite;
-                }
-                .card-float { animation: float 6s ease-in-out infinite; }
-                .fade-up-1 { animation: fade-up 0.6s ease both; }
-                .fade-up-2 { animation: fade-up 0.8s ease 0.15s both; }
-                .fade-up-3 { animation: fade-up 0.8s ease 0.3s both; }
-                .pulse-dot::after {
-                    content: '';
-                    position: absolute;
-                    inset: 0;
-                    border-radius: 9999px;
-                    background: currentColor;
-                    animation: pulse-ring 1.5s ease-out infinite;
+                    animation: badge-shimmer 2.5s linear infinite;
                 }
             </style>
 
-            @if($isLulus)
-            {{-- ===== LULUS CARD ===== --}}
-            <div id="announcementCard" class="card-float w-full max-w-md">
-                {{-- Glow backdrop --}}
-                <div class="relative">
-                    <div class="absolute -inset-4 rounded-[3rem] blur-2xl opacity-60 z-0"
-                         style="background: {{ $nominalBeasiswa === '100%' ? 'radial-gradient(ellipse, #f59e0b, #d97706, transparent 70%)' : ($nominalBeasiswa === '75%' ? 'radial-gradient(ellipse, #10b981, #059669, transparent 70%)' : ($nominalBeasiswa === '50%' ? 'radial-gradient(ellipse, #3b82f6, #2563eb, transparent 70%)' : 'radial-gradient(ellipse, #8b5cf6, #7c3aed, transparent 70%)')) }}">
+            <div id="announcementCard"
+                class="w-full max-w-lg overflow-hidden rounded-3xl shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] transform transition-all duration-500 hover:scale-[1.01]">
+
+                @if($isLulus)
+                {{-- ===== CARD: LULUS / PENERIMA BEASISWA ===== --}}
+
+                {{-- Card Header --}}
+                <div class="bg-gradient-to-br from-[#003580] via-[#00509d] to-[#0070cc] p-8 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-white/10 -skew-x-12 transform translate-x-1/2"></div>
+                    <div class="absolute -top-6 -right-6 w-36 h-36 bg-white/5 rounded-full"></div>
+                    <div class="absolute -bottom-10 -left-6 w-40 h-40 bg-white/5 rounded-full"></div>
+                    <div class="relative z-10">
+                        <img src="{{ asset('icon/logoo.png') }}" class="h-28 mx-auto mb-4 brightness-0 invert drop-shadow-2xl" alt="Logo">
+                        <h3 class="text-white font-black text-lg md:text-xl leading-tight px-4">
+                            SELAMAT! ANDA DINYATAKAN SEBAGAI<br>
+                            <span class="text-yellow-300">PENERIMA BEASISWA</span>
+                        </h3>
+                        <p class="text-white/70 text-[10px] mt-3 font-medium uppercase tracking-wider">MNCU FUTURE LEADER SCHOLARSHIP 2026</p>
                     </div>
+                </div>
 
-                    <div class="relative z-10 overflow-hidden rounded-[2.5rem] border border-white/10 shadow-2xl"
-                         style="background: linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);">
-
-                        {{-- Top glow line --}}
-                        <div class="h-[3px] w-full"
-                             style="background: {{ $nominalBeasiswa === '100%' ? 'linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #fbbf24, transparent)' : ($nominalBeasiswa === '75%' ? 'linear-gradient(90deg, transparent, #34d399, #10b981, #34d399, transparent)' : ($nominalBeasiswa === '50%' ? 'linear-gradient(90deg, transparent, #60a5fa, #3b82f6, #60a5fa, transparent)' : 'linear-gradient(90deg, transparent, #a78bfa, #8b5cf6, #a78bfa, transparent)')) }}">
+                {{-- Scholarship Badge --}}
+                @if(!empty($nominalBeasiswa))
+                <div class="bg-[#0d1117] px-8 pt-6 pb-0">
+                    <div class="beasiswa-badge relative overflow-hidden rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-950/80 via-yellow-900/60 to-amber-950/80 px-5 py-4 flex items-center gap-4">
+                        {{-- Left glowing dot --}}
+                        <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center">
+                            <span class="iconify text-amber-400 text-lg" data-icon="solar:medal-ribbons-star-bold-duotone"></span>
                         </div>
-
-                        {{-- Header --}}
-                        <div class="px-8 pt-8 pb-6 text-center fade-up-1">
-                            <img src="{{ asset('icon/logoo.png') }}" class="h-16 mx-auto mb-6 brightness-0 invert opacity-90" alt="Logo">
-
-                            <p class="text-white/30 text-[9px] font-black uppercase tracking-[0.4em] mb-3">MNCU Future Leader Scholarship 2026</p>
-
-                            <h3 class="text-white font-black text-2xl leading-tight mb-1">🎉 SELAMAT!</h3>
-                            <p class="text-white/50 text-sm font-medium">Anda dinyatakan sebagai</p>
-                            <p class="text-white font-black text-lg uppercase tracking-widest mt-1">PENERIMA BEASISWA</p>
+                        {{-- Text --}}
+                        <div class="flex-1 min-w-0">
+                            <p class="text-amber-500/60 text-[9px] font-black uppercase tracking-[0.25em] mb-0.5">Beasiswa Diterima</p>
+                            <p class="beasiswa-text font-black text-xl leading-none tracking-tight">BEASISWA {{ $nominalBeasiswa }}</p>
                         </div>
-
-                        {{-- Big Scholarship Showcase --}}
-                        @if(!empty($nominalBeasiswa))
-                        <div class="mx-6 mb-6 fade-up-2">
-                            <div class="relative rounded-3xl p-6 text-center overflow-hidden"
-                                 style="background: {{ $nominalBeasiswa === '100%' ? 'linear-gradient(135deg, #451a03, #92400e, #451a03)' : ($nominalBeasiswa === '75%' ? 'linear-gradient(135deg, #022c22, #064e3b, #022c22)' : ($nominalBeasiswa === '50%' ? 'linear-gradient(135deg, #1e1b4b, #1e40af, #1e1b4b)' : 'linear-gradient(135deg, #2e1065, #4c1d95, #2e1065)')) }}; border: 1px solid {{ $nominalBeasiswa === '100%' ? 'rgba(251,191,36,0.3)' : ($nominalBeasiswa === '75%' ? 'rgba(52,211,153,0.3)' : ($nominalBeasiswa === '50%' ? 'rgba(96,165,250,0.3)' : 'rgba(167,139,250,0.3)')) }};">
-
-                                {{-- Decorative orb --}}
-                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full opacity-20 blur-2xl"
-                                     style="background: {{ $nominalBeasiswa === '100%' ? '#fbbf24' : ($nominalBeasiswa === '75%' ? '#34d399' : ($nominalBeasiswa === '50%' ? '#60a5fa' : '#a78bfa')) }};">
-                                </div>
-
-                                <div class="relative z-10">
-                                    <p class="text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-60"
-                                       style="color: {{ $nominalBeasiswa === '100%' ? '#fbbf24' : ($nominalBeasiswa === '75%' ? '#34d399' : ($nominalBeasiswa === '50%' ? '#60a5fa' : '#a78bfa')) }}">
-                                        Nominal Beasiswa Diterima
-                                    </p>
-                                    <p class="shimmer-text font-black leading-none mb-2"
-                                       style="font-size: 3.5rem; background: {{ $nominalBeasiswa === '100%' ? 'linear-gradient(90deg,#fbbf24 0%,#fef3c7 40%,#f59e0b 60%,#fbbf24 100%)' : ($nominalBeasiswa === '75%' ? 'linear-gradient(90deg,#34d399 0%,#d1fae5 40%,#10b981 60%,#34d399 100%)' : ($nominalBeasiswa === '50%' ? 'linear-gradient(90deg,#60a5fa 0%,#dbeafe 40%,#3b82f6 60%,#60a5fa 100%)' : 'linear-gradient(90deg,#a78bfa 0%,#ede9fe 40%,#8b5cf6 60%,#a78bfa 100%)')) }}; background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmer 3s linear infinite;">
-                                        {{ $nominalBeasiswa }}
-                                    </p>
-                                    <p class="text-white/40 text-xs font-bold uppercase tracking-widest">
-                                        @if($nominalBeasiswa === '100%') Beasiswa Penuh — Full Scholarship
-                                        @elseif($nominalBeasiswa === '75%') Beasiswa Tiga Perempat
-                                        @elseif($nominalBeasiswa === '50%') Beasiswa Setengah
-                                        @else Beasiswa Parsial
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-
-                        {{-- Identity & Info --}}
-                        <div class="px-8 pb-6 fade-up-3">
-                            <div class="border-t border-white/8 pt-6 mb-5">
-                                <p class="text-white/20 text-[9px] font-black tracking-[0.3em] uppercase mb-1">NISN {{ $peserta->nisn }} &nbsp;·&nbsp; No. Reg. {{ $peserta->id }}</p>
-                                <h4 class="text-white font-black text-xl uppercase tracking-tight leading-tight">{{ $peserta->nama }}</h4>
-                                <p class="text-amber-400/80 font-semibold text-xs mt-1 uppercase tracking-wide">{{ $peserta->pilihan_prodi ?? '-' }} · MNC University</p>
-                            </div>
-
-                            <div class="grid grid-cols-3 gap-2 mb-6">
-                                <div class="col-span-3 bg-white/4 rounded-2xl px-4 py-3 border border-white/5">
-                                    <p class="text-white/20 text-[8px] font-black uppercase tracking-widest mb-0.5">Asal Sekolah</p>
-                                    <p class="text-white font-bold text-xs uppercase">{{ $peserta->daftar->asal_sekolah ?? '-' }}</p>
-                                </div>
-                                <div class="col-span-2 bg-white/4 rounded-2xl px-4 py-3 border border-white/5">
-                                    <p class="text-white/20 text-[8px] font-black uppercase tracking-widest mb-0.5">Kota</p>
-                                    <p class="text-white font-bold text-xs uppercase">{{ $peserta->kabupaten ?? '-' }}</p>
-                                </div>
-                                <div class="bg-white/4 rounded-2xl px-4 py-3 border border-white/5">
-                                    <p class="text-white/20 text-[8px] font-black uppercase tracking-widest mb-0.5">Lahir</p>
-                                    <p class="text-white font-bold text-xs">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->format('d/m/Y') : '-' }}</p>
-                                </div>
-                            </div>
-
-                            <p class="text-white/20 text-[10px] text-center leading-relaxed italic">
-                                Pantau email & dashboard untuk informasi tahap selanjutnya.
-                            </p>
-                        </div>
-
-                        {{-- Footer --}}
-                        <div class="border-t border-white/5 px-8 py-4 no-capture flex items-center justify-center">
-                            <button onclick="captureAndShare()" id="btnCapture"
-                                class="flex items-center gap-2 text-white/20 hover:text-white/60 text-[10px] font-black uppercase tracking-widest transition-all">
-                                <span class="iconify text-sm" data-icon="solar:share-bold"></span>
-                                <span id="btnCaptureText">BAGIKAN</span>
-                            </button>
+                        {{-- Right check --}}
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center">
+                            <span class="iconify text-amber-400 text-sm" data-icon="solar:check-circle-bold"></span>
                         </div>
                     </div>
                 </div>
-            </div>
+                @endif
 
-            @else
-            {{-- ===== TIDAK LULUS CARD ===== --}}
-            <div id="announcementCard" class="w-full max-w-md fade-up-1">
-                <div class="overflow-hidden rounded-[2.5rem] border border-white/10 shadow-2xl"
-                     style="background: linear-gradient(160deg, #1a0505 0%, #2d0a0a 100%);">
-
-                    <div class="h-[3px] w-full" style="background: linear-gradient(90deg, transparent, #ef4444, #dc2626, #ef4444, transparent);"></div>
-
-                    <div class="px-8 pt-8 pb-6 text-center">
-                        <img src="{{ asset('icon/logoo.png') }}" class="h-16 mx-auto mb-6 brightness-0 invert opacity-80" alt="Logo">
-                        <p class="text-white/30 text-[9px] font-black uppercase tracking-[0.4em] mb-3">MNCU Future Leader Scholarship 2026</p>
-                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
-                            <span class="iconify text-red-400 text-2xl" data-icon="solar:close-circle-bold-duotone"></span>
+                {{-- Card Body --}}
+                <div class="bg-[#0d1117] p-8 text-white">
+                    <div class="flex flex-col md:flex-row gap-6 items-center md:items-start mb-8 {{ !empty($nominalBeasiswa) ? 'mt-5' : '' }}">
+                        <div class="text-center md:text-left">
+                            <p class="text-white/50 text-[10px] font-bold tracking-widest uppercase">NISN
+                                {{ $peserta->nisn }} - NOREG {{ $peserta->id }}
+                            </p>
+                            <h4 class="text-2xl font-black mt-1 uppercase tracking-tight">{{ $peserta->nama }}</h4>
+                            <p class="text-amber-400 font-bold text-sm mt-1 uppercase">{{ $peserta->pilihan_prodi ?? '-' }}</p>
+                            <p class="text-white/70 text-xs font-medium">MNC UNIVERSITY</p>
                         </div>
-                        <h3 class="text-white font-black text-xl leading-tight">TIDAK LOLOS SELEKSI</h3>
-                        <p class="text-white/30 text-xs mt-2 font-medium">MNCU Future Leader Scholarship 2026</p>
                     </div>
 
-                    <div class="px-8 pb-6">
-                        <div class="border-t border-white/8 pt-5 mb-5">
-                            <p class="text-white/20 text-[9px] font-black tracking-[0.3em] uppercase mb-1">NISN {{ $peserta->nisn }} · No. Reg. {{ $peserta->id }}</p>
-                            <h4 class="text-white font-black text-xl uppercase">{{ $peserta->nama }}</h4>
+                    <div class="grid grid-cols-1 gap-4 text-sm border-t border-white/10 pt-6">
+                        <div class="flex flex-col">
+                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Tanggal Lahir</span>
+                            <span class="font-bold">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->translatedFormat('d F Y') : '-' }}</span>
                         </div>
-
-                        <div class="grid grid-cols-2 gap-2 mb-6">
-                            <div class="bg-white/4 rounded-2xl p-3 border border-white/5 col-span-2">
-                                <p class="text-white/20 text-[8px] font-black uppercase tracking-widest mb-0.5">Asal Sekolah</p>
-                                <p class="text-white font-bold text-xs uppercase">{{ $peserta->daftar->asal_sekolah ?? '-' }}</p>
-                            </div>
-                            <div class="bg-white/4 rounded-2xl p-3 border border-white/5">
-                                <p class="text-white/20 text-[8px] font-black uppercase tracking-widest mb-0.5">Kota</p>
-                                <p class="text-white font-bold text-xs uppercase">{{ $peserta->kabupaten ?? '-' }}</p>
-                            </div>
-                            <div class="bg-white/4 rounded-2xl p-3 border border-white/5">
-                                <p class="text-white/20 text-[8px] font-black uppercase tracking-widest mb-0.5">Lahir</p>
-                                <p class="text-white font-bold text-xs">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->format('d/m/Y') : '-' }}</p>
-                            </div>
+                        <div class="flex flex-col">
+                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Asal Sekolah</span>
+                            <span class="font-bold uppercase">{{ $peserta->daftar->asal_sekolah ?? '-' }}</span>
                         </div>
+                        <div class="flex flex-col">
+                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Kabupaten/Kota</span>
+                            <span class="font-bold uppercase">{{ $peserta->kabupaten ?? '-' }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Provinsi</span>
+                            <span class="font-bold uppercase">{{ $peserta->provinsi ?? '-' }}</span>
+                        </div>
+                    </div>
 
-                        <p class="text-white/30 text-xs leading-relaxed mb-4 text-center">Jangan patah semangat! Masih ada kesempatan melalui jalur <span class="text-white font-bold">Beasiswa Mandiri</span>.</p>
+                    <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                        <p class="text-xs text-white/80 leading-relaxed italic text-center">
+                            "Selamat atas pencapaian luar biasa Anda! Perjuangan Anda baru saja dimulai. Terus
+                            pantau dashboard dan email Anda untuk informasi mengenai tahapan selanjutnya. Tetap semangat!"
+                        </p>
+                    </div>
+                </div>
 
-                        <div class="space-y-2">
+                @else
+                {{-- ===== CARD: TIDAK LULUS ===== --}}
+                <div class="bg-snbp-red p-8 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 bg-white/10 -skew-x-12 transform translate-x-1/2"></div>
+                    <div class="relative z-10">
+                        <img src="{{ asset('icon/logoo.png') }}" class="h-28 mx-auto mb-4 brightness-0 invert" alt="Logo">
+                        <h3 class="text-white font-black text-lg md:text-xl leading-tight px-4">ANDA DINYATAKAN TIDAK LULUS SELEKSI</h3>
+                        <p class="text-white/80 text-[10px] mt-3 font-medium uppercase tracking-wider">MNCU FUTURE LEADER SCHOLARSHIP</p>
+                    </div>
+                </div>
+
+                <div class="bg-snbp-black p-8 text-white relative">
+                    <div class="mb-8">
+                        <p class="text-white/50 text-[10px] font-bold tracking-widest uppercase">NISN
+                            {{ $peserta->nisn }} - NOREG {{ $peserta->id }}
+                        </p>
+                        <h4 class="text-2xl font-black mt-1 uppercase tracking-tight">{{ $peserta->nama }}</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 text-sm border-t border-white/10 pt-6">
+                        <div class="flex flex-col">
+                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Tanggal Lahir</span>
+                            <span class="font-bold">{{ $peserta->tgl_lahir ? \Carbon\Carbon::parse($peserta->tgl_lahir)->translatedFormat('d F Y') : '-' }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Asal Sekolah</span>
+                            <span class="font-bold uppercase">{{ $peserta->daftar->asal_sekolah ?? '-' }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-white/40 text-[9px] font-bold uppercase tracking-widest">Kabupaten/Kota</span>
+                            <span class="font-bold uppercase">{{ $peserta->kabupaten ?? '-' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                        <p class="text-xs text-white/50 leading-relaxed mb-6 px-4">
+                            Jangan patah semangat! Masih ada kesempatan untuk bergabung bersama kami melalui jalur
+                            <span class="text-white font-bold">Beasiswa Mandiri</span>. Hubungi kami untuk informasi lebih lanjut:
+                        </p>
+                        <div class="grid grid-cols-1 gap-3 px-2">
                             <a href="https://wa.me/6281181221792" target="_blank"
-                                class="flex items-center justify-between px-5 py-3.5 bg-emerald-500/8 hover:bg-emerald-500/15 border border-emerald-500/20 rounded-2xl text-emerald-400 transition-all group">
+                                class="flex items-center justify-between px-6 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
                                 <div class="flex items-center gap-3">
-                                    <span class="iconify text-lg" data-icon="logos:whatsapp-icon"></span>
-                                    <span class="font-black text-[11px] uppercase">Beasiswa Mandiri <span class="font-medium opacity-70 normal-case"> — 0811-8122-1792</span></span>
+                                    <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
+                                    <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case tracking-wider">0811-8122-1792</span></span>
                                 </div>
                                 <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
                             </a>
                             <a href="https://wa.me/6281181221791" target="_blank"
-                                class="flex items-center justify-between px-5 py-3.5 bg-emerald-500/8 hover:bg-emerald-500/15 border border-emerald-500/20 rounded-2xl text-emerald-400 transition-all group">
+                                class="flex items-center justify-between px-6 py-4 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 rounded-2xl text-emerald-400 font-bold text-xs transition-all group">
                                 <div class="flex items-center gap-3">
-                                    <span class="iconify text-lg" data-icon="logos:whatsapp-icon"></span>
-                                    <span class="font-black text-[11px] uppercase">Beasiswa Mandiri <span class="font-medium opacity-70 normal-case"> — 0811-8122-1791</span></span>
+                                    <span class="iconify text-xl" data-icon="logos:whatsapp-icon"></span>
+                                    <span class="text-left leading-tight font-black uppercase">Beasiswa Mandiri<br><span class="text-[11px] font-medium opacity-80 normal-case tracking-wider">0811-8122-1791</span></span>
                                 </div>
                                 <span class="iconify group-hover:translate-x-1 transition-transform" data-icon="solar:alt-arrow-right-bold"></span>
                             </a>
                         </div>
-                        <div class="text-center mt-6">
-                            <a href="{{ route('pengumuman') }}" class="inline-flex items-center gap-2 text-white/20 hover:text-white text-[10px] font-bold uppercase tracking-widest transition-all">
-                                <span class="iconify" data-icon="solar:arrow-left-bold"></span> Cek NISN Lain
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-white/5 px-8 py-4 no-capture flex items-center justify-center">
-                        <button onclick="captureAndShare()" id="btnCapture"
-                            class="flex items-center gap-2 text-white/20 hover:text-white/60 text-[10px] font-black uppercase tracking-widest transition-all">
-                            <span class="iconify text-sm" data-icon="solar:share-bold"></span>
-                            <span id="btnCaptureText">BAGIKAN</span>
-                        </button>
+                        <a href="{{ route('pengumuman') }}" class="inline-flex items-center gap-2 text-white/30 hover:text-white text-[10px] font-bold mt-8 uppercase tracking-widest transition-all">
+                            <span class="iconify" data-icon="solar:arrow-left-bold"></span> Kembali Cek NISN
+                        </a>
                     </div>
                 </div>
+                @endif
+
+                <!-- Card Footer -->
+                <div class="bg-slate-50 p-4 no-capture flex items-center justify-center border-t border-slate-100">
+                    <button onclick="captureAndShare()" id="btnCapture"
+                        class="flex items-center gap-2 text-slate-500 hover:text-snbp-blue text-[10px] font-black uppercase tracking-widest transition-all">
+                        <span class="iconify text-sm" data-icon="solar:share-bold"></span>
+                        <span id="btnCaptureText">BAGIKAN HASIL SELEKSI</span>
+                    </button>
+                </div>
             </div>
-            @endif
             <p class="mt-8 text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">© 2026 MNCU FUTURE LEADER
                 SCHOLARSHIP</p>
         @endif
