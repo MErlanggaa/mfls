@@ -2507,7 +2507,7 @@ class AdminController extends Controller
         $daftar = \App\Models\Daftar::findOrFail($id);
         $rekomendasiBeasiswa = $daftar->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? '';
         
-        if (!str_contains($daftar->nominal_beasiswa, '100') && !str_contains($rekomendasiBeasiswa, '100')) {
+        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !str_contains($rekomendasiBeasiswa, '100')) {
             return back()->with('error', 'Hanya peserta dengan Beasiswa 100% (atau rekomendasi) yang dapat diubah.');
         }
 
