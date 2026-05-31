@@ -144,11 +144,25 @@
                                 <select name="status_wawancara_bod"
                                     class="appearance-none pl-4 pr-10 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer min-w-[180px]">
                                     <option value="" {{ empty($statusWawancara) ? 'selected' : '' }}>— Pilih Kelayakan —</option>
-                                    <optgroup label="Layak">
-                                        <option value="Layak (100%)" {{ $statusWawancara === 'Layak (100%)' ? 'selected' : '' }}>✦ Layak — Beasiswa 100%</option>
-                                        <option value="Layak (75%)"  {{ $statusWawancara === 'Layak (75%)'  ? 'selected' : '' }}>✦ Layak — Beasiswa 75%</option>
-                                        <option value="Layak (50%)"  {{ $statusWawancara === 'Layak (50%)'  ? 'selected' : '' }}>✦ Layak — Beasiswa 50%</option>
-                                        <option value="Layak (25%)"  {{ $statusWawancara === 'Layak (25%)'  ? 'selected' : '' }}>✦ Layak — Beasiswa 25%</option>
+                                    
+                                    {{-- Backward compatibility support --}}
+                                    @if(in_array($statusWawancara, ['Layak (100%)', 'Layak (75%)', 'Layak (50%)', 'Layak (25%)']))
+                                        <optgroup label="Pilihan Lama (Belum Pilih Kelas)">
+                                            <option value="{{ $statusWawancara }}" selected>{{ $statusWawancara }} (Silakan pilih Reguler/Eksekutif di bawah)</option>
+                                        </optgroup>
+                                    @endif
+
+                                    <optgroup label="Layak - Kelas Reguler">
+                                        <option value="Layak (100% Reguler)" {{ $statusWawancara === 'Layak (100% Reguler)' ? 'selected' : '' }}>✦ Layak 100% — Reguler</option>
+                                        <option value="Layak (75% Reguler)"  {{ $statusWawancara === 'Layak (75% Reguler)'  ? 'selected' : '' }}>✦ Layak 75% — Reguler</option>
+                                        <option value="Layak (50% Reguler)"  {{ $statusWawancara === 'Layak (50% Reguler)'  ? 'selected' : '' }}>✦ Layak 50% — Reguler</option>
+                                        <option value="Layak (25% Reguler)"  {{ $statusWawancara === 'Layak (25% Reguler)'  ? 'selected' : '' }}>✦ Layak 25% — Reguler</option>
+                                    </optgroup>
+                                    <optgroup label="Layak - Kelas Eksekutif">
+                                        <option value="Layak (100% Eksekutif)" {{ $statusWawancara === 'Layak (100% Eksekutif)' ? 'selected' : '' }}>✦ Layak 100% — Eksekutif</option>
+                                        <option value="Layak (75% Eksekutif)"  {{ $statusWawancara === 'Layak (75% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 75% — Eksekutif</option>
+                                        <option value="Layak (50% Eksekutif)"  {{ $statusWawancara === 'Layak (50% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 50% — Eksekutif</option>
+                                        <option value="Layak (25% Eksekutif)"  {{ $statusWawancara === 'Layak (25% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 25% — Eksekutif</option>
                                     </optgroup>
                                     <optgroup label="Tidak Layak">
                                         <option value="Tidak Layak" {{ $statusWawancara === 'Tidak Layak' ? 'selected' : '' }}>✕ Tidak Layak</option>
