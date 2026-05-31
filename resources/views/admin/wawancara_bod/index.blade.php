@@ -69,6 +69,10 @@
             $nominalFinal    = $akun->peserta->daftar->nominal_beasiswa ?? null;
             $rekBeasiswa     = $akun->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? null;
 
+            $penilaianAkademik = $akun->peserta->penilaianAkademiks->first();
+            $rekProdi1       = $penilaianAkademik?->rekomendasi_prodi_1 ?? null;
+            $rekProdi2       = $penilaianAkademik?->rekomendasi_prodi_2 ?? null;
+
             $isLayak    = $statusWawancara && str_starts_with($statusWawancara, 'Layak');
             $isTidak    = $statusWawancara === 'Tidak Layak';
             $isBelum    = !$statusWawancara;
@@ -108,14 +112,22 @@
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400 font-medium">
+                        <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-400 font-medium">
                             <span class="flex items-center gap-1">
-                                <span class="iconify" data-icon="solar:card-bold"></span>
+                                <span class="iconify text-slate-400" data-icon="solar:card-bold"></span>
                                 NISN {{ $akun->peserta->nisn ?? '-' }}
                             </span>
                             <span class="flex items-center gap-1">
-                                <span class="iconify" data-icon="solar:buildings-3-bold"></span>
+                                <span class="iconify text-slate-400" data-icon="solar:buildings-3-bold"></span>
                                 {{ $akun->peserta->daftar->asal_sekolah ?? '-' }}
+                            </span>
+                            <span class="flex items-center gap-1 text-slate-500 font-bold">
+                                <span class="iconify text-amber-500" data-icon="solar:bookmark-bold"></span>
+                                Pil. 1: {{ explode(' | ', $akun->peserta->pilihan_prodi ?? '')[0] ?? '-' }}
+                            </span>
+                            <span class="flex items-center gap-1 text-slate-500 font-bold">
+                                <span class="iconify text-amber-500" data-icon="solar:bookmark-bold"></span>
+                                Pil. 2: {{ explode(' | ', $akun->peserta->pilihan_prodi ?? '')[1] ?? '-' }}
                             </span>
                         </div>
 
@@ -125,6 +137,18 @@
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-50 border border-purple-100 text-purple-700 rounded-xl text-[10px] font-black uppercase tracking-wider">
                                     <span class="iconify" data-icon="solar:document-text-bold"></span>
                                     Rek. Wawancara: {{ $rekBeasiswa }}
+                                </span>
+                            @endif
+                            @if($rekProdi1)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-100 text-blue-700 rounded-xl text-[10px] font-black uppercase tracking-wider">
+                                    <span class="iconify" data-icon="solar:bookmark-square-bold"></span>
+                                    Rek. Prodi 1: {{ $rekProdi1 }}
+                                </span>
+                            @endif
+                            @if($rekProdi2)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 border border-blue-100 text-blue-700 rounded-xl text-[10px] font-black uppercase tracking-wider">
+                                    <span class="iconify" data-icon="solar:bookmark-square-bold"></span>
+                                    Rek. Prodi 2: {{ $rekProdi2 }}
                                 </span>
                             @endif
                             @if($nominalFinal)
@@ -138,7 +162,7 @@
 
                     {{-- Action Form --}}
                     <div class="w-full lg:w-auto flex-shrink-0">
-                        <form action="{{ route('admin.wawancara_bod.update', $akun->peserta->daftar->id) }}" method="POST" class="flex items-center gap-2">
+                        <form action="{{ route('admin.wawancara_bod.update', $akun->peserta->daftar->id) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             @csrf
                             <div class="relative">
                                 <select name="status_wawancara_bod"
@@ -170,8 +194,20 @@
                                 </select>
                                 <span class="iconify absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs" data-icon="solar:alt-arrow-down-bold"></span>
                             </div>
+
+                            <div class="relative">
+                                <select name="rekomendasi_prodi_1"
+                                    class="appearance-none pl-4 pr-10 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer min-w-[200px]">
+                                    <option value="">— Pilih Rekomendasi Prodi —</option>
+                                    @foreach(['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer'] as $prodi)
+                                        <option value="{{ $prodi }}" {{ ($rekProdi1 === $prodi) ? 'selected' : '' }}>{{ $prodi }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="iconify absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs" data-icon="solar:alt-arrow-down-bold"></span>
+                            </div>
+
                             <button type="submit"
-                                class="px-5 py-3 bg-slate-900 hover:bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-sm hover:shadow-amber-200 flex items-center gap-1.5 whitespace-nowrap">
+                                class="px-5 py-3 bg-slate-900 hover:bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-sm hover:shadow-amber-200 flex items-center gap-1.5 whitespace-nowrap justify-center">
                                 <span class="iconify" data-icon="solar:diskette-bold"></span>
                                 Simpan
                             </button>

@@ -2502,6 +2502,7 @@ class AdminController extends Controller
 
         $request->validate([
             'status_wawancara_bod' => 'nullable|in:Layak (100%),Layak (75%),Layak (50%),Layak (25%),Layak (100% Reguler),Layak (75% Reguler),Layak (50% Reguler),Layak (25% Reguler),Layak (100% Eksekutif),Layak (75% Eksekutif),Layak (50% Eksekutif),Layak (25% Eksekutif),Tidak Layak',
+            'rekomendasi_prodi_1' => 'nullable|string|max:255',
         ]);
 
         $daftar = \App\Models\Daftar::findOrFail($id);
@@ -2515,6 +2516,16 @@ class AdminController extends Controller
             'status_wawancara_bod' => $request->status_wawancara_bod,
         ]);
 
-        return back()->with('success', 'Status Wawancara BoD berhasil diperbarui.');
+        // Update Rekomendasi Prodi 1 di Penilaian Akademik
+        $penilaian = $daftar->peserta->penilaianAkademiks()->first();
+        if (!$penilaian) {
+            $penilaian = new \App\Models\PenilaianAkademik();
+            $penilaian->peserta_id = $daftar->peserta_id;
+            $penilaian->penilai_id = auth()->id();
+        }
+        $penilaian->rekomendasi_prodi_1 = $request->rekomendasi_prodi_1;
+        $penilaian->save();
+
+        return back()->with('success', 'Status Wawancara BoD dan Rekomendasi Prodi berhasil diperbarui.');
     }
 }
