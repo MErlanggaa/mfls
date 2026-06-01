@@ -2506,9 +2506,19 @@ class AdminController extends Controller
         ]);
 
         $daftar = \App\Models\Daftar::findOrFail($id);
-        $rekomendasiBeasiswa = $daftar->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? '';
+
+        // Proteksi backend: jika sudah di-input, tidak boleh diubah lagi
+        if (!empty($daftar->status_wawancara_bod)) {
+            return back()->with('error', 'Status Wawancara BoD sudah di-input sebelumnya dan tidak dapat diubah.');
+        }
+
+        // Cek rekomendasi beasiswa 100% pada semua penilaian akademik pendaftar
+        $penilaians = $daftar->peserta->penilaianAkademiks ?? collect();
+        $has100Recommendation = $penilaians->contains(function ($p) {
+            return str_contains($p->rekomendasi_beasiswa ?? '', '100');
+        });
         
-        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !str_contains($rekomendasiBeasiswa, '100')) {
+        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !$has100Recommendation) {
             return back()->with('error', 'Hanya peserta dengan Beasiswa 100% (atau rekomendasi) yang dapat diubah.');
         }
 

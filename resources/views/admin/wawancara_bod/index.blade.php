@@ -162,56 +162,72 @@
 
                     {{-- Action Form --}}
                     <div class="w-full lg:w-auto flex-shrink-0">
-                        <form action="{{ route('admin.wawancara_bod.update', $akun->peserta->daftar->id) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                            @csrf
-                            <div class="relative">
-                                <select name="status_wawancara_bod"
-                                    class="appearance-none pl-4 pr-10 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer min-w-[180px]">
-                                    <option value="" {{ empty($statusWawancara) ? 'selected' : '' }}>— Pilih Kelayakan —</option>
-                                    
-                                    {{-- Backward compatibility support --}}
-                                    @if(in_array($statusWawancara, ['Layak (100%)', 'Layak (75%)', 'Layak (50%)', 'Layak (25%)']))
-                                        <optgroup label="Pilihan Lama (Belum Pilih Kelas)">
-                                            <option value="{{ $statusWawancara }}" selected>{{ $statusWawancara }} (Silakan pilih Reguler/Eksekutif di bawah)</option>
+                        @if(!empty($statusWawancara))
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <div class="px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2">
+                                    <span class="iconify text-emerald-500 text-base" data-icon="solar:verified-check-bold"></span>
+                                    <span class="text-xs font-black text-emerald-800 uppercase tracking-wider">Sudah Dinilai: {{ $statusWawancara }}</span>
+                                </div>
+                                @if($rekProdi1)
+                                    <div class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center gap-2">
+                                        <span class="iconify text-blue-500 text-base" data-icon="solar:bookmark-square-bold"></span>
+                                        <span class="text-xs font-black text-blue-800 uppercase tracking-wider">Rek. Prodi: {{ $rekProdi1 }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <form action="{{ route('admin.wawancara_bod.update', $akun->peserta->daftar->id) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                @csrf
+                                <div class="relative">
+                                    <select name="status_wawancara_bod"
+                                        class="appearance-none pl-4 pr-10 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer min-w-[180px]">
+                                        <option value="" {{ empty($statusWawancara) ? 'selected' : '' }}>— Pilih Kelayakan —</option>
+                                        
+                                        {{-- Backward compatibility support --}}
+                                        @if(in_array($statusWawancara, ['Layak (100%)', 'Layak (75%)', 'Layak (50%)', 'Layak (25%)']))
+                                            <optgroup label="Pilihan Lama (Belum Pilih Kelas)">
+                                                <option value="{{ $statusWawancara }}" selected>{{ $statusWawancara }} (Silakan pilih Reguler/Eksekutif di bawah)</option>
+                                            </optgroup>
+                                        @endif
+
+                                        <optgroup label="Layak - Kelas Reguler">
+                                            <option value="Layak (100% Reguler)" {{ $statusWawancara === 'Layak (100% Reguler)' ? 'selected' : '' }}>✦ Layak 100% — Reguler</option>
+                                            <option value="Layak (75% Reguler)"  {{ $statusWawancara === 'Layak (75% Reguler)'  ? 'selected' : '' }}>✦ Layak 75% — Reguler</option>
+                                            <option value="Layak (50% Reguler)"  {{ $statusWawancara === 'Layak (50% Reguler)'  ? 'selected' : '' }}>✦ Layak 50% — Reguler</option>
+                                            <option value="Layak (25% Reguler)"  {{ $statusWawancara === 'Layak (25% Reguler)'  ? 'selected' : '' }}>✦ Layak 25% — Reguler</option>
                                         </optgroup>
-                                    @endif
+                                        <optgroup label="Layak - Kelas Eksekutif">
+                                            <option value="Layak (100% Eksekutif)" {{ $statusWawancara === 'Layak (100% Eksekutif)' ? 'selected' : '' }}>✦ Layak 100% — Eksekutif</option>
+                                            <option value="Layak (75% Eksekutif)"  {{ $statusWawancara === 'Layak (75% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 75% — Eksekutif</option>
+                                            <option value="Layak (50% Eksekutif)"  {{ $statusWawancara === 'Layak (50% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 50% — Eksekutif</option>
+                                            <option value="Layak (25% Eksekutif)"  {{ $statusWawancara === 'Layak (25% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 25% — Eksekutif</option>
+                                        </optgroup>
+                                        <optgroup label="Tidak Layak">
+                                            <option value="Tidak Layak" {{ $statusWawancara === 'Tidak Layak' ? 'selected' : '' }}>✕ Tidak Layak</option>
+                                        </optgroup>
+                                    </select>
+                                    <span class="iconify absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs" data-icon="solar:alt-arrow-down-bold"></span>
+                                </div>
 
-                                    <optgroup label="Layak - Kelas Reguler">
-                                        <option value="Layak (100% Reguler)" {{ $statusWawancara === 'Layak (100% Reguler)' ? 'selected' : '' }}>✦ Layak 100% — Reguler</option>
-                                        <option value="Layak (75% Reguler)"  {{ $statusWawancara === 'Layak (75% Reguler)'  ? 'selected' : '' }}>✦ Layak 75% — Reguler</option>
-                                        <option value="Layak (50% Reguler)"  {{ $statusWawancara === 'Layak (50% Reguler)'  ? 'selected' : '' }}>✦ Layak 50% — Reguler</option>
-                                        <option value="Layak (25% Reguler)"  {{ $statusWawancara === 'Layak (25% Reguler)'  ? 'selected' : '' }}>✦ Layak 25% — Reguler</option>
-                                    </optgroup>
-                                    <optgroup label="Layak - Kelas Eksekutif">
-                                        <option value="Layak (100% Eksekutif)" {{ $statusWawancara === 'Layak (100% Eksekutif)' ? 'selected' : '' }}>✦ Layak 100% — Eksekutif</option>
-                                        <option value="Layak (75% Eksekutif)"  {{ $statusWawancara === 'Layak (75% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 75% — Eksekutif</option>
-                                        <option value="Layak (50% Eksekutif)"  {{ $statusWawancara === 'Layak (50% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 50% — Eksekutif</option>
-                                        <option value="Layak (25% Eksekutif)"  {{ $statusWawancara === 'Layak (25% Eksekutif)'  ? 'selected' : '' }}>✦ Layak 25% — Eksekutif</option>
-                                    </optgroup>
-                                    <optgroup label="Tidak Layak">
-                                        <option value="Tidak Layak" {{ $statusWawancara === 'Tidak Layak' ? 'selected' : '' }}>✕ Tidak Layak</option>
-                                    </optgroup>
-                                </select>
-                                <span class="iconify absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs" data-icon="solar:alt-arrow-down-bold"></span>
-                            </div>
+                                <div class="relative">
+                                    <select name="rekomendasi_prodi_1"
+                                        class="appearance-none pl-4 pr-10 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer min-w-[200px]">
+                                        <option value="">— Pilih Rekomendasi Prodi —</option>
+                                        @foreach(['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer'] as $prodi)
+                                            <option value="{{ $prodi }}" {{ ($rekProdi1 === $prodi) ? 'selected' : '' }}>{{ $prodi }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="iconify absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs" data-icon="solar:alt-arrow-down-bold"></span>
+                                </div>
 
-                            <div class="relative">
-                                <select name="rekomendasi_prodi_1"
-                                    class="appearance-none pl-4 pr-10 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:border-amber-400 focus:bg-white outline-none transition-all cursor-pointer min-w-[200px]">
-                                    <option value="">— Pilih Rekomendasi Prodi —</option>
-                                    @foreach(['Sains Komunikasi', 'Desain Komunikasi Visual (DKV)', 'Manajemen', 'Akuntansi', 'Sistem Informasi', 'Pendidikan Bahasa Inggris', 'Pendidikan Matematika', 'Ilmu Komputer'] as $prodi)
-                                        <option value="{{ $prodi }}" {{ ($rekProdi1 === $prodi) ? 'selected' : '' }}>{{ $prodi }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="iconify absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs" data-icon="solar:alt-arrow-down-bold"></span>
-                            </div>
-
-                            <button type="submit"
-                                class="px-5 py-3 bg-slate-900 hover:bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-sm hover:shadow-amber-200 flex items-center gap-1.5 whitespace-nowrap justify-center">
-                                <span class="iconify" data-icon="solar:diskette-bold"></span>
-                                Simpan
-                            </button>
-                        </form>
+                                <button type="submit"
+                                    class="px-5 py-3 bg-slate-900 hover:bg-amber-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-sm hover:shadow-amber-200 flex items-center gap-1.5 whitespace-nowrap justify-center">
+                                    <span class="iconify" data-icon="solar:diskette-bold"></span>
+                                    Simpan
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                     </div>
 
                 </div>

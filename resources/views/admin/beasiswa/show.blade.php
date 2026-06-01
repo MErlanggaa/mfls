@@ -269,6 +269,34 @@
                 </div>
             </div>
             @endforeach
+
+            @php
+                $statusBod = $user->peserta->daftar->status_wawancara_bod ?? null;
+                $rekProdi1 = $user->peserta->penilaianAkademiks->first()?->rekomendasi_prodi_1 ?? null;
+            @endphp
+            @if($statusBod)
+            <div class="mt-6 p-6 bg-amber-50/50 border border-amber-200 rounded-3xl">
+                <div class="flex justify-between items-center border-b-2 border-amber-100 pb-2 mb-4">
+                    <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest flex items-center gap-1.5">
+                        <span class="iconify text-amber-500 text-sm" data-icon="solar:cup-star-bold"></span>
+                        Keputusan Kelayakan Wawancara BoD
+                    </span>
+                    <span class="px-3 py-1 bg-amber-500 text-white text-[10px] font-black rounded-lg uppercase">BoD Decision</span>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-between gap-4">
+                    <div>
+                        <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Status Kelayakan</div>
+                        <div class="text-sm font-black text-slate-800 uppercase mt-0.5">{{ $statusBod }}</div>
+                    </div>
+                    @if($rekProdi1)
+                    <div>
+                        <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Rekomendasi Program Studi</div>
+                        <div class="text-sm font-black text-slate-800 uppercase mt-0.5">{{ $rekProdi1 }}</div>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
         </div>
 
         <div class="section-box no-print bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
@@ -380,6 +408,19 @@
                         $finalScore = ($rataRataAkademik + $rataRataMentor + $rataRataAkademikFinal + $rataRataCbt) / 4;
                     @endphp
                     <div class="text-5xl font-black text-yellow-400">{{ number_format($finalScore, 2) }}</div>
+                </div>
+
+                {{-- Kelayakan BoD --}}
+                @php
+                    $statusBod = $user->peserta->daftar->status_wawancara_bod ?? null;
+                @endphp
+                <div class="p-4 bg-white/5 border border-white/10 rounded-2xl text-center backdrop-blur-md">
+                    <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Hasil Wawancara BoD</div>
+                    @if($statusBod)
+                        <div class="text-xs font-black text-yellow-400 uppercase tracking-wider">{{ $statusBod }}</div>
+                    @else
+                        <div class="text-[10px] font-bold text-slate-400 italic">BELUM DINILAI BoD</div>
+                    @endif
                 </div>
 
                 <div class="space-y-2">
