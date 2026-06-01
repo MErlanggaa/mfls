@@ -2507,11 +2507,6 @@ class AdminController extends Controller
 
         $daftar = \App\Models\Daftar::findOrFail($id);
 
-        // Proteksi backend: jika sudah di-input, tidak boleh diubah lagi
-        if (!empty($daftar->status_wawancara_bod)) {
-            return back()->with('error', 'Status Wawancara BoD sudah di-input sebelumnya dan tidak dapat diubah.');
-        }
-
         // Cek rekomendasi beasiswa 100% pada semua penilaian akademik pendaftar
         $penilaians = $daftar->peserta->penilaianAkademiks ?? collect();
         $has100Recommendation = $penilaians->contains(function ($p) {
@@ -2522,8 +2517,28 @@ class AdminController extends Controller
             return back()->with('error', 'Hanya peserta dengan Beasiswa 100% (atau rekomendasi) yang dapat diubah.');
         }
 
+        $statusBod = $request->status_wawancara_bod;
+        
+        // Logika auto-sync ke nominal beasiswa dan status kelulusan di Super Admin
+        $nominal = null;
+        $status = 'menunggu';
+        
+        if ($statusBod) {
+            if ($statusBod === 'Tidak Layak') {
+                $status = 'tidak_lulus';
+                $nominal = null;
+            } elseif (str_starts_with($statusBod, 'Layak')) {
+                $status = 'lulus';
+                if (preg_match('/(\d+%)/', $statusBod, $matches)) {
+                    $nominal = $matches[1]; // e.g. "100%", "75%", "50%", "25%"
+                }
+            }
+        }
+
         $daftar->update([
-            'status_wawancara_bod' => $request->status_wawancara_bod,
+            'status_wawancara_bod' => $statusBod,
+            'nominal_beasiswa' => $nominal,
+            'status' => $status,
         ]);
 
         // Update Rekomendasi Prodi 1 di Penilaian Akademik
@@ -2536,6 +2551,6 @@ class AdminController extends Controller
         $penilaian->rekomendasi_prodi_1 = $request->rekomendasi_prodi_1;
         $penilaian->save();
 
-        return back()->with('success', 'Status Wawancara BoD dan Rekomendasi Prodi berhasil diperbarui.');
+        return back()->with('success', 'Status Wawancara BoD, Rekomendasi Prodi, Kelulusan, dan Skema Beasiswa berhasil diperbarui.');
     }
 }
