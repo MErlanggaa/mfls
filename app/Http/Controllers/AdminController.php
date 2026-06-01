@@ -2479,24 +2479,22 @@ class AdminController extends Controller
             return abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
+        // Tampilkan SEMUA kandidat beasiswa 100% — baik yang sudah maupun belum dinilai BoD.
+        // Kandidat yang sudah dinilai akan tetap tampil dengan badge status.
+        // Sync otomatis ke seleksi beasiswa dilakukan saat simpan di updateWawancaraBod().
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
-            // Hanya yang belum dinilai BoD (status_wawancara_bod masih kosong/null)
-            ->whereHas('peserta.daftar', function ($q) {
-                $q->whereNull('status_wawancara_bod')
-                  ->orWhere('status_wawancara_bod', '');
-            })
-            // Dan memenuhi syarat: punya rekomendasi 100% dari wawancara akademik
-            // ATAU sebelumnya sudah ditandai beasiswa 100% di seleksi beasiswa
             ->where(function ($query) {
+                // Kandidat dengan rekomendasi beasiswa 100% dari penilaian akademik (wawancara)
                 $query->whereHas('peserta.penilaianAkademiks', function ($q) {
                     $q->where('rekomendasi_beasiswa', 'like', '%100%');
-                })->orWhereHas('peserta.daftar', function ($q) {
-                    // Kandidat yang awalnya dapat beasiswa 100% (sebelum BoD ubah)
-                    // Karena nominal_beasiswa bisa saja sudah diubah BoD, kita cek juga
-                    // berdasarkan status lulus dengan nominal 100%
+                })
+                // ATAU kandidat yang sudah pernah ditandai beasiswa 100% di seleksi beasiswa
+                // (termasuk yang sudah dinilai BoD dan dapat skema apapun)
+                ->orWhereHas('peserta.daftar', function ($q) {
                     $q->where(function ($inner) {
                         $inner->where('nominal_beasiswa', 'like', '%100%')
-                              ->orWhere('nominal_beasiswa', '100%');
+                              // Sudah dinilai BoD (status_wawancara_bod terisi) → tetap tampilkan
+                              ->orWhereNotNull('status_wawancara_bod');
                     });
                 });
             })
