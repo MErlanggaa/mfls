@@ -2479,23 +2479,22 @@ class AdminController extends Controller
             return abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
-        // Tampilkan SEMUA kandidat beasiswa 100% — baik yang sudah maupun belum dinilai BoD.
-        // Kandidat yang sudah dinilai akan tetap tampil dengan badge status.
-        // Sync otomatis ke seleksi beasiswa dilakukan saat simpan di updateWawancaraBod().
+        // Tampilkan SEMUA kandidat 100% — baik yang sudah maupun belum dinilai BoD.
+        // Tiga kondisi (OR): nominal 100%, rekomendasi akademik 100%, atau sudah pernah dinilai BoD.
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
             ->where(function ($query) {
-                // Kandidat dengan rekomendasi beasiswa 100% dari penilaian akademik (wawancara)
-                $query->whereHas('peserta.penilaianAkademiks', function ($q) {
+                // Kondisi 1: Punya nominal beasiswa 100% di tabel daftar (seleksi beasiswa)
+                $query->whereHas('peserta.daftar', function ($q) {
+                    $q->where('nominal_beasiswa', 'like', '%100%');
+                })
+                // Kondisi 2: Direkomendasi beasiswa 100% oleh penilai akademik (wawancara)
+                ->orWhereHas('peserta.penilaianAkademiks', function ($q) {
                     $q->where('rekomendasi_beasiswa', 'like', '%100%');
                 })
-                // ATAU kandidat yang sudah pernah ditandai beasiswa 100% di seleksi beasiswa
-                // (termasuk yang sudah dinilai BoD dan dapat skema apapun)
+                // Kondisi 3: Sudah pernah dinilai BoD → tetap tampil walau nominal berubah
                 ->orWhereHas('peserta.daftar', function ($q) {
-                    $q->where(function ($inner) {
-                        $inner->where('nominal_beasiswa', 'like', '%100%')
-                              // Sudah dinilai BoD (status_wawancara_bod terisi) → tetap tampilkan
-                              ->orWhereNotNull('status_wawancara_bod');
-                    });
+                    $q->whereNotNull('status_wawancara_bod')
+                      ->where('status_wawancara_bod', '!=', '');
                 });
             })
             ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
