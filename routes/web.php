@@ -18,15 +18,41 @@ Route::get('/debug-beasiswa-100', function () {
     $distinctNominal = \App\Models\Daftar::whereNotNull('nominal_beasiswa')
         ->select('nominal_beasiswa')->distinct()->pluck('nominal_beasiswa');
 
+    // Semua kandidat yang punya rekomendasi 100% dari penilaian akademik
+    $kandidatRek100 = \App\Models\PenilaianAkademik::where('rekomendasi_beasiswa', 'like', '%100%')
+        ->with('peserta.akun', 'peserta.daftar')
+        ->get()
+        ->map(fn($pa) => [
+            'nama'              => $pa->peserta->akun->nama ?? '?',
+            'rekomendasi_beasiswa' => $pa->rekomendasi_beasiswa,
+            'nominal_beasiswa'  => $pa->peserta->daftar->nominal_beasiswa ?? null,
+            'status_wawancara_bod' => $pa->peserta->daftar->status_wawancara_bod ?? null,
+            'status_daftar'     => $pa->peserta->daftar->status ?? null,
+        ]);
+
+    // Semua kandidat yang punya nominal_beasiswa 100% di tabel daftar
+    $kandidatNominal100 = \App\Models\Daftar::where('nominal_beasiswa', 'like', '%100%')
+        ->with('peserta.akun')
+        ->get()
+        ->map(fn($d) => [
+            'nama'              => $d->peserta->akun->nama ?? '?',
+            'nominal_beasiswa'  => $d->nominal_beasiswa,
+            'status_wawancara_bod' => $d->status_wawancara_bod ?? null,
+            'status'            => $d->status,
+        ]);
+
     return response()->json([
-        'total_penilaian_akademiks' => $totalPA,
-        'penilaian_rekomendasi_100_percent' => $pa100,
-        'distinct_rekomendasi_beasiswa' => $distinctRek,
-        'total_daftar_nominal_beasiswa_100' => $totalDaftar100,
-        'distinct_nominal_beasiswa' => $distinctNominal,
+        'total_penilaian_akademiks'            => $totalPA,
+        'penilaian_rekomendasi_100_percent'    => $pa100,
+        'distinct_rekomendasi_beasiswa'        => $distinctRek,
+        'total_daftar_nominal_beasiswa_100'    => $totalDaftar100,
+        'distinct_nominal_beasiswa'            => $distinctNominal,
+        'kandidat_dari_penilaian_akademik_100' => $kandidatRek100,
+        'kandidat_dari_nominal_100'            => $kandidatNominal100,
     ], 200, [], JSON_PRETTY_PRINT);
 });
 // === END DEBUG ROUTE ===
+
 
 
 // // Route::get('/', function () {

@@ -2480,13 +2480,28 @@ class AdminController extends Controller
         }
 
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
+            // Hanya yang belum dinilai BoD (status_wawancara_bod masih kosong/null)
+            ->whereHas('peserta.daftar', function ($q) {
+                $q->whereNull('status_wawancara_bod')
+                  ->orWhere('status_wawancara_bod', '');
+            })
+            // Dan memenuhi syarat: punya rekomendasi 100% dari wawancara akademik
+            // ATAU sebelumnya sudah ditandai beasiswa 100% di seleksi beasiswa
             ->where(function ($query) {
-                $query->whereHas('peserta.daftar', function ($q) {
-                    $q->where('nominal_beasiswa', 'like', '%100%');
-                })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
+                $query->whereHas('peserta.penilaianAkademiks', function ($q) {
                     $q->where('rekomendasi_beasiswa', 'like', '%100%');
+                })->orWhereHas('peserta.daftar', function ($q) {
+                    // Kandidat yang awalnya dapat beasiswa 100% (sebelum BoD ubah)
+                    // Karena nominal_beasiswa bisa saja sudah diubah BoD, kita cek juga
+                    // berdasarkan status lulus dengan nominal 100%
+                    $q->where(function ($inner) {
+                        $inner->where('nominal_beasiswa', 'like', '%100%')
+                              ->orWhere('nominal_beasiswa', '100%');
+                    });
                 });
-            })->with(['peserta.daftar', 'peserta.penilaianAkademiks'])->get();
+            })
+            ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
+            ->get();
 
         return view('admin.wawancara_bod.index', compact('pesertas'));
     }
