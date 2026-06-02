@@ -111,10 +111,20 @@
         @else
             <!-- Result Section -->
             @php
-                $status = $peserta->daftar->status ?? 'menunggu';
-                $isLulus = ($status === 'lulus');
-                $isGagal = !$isLulus;
+                $status          = $peserta->daftar->status ?? 'menunggu';
+                $isLulus         = ($status === 'lulus');
+                $isGagal         = !$isLulus;
                 $nominalBeasiswa = $peserta->daftar->nominal_beasiswa ?? null;
+
+                // Ambil prodi dan kelas yang sudah diputuskan dari penilaian akademik
+                $penilaian       = $peserta->penilaianAkademiks->first();
+                $acceptedProdi   = $penilaian?->rekomendasi_prodi_1 ?? null;
+                $acceptedKelas   = $penilaian?->rekomendasi_kelas ?? null;
+
+                // Fallback ke pilihan awal jika belum ada rekomendasi
+                if (!$acceptedProdi) {
+                    $acceptedProdi = explode(' | ', $peserta->pilihan_prodi ?? '')[0] ?? null;
+                }
             @endphp
 
             <style>
@@ -187,8 +197,15 @@
                                 {{ $peserta->nisn }} - NOREG {{ $peserta->id }}
                             </p>
                             <h4 class="text-2xl font-black mt-1 uppercase tracking-tight">{{ $peserta->nama }}</h4>
-                            <p class="text-amber-400 font-bold text-sm mt-1 uppercase">{{ $peserta->pilihan_prodi ?? '-' }}</p>
-                            <p class="text-white/70 text-xs font-medium">MNC UNIVERSITY</p>
+                            @if($acceptedProdi)
+                                <p class="text-amber-400 font-black text-sm mt-1 uppercase">{{ $acceptedProdi }}</p>
+                                @if($acceptedKelas)
+                                    <p class="text-amber-300/80 font-bold text-xs uppercase tracking-widest">KELAS {{ strtoupper($acceptedKelas) }}</p>
+                                @endif
+                            @else
+                                <p class="text-amber-400 font-bold text-sm mt-1 uppercase">{{ $peserta->pilihan_prodi ?? '-' }}</p>
+                            @endif
+                            <p class="text-white/70 text-xs font-medium mt-0.5">MNC UNIVERSITY</p>
                         </div>
                     </div>
 

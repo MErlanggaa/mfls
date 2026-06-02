@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BatchSeleksiController;
 use App\Http\Controllers\PendaftarController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\SurveyController;
@@ -181,6 +182,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/admin/beasiswa', [App\Http\Controllers\AdminController::class, 'indexBeasiswa'])->name('admin.beasiswa.index');
                 Route::get('/admin/beasiswa/{id}', [App\Http\Controllers\AdminController::class, 'showBeasiswa'])->name('admin.beasiswa.show');
                 Route::post('/admin/beasiswa/{id}/update', [App\Http\Controllers\AdminController::class, 'updateBeasiswa'])->name('admin.beasiswa.update');
+
+                // Batch Import Seleksi Beasiswa
+                Route::get('/admin/beasiswa-import', [BatchSeleksiController::class, 'index'])->name('admin.beasiswa.import.index');
+                Route::post('/admin/beasiswa-import', [BatchSeleksiController::class, 'import'])->name('admin.beasiswa.import.batch');
             }
             );
 

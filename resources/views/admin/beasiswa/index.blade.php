@@ -6,7 +6,10 @@
         <h2 class="text-2xl font-black text-slate-800">Database Terpusat & Beasiswa</h2>
         <p class="text-slate-500">Rekapitulasi seluruh data: Administrasi, Akademik, dan Penilaian Mentor.</p>
     </div>
-    <div class="flex gap-2">
+    <div class="flex gap-2 flex-wrap">
+        <a href="{{ route('admin.beasiswa.import.index') }}" class="px-6 py-3 bg-emerald-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all uppercase tracking-widest flex items-center gap-2">
+            <span class="iconify text-lg" data-icon="solar:import-bold"></span> Import Massal
+        </a>
         <a href="{{ route('admin.export') }}" class="px-6 py-3 bg-green-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-green-200 hover:bg-green-700 transition-all uppercase tracking-widest flex items-center gap-2">
             <span class="iconify text-lg" data-icon="solar:file-download-bold"></span> Export Laporan
         </a>
