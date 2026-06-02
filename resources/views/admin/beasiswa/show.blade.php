@@ -5,7 +5,7 @@
     @media print {
         @page {
             size: A4;
-            margin: 0.8cm 1.2cm;
+            margin: 0.4cm 0.8cm;
         }
 
         /* Hide all UI elements */
@@ -25,9 +25,9 @@
             background: white !important;
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: black !important;
-            font-size: 8.5pt;
-            line-height: 1.2;
-            zoom: 0.85;
+            font-size: 7.5pt;
+            line-height: 1.1;
+            zoom: 0.8;
         }
 
         /* Extremely Compact Sectioning */
@@ -36,41 +36,41 @@
             border: none !important;
             border-bottom: 0.5px solid #eee !important;
             border-radius: 0 !important;
-            padding: 8px 0 !important;
-            margin-bottom: 10px !important;
+            padding: 4px 0 !important;
+            margin-bottom: 6px !important;
             box-shadow: none !important;
             page-break-inside: avoid;
         }
 
         h3 { 
-            font-size: 9pt !important; 
-            margin-bottom: 6px !important;
+            font-size: 8pt !important; 
+            margin-bottom: 4px !important;
             padding-bottom: 2px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #1a1a1a;
             border-left: 3px solid #F97316;
-            padding-left: 8px;
+            padding-left: 6px;
         }
 
         table {
             width: 100% !important;
             border-collapse: collapse !important;
-            font-size: 7.5pt !important;
-            margin-top: 5px;
+            font-size: 7pt !important;
+            margin-top: 3px;
         }
         
         table th {
             background-color: #f8fafc !important;
             border: 0.5px solid #e2e8f0 !important;
-            padding: 4px !important;
+            padding: 2px 4px !important;
             font-weight: 800;
         }
 
         table td {
             border: 0.5px solid #e2e8f0 !important;
-            padding: 4px !important;
+            padding: 2px 4px !important;
         }
 
         .bg-slate-50, .bg-blue-50, .bg-emerald-50, .bg-orange-50, .bg-white {
@@ -88,41 +88,50 @@
             display: flex !important;
             flex-direction: row !important;
             align-items: center !important;
-            gap: 15px;
+            gap: 12px;
             border-bottom: 1.5px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
         }
 
         .header-logo {
-            width: 60px;
+            width: 45px;
             height: auto;
         }
 
         .header-text h1 {
-            font-size: 14pt !important;
+            font-size: 11pt !important;
             font-weight: 900 !important;
             margin: 0;
         }
 
         .header-text p {
             margin: 0;
-            font-size: 8pt;
+            font-size: 7.5pt;
             line-height: 1.1;
         }
 
         /* Compact Grid for Print */
-        .grid { display: flex !important; flex-wrap: wrap !important; gap: 10px !important; }
-        .md\:grid-cols-2 > div { width: calc(50% - 5px) !important; }
+        .grid { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; }
+        .md\:grid-cols-2 > div { width: calc(50% - 4px) !important; }
         .lg\:grid-cols-3 > div:first-child { width: 100% !important; }
         
         /* Compact Profile Detail */
-        .w-28 { width: 50px !important; height: 65px !important; }
-        .text-2xl { font-size: 14pt !important; }
-        .text-5xl { font-size: 24pt !important; }
+        .w-28 { width: 45px !important; height: 60px !important; }
+        .text-2xl { font-size: 11pt !important; }
+        .text-5xl { font-size: 20pt !important; }
         
         /* Hide non-essential sections for print if needed */
-        .preview-decision { margin-top: 5px !important; padding: 10px !important; }
+        .preview-decision { margin-top: 4px !important; padding: 6px !important; }
+        
+        /* Compact Signature and Footer */
+        .print-only.mt-12 {
+            margin-top: 1.5rem !important;
+            padding-top: 0.5rem !important;
+        }
+        .mb-20 {
+            margin-bottom: 2rem !important;
+        }
     }
 
     .print-only { display: none; }
@@ -325,7 +334,7 @@
             @endif
         </div>
 
-        <div class="section-box bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
+        <div class="section-box no-print bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
             <h3 class="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest">Kesimpulan Evaluasi Mentor</h3>
             <div class="space-y-3">
                 @forelse($user->peserta->penilaianMentors as $eval)

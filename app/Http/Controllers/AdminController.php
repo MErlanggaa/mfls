@@ -2499,26 +2499,14 @@ class AdminController extends Controller
             return abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
-        // Tampilkan SEMUA kandidat 100% — baik yang sudah maupun belum dinilai BoD.
-        // Tiga kondisi (OR): nominal 100%, rekomendasi akademik 100%, atau sudah pernah dinilai BoD.
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
             ->where(function ($query) {
-                // Kondisi 1: Punya nominal beasiswa 100% di tabel daftar (seleksi beasiswa)
                 $query->whereHas('peserta.daftar', function ($q) {
                     $q->where('nominal_beasiswa', 'like', '%100%');
-                })
-                // Kondisi 2: Direkomendasi beasiswa 100% oleh penilai akademik (wawancara)
-                ->orWhereHas('peserta.penilaianAkademiks', function ($q) {
+                })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
                     $q->where('rekomendasi_beasiswa', 'like', '%100%');
-                })
-                // Kondisi 3: Sudah pernah dinilai BoD → tetap tampil walau nominal berubah
-                ->orWhereHas('peserta.daftar', function ($q) {
-                    $q->whereNotNull('status_wawancara_bod')
-                      ->where('status_wawancara_bod', '!=', '');
                 });
-            })
-            ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
-            ->get();
+            })->with(['peserta.daftar', 'peserta.penilaianAkademiks'])->get();
 
         return view('admin.wawancara_bod.index', compact('pesertas'));
     }
@@ -2538,39 +2526,14 @@ class AdminController extends Controller
         ]);
 
         $daftar = \App\Models\Daftar::findOrFail($id);
-
-        // Cek rekomendasi beasiswa 100% pada semua penilaian akademik pendaftar
-        $penilaians = $daftar->peserta->penilaianAkademiks ?? collect();
-        $has100Recommendation = $penilaians->contains(function ($p) {
-            return str_contains($p->rekomendasi_beasiswa ?? '', '100');
-        });
+        $rekomendasiBeasiswa = $daftar->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? '';
         
-        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !$has100Recommendation) {
+        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !str_contains($rekomendasiBeasiswa, '100')) {
             return back()->with('error', 'Hanya peserta dengan Beasiswa 100% (atau rekomendasi) yang dapat diubah.');
         }
 
-        $statusBod = $request->status_wawancara_bod;
-        
-        // Logika auto-sync ke nominal beasiswa dan status kelulusan di Super Admin
-        $nominal = null;
-        $status = 'menunggu';
-        
-        if ($statusBod) {
-            if ($statusBod === 'Tidak Layak') {
-                $status = 'tidak_lulus';
-                $nominal = null;
-            } elseif (str_starts_with($statusBod, 'Layak')) {
-                $status = 'lulus';
-                if (preg_match('/(\d+%)/', $statusBod, $matches)) {
-                    $nominal = $matches[1]; // e.g. "100%", "75%", "50%", "25%"
-                }
-            }
-        }
-
         $daftar->update([
-            'status_wawancara_bod' => $statusBod,
-            'nominal_beasiswa' => $nominal,
-            'status' => $status,
+            'status_wawancara_bod' => $request->status_wawancara_bod,
         ]);
 
         // Update Rekomendasi Prodi 1 di Penilaian Akademik
@@ -2583,6 +2546,6 @@ class AdminController extends Controller
         $penilaian->rekomendasi_prodi_1 = $request->rekomendasi_prodi_1;
         $penilaian->save();
 
-        return back()->with('success', 'Status Wawancara BoD, Rekomendasi Prodi, Kelulusan, dan Skema Beasiswa berhasil diperbarui.');
+        return back()->with('success', 'Status Wawancara BoD dan Rekomendasi Prodi berhasil diperbarui.');
     }
 }
