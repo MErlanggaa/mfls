@@ -289,7 +289,7 @@ class ImportSeleksiBeasiswaSeeder extends Seeder
         $countSuccess = 0;
         $countFail = 0;
 
-        $adminUser = DB::table('users')->whereIn('role', ['admin', 'palugada'])->first();
+        $adminUser = DB::table('akun')->whereIn('role', ['admin', 'palugada'])->first();
         $adminId = $adminUser ? $adminUser->id : 1;
 
         foreach ($lines as $line) {
