@@ -163,6 +163,8 @@
                             @endif
                         </div>
 
+                    </div>{{-- /Identity --}}
+
                     {{-- Action Form --}}
                     <div class="w-full xl:w-auto flex-shrink-0">
                         <form action="{{ route('admin.wawancara_bod.update', $akun->peserta?->daftar?->id ?? 0) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
