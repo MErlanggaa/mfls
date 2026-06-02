@@ -31,9 +31,9 @@
         <input
             type="text"
             id="searchInput"
-            placeholder="Cari nama atau NISN kandidat..."
-            oninput="filterCandidates()"
-            class="w-full pl-11 pr-4 py-3.5 bg-white border-2 border-slate-200 rounded-2xl text-sm font-medium text-slate-700 placeholder-slate-300 focus:border-amber-400 focus:outline-none transition-all shadow-sm"
+            placeholder="Cari nama atau NISN (Tekan Enter)..."
+            onkeydown="if(event.key === 'Enter') { filterCandidates(); event.preventDefault(); }"
+            class="w-full pl-11 pr-12 py-3.5 bg-white border-2 border-slate-200 rounded-2xl text-sm font-medium text-slate-700 placeholder-slate-300 focus:border-amber-400 focus:outline-none transition-all shadow-sm"
         >
         <button onclick="document.getElementById('searchInput').value=''; filterCandidates()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors" id="clearSearch" style="display:none">
             <span class="iconify" data-icon="solar:close-circle-bold"></span>
