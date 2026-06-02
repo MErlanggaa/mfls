@@ -262,7 +262,25 @@ class AdminController extends Controller
         if (auth()->user()->role === 'mentor')
             return abort(403);
 
+        $excludedNames = [
+            'syifa atikah putri', 'fernando kevin pratama', 'nanda tri hafsyari', 'ayu suryaningsih',
+            'violin azzahra riyona', 'putra izhar gumilar', 'vivi aulivia', 'anggun zahra julina',
+            "adinda sofa syai'rillah", 'adlin ni’mah', 'maryana cecilia sitorus', 'amelia kania dewi',
+            'shireen tsamrotul puadah', 'jelita rihandini', 'hayaa', 'affan farid kurniawan',
+            'alya putri sulaiman', 'sulthan syauqi azhar', 'nazwa salsabila', 'devi rahma syahna',
+            'rizki ramadan harahap', 'sinaga,eka chrsitina octaviani sinaga', 'salwa azariah', 'muhammad fauzi',
+            'raditya', 'cristy stefany putri', 'muhammad farid firdaus', 'aini salsabila',
+            'bunga sabiila agitsni', 'marchelina selviani', 'dea puspita sari', 'sri ambar wati',
+            'rafiqa kaylani', 'khairunnisa darlis', 'neyna fakhirah abdiel', 'olivia ramadhani',
+            'muhammad rusli sajidan', 'muhammad alvaro', 'desriama pasaribu', 'dame roma uli harahap',
+            'mei sheilla azizah', 'alvin saifin nuha', 'alysa chairani', "syari'ah fathul aulia",
+            'jessi tiara putri', 'nurdin', 'siti nur fadillah', 'rahmania agustin', 'desila dwi sartika',
+            'azka syafwa', 'keyla aulya rizky', 'rahma auliya', 'muda agustian', 'felisha savinnatunasah',
+            'rifdah zahraani'
+        ];
+
         $query = Akun::where('role', 'pendaftar')
+            ->whereNotIn(DB::raw('LOWER(nama)'), $excludedNames)
             ->where(function ($q) {
                 // Normal path: Passed admin and passed CBT
                 $q->where(function ($q2) {
