@@ -342,12 +342,6 @@ class ImportSeleksiBeasiswaSeeder extends Seeder
 
             $daftar = $peserta->daftar;
 
-            // Jika peserta sudah lulus sebelumnya, kita skip agar tidak menimpa/error
-            if ($daftar && $daftar->status === 'lulus') {
-                $this->command->line("Kandidat SUDAH DIPROSES (Skip): {$nama}");
-                continue;
-            }
-
             if ($daftar) {
                 $daftar->update([
                     'nominal_beasiswa' => $beasiswa,
