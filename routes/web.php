@@ -281,3 +281,32 @@ Route::get('/debug-migrate', function () {
         return "Error: " . $e->getMessage();
     }
 });
+
+Route::get('/debug-candidates', function () {
+    $alfans = \App\Models\Akun::where('nama', 'like', '%alfan%')->with(['peserta.daftar', 'peserta.penilaianAkademiks'])->get();
+    $raihans = \App\Models\Akun::where('nama', 'like', '%raihan%')->with(['peserta.daftar', 'peserta.penilaianAkademiks'])->get();
+    return response()->json([
+        'alfans' => $alfans->map(fn($a) => [
+            'id' => $a->id,
+            'nama' => $a->nama,
+            'role' => $a->role,
+            'has_peserta' => !!$a->peserta,
+            'has_daftar' => $a->peserta ? !!$a->peserta->daftar : false,
+            'nominal_beasiswa' => $a->peserta?->daftar?->nominal_beasiswa,
+            'status_wawancara_bod' => $a->peserta?->daftar?->status_wawancara_bod,
+            'rekomendasi_beasiswa' => $a->peserta?->penilaianAkademiks->first()?->rekomendasi_beasiswa,
+            'status_daftar' => $a->peserta?->daftar?->status,
+        ]),
+        'raihans' => $raihans->map(fn($a) => [
+            'id' => $a->id,
+            'nama' => $a->nama,
+            'role' => $a->role,
+            'has_peserta' => !!$a->peserta,
+            'has_daftar' => $a->peserta ? !!$a->peserta->daftar : false,
+            'nominal_beasiswa' => $a->peserta?->daftar?->nominal_beasiswa,
+            'status_wawancara_bod' => $a->peserta?->daftar?->status_wawancara_bod,
+            'rekomendasi_beasiswa' => $a->peserta?->penilaianAkademiks->first()?->rekomendasi_beasiswa,
+            'status_daftar' => $a->peserta?->daftar?->status,
+        ])
+    ]);
+});
