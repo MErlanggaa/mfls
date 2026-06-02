@@ -886,7 +886,7 @@ class AdminController extends Controller
             });
 
         if (auth()->user()->role === 'dosen') {
-            if (auth()->user()->email !== 'dendi.pratama@mncu.ac.id') {
+            if (strtolower(auth()->user()->email) !== 'dendi.pratama@mncu.ac.id') {
                 $query->whereHas('peserta', function ($q) {
                     $q->where('interviewer_id', auth()->id());
                 });
@@ -962,7 +962,7 @@ class AdminController extends Controller
         $user = Akun::with(['peserta.daftar', 'peserta.penilaianMentors.mentor', 'peserta.penilaianAkademiks.penilai'])->findOrFail($id);
 
         // Security check for dosen
-        if (auth()->user()->role === 'dosen' && auth()->user()->email !== 'dendi.pratama@mncu.ac.id' && ($user->peserta->interviewer_id ?? null) !== auth()->id()) {
+        if (auth()->user()->role === 'dosen' && strtolower(auth()->user()->email) !== 'dendi.pratama@mncu.ac.id' && ($user->peserta->interviewer_id ?? null) !== auth()->id()) {
             return abort(403, 'Anda tidak ditugaskan untuk mewawancarai peserta ini.');
         }
 
@@ -978,7 +978,7 @@ class AdminController extends Controller
         $peserta = \App\Models\Peserta::where('akun_id', $id)->firstOrFail();
 
         // Security check for dosen: must be assigned to this candidate
-        if (auth()->user()->role === 'dosen' && auth()->user()->email !== 'dendi.pratama@mncu.ac.id' && $peserta->interviewer_id !== auth()->id()) {
+        if (auth()->user()->role === 'dosen' && strtolower(auth()->user()->email) !== 'dendi.pratama@mncu.ac.id' && $peserta->interviewer_id !== auth()->id()) {
             return abort(403, 'Anda tidak ditugaskan untuk mewawancarai peserta ini.');
         }
 

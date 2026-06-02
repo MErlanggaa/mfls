@@ -162,7 +162,6 @@
                                 </span>
                             @endif
                         </div>
-                    </div>
 
                     {{-- Action Form --}}
                     <div class="w-full xl:w-auto flex-shrink-0">
@@ -217,9 +216,8 @@
                             </button>
                         </form>
                     </div>
-                    </div>
-
                 </div>
+
             </div>
         </div>
         @endforeach
