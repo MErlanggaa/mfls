@@ -45,21 +45,26 @@ class BatchSeleksiController extends Controller
             // Split by tab (TSV from Excel/Sheets)
             $cols = preg_split('/\t/', $line);
 
-            // Expect at least 6 columns: No | Nama | Sekolah | Prodi | Kelas | Beasiswa
-            if (count($cols) < 6) continue;
+            // Expect at least 5 columns
+            if (count($cols) < 5) continue;
 
             // Skip header rows
             $first = strtolower(trim($cols[0]));
-            if (in_array($first, ['no', 'no.', 'no,'])) continue;
-
-            // First column should be a number
-            if (!is_numeric(trim($cols[0]))) continue;
+            if (in_array($first, ['no', 'no.', 'no,']) || !is_numeric(trim($cols[0]))) continue;
 
             $nama      = trim($cols[1]);
             $sekolah   = trim($cols[2]);
             $prodi     = trim($cols[3]);
-            $kelas     = trim($cols[4]);
-            $beasiswa  = trim($cols[5]);
+            
+            // If we have 5 columns, the format is: No | Nama | Sekolah | Prodi | Beasiswa (missing Kelas)
+            // If we have 6 columns, the format is: No | Nama | Sekolah | Prodi | Kelas | Beasiswa
+            if (count($cols) == 5) {
+                $kelas    = 'Reguler';
+                $beasiswa = trim($cols[4]);
+            } else {
+                $kelas    = trim($cols[4]);
+                $beasiswa = trim($cols[5]);
+            }
 
             if (empty($nama)) continue;
 
@@ -75,7 +80,7 @@ class BatchSeleksiController extends Controller
         }
 
         if (empty($candidates)) {
-            return back()->withInput()->with('error', 'Tidak ada data yang berhasil dibaca. Pastikan format tabel sudah benar (6 kolom dipisah tab).');
+            return back()->withInput()->with('error', 'Tidak ada data yang berhasil dibaca. Pastikan format tabel sudah benar (minimal 5 atau 6 kolom dipisah tab).');
         }
 
         $matched   = [];
