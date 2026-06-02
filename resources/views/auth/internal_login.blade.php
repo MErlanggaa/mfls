@@ -48,11 +48,7 @@
         </div>
     </div>
 
-    <!-- Google reCAPTCHA -->
-    <div>
-        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
-        @error('g-recaptcha-response') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-    </div>
+
 
     <!-- Submit Button (Dark Theme) -->
     <button type="submit" 
@@ -61,7 +57,7 @@
     </button>
 </form>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
 <p class="mt-10 text-center text-xs font-semibold text-gray-400">
     &copy; {{ date('Y') }} MFLS Internal System. Restricted Access.

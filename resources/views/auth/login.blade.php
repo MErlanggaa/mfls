@@ -36,11 +36,7 @@
         <label for="remember" class="ml-3 text-sm font-semibold text-gray-600">Ingat Saya</label>
     </div>
 
-    <!-- Google reCAPTCHA -->
-    <div>
-        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}"></div>
-        @error('g-recaptcha-response') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-    </div>
+
 
     <button type="submit" 
         class="w-full bg-primary-gold hover:bg-primary-gold-hover text-dark-navy font-black py-4 rounded-2xl shadow-xl shadow-primary-gold/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
@@ -59,7 +55,7 @@
     </button> --}}
 </form>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 
 <p class="mt-10 text-center text-sm font-bold text-gray-500">
     Belum punya akun? 
