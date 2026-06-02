@@ -2503,15 +2503,11 @@ class AdminController extends Controller
             ->whereHas('peserta.daftar')
             ->where(function ($query) {
                 $query->whereHas('peserta.daftar', function ($q) {
-                    $q->where(function ($sub) {
-                        $sub->where('nominal_beasiswa', 'like', '%100%')
-                            ->orWhere('nominal_beasiswa', 'like', '%75%');
-                    })
-                    ->orWhereNotNull('status_wawancara_bod')
-                    ->where('status_wawancara_bod', '!=', '');
+                    $q->where('nominal_beasiswa', 'like', '%100%')
+                      ->orWhereNotNull('status_wawancara_bod')
+                      ->where('status_wawancara_bod', '!=', '');
                 })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
-                    $q->where('rekomendasi_beasiswa', 'like', '%100%')
-                      ->orWhere('rekomendasi_beasiswa', 'like', '%75%');
+                    $q->where('rekomendasi_beasiswa', 'like', '%100%');
                 });
             })->with(['peserta.daftar', 'peserta.penilaianAkademiks'])->get();
 

@@ -90,7 +90,7 @@
                 <div class="lg:w-2 w-full h-2 lg:h-auto flex-shrink-0 {{ $isLayak ? 'bg-gradient-to-b from-amber-400 to-yellow-500' : ($isTidak ? 'bg-gradient-to-b from-red-400 to-red-600' : 'bg-gradient-to-b from-slate-200 to-slate-300') }}"></div>
 
                 {{-- Main Content --}}
-                <div class="flex-1 p-6 flex flex-col lg:flex-row gap-6 items-start lg:items-center">
+                <div class="flex-1 p-6 flex flex-col xl:flex-row gap-6 items-start xl:items-center">
 
                     {{-- Identity --}}
                     <div class="flex-1 min-w-0">
@@ -165,7 +165,7 @@
                     </div>
 
                     {{-- Action Form --}}
-                    <div class="w-full lg:w-auto flex-shrink-0">
+                    <div class="w-full xl:w-auto flex-shrink-0">
                         <form action="{{ route('admin.wawancara_bod.update', $akun->peserta?->daftar?->id ?? 0) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             @csrf
                             <div class="relative">
