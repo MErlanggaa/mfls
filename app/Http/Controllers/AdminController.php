@@ -325,6 +325,50 @@ class AdminController extends Controller
             });
         }
 
+        if ($request->filled('beasiswa')) {
+            $query->whereHas('peserta.daftar', function ($q) use ($request) {
+                $q->where('nominal_beasiswa', 'like', "%{$request->beasiswa}%");
+            });
+        }
+
+        if ($request->filled('kelas')) {
+            $query->whereHas('peserta.penilaianAkademiks', function ($q) use ($request) {
+                $q->where('rekomendasi_kelas', 'like', "%{$request->kelas}%");
+            });
+        }
+
+        if ($request->filled('prodi')) {
+            $query->whereHas('peserta', function ($q) use ($request) {
+                $q->where('pilihan_prodi', 'like', "%{$request->prodi}%")
+                  ->orWhereHas('penilaianAkademiks', function ($q2) use ($request) {
+                      $q2->where('rekomendasi_prodi_1', 'like', "%{$request->prodi}%");
+                  });
+            });
+        }
+
+        if ($request->filled('berkas_status')) {
+            if ($request->berkas_status == 'lengkap') {
+                $query->whereHas('peserta', function ($q) {
+                    // Cek kelengkapan dasar, bisa pakai where(progress, 100) jika ada di table,
+                    // atau cukup pastikan punya foto dan ijazah dll
+                    $q->whereHas('berkas', function ($q2) {
+                        $q2->whereNotNull('foto')
+                           ->whereNotNull('ijazah')
+                           ->whereNotNull('motivasi_video');
+                    });
+                });
+            } elseif ($request->berkas_status == 'belum') {
+                $query->whereHas('peserta', function ($q) {
+                    $q->whereDoesntHave('berkas')
+                      ->orWhereHas('berkas', function ($q2) {
+                          $q2->whereNull('foto')
+                             ->orWhereNull('ijazah')
+                             ->orWhereNull('motivasi_video');
+                      });
+                });
+            }
+        }
+
         $pendaftars = $query->get();
 
         // Urutkan berdasarkan nilai rata-rata dari tertinggi ke terendah

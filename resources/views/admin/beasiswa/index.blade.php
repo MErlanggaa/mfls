@@ -18,36 +18,73 @@
 
 <!-- Advanced Filter Panel -->
 <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-8">
-    <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div>
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Pencarian Cepat</label>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / Kode Ref..." 
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
-        </div>
-        <div>
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Asal Sekolah</label>
-            <input type="text" name="sekolah" value="{{ request('sekolah') }}" placeholder="Semua Sekolah..." 
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
-        </div>
-        <div>
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Rank Nilai (Min)</label>
-            <select name="min_nilai" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
-                <option value="">Semua Nilai</option>
-                <option value="90" {{ request('min_nilai') == '90' ? 'selected' : '' }}>Nilai > 90</option>
-                <option value="80" {{ request('min_nilai') == '80' ? 'selected' : '' }}>Nilai > 80</option>
-                <option value="70" {{ request('min_nilai') == '70' ? 'selected' : '' }}>Nilai > 70</option>
-            </select>
-        </div>
-        <div>
-            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kelengkapan Berkas</label>
-            <div class="flex gap-2">
-                <select name="berkas_status" class="flex-grow px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
+    <form method="GET" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Pencarian Cepat</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / Kode Ref..." 
+                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Asal Sekolah</label>
+                <input type="text" name="sekolah" value="{{ request('sekolah') }}" placeholder="Semua Sekolah..." 
+                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Prodi</label>
+                <select name="prodi" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
+                    <option value="">Semua Prodi</option>
+                    <option value="Sains Komunikasi" {{ request('prodi') == 'Sains Komunikasi' ? 'selected' : '' }}>Sains Komunikasi</option>
+                    <option value="Desain Komunikasi Visual" {{ request('prodi') == 'Desain Komunikasi Visual' ? 'selected' : '' }}>Desain Komunikasi Visual</option>
+                    <option value="Manajemen" {{ request('prodi') == 'Manajemen' ? 'selected' : '' }}>Manajemen</option>
+                    <option value="Akuntansi" {{ request('prodi') == 'Akuntansi' ? 'selected' : '' }}>Akuntansi</option>
+                    <option value="Pendidikan Bahasa Inggris" {{ request('prodi') == 'Pendidikan Bahasa Inggris' ? 'selected' : '' }}>Pend. Bahasa Inggris</option>
+                    <option value="Pendidikan Matematika" {{ request('prodi') == 'Pendidikan Matematika' ? 'selected' : '' }}>Pend. Matematika</option>
+                    <option value="Ilmu Komputer" {{ request('prodi') == 'Ilmu Komputer' ? 'selected' : '' }}>Ilmu Komputer</option>
+                    <option value="Sistem Informasi" {{ request('prodi') == 'Sistem Informasi' ? 'selected' : '' }}>Sistem Informasi</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kelengkapan Berkas</label>
+                <select name="berkas_status" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
                     <option value="">Semua Status</option>
                     <option value="lengkap" {{ request('berkas_status') == 'lengkap' ? 'selected' : '' }}>Berkas Lengkap</option>
                     <option value="belum" {{ request('berkas_status') == 'belum' ? 'selected' : '' }}>Belum Lengkap</option>
                 </select>
-                <button type="submit" class="bg-blue-600 text-white px-4 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 flex items-center justify-center">
-                    <span class="iconify" data-icon="solar:magnifer-linear"></span>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Beasiswa</label>
+                <select name="beasiswa" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
+                    <option value="">Semua Beasiswa</option>
+                    <option value="100%" {{ request('beasiswa') == '100%' ? 'selected' : '' }}>100%</option>
+                    <option value="75%" {{ request('beasiswa') == '75%' ? 'selected' : '' }}>75%</option>
+                    <option value="50%" {{ request('beasiswa') == '50%' ? 'selected' : '' }}>50%</option>
+                    <option value="25%" {{ request('beasiswa') == '25%' ? 'selected' : '' }}>25%</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Kelas</label>
+                <select name="kelas" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
+                    <option value="">Semua Kelas</option>
+                    <option value="Reguler" {{ request('kelas') == 'Reguler' ? 'selected' : '' }}>Reguler</option>
+                    <option value="Karyawan" {{ request('kelas') == 'Karyawan' ? 'selected' : '' }}>Karyawan</option>
+                    <option value="Exellent" {{ request('kelas') == 'Exellent' ? 'selected' : '' }}>Exellent</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Rank Nilai (Min)</label>
+                <select name="min_nilai" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:border-orange-500 outline-none text-sm font-bold text-slate-700">
+                    <option value="">Semua Nilai</option>
+                    <option value="90" {{ request('min_nilai') == '90' ? 'selected' : '' }}>Nilai > 90</option>
+                    <option value="80" {{ request('min_nilai') == '80' ? 'selected' : '' }}>Nilai > 80</option>
+                    <option value="70" {{ request('min_nilai') == '70' ? 'selected' : '' }}>Nilai > 70</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="w-full bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2 text-sm font-bold h-[46px]">
+                    <span class="iconify" data-icon="solar:magnifer-linear"></span> Terapkan Filter
                 </button>
             </div>
         </div>
