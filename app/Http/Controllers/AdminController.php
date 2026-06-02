@@ -2502,7 +2502,9 @@ class AdminController extends Controller
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
             ->where(function ($query) {
                 $query->whereHas('peserta.daftar', function ($q) {
-                    $q->where('nominal_beasiswa', 'like', '%100%');
+                    $q->where('nominal_beasiswa', 'like', '%100%')
+                      ->orWhereNotNull('status_wawancara_bod')
+                      ->where('status_wawancara_bod', '!=', '');
                 })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
                     $q->where('rekomendasi_beasiswa', 'like', '%100%');
                 });
@@ -2528,13 +2530,47 @@ class AdminController extends Controller
         $daftar = \App\Models\Daftar::findOrFail($id);
         $rekomendasiBeasiswa = $daftar->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? '';
         
-        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !str_contains($rekomendasiBeasiswa, '100')) {
+        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !str_contains($rekomendasiBeasiswa, '100') && empty($daftar->status_wawancara_bod)) {
             return back()->with('error', 'Hanya peserta dengan Beasiswa 100% (atau rekomendasi) yang dapat diubah.');
         }
 
-        $daftar->update([
-            'status_wawancara_bod' => $request->status_wawancara_bod,
-        ]);
+        // Auto-map status_wawancara_bod to nominal_beasiswa and status
+        $nominal = null;
+        $status = null;
+        $statusBod = $request->status_wawancara_bod;
+
+        if ($statusBod) {
+            if (str_contains($statusBod, '100%')) {
+                $nominal = '100%';
+            } elseif (str_contains($statusBod, '75%')) {
+                $nominal = '75%';
+            } elseif (str_contains($statusBod, '50%')) {
+                $nominal = '50%';
+            } elseif (str_contains($statusBod, '25%')) {
+                $nominal = '25%';
+            } elseif ($statusBod === 'Tidak Layak') {
+                $nominal = 'Mandiri';
+            }
+
+            if (str_starts_with($statusBod, 'Layak')) {
+                $status = 'lulus';
+            } elseif ($statusBod === 'Tidak Layak') {
+                $status = 'tidak_lulus';
+            }
+        }
+
+        $updateData = [
+            'status_wawancara_bod' => $statusBod,
+        ];
+
+        if ($nominal !== null) {
+            $updateData['nominal_beasiswa'] = $nominal;
+        }
+        if ($status !== null) {
+            $updateData['status'] = $status;
+        }
+
+        $daftar->update($updateData);
 
         // Update Rekomendasi Prodi 1 di Penilaian Akademik
         $penilaian = $daftar->peserta->penilaianAkademiks()->first();
@@ -2546,6 +2582,6 @@ class AdminController extends Controller
         $penilaian->rekomendasi_prodi_1 = $request->rekomendasi_prodi_1;
         $penilaian->save();
 
-        return back()->with('success', 'Status Wawancara BoD dan Rekomendasi Prodi berhasil diperbarui.');
+        return back()->with('success', 'Status Wawancara BoD dan keputusan beasiswa berhasil diperbarui.');
     }
 }
