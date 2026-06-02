@@ -2503,9 +2503,13 @@ class AdminController extends Controller
             ->whereHas('peserta.daftar')
             ->where(function ($query) {
                 $query->whereHas('peserta.daftar', function ($q) {
-                    $q->where('nominal_beasiswa', 'like', '%100%')
-                      ->orWhereNotNull('status_wawancara_bod')
-                      ->where('status_wawancara_bod', '!=', '');
+                    $q->where(function ($sub) {
+                        $sub->where('nominal_beasiswa', 'like', '%100%')
+                            ->orWhere(function ($sub2) {
+                                $sub2->whereNotNull('status_wawancara_bod')
+                                     ->where('status_wawancara_bod', '!=', '');
+                            });
+                    });
                 })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
                     $q->where('rekomendasi_beasiswa', 'like', '%100%');
                 });
@@ -2605,11 +2609,15 @@ class AdminController extends Controller
             ->where(function ($query) {
                 $query->whereHas('peserta.daftar', function ($q) {
                     $q->where(function ($sub) {
-                        $sub->where('nominal_beasiswa', 'like', '%100%')
-                            ->orWhere('nominal_beasiswa', 'like', '%75%');
-                    })
-                    ->orWhereNotNull('status_wawancara_bod')
-                    ->where('status_wawancara_bod', '!=', '');
+                        $sub->where(function ($subNominal) {
+                            $subNominal->where('nominal_beasiswa', 'like', '%100%')
+                                       ->orWhere('nominal_beasiswa', 'like', '%75%');
+                        })
+                        ->orWhere(function ($sub2) {
+                            $sub2->whereNotNull('status_wawancara_bod')
+                                 ->where('status_wawancara_bod', '!=', '');
+                        });
+                    });
                 })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
                     $q->where('rekomendasi_beasiswa', 'like', '%100%')
                       ->orWhere('rekomendasi_beasiswa', 'like', '%75%');
