@@ -2503,11 +2503,15 @@ class AdminController extends Controller
             ->whereHas('peserta.daftar')
             ->where(function ($query) {
                 $query->whereHas('peserta.daftar', function ($q) {
-                    $q->where('nominal_beasiswa', 'like', '%100%')
-                      ->orWhereNotNull('status_wawancara_bod')
-                      ->where('status_wawancara_bod', '!=', '');
+                    $q->where(function ($sub) {
+                        $sub->where('nominal_beasiswa', 'like', '%100%')
+                            ->orWhere('nominal_beasiswa', 'like', '%75%');
+                    })
+                    ->orWhereNotNull('status_wawancara_bod')
+                    ->where('status_wawancara_bod', '!=', '');
                 })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
-                    $q->where('rekomendasi_beasiswa', 'like', '%100%');
+                    $q->where('rekomendasi_beasiswa', 'like', '%100%')
+                      ->orWhere('rekomendasi_beasiswa', 'like', '%75%');
                 });
             })->with(['peserta.daftar', 'peserta.penilaianAkademiks'])->get();
 
@@ -2531,8 +2535,13 @@ class AdminController extends Controller
         $daftar = \App\Models\Daftar::findOrFail($id);
         $rekomendasiBeasiswa = $daftar->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? '';
         
-        if (!str_contains($daftar->nominal_beasiswa ?? '', '100') && !str_contains($rekomendasiBeasiswa, '100') && empty($daftar->status_wawancara_bod)) {
-            return back()->with('error', 'Hanya peserta dengan Beasiswa 100% (atau rekomendasi) yang dapat diubah.');
+        $has100Or75 = str_contains($daftar->nominal_beasiswa ?? '', '100') || 
+                      str_contains($daftar->nominal_beasiswa ?? '', '75') || 
+                      str_contains($rekomendasiBeasiswa, '100') || 
+                      str_contains($rekomendasiBeasiswa, '75');
+
+        if (!$has100Or75 && empty($daftar->status_wawancara_bod)) {
+            return back()->with('error', 'Hanya peserta dengan Beasiswa 100% atau 75% (atau rekomendasi) yang dapat diubah.');
         }
 
         // Auto-map status_wawancara_bod to nominal_beasiswa and status
@@ -2599,11 +2608,15 @@ class AdminController extends Controller
             ->whereHas('peserta.daftar')
             ->where(function ($query) {
                 $query->whereHas('peserta.daftar', function ($q) {
-                    $q->where('nominal_beasiswa', 'like', '%100%')
-                      ->orWhereNotNull('status_wawancara_bod')
-                      ->where('status_wawancara_bod', '!=', '');
+                    $q->where(function ($sub) {
+                        $sub->where('nominal_beasiswa', 'like', '%100%')
+                            ->orWhere('nominal_beasiswa', 'like', '%75%');
+                    })
+                    ->orWhereNotNull('status_wawancara_bod')
+                    ->where('status_wawancara_bod', '!=', '');
                 })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
-                    $q->where('rekomendasi_beasiswa', 'like', '%100%');
+                    $q->where('rekomendasi_beasiswa', 'like', '%100%')
+                      ->orWhere('rekomendasi_beasiswa', 'like', '%75%');
                 });
             })->with(['peserta.berkas'])->get();
 
