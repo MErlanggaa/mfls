@@ -2500,6 +2500,7 @@ class AdminController extends Controller
         }
 
         $pesertas = \App\Models\Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar')
             ->where(function ($query) {
                 $query->whereHas('peserta.daftar', function ($q) {
                     $q->where('nominal_beasiswa', 'like', '%100%')

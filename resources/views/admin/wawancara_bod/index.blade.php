@@ -65,11 +65,11 @@
     <div class="grid grid-cols-1 gap-5">
         @foreach($pesertas as $akun)
         @php
-            $statusWawancara = $akun->peserta->daftar->status_wawancara_bod ?? null;
-            $nominalFinal    = $akun->peserta->daftar->nominal_beasiswa ?? null;
-            $rekBeasiswa     = $akun->peserta->penilaianAkademiks->first()?->rekomendasi_beasiswa ?? null;
+            $statusWawancara = $akun->peserta?->daftar?->status_wawancara_bod ?? null;
+            $nominalFinal    = $akun->peserta?->daftar?->nominal_beasiswa ?? null;
+            $rekBeasiswa     = $akun->peserta?->penilaianAkademiks?->first()?->rekomendasi_beasiswa ?? null;
 
-            $penilaianAkademik = $akun->peserta->penilaianAkademiks->first();
+            $penilaianAkademik = $akun->peserta?->penilaianAkademiks?->first();
             $rekProdi1       = $penilaianAkademik?->rekomendasi_prodi_1 ?? null;
             $rekProdi2       = $penilaianAkademik?->rekomendasi_prodi_2 ?? null;
 
@@ -79,7 +79,7 @@
         @endphp
 
         <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg hover:border-slate-200 transition-all duration-300 overflow-hidden candidate-card"
-             data-search="{{ strtolower($akun->nama . ' ' . ($akun->peserta->nisn ?? '') . ' ' . ($akun->peserta->daftar->asal_sekolah ?? '')) }}">
+             data-search="{{ strtolower($akun->nama . ' ' . ($akun->peserta?->nisn ?? '') . ' ' . ($akun->peserta?->daftar?->asal_sekolah ?? '')) }}">
             <div class="flex flex-col lg:flex-row">
 
                 {{-- Left: Colored Status Bar --}}
@@ -115,19 +115,19 @@
                         <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-400 font-medium">
                             <span class="flex items-center gap-1">
                                 <span class="iconify text-slate-400" data-icon="solar:card-bold"></span>
-                                NISN {{ $akun->peserta->nisn ?? '-' }}
+                                NISN {{ $akun->peserta?->nisn ?? '-' }}
                             </span>
                             <span class="flex items-center gap-1">
                                 <span class="iconify text-slate-400" data-icon="solar:buildings-3-bold"></span>
-                                {{ $akun->peserta->daftar->asal_sekolah ?? '-' }}
+                                {{ $akun->peserta?->daftar?->asal_sekolah ?? '-' }}
                             </span>
                             <span class="flex items-center gap-1 text-slate-500 font-bold">
                                 <span class="iconify text-amber-500" data-icon="solar:bookmark-bold"></span>
-                                Pil. 1: {{ explode(' | ', $akun->peserta->pilihan_prodi ?? '')[0] ?? '-' }}
+                                Pil. 1: {{ explode(' | ', $akun->peserta?->pilihan_prodi ?? '')[0] ?? '-' }}
                             </span>
                             <span class="flex items-center gap-1 text-slate-500 font-bold">
                                 <span class="iconify text-amber-500" data-icon="solar:bookmark-bold"></span>
-                                Pil. 2: {{ explode(' | ', $akun->peserta->pilihan_prodi ?? '')[1] ?? '-' }}
+                                Pil. 2: {{ explode(' | ', $akun->peserta?->pilihan_prodi ?? '')[1] ?? '-' }}
                             </span>
                         </div>
 
@@ -162,7 +162,7 @@
 
                     {{-- Action Form --}}
                     <div class="w-full lg:w-auto flex-shrink-0">
-                        <form action="{{ route('admin.wawancara_bod.update', $akun->peserta->daftar->id) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <form action="{{ route('admin.wawancara_bod.update', $akun->peserta?->daftar?->id ?? 0) }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                             @csrf
                             <div class="relative">
                                 <select name="status_wawancara_bod"
