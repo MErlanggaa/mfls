@@ -263,11 +263,22 @@ class AdminController extends Controller
             return abort(403);
 
         $query = Akun::where('role', 'pendaftar')
-            ->whereHas('peserta.daftar', function ($q) {
-            $q->where('status', 'lulus');
-        })
-            ->whereHas('peserta', function ($q) {
-                $q->where('status_seleksi_ujian', 'lulus');
+            ->where(function ($q) {
+                // Normal path: Passed admin and passed CBT
+                $q->where(function ($q2) {
+                    $q2->whereHas('peserta.daftar', function ($q3) {
+                        $q3->where('status', 'lulus');
+                    })
+                    ->whereHas('peserta', function ($q3) {
+                        $q3->where('status_seleksi_ujian', 'lulus');
+                    });
+                })
+                // BoD path: Has status_wawancara_bod and passed admin
+                ->orWhereHas('peserta.daftar', function ($q2) {
+                    $q2->where('status', 'lulus')
+                       ->whereNotNull('status_wawancara_bod')
+                       ->where('status_wawancara_bod', '!=', '');
+                });
             })
             ->with(['peserta.daftar', 'peserta.nilais', 'peserta.berkas', 'peserta.penilaianMentors.mentor', 'peserta.jawabanUjians.ujian']);
 
@@ -2398,11 +2409,20 @@ class AdminController extends Controller
         $fileName = 'Database_Hasil_Wawancara_' . date('Y-m-d_H-i') . '.csv';
         
         $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
-            ->whereHas('peserta.daftar', function ($q) {
-                $q->where('status', 'lulus');
-            })
-            ->whereHas('peserta', function ($q) {
-                $q->where('status_seleksi_ujian', 'lulus');
+            ->where(function ($q) {
+                $q->where(function ($q2) {
+                    $q2->whereHas('peserta.daftar', function ($q3) {
+                        $q3->where('status', 'lulus');
+                    })
+                    ->whereHas('peserta', function ($q3) {
+                        $q3->where('status_seleksi_ujian', 'lulus');
+                    });
+                })
+                ->orWhereHas('peserta.daftar', function ($q2) {
+                    $q2->where('status', 'lulus')
+                       ->whereNotNull('status_wawancara_bod')
+                       ->where('status_wawancara_bod', '!=', '');
+                });
             })
             ->with(['peserta.daftar', 'peserta.penilaianAkademiks', 'peserta.penilaianMentors'])
             ->get();
