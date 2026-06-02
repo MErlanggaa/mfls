@@ -182,7 +182,11 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 text-center">
-                        @if(!empty($akun->peserta->daftar->status_wawancara_bod))
+                        @if(!empty($akun->peserta->daftar->nominal_beasiswa))
+                            <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black border border-emerald-200">
+                                SUDAH DIKIRIM ({{ $akun->peserta->daftar->nominal_beasiswa }})
+                            </span>
+                        @elseif(!empty($akun->peserta->daftar->status_wawancara_bod))
                             <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-lg text-[9px] font-black border border-amber-200">
                                 BoD: {{ $akun->peserta->daftar->status_wawancara_bod }}
                             </span>
@@ -191,11 +195,11 @@
                         @elseif($countBerkas < $totalBerkas)
                             <span class="px-3 py-1 bg-slate-100 text-slate-400 rounded-lg text-[9px] font-black italic">DOKUMEN KURANG</span>
                         @else
-                            <span class="px-3 py-1 bg-blue-50 text-blue-400 rounded-lg text-[9px] font-black">REKAPITULASI...</span>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-400 rounded-lg text-[9px] font-black">BELUM DIPROSES</span>
                         @endif
                     </td>
                     <td class="px-6 py-4 text-right">
-                        <a href="{{ route('admin.beasiswa.show', $akun->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-[9px] font-black hover:bg-blue-700 transition-all shadow-sm uppercase tracking-widest leading-none">
+                        <a href="{{ route('admin.beasiswa.show', $akun->id) }}" class="inline-flex items-center gap-2 px-4 py-2 {{ !empty($akun->peserta->daftar->nominal_beasiswa) ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-200' }} text-white rounded-xl text-[9px] font-black transition-all shadow-sm uppercase tracking-widest leading-none">
                             FULL REPORT <span class="iconify text-xs" data-icon="solar:document-text-bold"></span>
                         </a>
                     </td>

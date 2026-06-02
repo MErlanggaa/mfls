@@ -433,6 +433,37 @@
                 </div>
 
                 <div class="space-y-2">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Program Studi</label>
+                    @php 
+                        $savedProdi = $user->peserta->penilaianAkademiks->first()?->rekomendasi_prodi_1 ?? $user->peserta->pilihan_prodi ?? ''; 
+                    @endphp
+                    <select name="prodi" required class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-yellow-400 appearance-none shadow-sm">
+                        <option value="">-- Pilih Prodi --</option>
+                        <option value="Sains Komunikasi" {{ str_contains($savedProdi, 'Sains Komunikasi') ? 'selected' : '' }}>Sains Komunikasi</option>
+                        <option value="Desain Komunikasi Visual" {{ str_contains($savedProdi, 'Desain Komunikasi Visual') ? 'selected' : '' }}>Desain Komunikasi Visual</option>
+                        <option value="Manajemen" {{ str_contains($savedProdi, 'Manajemen') ? 'selected' : '' }}>Manajemen</option>
+                        <option value="Akuntansi" {{ str_contains($savedProdi, 'Akuntansi') ? 'selected' : '' }}>Akuntansi</option>
+                        <option value="Pendidikan Bahasa Inggris" {{ str_contains($savedProdi, 'Pendidikan Bahasa Inggris') ? 'selected' : '' }}>Pendidikan Bahasa Inggris</option>
+                        <option value="Pendidikan Matematika" {{ str_contains($savedProdi, 'Pendidikan Matematika') ? 'selected' : '' }}>Pendidikan Matematika</option>
+                        <option value="Ilmu Komputer" {{ str_contains($savedProdi, 'Ilmu Komputer') ? 'selected' : '' }}>Ilmu Komputer</option>
+                        <option value="Sistem Informasi" {{ str_contains($savedProdi, 'Sistem Informasi') ? 'selected' : '' }}>Sistem Informasi</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Jenis Kelas</label>
+                    @php 
+                        $savedKelas = $user->peserta->penilaianAkademiks->first()?->rekomendasi_kelas ?? ''; 
+                    @endphp
+                    <select name="kelas" required class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-yellow-400 appearance-none shadow-sm">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="Reguler" {{ $savedKelas == 'Reguler' ? 'selected' : '' }}>Reguler</option>
+                        <option value="Karyawan" {{ $savedKelas == 'Karyawan' ? 'selected' : '' }}>Karyawan</option>
+                        <option value="Exellent" {{ $savedKelas == 'Exellent' ? 'selected' : '' }}>Exellent</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
                     <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Skema Beasiswa</label>
                     <select name="nominal_beasiswa" required class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-white outline-none focus:border-yellow-400 appearance-none shadow-sm">
                         <option value="">-- Pilih Skema --</option>

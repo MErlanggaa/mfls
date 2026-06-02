@@ -413,6 +413,8 @@ class AdminController extends Controller
     {
         $request->validate([
             'nominal_beasiswa' => 'nullable|string|max:255',
+            'kelas' => 'nullable|string|max:255',
+            'prodi' => 'nullable|string|max:255',
             'status' => 'required|in:lulus,tidak_lulus,menunggu'
         ]);
 
@@ -424,6 +426,19 @@ class AdminController extends Controller
             'status' => $request->status,
             'nominal_beasiswa' => $request->nominal_beasiswa
         ]);
+
+        // Save kelas and prodi to PenilaianAkademik if provided
+        if ($request->has('kelas') || $request->has('prodi')) {
+            $penilaian = \App\Models\PenilaianAkademik::firstOrNew(['peserta_id' => $daftar->peserta_id]);
+            if ($request->has('kelas')) $penilaian->rekomendasi_kelas = $request->kelas;
+            if ($request->has('prodi')) $penilaian->rekomendasi_prodi_1 = $request->prodi;
+            
+            // set penilai_id if it's new
+            if (!$penilaian->exists || !$penilaian->penilai_id) {
+                $penilaian->penilai_id = auth()->id();
+            }
+            $penilaian->save();
+        }
 
         $akun = Akun::with('peserta')->findOrFail($id);
         $this->logAktivitas('Update Beasiswa', 'Peserta', $akun->peserta->id, "Menetapkan beasiswa {$request->nominal_beasiswa} untuk {$akun->nama}");
