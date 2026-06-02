@@ -189,6 +189,7 @@ Route::middleware(['auth'])->group(function () {
             // Wawancara BoD
             Route::get('/admin/wawancara-bod', [App\Http\Controllers\AdminController::class, 'indexWawancaraBod'])->name('admin.wawancara_bod.index');
             Route::post('/admin/wawancara-bod/{id}/update', [App\Http\Controllers\AdminController::class, 'updateWawancaraBod'])->name('admin.wawancara_bod.update');
+            Route::get('/admin/wawancara-bod/download-photos', [App\Http\Controllers\AdminController::class, 'downloadWawancaraBodPhotos'])->name('admin.wawancara_bod.download_photos');
 
             Route::get('/admin/penilaian-mentor', [App\Http\Controllers\AdminController::class, 'indexPenilaian'])->name('admin.penilaian.index');
             Route::get('/admin/penilaian-akademik', [App\Http\Controllers\AdminController::class, 'indexPenilaianAkademik'])->name('admin.penilaian.akademik.index');

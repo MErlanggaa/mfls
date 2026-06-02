@@ -13,6 +13,10 @@
         <p class="text-slate-400 font-medium text-sm mt-1">Kelayakan penerima <span class="text-amber-600 font-black">Beasiswa 100%</span> — ditentukan langsung oleh Board of Directors.</p>
     </div>
     <div class="flex items-center gap-3">
+        <a href="{{ route('admin.wawancara_bod.download_photos') }}" class="px-5 py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm">
+            <span class="iconify" data-icon="solar:gallery-download-bold"></span>
+            Download Semua Foto
+        </a>
         <div class="px-5 py-3 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
             <span class="iconify text-amber-400" data-icon="solar:users-group-two-rounded-bold-duotone"></span>
             <span id="candidateCount">{{ $pesertas->count() }}</span> Kandidat

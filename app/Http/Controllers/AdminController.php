@@ -2585,4 +2585,66 @@ class AdminController extends Controller
 
         return back()->with('success', 'Status Wawancara BoD dan keputusan beasiswa berhasil diperbarui.');
     }
+
+    public function downloadWawancaraBodPhotos()
+    {
+        $user = auth()->user();
+        $isAuthorized = $user->role === 'admin' || in_array($user->email, ['dendi.pratama@mncu.ac.id', 'muhammad.rezki@mncu.ac.id', 'noval.adi@mncu.ac.id']);
+
+        if (!$isAuthorized) {
+            return abort(403, 'Anda tidak memiliki akses.');
+        }
+
+        $pesertas = \App\Models\Akun::where('role', 'pendaftar')
+            ->whereHas('peserta.daftar')
+            ->where(function ($query) {
+                $query->whereHas('peserta.daftar', function ($q) {
+                    $q->where('nominal_beasiswa', 'like', '%100%')
+                      ->orWhereNotNull('status_wawancara_bod')
+                      ->where('status_wawancara_bod', '!=', '');
+                })->orWhereHas('peserta.penilaianAkademiks', function ($q) {
+                    $q->where('rekomendasi_beasiswa', 'like', '%100%');
+                });
+            })->with(['peserta.berkas'])->get();
+
+        $zipName = 'Foto_Kandidat_Wawancara_BoD_' . date('Ymd_His') . '.zip';
+        $zipPath = storage_path('app/public/temp/' . $zipName);
+
+        if (!file_exists(dirname($zipPath))) {
+            mkdir(dirname($zipPath), 0755, true);
+        }
+
+        $zip = new \ZipArchive;
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+            $count = 0;
+            foreach ($pesertas as $index => $akun) {
+                $berkas = $akun->peserta?->berkas;
+                if ($berkas && $berkas->foto) {
+                    $val = $berkas->foto;
+                    $decoded = json_decode($val, true);
+                    $path = is_array($decoded) ? ($decoded[0] ?? null) : $val;
+
+                    if ($path && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                        $ext = pathinfo($path, PATHINFO_EXTENSION);
+                        $safeName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $akun->nama);
+                        $filename = ($index + 1) . '_' . $safeName . '.' . $ext;
+                        $zip->addFile(storage_path('app/public/' . $path), $filename);
+                        $count++;
+                    }
+                }
+            }
+            $zip->close();
+
+            if ($count > 0 && file_exists($zipPath)) {
+                return response()->download($zipPath)->deleteFileAfterSend(true);
+            }
+
+            if (file_exists($zipPath)) {
+                unlink($zipPath);
+            }
+            return back()->with('error', 'Tidak ada foto kandidat yang ditemukan atau berhasil diekspor.');
+        }
+
+        return back()->with('error', 'Gagal membuat file ZIP.');
+    }
 }
