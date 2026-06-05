@@ -237,7 +237,18 @@ class GoogleSheetService
         
         if (!$this->service) {
             \Illuminate\Support\Facades\Log::error("syncWawancara: service is null");
-            return;
+            $credentialsPath = storage_path('app/google/service_account.json');
+            $msg = "Google Sheets service is not initialized. ";
+            if (!file_exists($credentialsPath)) {
+                $msg .= "Credentials file not found at " . $credentialsPath;
+            } elseif (!is_readable($credentialsPath)) {
+                $msg .= "Credentials file is not readable at " . $credentialsPath;
+            } elseif (!$this->spreadsheetId) {
+                $msg .= "Spreadsheet ID is missing in configuration.";
+            } else {
+                $msg .= "Unknown configuration error.";
+            }
+            throw new \Exception($msg);
         }
 
         $wawancaraSpreadsheetId = '1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY';
@@ -330,6 +341,7 @@ class GoogleSheetService
             $this->service->spreadsheets_values->update($wawancaraSpreadsheetId, $sheetTitle . '!A1', $body, $params);
         } else {
             \Illuminate\Support\Facades\Log::warning("Sheet with GID {$targetGid} not found in spreadsheet {$wawancaraSpreadsheetId}");
+            throw new \Exception("Sheet with GID {$targetGid} not found in the spreadsheet. Please make sure the tab exists and has the correct sheet ID.");
         }
     }
 

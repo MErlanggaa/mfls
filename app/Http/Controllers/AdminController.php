@@ -2558,6 +2558,22 @@ class AdminController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
+    public function syncWawancaraSheet(\App\Services\GoogleSheetService $sheetService)
+    {
+        $user = auth()->user();
+        if ($user->email !== 'noval.adi@mncu.ac.id' && !in_array($user->role, ['admin', 'palugada'])) {
+            return response()->json(['success' => false, 'error' => 'Akses ditolak.'], 403);
+        }
+
+        try {
+            $sheetService->syncWawancara();
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('GSheet Manual Sync Wawancara failed: '.$e->getMessage());
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
     public function indexWawancaraBod()
     {
         $user = auth()->user();

@@ -237,6 +237,7 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/admin/export', [App\Http\Controllers\AdminController::class, 'exportExcel'])->name('admin.export');
             Route::get('/admin/export-wawancara', [App\Http\Controllers\AdminController::class, 'exportExcelWawancara'])->name('admin.export_wawancara');
+            Route::get('/admin/sync-wawancara-sheet', [App\Http\Controllers\AdminController::class, 'syncWawancaraSheet'])->name('admin.sync_wawancara_sheet');
 
             // Certificate Generation Route
             Route::get('/admin/pendaftar/{id}/certificate', [App\Http\Controllers\AdminController::class, 'generateCertificate'])->name('admin.pendaftar.certificate');

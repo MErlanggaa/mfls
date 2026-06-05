@@ -20,6 +20,10 @@
     @endif
     @if(auth()->user()->email === 'noval.adi@mncu.ac.id')
     <div class="flex items-center gap-3">
+        <button type="button" id="btnSyncWawancara" class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-indigo-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-indigo-100 flex items-center gap-2">
+            <span class="iconify" data-icon="solar:refresh-bold"></span>
+            Sync ke Spreadsheet
+        </button>
         <a href="https://docs.google.com/spreadsheets/d/1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY/edit?gid=883067809#gid=883067809" target="_blank" class="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-emerald-100 flex items-center gap-2">
             <span class="iconify" data-icon="solar:document-bold"></span>
             Spreadsheet Penilaian Akademik
@@ -202,5 +206,74 @@
         </div>
     @endforeach
 </div>
+@endif
+
+@if(auth()->user()->email === 'noval.adi@mncu.ac.id')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnSync = document.getElementById('btnSyncWawancara');
+        if (btnSync) {
+            btnSync.addEventListener('click', function () {
+                Swal.fire({
+                    title: 'Sinkronisasi Spreadsheet',
+                    text: 'Apakah Anda yakin ingin melakukan sinkronisasi data penilaian akademik ke Google Spreadsheet?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4f46e5',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Sinkronkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Sedang Sinkronisasi...',
+                            text: 'Mohon tunggu beberapa saat.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        fetch("{{ route('admin.sync_wawancara_sheet') }}", {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: 'Data penilaian akademik berhasil disinkronkan ke Google Spreadsheet.',
+                                    confirmButtonColor: '#10b981',
+                                    confirmButtonText: 'Selesai'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Sinkronisasi',
+                                    text: data.error || 'Terjadi kesalahan saat sinkronisasi data.',
+                                    confirmButtonColor: '#ef4444'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error syncing sheet:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan sistem/jaringan.',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        });
+                    }
+                });
+            });
+        }
+    });
+</script>
 @endif
 @endsection
