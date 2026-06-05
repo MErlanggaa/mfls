@@ -261,11 +261,18 @@ class GoogleSheetService
                 })
                 ->whereHas('peserta', function ($q) {
                     $q->where('status_seleksi_ujian', 'lulus')
-                      ->whereHas('interviewer', function ($qi) {
-                          $qi->where('email', 'noval.adi@mncu.ac.id');
+                      ->whereHas('penilaianAkademiks.penilai', function ($qp) {
+                          $qp->where('email', 'noval.adi@mncu.ac.id');
                       });
                 })
-                ->with(['peserta.daftar', 'peserta.penilaianAkademiks'])
+                ->with([
+                    'peserta.daftar',
+                    'peserta.penilaianAkademiks' => function ($q) {
+                        $q->whereHas('penilai', function ($qp) {
+                            $qp->where('email', 'noval.adi@mncu.ac.id');
+                        });
+                    }
+                ])
                 ->get() ?? collect();
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('syncWawancara: DB query failed - ' . $e->getMessage());
