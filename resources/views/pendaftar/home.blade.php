@@ -273,12 +273,12 @@ Melalui beasiswa ini, penerima tidak hanya mendapatkan dukungan finansial, tetap
             @php
                 $timeline = [
                     ['title' => 'Pembukaan Pendaftaran', 'date' => '16 Maret 2026', 'active' => false],
-                    ['title' => 'Penutupan Pendaftaran', 'date' => '04 Mei 2026', 'active' => true],
+                    ['title' => 'Penutupan Pendaftaran', 'date' => '04 Mei 2026', 'active' => false],
                     ['title' => 'Mini Project', 'date' => '08 Mei 2026', 'active' => false],
                     ['title' => 'Tes TPA, TBI & Pemetaan Diri', 'date' => '16 Mei 2026', 'active' => false],
                     ['title' => 'Interview', 'date' => '20 Mei 2026', 'active' => false],
                     ['title' => 'Sit in Class/Company Visit', 'date' => '21 & 22 Mei 2026', 'active' => false],
-                    ['title' => 'Pengumuman Awardee', 'date' => '03 Juni 2026', 'active' => false],
+                    ['title' => 'Pengumuman Awardee', 'date' => '03 Juni 2026', 'active' => true],
                 ];
             @endphp
             
