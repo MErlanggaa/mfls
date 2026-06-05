@@ -254,8 +254,16 @@ class GoogleSheetService
         $wawancaraSpreadsheetId = '1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY';
         $targetGid = 883067809;
 
+        $seederPath = database_path('seeders/AssignSnbtInterviewerSeeder.php');
+        $emails = [];
+        if (file_exists($seederPath)) {
+            preg_match_all("/'email'\s*=>\s*'([^']+)'/", file_get_contents($seederPath), $matches);
+            $emails = array_map('strtolower', array_map('trim', $matches[1] ?? []));
+        }
+
         try {
             $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
+                ->whereIn('email', $emails)
                 ->whereHas('peserta', function ($q) {
                     $q->whereHas('interviewer', function ($qi) {
                         $qi->where('email', 'noval.adi@mncu.ac.id');
