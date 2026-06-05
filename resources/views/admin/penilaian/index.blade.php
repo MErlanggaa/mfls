@@ -18,6 +18,14 @@
         </a>
     </div>
     @endif
+    @if(auth()->user()->email === 'noval.adi@mncu.ac.id')
+    <div class="flex items-center gap-3">
+        <a href="https://docs.google.com/spreadsheets/d/1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY/edit?gid=883067809#gid=883067809" target="_blank" class="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-emerald-100 flex items-center gap-2">
+            <span class="iconify" data-icon="solar:document-bold"></span>
+            Spreadsheet Penilaian Akademik
+        </a>
+    </div>
+    @endif
 </div>
 
 <!-- Filter & Search Section -->

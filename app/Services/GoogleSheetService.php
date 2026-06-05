@@ -229,7 +229,7 @@ class GoogleSheetService
     }
 
     /**
-     * Sync wawancara results to the specific sheet (GID: 821132360)
+     * Sync wawancara results to the specific sheet (GID: 883067809)
      */
     public function syncWawancara()
     {
@@ -239,6 +239,9 @@ class GoogleSheetService
             \Illuminate\Support\Facades\Log::error("syncWawancara: service is null");
             return;
         }
+
+        $wawancaraSpreadsheetId = '1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY';
+        $targetGid = 883067809;
 
         try {
             $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
@@ -298,36 +301,35 @@ class GoogleSheetService
             ];
         }
 
-     $rows = array_map(function ($row) {
-    return array_values(array_map(function ($cell) {
-        if (is_array($cell) || is_object($cell)) {
-            return json_encode($cell, JSON_UNESCAPED_UNICODE);
-        }
+        $rows = array_map(function ($row) {
+            return array_values(array_map(function ($cell) {
+                if (is_array($cell) || is_object($cell)) {
+                    return json_encode($cell, JSON_UNESCAPED_UNICODE);
+                }
+                return $cell ?? '-';
+            }, $row));
+        }, $rows);
 
-        return $cell ?? '-';
-    }, $row));
-}, $rows);
-
-$body = new \Google\Service\Sheets\ValueRange([
-    'values' => $rows
-]);
+        $body = new \Google\Service\Sheets\ValueRange([
+            'values' => $rows
+        ]);
         $params = ['valueInputOption' => 'USER_ENTERED'];
 
-        // Find sheet title for GID 821132360
-        $spreadsheet = $this->service->spreadsheets->get($this->spreadsheetId);
+        // Find sheet title for GID 883067809
+        $spreadsheet = $this->service->spreadsheets->get($wawancaraSpreadsheetId);
         $sheetTitle = null;
         foreach ($spreadsheet->getSheets() as $sheet) {
-            if ($sheet->getProperties()->getSheetId() == 821132360) {
+            if ($sheet->getProperties()->getSheetId() == $targetGid) {
                 $sheetTitle = $sheet->getProperties()->getTitle();
                 break;
             }
         }
 
         if ($sheetTitle) {
-            $this->service->spreadsheets_values->clear($this->spreadsheetId, $sheetTitle . '!A1:Z5000', new \Google\Service\Sheets\ClearValuesRequest());
-            $this->service->spreadsheets_values->update($this->spreadsheetId, $sheetTitle . '!A1', $body, $params);
+            $this->service->spreadsheets_values->clear($wawancaraSpreadsheetId, $sheetTitle . '!A1:Z5000', new \Google\Service\Sheets\ClearValuesRequest());
+            $this->service->spreadsheets_values->update($wawancaraSpreadsheetId, $sheetTitle . '!A1', $body, $params);
         } else {
-            \Illuminate\Support\Facades\Log::warning("Sheet with GID 821132360 not found in spreadsheet {$this->spreadsheetId}");
+            \Illuminate\Support\Facades\Log::warning("Sheet with GID {$targetGid} not found in spreadsheet {$wawancaraSpreadsheetId}");
         }
     }
 

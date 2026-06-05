@@ -2486,20 +2486,11 @@ class AdminController extends Controller
         $fileName = 'Database_Hasil_Wawancara_' . date('Y-m-d_H-i') . '.csv';
         
         $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
-            ->where(function ($q) {
-                $q->where(function ($q2) {
-                    $q2->whereHas('peserta.daftar', function ($q3) {
-                        $q3->where('status', 'lulus');
-                    })
-                    ->whereHas('peserta', function ($q3) {
-                        $q3->where('status_seleksi_ujian', 'lulus');
-                    });
-                })
-                ->orWhereHas('peserta.daftar', function ($q2) {
-                    $q2->where('status', 'lulus')
-                       ->whereNotNull('status_wawancara_bod')
-                       ->where('status_wawancara_bod', '!=', '');
-                });
+            ->whereHas('peserta.daftar', function ($q) {
+                $q->where('status', 'lulus');
+            })
+            ->whereHas('peserta', function ($q) {
+                $q->where('status_seleksi_ujian', 'lulus');
             })
             ->with(['peserta.daftar', 'peserta.penilaianAkademiks', 'peserta.penilaianMentors'])
             ->get();

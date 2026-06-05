@@ -189,6 +189,14 @@
                 </a>
                 @endif
 
+                @if(auth()->check() && auth()->user()->email === 'noval.adi@mncu.ac.id')
+                <a href="https://docs.google.com/spreadsheets/d/1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY/edit?gid=883067809#gid=883067809" target="_blank" onclick="closeSidebar()"
+                    class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700">
+                    <span class="iconify text-xl text-emerald-600" data-icon="solar:document-bold"></span>
+                    Spreadsheet Penilaian Akademik
+                </a>
+                @endif
+
                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'akademik' || auth()->user()->role === 'palugada')
                 <a href="{{ route('admin.soal.index') }}" onclick="closeSidebar()"
                     class="flex items-center gap-3 px-4 py-3.5 rounded-xl font-bold transition-all
