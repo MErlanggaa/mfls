@@ -256,14 +256,10 @@ class GoogleSheetService
 
         try {
             $pendaftars = \App\Models\Akun::where('role', 'pendaftar')
-                ->whereHas('peserta.daftar', function ($q) {
-                    $q->where('status', 'lulus');
-                })
                 ->whereHas('peserta', function ($q) {
-                    $q->where('status_seleksi_ujian', 'lulus')
-                      ->whereHas('interviewer', function ($qi) {
-                          $qi->where('email', 'noval.adi@mncu.ac.id');
-                      });
+                    $q->whereHas('interviewer', function ($qi) {
+                        $qi->where('email', 'noval.adi@mncu.ac.id');
+                    });
                 })
                 ->with(['peserta.daftar', 'peserta.penilaianAkademiks.penilai'])
                 ->get() ?? collect();
