@@ -10,26 +10,26 @@
                 {{ auth()->user()->role === 'dosen' ? 'Berikan penilaian wawancara untuk peserta yang ditugaskan kepada Anda.' : 'Berikan penilaian kualitatif untuk setiap peserta yang lolos seleksi berkas.' }}
             </p>
         </div>
-        @if(in_array(auth()->user()->role, ['admin', 'akademik', 'palugada']) && $type === 'akademik')
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.export_wawancara') }}" class="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-emerald-100 flex items-center gap-2">
-                <span class="iconify" data-icon="solar:export-bold"></span>
-                Export Hasil Wawancara
-            </a>
-        </div>
-        @endif
-        @if(auth()->user()->email === 'noval.adi@mncu.ac.id')
-        <div class="flex items-center gap-3">
-            <button type="button" id="btnSyncWawancara" class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-indigo-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-indigo-100 flex items-center gap-2">
-                <span class="iconify" data-icon="solar:refresh-bold"></span>
-                Sync ke Spreadsheet
-            </button>
-            <a href="https://docs.google.com/spreadsheets/d/1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY/edit?gid=883067809#gid=883067809" target="_blank" class="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-emerald-100 flex items-center gap-2">
-                <span class="iconify" data-icon="solar:document-bold"></span>
-                Spreadsheet Penilaian Akademik
-            </a>
-        </div>
-        @endif
+        <!-- @if(in_array(auth()->user()->role, ['admin', 'akademik', 'palugada']) && $type === 'akademik')
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.export_wawancara') }}" class="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-emerald-100 flex items-center gap-2">
+                    <span class="iconify" data-icon="solar:export-bold"></span>
+                    Export Hasil Wawancara
+                </a>
+            </div>
+            @endif
+            @if(auth()->user()->email === 'noval.adi@mncu.ac.id')
+            <div class="flex items-center gap-3">
+                <button type="button" id="btnSyncWawancara" class="bg-indigo-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-indigo-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-indigo-100 flex items-center gap-2">
+                    <span class="iconify" data-icon="solar:refresh-bold"></span>
+                    Sync ke Spreadsheet
+                </button>
+                <a href="https://docs.google.com/spreadsheets/d/1pkgZqQpC-HXUO9VC7G0Qs0fnPekMWts2v29rV43lcRY/edit?gid=883067809#gid=883067809" target="_blank" class="bg-emerald-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black hover:bg-emerald-700 transition-all uppercase tracking-[0.2em] shadow-lg shadow-emerald-100 flex items-center gap-2">
+                    <span class="iconify" data-icon="solar:document-bold"></span>
+                    Spreadsheet Penilaian Akademik
+                </a>
+            </div>
+            @endif -->
     </div>
 
     <!-- Filter & Search Section -->
@@ -89,7 +89,8 @@
                             <div class="flex items-center gap-2 text-slate-400 mt-1">
                                 <span class="iconify shrink-0" data-icon="solar:square-academic-cap-bold"></span>
                                 <p class="text-[10px] font-bold uppercase tracking-widest truncate">
-                                    {{ $akun->peserta->nama_sekolah ?? '-' }}</p>
+                                    {{ $akun->peserta->nama_sekolah ?? '-' }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -104,7 +105,8 @@
                                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Lokasi
                                 </p>
                                 <p class="text-xs font-bold text-slate-700 truncate">{{ $akun->peserta->kabupaten ?? '-' }},
-                                    {{ $akun->peserta->provinsi ?? '-' }}</p>
+                                    {{ $akun->peserta->provinsi ?? '-' }}
+                                </p>
                             </div>
                         </div>
 
