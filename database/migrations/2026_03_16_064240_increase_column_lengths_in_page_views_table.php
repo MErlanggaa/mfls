@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('page_views', function (Blueprint $table) {
-            $table->string('url', 2048)->change();
+            $table->string('url', 750)->change();
             $table->string('user_agent', 255)->nullable()->change();
             $table->string('referer', 255)->nullable()->change();
         });
